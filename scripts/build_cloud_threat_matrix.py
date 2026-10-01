@@ -445,7 +445,7 @@ def write_xlsx(domains, out, incs, stats):
         ("세부위협(Lv3)", f"{len(out)}건 / 도메인 {len(domains)}개"),
         ("위험도", " · ".join(f"{k} {rc.get(k, 0)}" for k in RISK_COLOR)),
         ("근거 수준", " · ".join(f"{k} {lc.get(k, 0)}" for k in LEVEL_COLOR)),
-        ("클라우드 관점 재작성", f"고유 기법 {rewritten}/{unique_tids}개 적용(요약설명·참조·탐지·대응). 나머지는 기존 번역 설명 유지 — 후속 작성 예정"),
+        ("클라우드 관점 재작성", f"고유 기법 {rewritten}/{unique_tids}개 적용(요약설명·참조·탐지·대응). " + ("전 기법 완료" if rewritten >= unique_tids else "나머지는 기존 번역 설명 유지 — 후속 작성 예정")),
         ("", ""), ("■ 주의", ""),
         ("사고 매핑", "사고 DB의 ATT&CK 초안 ID 기준(폐기 ID는 v19.2로 변환). 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 초안 ID 없는 사고는 '역매핑_사고사례'에 전수 보존"),
         ("위험평가", "발생가능성은 근거에서 자동 산정, 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
