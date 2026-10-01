@@ -16,13 +16,19 @@ from openpyxl.utils import get_column_letter
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, AI_UT_MAP, SEVERITY,
-                            TACTIC_SEVERITY, DEPRECATED)
+                            TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE)
+import csv
 
-VERSION = "v2"
+VERSION = "v3"
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_MATRIX = os.path.join(HERE, "data", "Cloud_ATTACK_Matrix_Integrated_v19.2.xlsx")
 SRC_INC = os.path.join(HERE, "data", "Cloud_IncidentDB_v2_LITE.xlsx")
 OUT = os.path.join(HERE, "output", f"통합_클라우드보안위협_매트릭스_{VERSION}.xlsx")
+SRC_ATTACK = os.path.join(HERE, "data", "enterprise-attack-v19.2-techniques.xlsx")
+OVERRIDE = os.path.join(HERE, "data", "threat_text_override.csv")
+TEMPLATE = os.path.join(HERE, "output", "threat_text_template.csv")
+OV_COLS = ["ATT&CK ID", "ATT&CK 기법명", "Cloud 범위", "현재 요약설명(참고용)",
+           "세부위협명(입력)", "요약설명(입력)", "참조(입력)"]
 
 RISK_MATRIX = {
     ("상", "상"): "매우 높음", ("상", "중"): "높음", ("상", "하"): "보통",
@@ -159,74 +165,196 @@ def severity(tid, tactic):
 
 
 # ---------------------------------------------------------------------------
-# 4) 조립
+# 4) 설명 보조 : ATT&CK 원문 목록 복원 · 사용자 입력 문구
+# ---------------------------------------------------------------------------
+def _clean_md(t):
+    t = re.sub(r"\(Citation:[^)]*\)", "", t)
+    t = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", t)
+    t = re.sub(r"</?[a-z]+>", "", t).replace("`", "")
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def load_attack_lists():
+    """ATT&CK 원문에서 첫 문단 뒤 글머리표 목록을 추출 (첫 문단이 ':'로 끝나는 경우 복원용)"""
+    if not os.path.exists(SRC_ATTACK):
+        return {}
+    wb = openpyxl.load_workbook(SRC_ATTACK, read_only=True)
+    lists = {}
+    for r in wb["techniques"].iter_rows(min_row=2, values_only=True):
+        items = [_clean_md(x[2:]) for x in (r[3] or "").split("\n") if x.startswith("* ")]
+        if items:
+            lists[r[0]] = [i if len(i) <= 220 else i[:217] + "…" for i in items]
+    return lists
+
+
+def load_override():
+    if not os.path.exists(OVERRIDE):
+        return {}
+    with open(OVERRIDE, encoding="utf-8-sig") as f:
+        return {r["ATT&CK ID"].strip(): r for r in csv.DictReader(f) if r.get("ATT&CK ID")}
+
+
+def final_tid(t):
+    while t in MERGE:
+        t = MERGE[t]
+    return t
+
+
+# ---------------------------------------------------------------------------
+# 5) 조립
 # ---------------------------------------------------------------------------
 def build():
     domains, leaves = load_skeleton()
     valid = {l["tid"] for l in leaves}
     incs = load_incidents(valid)
+    lists = load_attack_lists()
+    override = load_override()
 
     by_tid = collections.defaultdict(list)
     for e in incs:
         for t, why in e["links"].items():
             by_tid[t].append((e, why))
 
-    out = []
+    # 기법(고유 ID) 단위 근거 집계 → 통합 대상으로 합산
+    first = {}
+    for l in leaves:
+        first.setdefault(l["tid"], l)
+    agg = collections.defaultdict(lambda: dict(pairs=[], atk=0, aws=[], azure=[], k8s=[],
+                                                merged=[], atk_lines=[]))
+    lost = []
+    for tid, l in first.items():
+        if tid in DROP:
+            lost += [e["id"] for e, _ in by_tid.get(tid, []) if e["counted"]]
+            continue
+        a = agg[final_tid(tid)]
+        a["pairs"] += by_tid.get(tid, [])
+        a["atk"] += l["atk_cases"]
+        for k in ("aws", "azure", "k8s"):
+            a[k] += [x for x in l[k] if x not in a[k]]
+        a["atk_lines"] += [x for x in l["atk_summary"].split("\n") if x.strip()]
+        if final_tid(tid) != tid:
+            a["merged"].append(f"{tid} {re.sub(r' [(]일반·상위기법[)]$', '', l['lv3'])}")
+
+    rows = []
     for l in leaves:
         tid = l["tid"]
-        pairs = [(e, w) for e, w in by_tid.get(tid, []) if e["counted"]]
-        csa = []
-        real = len({e["id"] for e, _ in pairs if e["real"]}) + sum(1 for c in csa if c["real"])
-        research = len({e["id"] for e, _ in pairs if not e["real"]}) + sum(1 for c in csa if not c["real"])
-        recent = len({e["id"] for e, _ in pairs if e["real"] and e["recent"]}) + \
-            sum(1 for c in csa if c["real"] and c["date"][:4] >= RECENT_FROM)
-        vendor_n = len(l["aws"]) + len(l["azure"]) + len(l["k8s"])
-
-        # 상위기법 '(일반)' 리프는 자체 근거가 전혀 없으면 생략
-        if l.get("is_general") and not (pairs or csa or l["atk_cases"] or vendor_n):
+        if tid in DROP or tid in MERGE:
             continue
-
-        atk = l["atk_cases"]
+        a = agg[tid]
+        pairs = [(e, w) for e, w in a["pairs"] if e["counted"]]
+        vendor_n = len(a["aws"]) + len(a["azure"]) + len(a["k8s"])
+        if l.get("is_general") and not (pairs or a["atk"] or vendor_n):
+            continue
+        ids = {e["id"] for e, _ in pairs}
+        real = len({e["id"] for e, _ in pairs if e["real"]})
+        research = len(ids) - real
+        recent = len({e["id"] for e, _ in pairs if e["real"] and e["recent"]})
+        atk = a["atk"]
         lk = likelihood(real, research, atk, vendor_n)
         sv, sv_why = severity(tid, l["tactic"])
-        csa_ids = sorted(set(CSA_MAP.get(tid, CSA_MAP.get(parent_tid(tid), []))) |
-                         {c["si"] for c in csa})
-        ut = AI_UT_MAP.get(tid, AI_UT_MAP.get(parent_tid(tid), ""))
+        csa_ids = sorted(set(CSA_MAP.get(tid, CSA_MAP.get(parent_tid(tid), []))))
 
-        # 대표 사례 : 실제 사고(서술형·최신) 2 + CSA 1 + ATT&CK 1
-        seen, uniq = set(), []
-        for e, w in pairs:
-            if e["id"] not in seen:
-                seen.add(e["id"]); uniq.append((e, w))
-        uniq.sort(key=lambda p: (not p[0]["real"], p[0]["template"], p[0]["date"]), reverse=False)
-        uniq.sort(key=lambda p: (p[0]["real"], not p[0]["template"], p[0]["date"]), reverse=True)
-        ex = []
-        for e, w in uniq[:2]:
-            tag = "실제 사고" if e["real"] else "실증·연구"
-            ex.append(f"- [{tag}] {e['title']}({e['date'][:7]}): {e['summary'][:150]} ({e['id']})")
-        for c in sorted(csa, key=lambda c: c["date"], reverse=True)[:1]:
-            tag = "실제 사고" if c["real"] else "실증·연구"
-            ex.append(f"- [{tag}·CSA 2026] {c['title']}({c['date']}): {c['summary']} ({c['id']})")
-        if l["atk_summary"]:
-            first = l["atk_summary"].split("\n")[0].lstrip("• ")
-            more = len([x for x in l["atk_summary"].split("\n") if x.startswith("•")])
-            ex.append(f"- [ATT&CK 사례] {first}" + (f" 등 {atk}건" if atk > 1 else ""))
-        if not ex:
-            ex.append("- [공격 시나리오] 실제 사례 미확인 — ATT&CK·벤더 매트릭스상 가능 기법")
+        # 요약설명 : 기존 번역 설명(첫 문단). ':'로 끝나면 목록을 참조로 넘김
+        summary = l["desc"]
+        restored = []
+        if summary.rstrip().endswith(":"):
+            restored = lists.get(tid, [])
+            summary = summary.rstrip().rstrip(":").rstrip() + " (세부 항목은 참조 열 참조)"
 
-        out.append(dict(
-            l, vendor_n=vendor_n,
+        # 참조 : 원문 보충 · 실제 사고 · ATT&CK 사례 · 통합 기법 (기존 데이터 재배치)
+        ref = []
+        if restored:
+            ref.append("■ ATT&CK 원문 목록\n" + "\n".join(f"- {x}" for x in restored))
+        uniq = {}
+        for e, _ in pairs:
+            uniq.setdefault(e["id"], e)
+        evs = sorted(uniq.values(), key=lambda e: (e["real"], not e["template"], e["date"]), reverse=True)
+        if evs:
+            lines = []
+            for e in evs[:3]:
+                tag = "실제 사고" if e["real"] else "실증·연구"
+                body = "" if e["template"] else f": {e['summary'][:140]}"
+                lines.append(f"- [{tag}] {e['title']}({e['date'][:7]}, {e['id']}){body}")
+            more = f"\n- 외 {len(evs) - 3}건(관련 사례 ID 열)" if len(evs) > 3 else ""
+            ref.append("■ 실제 사례(사고 DB)\n" + "\n".join(lines) + more)
+        if a["atk_lines"]:
+            al = [x.lstrip("• ").strip() for x in a["atk_lines"] if x.startswith("•")][:4]
+            if al:
+                ref.append(f"■ ATT&CK 사례(행위자, 총 {atk}건)\n" + "\n".join(f"- {x}" for x in al))
+        if a["merged"]:
+            ref.append("■ 통합된 기법\n" + "\n".join(f"- {x}" for x in a["merged"]))
+        if not ref:
+            ref.append("■ 실제 사례 미확인 — ATT&CK·벤더 매트릭스상 가능 기법")
+
+        lv3 = NAME_OVERRIDE.get(tid, l["lv3"])
+        ov = override.get(tid, {})
+        lv3 = (ov.get("세부위협명(입력)") or "").strip() or lv3
+        summary = (ov.get("요약설명(입력)") or "").strip() or summary
+        reference = (ov.get("참조(입력)") or "").strip() or "\n\n".join(ref)
+
+        rows.append(dict(
+            l, lv3=lv3, aws=a["aws"], azure=a["azure"], k8s=a["k8s"], vendor_n=vendor_n,
+            summary=summary, reference=reference,
+            text_src="사용자 입력" if (ov.get("요약설명(입력)") or "").strip() else "기존 번역",
+            merged=", ".join(m.split(" ")[0] for m in a["merged"]),
             csa=" · ".join(f"SI-{i:02d} {CSA_NAMES[i]}" for i in csa_ids), csa_ids=csa_ids,
-            ut=ut, likelihood=lk, severity=sv, sev_why=sv_why,
-            risk=RISK_MATRIX[(lk, sv)],
+            ut=AI_UT_MAP.get(tid, AI_UT_MAP.get(parent_tid(tid), "")),
+            likelihood=lk, severity=sv, sev_why=sv_why, risk=RISK_MATRIX[(lk, sv)],
             lk_why=f"실제 사고 {real}건(최근 {recent}) · 실증·연구 {research}건 · ATT&CK 사례 {atk}건 · 벤더 기법 {vendor_n}개",
             real=real, research=research, recent=recent, atk=atk,
             level=evidence_level(real, research, atk, vendor_n),
-            inc_ids=", ".join(sorted(seen | {c["id"] for c in csa})),
+            inc_ids=", ".join(sorted(ids)),
             basis=", ".join(sorted({w for _, w in pairs})),
-            examples="\n".join(ex),
         ))
-    return domains, out, incs
+
+    # ID 재부여 : 전술별 Lv2 순번, Lv2 내 '.0(일반)' → .0, 하위기법 → .1..
+    out = []
+    groups = collections.OrderedDict()
+    for r in rows:
+        groups.setdefault((r["tactic"], r["lv2code"]), []).append(r)
+    seq = collections.Counter()
+    for (tactic, _), grp in groups.items():
+        seq[tactic] += 1
+        code = f"CTC-{TACTIC_CODE[tactic][0]}-{seq[tactic]:02d}"
+        if len(grp) == 1 and (grp[0].get("is_general") or "." not in grp[0]["ctc"]):
+            g = grp[0]
+            g.update(ctc=code, lv2code=code)
+            if g.get("is_general") and g["lv3"].endswith("(일반·상위기법)"):
+                g["lv3"] = NAME_OVERRIDE.get(g["tid"], g["lv2"])
+            out.append(g)
+            continue
+        n = 0
+        for g in grp:
+            if g.get("is_general"):
+                g.update(ctc=f"{code}.0", lv2code=code)
+            elif "." in g["ctc"]:
+                n += 1
+                g.update(ctc=f"{code}.{n}", lv2code=code)
+            else:
+                g.update(ctc=code, lv2code=code)
+            out.append(g)
+
+    bad = [o["tid"] for o in out if o["summary"].rstrip().endswith(":")]
+    assert not bad, f"요약설명이 ':'로 끝나는 행: {bad}"
+    stats = dict(dropped=sorted(DROP & set(first)), merged=sorted(set(MERGE) & set(first)),
+                 lost_incidents=sorted(set(lost)))
+    return domains, out, incs, stats
+
+
+def write_template(out):
+    """사용자 문구 입력용 CSV (고유 기법 단위, 현재 요약을 참고용으로 포함)"""
+    seen, rows = set(), []
+    for o in out:
+        if o["tid"] in seen:
+            continue
+        seen.add(o["tid"])
+        rows.append({OV_COLS[0]: o["tid"], OV_COLS[1]: o["lv3"], OV_COLS[2]: o["scope"],
+                     OV_COLS[3]: o["summary"], OV_COLS[4]: "", OV_COLS[5]: "", OV_COLS[6]: ""})
+    with open(TEMPLATE, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=OV_COLS)
+        w.writeheader()
+        w.writerows(rows)
+    return TEMPLATE
 
 
 # ===========================================================================
@@ -273,7 +401,7 @@ def _row(ws, r, vals):
         c.border = BORDER
 
 
-def write_xlsx(domains, out, incs):
+def write_xlsx(domains, out, incs, stats):
     wb = openpyxl.Workbook()
     today = datetime.date.today().isoformat()
     counted = [e for e in incs if e["counted"]]
@@ -305,7 +433,9 @@ def write_xlsx(domains, out, incs):
         ("■ 분류 체계", ""),
         ("Lv1 도메인", "ATT&CK 전술. 예: [IA] 초기 침투, [IM] 영향"),
         ("Lv2 위협분류", "ATT&CK 기법. 예: CTC-IA-02 = T1190"),
-        ("Lv3 세부위협", "하위기법/벤더 항목. 예: CTC-IA-08.2 = T1078.004. '.0 (일반·상위기법)'은 하위기법으로 특정되지 않은 상위기법 근거(사례·벤더 항목)를 보존한 행"),
+        ("Lv3 세부위협", "하위기법/벤더 항목 — 요약설명 · 참조(ATT&CK 원문 보충 · 실제 사례 · ATT&CK 사례 · 통합된 기법). '.0 (일반·상위기법)'은 하위기법으로 특정되지 않은 상위기법 근거를 보존한 행"),
+        ("클라우드 특화 검토(v3)", f"일반 엔터프라이즈 기법 {len(stats['dropped'])}개 삭제({', '.join(stats['dropped'])}), {len(stats['merged'])}개 통합(근거·벤더 항목은 대상 행에 합산, '통합된 기법' 열)"),
+        ("설명 문구", "기본값은 기존 번역 설명(요약설명)과 기존 사례 데이터 재배치(참조). data/threat_text_override.csv에 입력한 문구가 있으면 그 문구를 사용('설명 출처' 열)"),
         ("", ""), ("■ 결과 요약", ""),
         ("세부위협(Lv3)", f"{len(out)}건 / 도메인 {len(domains)}개"),
         ("위험도", " · ".join(f"{k} {rc.get(k, 0)}" for k in RISK_COLOR)),
@@ -348,14 +478,14 @@ def write_xlsx(domains, out, incs):
 
     # ---------------- 통합 매트릭스 ----------------
     ws = wb.create_sheet("통합 매트릭스")
-    groups = [("분류 체계", 10, "2E5496"), ("교차 매핑", 5, "1F7A8C"),
-              ("위험 평가", 5, "A04000"), ("실제 근거", 9, "1E8449")]
-    cols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "ATT&CK ID", "구분",
-            "Cloud 범위", "Cloud 플랫폼", "기타 플랫폼", "위협 설명",
+    groups = [("분류 체계", 13, "2E5496"), ("교차 매핑", 5, "1F7A8C"),
+              ("위험 평가", 5, "A04000"), ("실제 근거", 8, "1E8449")]
+    cols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "참조",
+            "ATT&CK ID", "통합된 기법", "구분", "Cloud 범위", "Cloud 플랫폼", "기타 플랫폼", "설명 출처",
             "CSA Top Threats 2026", "AI 매트릭스 연계(UT)", "AWS (TTC)", "Azure (ATRM)", "Kubernetes",
             "발생가능성", "심각도", "위험도", "발생가능성 근거 (자동 산정)", "심각도 근거",
             "실제 사고 수", "최근 사고(2025~)", "실증·연구 수", "ATT&CK 사례 수", "근거 수준",
-            "사고 매핑 근거", "관련 사례 ID", "실제 사례·공격 예시", "ATT&CK 링크"]
+            "사고 매핑 근거", "관련 사례 ID", "ATT&CK 링크"]
     t = ws.cell(1, 1, f"통합 클라우드 보안위협 매트릭스 {VERSION} — 분류체계 · 위험평가 · 실제근거")
     t.font = Font(size=13, bold=True, color="FFFFFF"); t.fill = PatternFill("solid", fgColor="1F3864")
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(cols))
@@ -369,40 +499,40 @@ def write_xlsx(domains, out, incs):
         c0 += span
     _hdr(ws, 4, cols)
     for r, o in enumerate(out, 5):
-        _row(ws, r, [o["domain"], o["ctc"], o["lv2"], o["lv3"], o["tid"], o["gubun"],
-                     o["scope"], o["plat_cloud"], o["plat_other"], o["desc"][:600],
+        _row(ws, r, [o["domain"], o["ctc"], o["lv2"], o["lv3"], o["summary"], o["reference"],
+                     o["tid"], o["merged"], o["gubun"], o["scope"], o["plat_cloud"], o["plat_other"], o["text_src"],
                      o["csa"], o["ut"], "\n".join(o["aws"]), "\n".join(o["azure"]), "\n".join(o["k8s"]),
                      o["likelihood"], o["severity"], o["risk"], o["lk_why"], o["sev_why"],
                      o["real"], o["recent"], o["research"], o["atk"], o["level"],
-                     o["basis"], o["inc_ids"], o["examples"], o["link"]])
-        ws.cell(r, 7).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
-        _risk(ws.cell(r, 18), o["risk"])
-        ws.cell(r, 25).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
-        for cc in (16, 17, 21, 22, 23, 24):
+                     o["basis"], o["inc_ids"], o["link"]])
+        ws.cell(r, 10).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
+        _risk(ws.cell(r, 21), o["risk"])
+        ws.cell(r, 28).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
+        for cc in (19, 20, 24, 25, 26, 27):
             ws.cell(r, cc).alignment = CENTER
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(out) + 4}"
-    _w(ws, [15, 13, 22, 26, 11, 13, 12, 15, 15, 50, 26, 16, 22, 22, 18,
-            8, 7, 9, 30, 28, 7, 8, 7, 7, 12, 16, 22, 70, 28])
+    _w(ws, [15, 13, 22, 26, 48, 60, 11, 14, 13, 12, 15, 15, 10,
+            26, 16, 22, 22, 18, 8, 7, 9, 30, 28, 7, 8, 7, 7, 12, 16, 22, 28])
 
     # ---------------- LITE ----------------
     ws = wb.create_sheet("통합매트릭스_LITE")
-    lcols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "ATT&CK ID", "Cloud 범위",
+    lcols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "ATT&CK ID", "Cloud 범위",
              "CSA Top Threats 2026", "발생가능성", "심각도", "위험도", "근거 수준",
-             "실제 사고 수", "ATT&CK 사례 수", "심각도 근거"]
+             "실제 사고 수", "ATT&CK 사례 수"]
     ws.cell(1, 1, f"통합 클라우드 보안위협 매트릭스 {VERSION} — LITE").font = Font(size=12, bold=True, color="1F3864")
     _hdr(ws, 2, lcols)
     for r, o in enumerate(out, 3):
-        _row(ws, r, [o["domain"], o["ctc"], o["lv2"], o["lv3"], o["tid"], o["scope"], o["csa"],
-                     o["likelihood"], o["severity"], o["risk"], o["level"], o["real"], o["atk"], o["sev_why"]])
-        ws.cell(r, 6).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
-        _risk(ws.cell(r, 10), o["risk"])
-        ws.cell(r, 11).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
-        for cc in (8, 9, 12, 13):
+        _row(ws, r, [o["domain"], o["ctc"], o["lv2"], o["lv3"], o["summary"], o["tid"], o["scope"], o["csa"],
+                     o["likelihood"], o["severity"], o["risk"], o["level"], o["real"], o["atk"]])
+        ws.cell(r, 7).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
+        _risk(ws.cell(r, 11), o["risk"])
+        ws.cell(r, 12).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
+        for cc in (9, 10, 13, 14):
             ws.cell(r, cc).alignment = CENTER
     ws.freeze_panes = "E3"
     ws.auto_filter.ref = f"A2:{get_column_letter(len(lcols))}{len(out) + 2}"
-    _w(ws, [15, 13, 22, 28, 11, 12, 28, 8, 7, 9, 13, 8, 8, 34])
+    _w(ws, [15, 13, 22, 26, 48, 11, 12, 28, 8, 7, 9, 13, 8, 8])
 
     # ---------------- 도메인 요약 ----------------
     ws = wb.create_sheet("도메인 요약")
@@ -493,8 +623,11 @@ def write_xlsx(domains, out, incs):
 
 
 if __name__ == "__main__":
-    domains, out, incs = build()
-    path = write_xlsx(domains, out, incs)
+    domains, out, incs, stats = build()
+    path = write_xlsx(domains, out, incs, stats)
+    print("문구 입력 템플릿:", write_template(out))
+    print("삭제", len(stats["dropped"]), "/ 통합", len(stats["merged"]),
+          "/ 삭제 기법에만 연결돼 빠진 사고", stats["lost_incidents"])
     C = collections.Counter
     counted = [e for e in incs if e["counted"]]
     print("저장:", path)
