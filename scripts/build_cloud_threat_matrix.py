@@ -16,7 +16,7 @@ from openpyxl.utils import get_column_letter
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, CSA_NOTE, AI_UT_MAP, SEVERITY,
-                            TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE)
+                            TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE, KEYWORD_RULES)
 import csv
 
 VERSION = "v5"
@@ -112,7 +112,10 @@ def load_incidents(valid_tids):
                  src=r[4] or "", org=r[5] or "", actor=r[6] or "", date=str(r[7] or ""),
                  rel=r[8] or "", layer=r[9] or "", root=r[11] or r[10] or "",
                  impact=r[13] or r[12] or "", draft=r[21] or "",
-                 text=" ".join(str(x) for x in (r[1], r[2], r[9], r[11], r[13], *r[15:21]) if x).lower())
+                 # 키워드 매핑용: 제목·요약·원문 필드(초기침투·확산·영향·사용 기법·공격 대상·도구) / 구조 필드(전체값)
+                 free=" ".join(str(x) for x in (r[1], r[2], *r[15:21]) if x),
+                 cond=dict(root=f"{r[10] or ''} {r[11] or ''}", layer=r[9] or "",
+                           impact=f"{r[12] or ''} {r[13] or ''}", kind=r[3] or ""))
         incs.append(e)
 
     for e in incs:
@@ -127,12 +130,48 @@ def load_incidents(valid_tids):
                 clean[t] = why
             elif parent_tid(t) in valid_tids:
                 clean.setdefault(parent_tid(t), why)
-        e["links"] = clean
+        e["links"] = keyword_links(e, clean, valid_tids)
         e["counted"] = e["rel"] != "비클라우드 의심"
         e["real"] = e["kind"] in REAL_KINDS
         e["recent"] = e["date"][:4] >= RECENT_FROM
         e["template"] = e["summary"].startswith("Wiz가 ")
     return incs
+
+
+def _kw_match(rule, e):
+    tid, kw, cond = rule
+    c = e["cond"]
+    for k in ("root", "layer", "impact"):
+        if k in cond and not any(v in c[k] for v in cond[k]):
+            return False
+    if c["kind"] in cond.get("skip_kind", ()):
+        return False
+    if cond.get("neg") and re.search(cond["neg"], e["free"], re.I):
+        return False
+    return re.search(kw, e["free"], re.I) is not None
+
+
+def keyword_links(e, links, valid_tids):
+    """초안 ID 매핑에 키워드 매핑(KEYWORD_RULES)을 더한다.
+    - 같은 기법이나 그 하위기법이 이미 있으면 추가하지 않음
+    - 상위기법 태그만 있고 키워드가 하위기법을 가리키면 상위 태그를 하위기법으로 세분"""
+    links = dict(links)
+    refined = set()
+    for rule in KEYWORD_RULES:
+        t = rule[0]
+        if t not in valid_tids or t in links or any(parent_tid(x) == t and x != t for x in links):
+            continue
+        if not _kw_match(rule, e):
+            continue
+        p = parent_tid(t)
+        if p != t and (p in links or p in refined):
+            if p in links:
+                refined.add(p)
+                del links[p]
+            links[t] = "초안ID→키워드 세분"
+        else:
+            links[t] = "키워드"
+    return links
 
 
 # ---------------------------------------------------------------------------
@@ -414,6 +453,7 @@ def write_xlsx(domains, out, incs, stats):
     today = datetime.date.today().isoformat()
     counted = [e for e in incs if e["counted"]]
     mapped = [e for e in counted if e["links"]]
+    kw_only = [e for e in mapped if all(w == "키워드" for w in e["links"].values())]
 
     # ---------------- 개요 ----------------
     ws = wb.active
@@ -430,7 +470,7 @@ def write_xlsx(domains, out, incs, stats):
         ("MITRE ATT&CK", "Enterprise v19.2 Cloud(IaaS·SaaS·Office Suite·Identity Provider) — 전술 14 · 기법/하위기법 및 클라우드 실제 사례"),
         ("벤더 매트릭스", "AWS Threat Technique Catalog · Azure Threat Research Matrix · Threat Matrix for Kubernetes"),
         ("CSA Top Threats 2026", "11대 위협 연계(기법 단위, 하위기법 지정 시 우선) — 원문 미수록, 연계 ID만"),
-        ("클라우드 보안사고 DB", f"{len(incs)}건(2010~2026, Wiz·ramimac·SEC·GTI·MS) — 집계 대상 {len(counted)}건(비클라우드 의심 제외), 기법 매핑 {len(mapped)}건"),
+        ("클라우드 보안사고 DB", f"{len(incs)}건(2010~2026, Wiz·ramimac·SEC·GTI·MS) — 집계 대상 {len(counted)}건(비클라우드 의심 제외), 기법 매핑 {len(mapped)}건(키워드 규칙으로만 매핑 {len(kw_only)}건 포함)"),
         ("통합 AI 매트릭스 v3.2", "AI 관련 클라우드 기법에 UT-ID 교차 표시"), ("", ""),
         ("■ 시트 구성", ""),
         ("매트릭스 뷰", "전술(열)별 세부위협을 위험도 색으로 배치한 한눈 보기"),
@@ -452,7 +492,7 @@ def write_xlsx(domains, out, incs, stats):
         ("근거 수준", " · ".join(f"{k} {lc.get(k, 0)}" for k in LEVEL_COLOR)),
         ("클라우드 관점 재작성", f"고유 기법 {rewritten}/{unique_tids}개 적용(요약설명·참조·탐지·대응). " + ("전 기법 완료" if rewritten >= unique_tids else "나머지는 기존 번역 설명 유지 — 후속 작성 예정")),
         ("", ""), ("■ 주의", ""),
-        ("사고 매핑", "사고 DB의 ATT&CK 초안 ID 기준(폐기 ID는 v19.2로 변환). 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 초안 ID 없는 사고는 '역매핑_사고사례'에 전수 보존"),
+        ("사고 매핑", f"사고 DB의 ATT&CK 초안 ID(폐기 ID는 v19.2로 변환) + 키워드 규칙 {len(KEYWORD_RULES)}개(v5, 근거 '키워드'·'초안ID→키워드 세분'). 세분되지 않은 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 매핑 근거는 '역매핑_사고사례'에서 사고별로 확인"),
         ("위험평가", f"발생가능성은 근거에서 자동 산정(AI 매트릭스 v3.2와 동일: 상=실제 사고 {LIKELY_HIGH_REAL}건 이상), 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
         ("중복 표시", "한 기법이 여러 전술에 속하면 전술마다 반복 표시(ATT&CK 원칙). 근거 수는 동일 기법 기준"),
         ("출처 표기", "MITRE ATT&CK © The MITRE Corporation / CSA·AWS·Microsoft 각 원저작권자. 배포 전 각 출처 이용약관 확인"),
@@ -626,7 +666,9 @@ def write_xlsx(domains, out, incs, stats):
         ("이론·시나리오", "매트릭스상 가능 기법이나 사례·문서 근거 없음"), ("", ""),
         ("■ 사고 → 기법 매핑", ""),
         ("초안ID", "사고 DB의 ATT&CK 초안 ID 그대로(폐기 ID는 v19.2로 변환: T1562→T1685 등)"),
-        ("상위기법 태그", "하위기법 없이 상위기법 ID만 붙은 사고는 해당 기법의 '.0 (일반·상위기법)' 행으로 집계"),
+        ("키워드", f"초안 ID를 보완하는 2차 매핑(v5): 사고 제목·요약·원문 필드의 키워드와 근본원인·서비스 계층·영향유형 조건으로 기법 연결 — scripts/taxonomy_rules.py KEYWORD_RULES({len(KEYWORD_RULES)}개)"),
+        ("초안ID→키워드 세분", "초안에 상위기법만 있고 키워드가 하위기법을 가리키면 하위기법으로 옮김(예: T1496 → T1496.001 컴퓨트 채굴, T1566 → T1566.004 비싱)"),
+        ("상위기법 태그", "하위기법으로 세분되지 않은 상위기법 태그는 해당 기법의 '.0 (일반·상위기법)' 행으로 집계"),
         ("집계 제외", "클라우드 관련도 '비클라우드 의심' 사고"),
         ("최근 사고", f"기준일 {RECENT_FROM}년 이후 실제 사고"),
     ]
