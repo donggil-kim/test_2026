@@ -19,7 +19,7 @@ from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, AI_UT_MAP, SEVERITY
                             TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE)
 import csv
 
-VERSION = "v4"
+VERSION = "v5"
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_MATRIX = os.path.join(HERE, "data", "Cloud_ATTACK_Matrix_Integrated_v19.2.xlsx")
 SRC_INC = os.path.join(HERE, "data", "Cloud_IncidentDB_v2_LITE.xlsx")
@@ -136,8 +136,13 @@ def load_incidents(valid_tids):
 
 
 # ---------------------------------------------------------------------------
-# 3) 평가 로직 (AI 매트릭스 v3.2와 동일 원칙)
+# 3) 평가 로직 (AI 매트릭스 v3.2 수식과 통일)
+#   AI v3.2 : 상 = 실제 사고(ATLAS Incident + OWASP 인용) ≥ 2
+#             중 = 실제 사고 1 또는 실증 사례·Realized 기법·공개 취약점 존재
+#   대응    : 실제 사고 ↔ 사고 DB 실제 사고 / Realized 기법 ↔ ATT&CK 클라우드 사례
+#             실증·공개 취약점 ↔ 사고 DB 연구·노출 + 벤더 매트릭스 문서화
 # ---------------------------------------------------------------------------
+LIKELY_HIGH_REAL = 2
 def evidence_level(real, research, atk, vendor_n):
     if real >= 1:
         return "실제 사고 확인"
@@ -149,7 +154,7 @@ def evidence_level(real, research, atk, vendor_n):
 
 
 def likelihood(real, research, atk, vendor_n):
-    if real >= 3 or atk >= 10:
+    if real >= LIKELY_HIGH_REAL:
         return "상"
     if real >= 1 or atk >= 1 or research >= 1 or vendor_n >= 1:
         return "중"
@@ -448,7 +453,7 @@ def write_xlsx(domains, out, incs, stats):
         ("클라우드 관점 재작성", f"고유 기법 {rewritten}/{unique_tids}개 적용(요약설명·참조·탐지·대응). " + ("전 기법 완료" if rewritten >= unique_tids else "나머지는 기존 번역 설명 유지 — 후속 작성 예정")),
         ("", ""), ("■ 주의", ""),
         ("사고 매핑", "사고 DB의 ATT&CK 초안 ID 기준(폐기 ID는 v19.2로 변환). 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 초안 ID 없는 사고는 '역매핑_사고사례'에 전수 보존"),
-        ("위험평가", "발생가능성은 근거에서 자동 산정, 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
+        ("위험평가", f"발생가능성은 근거에서 자동 산정(AI 매트릭스 v3.2와 동일: 상=실제 사고 {LIKELY_HIGH_REAL}건 이상), 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
         ("중복 표시", "한 기법이 여러 전술에 속하면 전술마다 반복 표시(ATT&CK 원칙). 근거 수는 동일 기법 기준"),
         ("출처 표기", "MITRE ATT&CK © The MITRE Corporation / CSA·AWS·Microsoft 각 원저작권자. 배포 전 각 출처 이용약관 확인"),
     ]
@@ -595,10 +600,12 @@ def write_xlsx(domains, out, incs, stats):
     # ---------------- 평가 기준 ----------------
     ws = wb.create_sheet("평가 기준")
     txt = [
-        ("■ 발생가능성 (근거에서 자동 산정)", ""),
-        ("상", "실제 사고 ≥3건 또는 ATT&CK 클라우드 사례 ≥10건"),
-        ("중", "실제 사고 1~2건, 또는 ATT&CK 사례·실증 연구·벤더 특화기법 중 하나 이상 존재"),
-        ("하", "근거 없음(이론·시나리오)"), ("", ""),
+        ("■ 발생가능성 (근거에서 자동 산정, AI 매트릭스 v3.2 수식과 동일)", ""),
+        ("상", f"실제 사고 ≥{LIKELY_HIGH_REAL}건"),
+        ("중", "실제 사고 1건, 또는 ATT&CK 클라우드 사례·실증 연구·벤더 특화기법 중 하나 이상 존재"),
+        ("하", "근거 없음(이론·시나리오)"),
+        ("근거 대응", "AI 매트릭스 '실제 사고(ATLAS Incident+OWASP 인용)' ↔ 사고 DB 실제 사고 / 'Realized 기법' ↔ ATT&CK 클라우드 사례 / "
+                      "'실증 사례·공개 취약점' ↔ 사고 DB 연구·노출 + 벤더 매트릭스 문서화. ATT&CK 사례는 건수와 무관하게 '중'까지만 반영"), ("", ""),
         ("■ 심각도 (기법별 기준값, 근거 열 참조)", ""),
         ("상", "클라우드 계정·테넌트 장악, 대규모 데이터 유출·파괴·암호화, 핵심 자격증명·서명키 탈취, 과금·자원 대량 손실"),
         ("중", "단일 워크로드·서비스 범위 침해, 지속성·은닉 확보 등 후속 공격 기반"),

@@ -9,13 +9,19 @@ Threats to Cloud Computing 2026, 클라우드 보안사고 사례 DB(680건)를 
 
 | 경로 | 설명 |
 |---|---|
-| `output/통합_클라우드보안위협_매트릭스_v4.xlsx` | 최종 통합 매트릭스(v1~v3은 이전 버전) |
+| `output/통합_클라우드보안위협_매트릭스_v5.xlsx` | 최종 통합 매트릭스(v1~v4는 이전 버전) |
 | `output/threat_text_template.csv` | 세부위협명·요약설명·참조·탐지대응 문구 입력용 템플릿 |
 | `scripts/build_cloud_threat_matrix.py` | 빌드 스크립트(소스→매트릭스 재생성) |
 | `scripts/taxonomy_rules.py` | 전술 코드·CSA 연계·심각도 기준·폐기 ID 변환표 |
 | `data/` | 입력 데이터(사용자 파생본, ATT&CK techniques 원본) |
 | `data/threat_text_override.csv` | 직접 작성한 세부위협명·요약설명·참조·탐지대응 — 있으면 빌드 시 우선 반영 |
 | `docs/methodology.md` | 방법론·매핑 규칙 상세 |
+
+### v5 변경 사항
+
+1. **발생가능성 기준을 AI 매트릭스 v3.2 수식과 통일**: 상 = 실제 사고 2건 이상(ATT&CK 사례는 건수와 무관하게 '중'까지).
+   v4의 '실제 사고 ≥3건 또는 ATT&CK 사례 ≥10건'은 AI 매트릭스와 기준값이 달랐음. 11개 행(고유 기법 8개)의 발생가능성·위험도 변경
+   — 위험도 분포 매우 높음 17→16 · 높음 56→60 · 보통 64→60 · 낮음 17→18 (근거 대응표는 `docs/methodology.md` §6)
 
 ### v4 변경 사항
 
