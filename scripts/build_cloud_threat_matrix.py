@@ -15,7 +15,7 @@ from openpyxl.utils import get_column_letter
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, AI_UT_MAP, SEVERITY,
+from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, CSA_NOTE, AI_UT_MAP, SEVERITY,
                             TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE)
 import csv
 
@@ -429,7 +429,7 @@ def write_xlsx(domains, out, incs, stats):
         ("■ 기준 데이터", ""),
         ("MITRE ATT&CK", "Enterprise v19.2 Cloud(IaaS·SaaS·Office Suite·Identity Provider) — 전술 14 · 기법/하위기법 및 클라우드 실제 사례"),
         ("벤더 매트릭스", "AWS Threat Technique Catalog · Azure Threat Research Matrix · Threat Matrix for Kubernetes"),
-        ("CSA Top Threats 2026", "11대 위협 연계(기법 단위) — 원문 미수록, 연계 ID만"),
+        ("CSA Top Threats 2026", "11대 위협 연계(기법 단위, 하위기법 지정 시 우선) — 원문 미수록, 연계 ID만"),
         ("클라우드 보안사고 DB", f"{len(incs)}건(2010~2026, Wiz·ramimac·SEC·GTI·MS) — 집계 대상 {len(counted)}건(비클라우드 의심 제외), 기법 매핑 {len(mapped)}건"),
         ("통합 AI 매트릭스 v3.2", "AI 관련 클라우드 기법에 UT-ID 교차 표시"), ("", ""),
         ("■ 시트 구성", ""),
@@ -437,7 +437,7 @@ def write_xlsx(domains, out, incs, stats):
         ("통합 매트릭스", "분류체계 · 교차매핑 · 위험평가 · 실제근거 · 탐지·대응 전체 열"),
         ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용) + 탐지·대응 포인트"),
         ("도메인 요약", "전술별 위협 수 · 위험도/근거수준 분포 · 매핑 사고 수 · 최고위험 항목"),
-        ("CSA 2026 연계", "11대 위협별 연계 세부위협 수·사고 수와 보고서 사례 목록"),
+        ("CSA 2026 연계", "11대 위협별 연계 세부위협·사고 수와 연계 기준(SI-02·SI-08 교차 위협, SI-06은 AI 매트릭스 UT 연계)"),
         ("역매핑_사고사례", "사고 680건과 매핑된 기법·매핑 근거(근거 추적용)"),
         ("평가 기준", "발생가능성·심각도·위험도·근거수준 산정 규칙"), ("", ""),
         ("■ 분류 체계", ""),
@@ -570,7 +570,9 @@ def write_xlsx(domains, out, incs, stats):
 
     # ---------------- CSA 2026 연계 ----------------
     ws = wb.create_sheet("CSA 2026 연계")
-    _hdr(ws, 1, ["CSA 이슈", "위협명", "연계 세부위협 수", "그중 위험 높음 이상", "연계 실제 사고 수", "연계 세부위협(위험 높음 이상)"])
+    _hdr(ws, 1, ["CSA 이슈", "위협명", "연계 세부위협 수", "그중 위험 높음 이상", "연계 사고 수",
+                 "그중 실제 사고", "연계 기준", "연계 세부위협(위험 높음 이상, 없으면 전체)"])
+    real_ids = {e["id"] for e in incs if e["counted"] and e["real"]}
     r = 2
     for i in range(1, 12):
         rel = [o for o in out if i in o["csa_ids"]]
@@ -578,11 +580,14 @@ def write_xlsx(domains, out, incs, stats):
         ids = set()
         for o in rel:
             ids |= {x for x in o["inc_ids"].split(", ") if x}
-        note = "교차 위협(특정 기법 비종속) — 보고서 사례로만 연계" if not rel else ""
-        _row(ws, r, [f"SI-{i:02d}", CSA_NAMES[i], len(rel), len(hi), len(ids),
-                     note or ", ".join(sorted({f"{o['ctc']} {o['lv3']}" for o in hi}))[:1500]])
+        note = CSA_NOTE.get(i, "기법 주제 기준 1차 매핑(scripts/taxonomy_rules.py의 CSA_MAP)")
+        _row(ws, r, [f"SI-{i:02d}", CSA_NAMES[i], len(rel), len(hi), len(ids), len(ids & real_ids), note,
+                     "\n".join(sorted({f"{o['ctc']} {o['lv3']} ({o['risk']})" for o in (hi or rel)}))[:3000]])
+        for cc in range(3, 7):
+            ws.cell(r, cc).alignment = CENTER
         r += 1
-    _w(ws, [16, 26, 12, 32, 70, 34])
+    ws.freeze_panes = "C2"
+    _w(ws, [9, 24, 10, 11, 9, 9, 44, 70])
 
     # ---------------- 역매핑_사고사례 ----------------
     ws = wb.create_sheet("역매핑_사고사례")

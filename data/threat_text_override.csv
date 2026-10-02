@@ -1527,7 +1527,7 @@ T1496,Resource Hijacking (일반·상위기법),혼합,"공격자는 장악한 �
 - 노출·약인증 서비스나 탈취 자격증명으로 대량 인스턴스·컨테이너·관리형 AI를 가동하며, 비용이 피해 계정에 청구됨","■ 클라우드 관점
 - 유형: 컴퓨트로 암호화폐 채굴(EC2·ECS·EKS·WorkSpaces, AWS TTC T1496.A006·A008·A010), SES로 스팸·발송(A001), Bedrock 등 관리형 LLM 무단 호출(LLMjacking, A007)
 - 진입: 인증 없는 노출 서비스(Ray·Open WebUI·LiteLLM-Proxy), 약인증 SSH, 공개 버킷 자격증명 — 침해 후 할당량 상향(CTC-DI-05.5)으로 규모 확대
-- CSA 2026은 LLMjacking 등 AI 자원 악용 맥락에서 SI-06으로 연계하나, 본 기법의 본질은 자원·과금 악용
+- CSA 2026: 영향 기법이라 상위기법은 이슈 미연계 — 침투 경로는 사고마다 취약점 악용·노출 서비스·자격증명 계열(SI-11·SI-05·SI-01 성격)로 갈림. SI-06(AI 시스템 침해)은 LLMjacking을 다루는 하위기법(CTC-IM-09.4)에만 연계
 - 사고 DB에서 가장 많이 매핑된 기법(127건), 하위기법(CTC-IM-09.1~09.4)으로 세분
 ■ 실제 사례
 - [실제 사고] Operation Bizarre Bazaar(2026-01): 노출 LLM·MCP 인프라를 노린 상업화된 LLMjacking 캠페인 (사고DB INC-0589)
@@ -1568,7 +1568,7 @@ T1496.003,SMS Pumping,Cloud 전용,"공격자는 메시징 서비스를 SMS 펌�
 - 통신 사업자로부터 대가를 받는 사기이며, 피해자는 급증한 SMS 비용과 통신 채널 과부하를 겪음","■ 클라우드 관점
 - 공개 웹 폼(OTP·계정 확인)이 뒤에서 호출하는 Amazon SNS·Cognito·Twilio를 악용 — cognito:SignUp·ForgotPassword·sns:Publish로 SMS 트래픽 유발(AWS TTC T1496.003)
 - 공격자가 확보한 고요율 번호로 발송을 유도해 수익을 얻고, 피해자에게 SMS 과금 급증·채널 과부하 발생
-- 상위기법(CTC-IM-09.0)의 메시징 변형 — 폼 레이트 제한·CAPTCHA·발송 상한이 방어 핵심
+- 상위기법(CTC-IM-09.0)의 메시징 변형 — 폼 레이트 제한·CAPTCHA·발송 상한이 방어 핵심(CSA 2026 SI-04 '레이트 제한 없는 API의 자원 고갈'과 연계)
 ■ 실제 사례
 - 공개 사고 미확인 — 사고 DB·ATT&CK 클라우드 사례에 매핑된 건은 없음(벤더·ATT&CK 문서화 수준)","■ 탐지
 - OTP·가입 폼의 비정상 대량 요청(cognito:SignUp·sns:Publish), 특정 번호대로의 SMS 급증
@@ -1580,7 +1580,7 @@ T1496.004,Cloud Service Hijacking,Cloud 전용,"공격자는 침해한 SaaS(Soft
 - 대량 스팸·피싱 발송이나 리버스 프록시를 통한 LLMjacking으로 과금·할당량·가용성에 피해를 주며, 필요 시 서비스를 먼저 활성화함","■ 클라우드 관점
 - 메일·메시징 서비스(SES·SNS·SendGrid·Twilio)로 대량 스팸·피싱(T1496.A001), 관리형 LLM(Amazon Bedrock) 무단 호출로 LLMjacking(A007)
 - 피해자가 이미 쓰는 서비스를 악용하거나, 플랫폼 일부인 서비스를 공격자가 먼저 활성화 — 과금 급증·할당량 소진·가용성 저하
-- AI 매트릭스 UT-30.2(과금 폭탄)와 연계되는 상위기법(CTC-IM-09.0)의 SaaS 변형
+- 상위기법(CTC-IM-09.0)의 SaaS 변형 — LLMjacking은 AI 매트릭스 UT-30.2(과금 폭탄)·CSA 2026 SI-06(AI 시스템 침해)과 연계
 ■ 실제 사례
 - [실제 사고] SES 샌드박스 해제 악용(2025-09): 탈취 자격증명으로 지원 요청을 통해 SES 샌드박스를 풀고 피싱 발송에 악용 (사고DB INC-0554)
 - [실제 사고] LiteLLM-Proxy 노출 침해(2026-06): 약인증 SSH로 침투해 Bedrock InvokeModel을 시도, LLMjacking 가능성 확인 (사고DB INC-0635)","■ 탐지
