@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy_rules as R  # noqa: E402
 from attack_data import ICS, Enterprise, ROOT, first_sentence  # noqa: E402
 
-VERSION = "v1"
+VERSION = "v2"
 DATA = ROOT / "data"
 OUT = ROOT / "output" / f"통합_OT보안위협_매트릭스_{VERSION}.xlsx"
 REGISTRY = DATA / "id_registry.yaml"
