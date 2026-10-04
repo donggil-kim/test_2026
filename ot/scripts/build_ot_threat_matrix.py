@@ -38,6 +38,7 @@ INCIDENTS = DATA / "incidents.yaml"
 EMB3D_FILE = DATA / "emb3d.yaml"           # scripts/prepare_emb3d.py로 만든 MITRE EMB3D 최소 추출본
 EMB3D_URL = "https://emb3d.mitre.org/threats/{}.html"
 SCENARIOS = DATA / "scenarios.yaml"        # 공격 체인 시나리오(실제 사고 기반)
+STANDARDS = DATA / "standards.yaml"        # 표준 요구사항 명칭(NIST 800-53·IEC 62443)
 
 RISK_MATRIX = {
     ("상", "상"): "매우 높음", ("상", "중"): "높음", ("상", "하"): "보통",
@@ -54,6 +55,7 @@ ics = ICS()
 ent = Enterprise(ics.ot_subjects())
 incidents = yaml.safe_load(INCIDENTS.read_text(encoding="utf-8"))
 emb3d = yaml.safe_load(EMB3D_FILE.read_text(encoding="utf-8")) if EMB3D_FILE.exists() else dict(threats=[], mitigations=[])
+std_names = yaml.safe_load(STANDARDS.read_text(encoding="utf-8")) if STANDARDS.exists() else {}
 E3T = {t["id"]: t for t in emb3d["threats"]}        # EMB3D 위협(TID)
 E3M = {m["id"]: m for m in emb3d["mitigations"]}    # EMB3D 완화책(MID)
 EMB3D_KEYS = set(R.EMB3D_NEW)                        # EMB3D 신설 세부위협 행 키
@@ -234,6 +236,12 @@ def resolve_cited(t):
         t = ics.revoked.get(R.ENT_MERGE[t], R.ENT_MERGE[t])
     return t if (t in ics.tech or t in R.ENT_INCLUDE) else None
 
+
+# OWASP IoT Top 10 → 행 (분석 교차 매핑, 근거 집계에는 넣지 않음)
+owasp_of = collections.defaultdict(list)       # 행 키 → [OWASP ID]
+for oid, en, ko, desc, keys in R.OWASP_IOT:
+    for k in keys:
+        owasp_of[k].append(oid)
 
 emb3d_links = collections.defaultdict(dict)    # TID → {행 키: 연계 근거}
 emb3d_outside = collections.defaultdict(list)  # TID → 매트릭스 밖 인용 ID
@@ -480,6 +488,7 @@ for code, short, ko, en, tac_id, tac_desc in R.TACTICS:
                 assets=assets, purdue=purdue, prof=prof, mitig=mitigations_of(leaf, src),
                 std=standards_of(leaf, src, None),
                 cloud=R.CLOUD_LINK.get(leaf) or R.CLOUD_LINK.get(p, ""), ai=R.AI_LINK.get(leaf) or R.AI_LINK.get(p, ""),
+                owasp=", ".join(owasp_of.get(leaf, [])),
                 likelihood=lk, severity=sev, sev_why=sev_why, risk=RISK_MATRIX[(lk, sev)],
                 real=len(x["real"]), recent=len(x["recent"]), atk=len(x["subj"]), cves=len(x["cves"]),
                 recent_cves=len(x["recent_cves"]), advs=len(x["advs"]), kev=len(x["kev"]), research=len(x["research"]),
@@ -623,11 +632,13 @@ def write_xlsx(path):
         ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용) + 탐지·대응 포인트"),
         ("도메인 요약", "전술별 위협 수 · 위험도/근거수준 분포 · 매핑 사고 수 · 최고위험 항목"),
         ("자산·계층 요약", "ATT&CK ICS 자산 18종 · Purdue 계층 · 적용 프로파일별 위험 분포"),
+        ("업종 요약", "업종(전력·수처리·제조·석유가스·교통·식품·IoT·빌딩)별 실제 사고·영향·대표 세부위협"),
         ("역매핑_사고사례", f"사고 DB {len(incidents)}건과 매핑 기법·매핑 근거(근거 추적용)"),
         ("취약점 근거", "기법별 공개 취약점(CWE 규칙)·KEV 집계, KEV 판정 내역, CWE 규칙"),
         ("Enterprise 판정", "ICS 캠페인·소프트웨어·사고 DB에 등장한 Enterprise 기법의 편입·통합·제외 판정과 근거"),
         ("EMB3D 판정", "EMB3D 장치 위협 전체의 연계(공식 인용·분석)·신설 판정, 성숙도, CWE·완화책"),
-        ("표준 연계", "IEC 62443-3-3·4-2·NIST SP 800-53 요구사항 ↔ 세부위협(완화책의 표준 매핑 집계, 원문 미수록)"),
+        ("표준 연계", "IEC 62443-3-3·4-2·NIST SP 800-53 요구사항 ↔ 세부위협(완화책의 표준 매핑 집계, 명칭 포함, 원문 미수록)"),
+        ("OWASP IoT Top10", "OWASP IoT Top 10(2018) 위험 범주 ↔ 세부위협(분석 교차 매핑)"),
         ("공격 체인 시나리오", "실제 사고 기반 IT 침투→OT 영향 흐름 — 단계별 OTC-ID 연결·탐지 포인트·초크 포인트"),
         ("평가 기준", "발생가능성·심각도·위험도·근거수준 산정 규칙과 AI·클라우드 매트릭스 근거 대응"),
         ("변경이력", "버전별 변경 내역"), ("", ""),
@@ -702,12 +713,12 @@ def write_xlsx(path):
     # ---------------- 통합 매트릭스 ----------------
     ws = wb.create_sheet("통합 매트릭스")
     prof_names = [p[0] for p in R.PROFILES]
-    groups = [("분류 체계", 11, "2E5496"), ("교차 매핑", 9 + len(prof_names), "1F7A8C"),
+    groups = [("분류 체계", 11, "2E5496"), ("교차 매핑", 10 + len(prof_names), "1F7A8C"),
               ("위험 평가", 5, "A04000"), ("실제 근거", 11, "1E8449"), ("탐지·대응", 1, "6C3483")]
     cols = (["도메인(Lv1)", "OTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "참조",
              "ATT&CK·EMB3D ID", "ATT&CK·EMB3D 위협명", "구분", "통합된 Enterprise 기법", "설명 출처",
              "대상 자산", "Purdue 계층"] + prof_names + ["완화책(ATT&CK·EMB3D)", "클라우드 매트릭스 연계", "AI 매트릭스 연계(UT)",
-             "EMB3D 연계(성숙도·근거)", "IEC 62443-3-3(SR)", "IEC 62443-4-2(CR 등)", "NIST SP 800-53",
+             "OWASP IoT Top10", "EMB3D 연계(성숙도·근거)", "IEC 62443-3-3(SR)", "IEC 62443-4-2(CR 등)", "NIST SP 800-53",
              "발생가능성", "심각도", "위험도", "발생가능성 근거 (자동 산정)", "심각도 근거",
              "실제 사고 수", "최근 사고(2025~)", "ATT&CK 사례 수", "공개 취약점(CVE)", "KEV(OT)", "실증·연구 수", "근거 수준",
              "사고 매핑 근거", "관련 사례 ID", "ATT&CK 사례 주체", "ATT&CK 링크", "탐지·대응 포인트"])
@@ -733,7 +744,7 @@ def write_xlsx(path):
                      o["key"], o["en_name"], o["src"], o["merged"], o["text_src"],
                      "\n".join(f"{a} {R.ASSET_KO.get(a, a)}" for a in o["assets"]), ", ".join(o["purdue"])]
              + [o["prof"][p] for p in prof_names]
-             + ["\n".join(o["mitig"]), o["cloud"], o["ai"], o["emb3d"],
+             + ["\n".join(o["mitig"]), o["cloud"], o["ai"], o["owasp"], o["emb3d"],
                 ", ".join(o["std"][0]), ", ".join(o["std"][1]), ", ".join(o["std"][2]),
                 o["likelihood"], o["severity"], o["risk"], o["lk_why"], o["sev_why"],
                 o["real"], o["recent"], o["atk"], o["cves"], o["kev"], o["research"], o["level"],
@@ -750,7 +761,7 @@ def write_xlsx(path):
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(rows) + 4}"
     _w(ws, [14, 12, 16, 18, 60, 80, 10, 22, 10, 16, 9, 20, 10] + [6] * len(prof_names)
-       + [26, 20, 18, 30, 16, 20, 16, 7, 7, 8, 30, 26, 7, 7, 7, 7, 7, 7, 11, 14, 20, 26, 22, 70])
+       + [26, 20, 18, 12, 30, 16, 20, 16, 7, 7, 8, 30, 26, 7, 7, 7, 7, 7, 7, 11, 14, 20, 26, 22, 70])
 
     # ---------------- 통합매트릭스_LITE ----------------
     ws = wb.create_sheet("통합매트릭스_LITE")
@@ -829,6 +840,35 @@ def write_xlsx(path):
                      "\n".join(f"{o['otc']} {o['lv3']} ({o['risk']})" for o in top)])
         r += 1
     _w(ws, [12, 30, 22, 30, 10, 9, 9, 12, 48] + [8] * 6)
+
+    # ---------------- 업종 요약 ----------------
+    ws = wb.create_sheet("업종 요약")
+    ws.cell(1, 1, "업종 프로파일별 위험 요약 — 사고 DB의 업종(sector)을 업종군으로 묶어 실제 사고·영향·대표 세부위협을 집계").font = Font(bold=True, color=NAVY)
+    key_row = {}        # 기법 키 → 대표 행(위험도 높은 쪽)
+    for o in sorted(rows, key=lambda o: rank[o["risk"]]):
+        key_row.setdefault(o["key"], o)
+    sec_map = {}
+    for name, secs, _ in R.SECTOR_PROFILES:
+        for s in secs:
+            sec_map[s] = name
+    _hdr(ws, 2, ["업종", "실제 사고 수", "주요 영향 유형", "대표 세부위협(사고 수 상위 5)", "특성"])
+    r = 3
+    for name, secs, desc in R.SECTOR_PROFILES:
+        incs = [e for e in incidents if e["status"] == "실제 사고" and e.get("sector") in secs]
+        impact = collections.Counter(im for e in incs for im in e.get("impact", []))
+        tech_cnt = collections.Counter()
+        for e in incs:
+            for k in {kk.split(".")[0] if kk.split(".")[0] in key_row else kk for kk in e["links"]}:
+                tech_cnt[k] += 1
+        top = [f"{key_row[k]['otc']} {key_row[k]['lv3']} ({n}건)" for k, n in tech_cnt.most_common(5) if k in key_row]
+        _row(ws, r, [name, len(incs), ", ".join(f"{im}({n})" for im, n in impact.most_common(4)),
+                     "\n".join(top), desc])
+        r += 1
+    # 기타(프로파일에 안 잡힌 sector)
+    other = [e for e in incidents if e["status"] == "실제 사고" and e.get("sector") not in sec_map]
+    if other:
+        _row(ws, r, ["(기타)", len(other), "", "", "업종군 미분류: " + ", ".join(sorted({e.get("sector", "") for e in other}))])
+    _w(ws, [18, 11, 40, 52, 60])
 
     # ---------------- 역매핑_사고사례 ----------------
     ws = wb.create_sheet("역매핑_사고사례")
@@ -918,6 +958,11 @@ def write_xlsx(path):
     ws.auto_filter.ref = f"A3:L{len(E3T) + 3}"
     _w(ws, [9, 34, 26, 14, 11, 10, 44, 24, 50, 22, 8, 30])
 
+    otc_row = {o["otc"]: o for o in rows}      # OTC-ID → 행(표준·OWASP·시나리오 시트 공용)
+    otc_by_key = collections.defaultdict(list)  # 기법 키 → [OTC-ID] (한 기법이 여러 전술에 반복)
+    for o in rows:
+        otc_by_key[o["key"]].append(o["otc"])
+
     # ---------------- 표준 연계 ----------------
     ws = wb.create_sheet("표준 연계")
     r = section(ws, 1, "1. IEC 62443·NIST SP 800-53 요구사항 → 세부위협 (ATT&CK 완화책의 표준 매핑·EMB3D 완화책의 62443-4-2 매핑 집계)")
@@ -925,19 +970,31 @@ def write_xlsx(path):
                   "EMB3D 완화책의 IEC 62443-4-2 매핑. 요구사항 원문은 유료 표준이라 수록하지 않고 ID만 연계.").font = Font(size=9, color="595959")
     r += 1
     std_titles = {"iec33": "IEC 62443-3-3 (SR)", "iec42": "IEC 62443-4-2 (CR·EDR·HDR·NDR)", "nist": "NIST SP 800-53 Rev.5"}
+    std_src = {"iec33": "iec_62443_3_3", "iec42": "iec_62443_4_2", "nist": "nist_800_53"}
     std_idx = {"iec33": 0, "iec42": 1, "nist": 2}
+
+    def std_name(fam, req):
+        tbl = std_names.get(std_src[fam], {})
+        if req in tbl:
+            return tbl[req]
+        base = re.sub(r"\s*RE\(\d+\)$", "", req)      # 'CR 1.5 RE(1)' → 'CR 1.5' + 강화요건
+        if base != req and base in tbl:
+            return tbl[base] + f" (강화요건 {req[len(base):].strip()})"
+        WARN[f"표준 명칭 없음 {fam} {req}"].add("standards.yaml")
+        return ""
+
     std_rows = {"iec33": collections.defaultdict(list), "iec42": collections.defaultdict(list),
                 "nist": collections.defaultdict(list)}
     for o in rows:
         for fam, i in std_idx.items():
             for req in o["std"][i]:
                 std_rows[fam][req].append(o)
-    _hdr(ws, r, ["표준", "요구사항 ID", "연계 세부위협 수", "연계 세부위협(OTC-ID)"])
+    _hdr(ws, r, ["표준", "요구사항 ID", "요구사항 명칭(제목)", "연계 세부위협 수", "연계 세부위협(OTC-ID)"])
     r += 1
     for fam in ("iec42", "iec33", "nist"):
         for req in sorted(std_rows[fam], key=_iec_sort if fam != "nist" else None):
             os_ = std_rows[fam][req]
-            _row(ws, r, [std_titles[fam], req, len(os_),
+            _row(ws, r, [std_titles[fam], req, std_name(fam, req), len(os_),
                          ", ".join(sorted(o["otc"] for o in os_))])
             r += 1
     r = section(ws, r + 1, "2. 세부위협별 표준 요구사항 (요구사항이 매핑된 행만)")
@@ -947,12 +1004,28 @@ def write_xlsx(path):
         if any(o["std"]):
             _row(ws, r, [o["otc"], o["lv3"], ", ".join(o["std"][0]), ", ".join(o["std"][1]), ", ".join(o["std"][2])])
             r += 1
-    _w(ws, [28, 16, 12, 90])
+    _w(ws, [28, 16, 52, 12, 70])
+
+    # ---------------- OWASP IoT Top 10 ----------------
+    ws = wb.create_sheet("OWASP IoT Top10")
+    ws.cell(1, 1, "OWASP IoT Top 10 (2018) 연계 — IoT 위험 범주를 매트릭스 세부위협에 분석 매핑(교차 참조용, 근거 집계 아님). "
+                  "출처: OWASP/www-project-internet-of-things").font = Font(bold=True, color=NAVY)
+    _hdr(ws, 2, ["ID", "범주(EN)", "범주(KO)", "요약", "연계 세부위협(OTC-ID)"])
+    r = 3
+    for oid, en, ko, desc, keys in R.OWASP_IOT:
+        otcs = []
+        for k in keys:
+            if k not in otc_by_key:
+                WARN[f"OWASP {oid} 잘못된 행 키 {k}"].add("taxonomy_rules")
+            else:
+                otcs += otc_by_key[k]
+        _row(ws, r, [oid, en, ko, desc, ", ".join(sorted(otcs))])
+        r += 1
+    _w(ws, [6, 40, 28, 70, 40])
 
     # ---------------- 공격 체인 시나리오 ----------------
     scn_data = yaml.safe_load(SCENARIOS.read_text(encoding="utf-8")) if SCENARIOS.exists() else {"scenarios": []}
-    otc_set = {o["otc"] for o in rows}
-    otc_row = {o["otc"]: o for o in rows}
+    otc_set = set(otc_row)
     ws = wb.create_sheet("공격 체인 시나리오")
     ws.cell(1, 1, "공격 체인 시나리오 — 실제 사고 기반 IT 침투 → OT 영향 흐름. 각 단계는 매트릭스 OTC-ID에 연결(위험도 색). "
                   "굵은 단계 = 흐름을 끊기 좋은 초크 포인트(진입·실행·영향 분기)").font = Font(bold=True, color=NAVY)

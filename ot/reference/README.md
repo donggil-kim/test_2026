@@ -34,13 +34,13 @@ CISA ICS 권고(CSAF 2.0, 2010~2026, 약 100MB)는 용량 때문에 수록하지
 EMB3D™ © The MITRE Corporation — 이용 조건: https://emb3d.mitre.org/subtabs/terms-of-use.html
 (사본에 저작권 표시·라이선스 문구 포함, EMB3D@mitre.org에 이용 통지 — `data/emb3d.yaml` 머리말에 반영)
 
-## `standards/` — 표준·가이드 (ID 목록만)
+## `standards/` — 표준·가이드 (ID·명칭만)
 
-IEC 62443·NIST SP 800-53은 유료·공식 표준이므로 원문을 두지 않고, ATT&CK·EMB3D 완화책에 붙은 요구사항 ID만 연계합니다(v4).
-다음 자료는 이 환경에서 접속이 차단돼 받지 못했습니다. 필요 시 업로드해 주세요.
+IEC 62443·NIST SP 800-53은 유료·공식 표준이므로 원문(본문)을 두지 않고, 완화책에 붙은 요구사항 ID와 공개된 요구사항 제목만 연계합니다(v4·v5, `data/standards.yaml`).
 
-- NIST SP 800-82 Rev.3(nvlpubs.nist.gov) — 대응 지침 연계(이후 단계)
-- OWASP IoT Top 10(owasp.org) — IoT 점검 항목 연계(이후 단계)
+- **NIST SP 800-53 Rev.5** 통제명: [usnistgov/oscal-content](https://github.com/usnistgov/oscal-content)에서 추출(공공 영역).
+- **OWASP IoT Top 10 (2018)** © OWASP Foundation: [OWASP/www-project-internet-of-things](https://github.com/OWASP/www-project-internet-of-things) — 범주명·요약만(`OWASP_IOT`).
+- **NIST SP 800-82 Rev.3**(nvlpubs.nist.gov) — 대응 지침 연계(이후 단계, 이 환경에서 원문 미확보).
 
 ## `style/` — 구조·문체 참고용 (데이터 직접 인용 금지)
 
