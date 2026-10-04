@@ -249,7 +249,7 @@
   attack_ref: [S0093]
   sources:
     - MITRE ATT&CK S0093 | https://attack.mitre.org/software/S0093/
-    - Symantec(2017) Dragonfly: Western energy sector targeted | https://docs.broadcom.com/doc/dragonfly_threat_against_western_energy_suppliers
+    - "Symantec(2017) Dragonfly: Western energy sector targeted | https://docs.broadcom.com/doc/dragonfly_threat_against_western_energy_suppliers"
 
 - id: INC-014
   title: 독일 원전 연료 취급 설비 PC 악성코드 감염(Conficker)
