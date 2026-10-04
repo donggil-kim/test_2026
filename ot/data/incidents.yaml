@@ -6,7 +6,8 @@
 #   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
 #   relevance     OT 관련도: OT 직접 · IT 경유 OT 영향 · OT 접근·노출 · OT 정보 탈취 · IoT 기기 · 판정 보류 · IT 한정
 #   impact        물리적 영향 유형: 인명·안전 · 환경 · 설비 손상 · 제어 상실·조작 · 감시 상실·조작 · 운영 중단 · 운영 정보 탈취 · 기기 탈취 · 영향 없음
-#   attack_ref    ATT&CK 캠페인·소프트웨어 ID — 해당 객체의 ICS·Enterprise 공식 절차를 그대로 매핑(근거 'ATT&CK 공식')
+#   attack_ref    ATT&CK 캠페인·소프트웨어 ID — 해당 객체의 ICS·Enterprise 공식 절차를 그대로 매핑(근거 'ATT&CK 공식').
+#                 캠페인 절차로 충분하면 소프트웨어는 붙이지 않음. 'S0608@ICS'처럼 쓰면 ICS 절차만(일반 기능인 Enterprise 절차 제외)
 #   ics / ent     분석 매핑(근거 '분석') — ICS 기법 / Enterprise 기법
 #   sources       '출처 | URL' (URL은 확인된 것만)
 #
@@ -47,7 +48,7 @@
     스피어피싱으로 BlackEnergy3에 감염시킨 뒤 탈취한 자격증명과 VPN으로 제어망에 들어가, 운영자 HMI를 원격 조작해
     배전사 3곳의 변전소 차단기를 열었다(약 22만 5천 고객이 수 시간 정전). 직렬-이더넷 변환기 펌웨어를 덮어써
     원격 복구를 막고 KillDisk로 시스템을 지웠다.
-  attack_ref: [C0028, S0089, S0607]
+  attack_ref: [C0028]
   sources:
     - MITRE ATT&CK C0028 | https://attack.mitre.org/campaigns/C0028/
     - Booz Allen Hamilton(2016) When The Lights Went Out | https://www.boozallen.com/content/dam/boozallen/documents/2016/09/ukraine-report-when-the-lights-went-out.pdf
@@ -264,7 +265,7 @@
   summary: >-
     군드레밍엔 원전 B호기의 연료 취급 설비용 PC와 이동식 저장장치에서 Conficker 등 악성코드가 발견돼 점검 절차를 진행했다.
     ATT&CK은 이로 인한 시설 일시 정지로 기술한다.
-  attack_ref: [S0608]
+  attack_ref: [S0608@ICS]
   sources:
     - MITRE ATT&CK S0608 | https://attack.mitre.org/software/S0608/
 

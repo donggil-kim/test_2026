@@ -122,12 +122,13 @@ def incident_status(e):
 for e in incidents:
     links = {}
     for ref in e.get("attack_ref") or []:
-        for t in ics.subject_uses.get(ref, []) + ent.subject_uses.get(ref, []):
+        rid, _, dom = ref.partition("@")   # 'S0608@ICS' = 소프트웨어의 ICS 절차만(일반 기능인 Enterprise 절차 제외)
+        for t in ics.subject_uses.get(rid, []) + ([] if dom == "ICS" else ent.subject_uses.get(rid, [])):
             k = norm(t, e["id"])
             if k:
                 links.setdefault(k, "ATT&CK 공식")
             elif t not in R.ENT_DROP and t not in ics.tech:
-                ent_seen[t].add(ref)
+                ent_seen[t].add(rid)
     for t in (e.get("ics") or []) + (e.get("ent") or []):
         k = norm(t, e["id"])
         if k and k not in links:
