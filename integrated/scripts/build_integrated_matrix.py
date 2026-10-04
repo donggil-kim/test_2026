@@ -6,6 +6,7 @@
 출력
   - integrated/output/통합_AI클라우드_보안위협_매트릭스_v1.xlsx
   - integrated/output/통합_요약매트릭스_v1.csv (요약 매트릭스 검토·diff용)
+  - integrated/output/통합_요약목록_v1.md (도메인별 요약 위협 목록)
 
 사용: python3 integrated/scripts/build_integrated_matrix.py
 """
@@ -27,6 +28,7 @@ VERSION = "v1"
 OUT_DIR = os.path.join(common.ROOT, "integrated", "output")
 XLSX = os.path.join(OUT_DIR, f"통합_AI클라우드_보안위협_매트릭스_{VERSION}.xlsx")
 CSV = os.path.join(OUT_DIR, f"통합_요약매트릭스_{VERSION}.csv")
+MD = os.path.join(OUT_DIR, f"통합_요약목록_{VERSION}.md")
 LV0 = {"ai": "AI 보안위협", "cloud": "클라우드 보안위협"}
 
 # ---------------------------------------------------------------- 서식 (클라우드 v5 빌드 스크립트와 같은 색 체계)
@@ -577,6 +579,29 @@ def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
             ws.row_dimensions[row].height = 15 * (1 + len(ws.cell(row, 2).value) // 95)
 
 
+# ---------------------------------------------------------------- 요약 목록 (Markdown, 저장소에서 바로 보기용)
+def write_markdown(path, rows, ai_src, cl_src):
+    out = [f"# 통합 AI·클라우드 보안위협 요약 목록 {VERSION}", "",
+           "> 빌드 산출물(`build_integrated_matrix.py`가 생성) — 직접 고치지 말고 `integrated/data/` 문안을 고친 뒤 다시 빌드",
+           "", "| 구분 | 위협 수 | 매우 높음 | 높음 | 보통 | 낮음 |", "|---|---:|---:|---:|---:|---:|"]
+    for kind in ["ai", "cloud"]:
+        items = [x for x in rows if x["kind"] == kind]
+        dist = collections.Counter(x["ev"]["risk"] for x in items)
+        out.append(f"| {LV0[kind]} | {len(items)} | " + " | ".join(str(dist[k]) for k in common.RISK_ORDER) + " |")
+    for kind, doms in [("ai", ai_src["domains"]), ("cloud", cl_src["tactics"])]:
+        out += ["", f"## {LV0[kind]}"]
+        for code, label in doms.items():
+            items = [x for x in rows if x["kind"] == kind and x["domain"] == code]
+            out += ["", f"### {label} ({len(items)})", "",
+                    "| 위협 ID | 세부 위협(Lv3) | 위험도 | 근거 수준 | 실제 사고 | 원본 Lv3 |", "|---|---|---|---|---:|---|"]
+            for x in items:
+                origin = ", ".join(x["members"])
+                out.append(f"| {x['id']} | {x['name']} | {x['ev']['risk']} | {x['ev']['evidence']} | "
+                           f"{x['ev']['incidents']} | {origin} |")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(out) + "\n")
+
+
 # ---------------------------------------------------------------- 산출물 재검증
 def verify(path, rows, n_ai, n_cloud_rows, n_maps):
     """저장한 워크북을 다시 열어 시트·행 수·역참조·값 유효성을 확인."""
@@ -646,6 +671,7 @@ def main():
         for r in rows:
             w.writerow(summary_values(r))
 
+    write_markdown(MD, rows, ai_src, cl_src)
     n = verify(XLSX, rows, len(ai_src["lv3"]), len(cl_src["rows"]), len(maps))
     print(f"저장: {os.path.relpath(XLSX, common.ROOT)} (재검증 통과: 요약 {n}행)")
     for kind in ["ai", "cloud"]:
