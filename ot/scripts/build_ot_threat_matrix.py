@@ -468,6 +468,13 @@ def write_xlsx(path):
     written = {o["key"] for o in rows if o["text_src"] == "분석가 작성"}
     counted = [e for e in incidents if e["status"] == "실제 사고"]
     mapped = [e for e in counted if e["links"]]
+    # 근거 편중: ATT&CK 공식 절차가 촘촘한 대형 사고 몇 건이 여러 기법의 '실제 사고' 근거를 떠받치는 정도
+    top = sorted((e for e in incidents if e["status"] == "실제 사고"), key=lambda e: -len(e["links"]))[:5]
+    top_ids = {e["id"] for e in top}
+    real_keys = [k for k in keys if ev[k]["real"]]
+    only_top = sum(1 for k in real_keys if ev[k]["real"] <= top_ids)
+    n_high = sum(1 for o in rows if o["likelihood"] == "상")
+    high_dep = sum(1 for o in rows if o["likelihood"] == "상" and len(ev[o["key"]]["real"] - top_ids) < LIKELY_HIGH_REAL)
     n_ent_rows = sum(1 for o in rows if o["src"] == "Enterprise 편입")
     ent_keys = sorted({o["parent"] for o in rows if o["src"] == "Enterprise 편입"})
 
@@ -521,6 +528,10 @@ def write_xlsx(path):
                      f"수식은 AI·클라우드 매트릭스와 같게 유지(상=실제 사고 {LIKELY_HIGH_REAL}건 이상)"),
         ("근거 해석", "Program Download·Modify Parameter처럼 설계상 인증이 없는 기능의 악용은 CVE가 없어 '공개 취약점' 경로로 근거가 쌓이지 않음. "
                     "IT 랜섬웨어로 인한 예방적 OT 중단이 가장 잦은 실제 영향이라 [IM] 생산·매출 손실 등에 사고가 몰림('OT 관련도' 열로 구분)"),
+        ("근거 편중", f"ATT&CK 공식 절차가 촘촘한 대형 사고 5건({'·'.join(e['id'] for e in top)})이 각각 "
+                    f"{min(len(e['links']) for e in top)}~{max(len(e['links']) for e in top)}개 기법에 매핑됨 — 실제 사고 근거가 있는 기법 "
+                    f"{len(real_keys)}개 중 {only_top}개는 이 5건에만 의존하고, 발생가능성 '상' {n_high}행 중 {high_dep}행은 이 5건이 없으면 '상' 기준에 못 미침. "
+                    "'사고 매핑 근거' 열(ATT&CK 공식·분석)과 실제 사고 수로 근거의 폭을 함께 볼 것"),
         ("사고 집계", "행위자 주장만 있거나 원인이 번복된 사례는 실제 사고에서 제외(역매핑 시트에 보존). 같은 사건은 출처가 여럿이어도 1건"),
         ("위험평가", "심각도는 OT 결과 기준의 기법별 기준값 — 업종·공정(화학·전력 vs 빌딩 공조)과 자산 중요도에 맞게 조정 권장"),
         ("중복 표시", "한 기법이 여러 전술에 속하면 전술마다 반복 표시(ATT&CK 원칙). 근거 수는 같은 기법 기준"),
@@ -787,6 +798,14 @@ def write_xlsx(path):
         ("■ 공개 취약점·KEV", ""),
         ("공개 취약점", "CISA ICS 권고(ICSA, 의료기기 ICSMA 제외)의 CVE를 CWE·공격 경로 규칙으로 1개 기법에 매핑 — 노출 여부가 환경에 달린 공개 애플리케이션 악용(T0819)은 CWE로 매핑하지 않음"),
         ("KEV(OT)", "ICS 권고와 교차된 KEV 중 OT·IoT 제품, 임베디드 구성요소, OT 네트워크 장비 내장 OS만 반영(범용 IT 구성요소 제외) — 실사용 근거(중 상한)"),
+        ("", ""),
+        ("■ 참조 열 사례 라벨", "'■ 실제 사례' 줄 앞에 붙는 라벨 — 사례명(YYYY-MM): 경위·결과 (사고 ID, ATT&CK ID)"),
+        ("[실제 사고]", "사고 DB에서 실제 사고로 집계된 건"),
+        ("[위협인텔]", "배포 전에 발견된 공격 도구의 능력(예: PIPEDREAM) — 실제 사용은 확인되지 않음"),
+        ("[공개 취약점]", "CISA ICS 권고·KEV의 취약점"),
+        ("[실증]", "연구·시연(예: PLC-Blaster, Aurora 시험)"),
+        ("[시나리오]", "공개 사례가 없는 기법의 가정 사례 — '공개 사고 미확인 — 사유' 줄과 함께 표기"),
+        ("검증", "scripts/validate.py가 라벨과 사고 DB 집계 상태, 인용한 사고와 기법 매핑, 인용한 ATT&CK 주체의 절차 보유, OTC·INC·ATT&CK ID의 존재를 확인"),
     ]
     for i, (a, b) in enumerate(crit, 1):
         ws.cell(i, 1, a).font = Font(bold=a.startswith("■"), color=NAVY if a.startswith("■") else "000000")

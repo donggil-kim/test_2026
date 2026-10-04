@@ -7,6 +7,7 @@
   · 사례 라벨: '실제 사례' 줄의 라벨이 인용한 사고의 집계 상태와 일치하는지
       [실제 사고] ↔ 실제 사고 / [실증] ↔ 연구·시연 / [위협인텔] ↔ 위협인텔(능력 발견)
   · 근거 정합: '실제 사례'에 인용한 사고가 해당 기법에 매핑돼 있는지(문구와 근거 집계가 어긋나지 않게)
+  · 절차 정합: '실제 사례'에 인용한 ATT&CK 캠페인·소프트웨어가 해당 기법(통합된 Enterprise 기법 포함)의 절차를 갖는지
 실행: python3 scripts/validate.py  (문제가 있으면 종료 코드 1)
 """
 import contextlib
@@ -22,6 +23,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     g = runpy.run_path(str(HERE / "build_ot_threat_matrix.py"), run_name="validate")
 
 rows, ev, incidents, TEXT, ics = g["rows"], g["ev"], g["incidents"], g["TEXT"], g["ics"]
+ent, merged = g["ent"], g["merged_into"]
 inc_by = {e["id"]: e for e in incidents}
 keys = {o["key"] for o in rows}
 codes = {o["code"] for o in rows}
@@ -34,6 +36,12 @@ problems, warnings = [], []
 
 def bullets(block):
     return [ln for ln in block.split("\n") if ln.startswith("- ")]
+
+
+def proc_subjects(key):
+    """기법(통합된 Enterprise 기법·상위기법으로 모인 Enterprise 하위기법 포함)의 절차를 가진 ATT&CK 주체"""
+    techs = {key, *merged.get(key, [])} | {t for t in ent.procs if t.split(".")[0] == key}
+    return {s for t in techs for s, _ in ics.procs.get(t, []) + ent.procs.get(t, [])}
 
 
 def split_sections(text, heads):
@@ -84,6 +92,8 @@ for tkey, t in TEXT.items():
         if label not in LABELS:
             problems.append((tkey, "알 수 없는 라벨", label))
             continue
+        for sid in set(re.findall(r"ATT&CK ([CSG]\d{4})", line)) - proc_subjects(base):
+            problems.append((tkey, "인용한 ATT&CK 주체에 이 기법 절차 없음", sid))
         cited = re.findall(r"INC-\d{3}", line)
         if label in LABEL_STATUS and not cited:
             problems.append((tkey, f"[{label}] 줄에 사고 ID 없음", line[:40]))
