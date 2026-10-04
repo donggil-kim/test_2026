@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy_rules as R  # noqa: E402
 from attack_data import ICS, Enterprise, ROOT, first_sentence  # noqa: E402
 
-VERSION = "v2"
+VERSION = "v3"
 DATA = ROOT / "data"
 OUT = ROOT / "output" / f"통합_OT보안위협_매트릭스_{VERSION}.xlsx"
 REGISTRY = DATA / "id_registry.yaml"
@@ -35,6 +35,9 @@ TEXT_DIR = DATA / "text"
 CHANGELOG = DATA / "changelog.yaml"
 VULN_CSV = DATA / "ics_advisory_cves.csv"
 INCIDENTS = DATA / "incidents.yaml"
+EMB3D_FILE = DATA / "emb3d.yaml"           # scripts/prepare_emb3d.py로 만든 MITRE EMB3D 최소 추출본
+EMB3D_URL = "https://emb3d.mitre.org/threats/{}.html"
+SCENARIOS = DATA / "scenarios.yaml"        # 공격 체인 시나리오(실제 사고 기반)
 
 RISK_MATRIX = {
     ("상", "상"): "매우 높음", ("상", "중"): "높음", ("상", "하"): "보통",
@@ -50,11 +53,17 @@ LIKELY_HIGH_REAL = 2   # AI 매트릭스 v3.2 · 클라우드 v5와 동일
 ics = ICS()
 ent = Enterprise(ics.ot_subjects())
 incidents = yaml.safe_load(INCIDENTS.read_text(encoding="utf-8"))
+emb3d = yaml.safe_load(EMB3D_FILE.read_text(encoding="utf-8")) if EMB3D_FILE.exists() else dict(threats=[], mitigations=[])
+E3T = {t["id"]: t for t in emb3d["threats"]}        # EMB3D 위협(TID)
+E3M = {m["id"]: m for m in emb3d["mitigations"]}    # EMB3D 완화책(MID)
+EMB3D_KEYS = set(R.EMB3D_NEW)                        # EMB3D 신설 세부위협 행 키
 WARN = collections.defaultdict(set)   # 판정 규칙이 없는 Enterprise 기법 → 등장 위치
 
 
 def norm(tid, where=""):
     """기법 ID → 매트릭스 행 키. 폐기 ID 변환, Enterprise 통합 규칙 적용. 제외·미판정은 None."""
+    if tid in EMB3D_KEYS:
+        return tid
     t = ics.revoked.get(tid, tid)
     if t in ics.tech:
         return t
@@ -74,12 +83,18 @@ def norm(tid, where=""):
 
 
 def tech_info(key):
+    if key in EMB3D_KEYS or key in R.EMB3D_GROUP_NAME:
+        tids = R.EMB3D_NEW[key][4] if key in EMB3D_KEYS else []
+        return dict(eid=key, name=" / ".join(E3T[t]["name"] for t in tids if t in E3T) or key, desc="", tactics=[],
+                    is_sub="." in key, parent=key.split(".")[0], url="\n".join(EMB3D_URL.format(t) for t in tids))
     return ics.tech.get(key) or ent.tech.get(key) or dict(eid=key, name=key, desc="", tactics=[], is_sub="." in key,
                                                            parent=key.split(".")[0], url="")
 
 
 def name_ko(key):
-    return R.NAME_KO.get(key) or tech_info(key)["name"]
+    if key in EMB3D_KEYS:
+        return R.EMB3D_NEW[key][3]
+    return R.NAME_KO.get(key) or R.EMB3D_GROUP_NAME.get(key) or tech_info(key)["name"]
 
 
 # ===========================================================================
@@ -88,7 +103,7 @@ def name_ko(key):
 def empty_ev():
     return dict(real=set(), recent=set(), research=set(), intel=set(), excluded=set(), subj=set(),
                 basis=collections.defaultdict(set), cves=set(), advs=set(), recent_cves=set(), kev=set(),
-                iot_inc=set())
+                iot_inc=set(), emb3d={})
 
 
 ev = collections.defaultdict(empty_ev)
@@ -209,12 +224,64 @@ vstat["kev_all"] = len(kev_table)
 vstat["kev_ot"] = sum(1 for v in kev_table.values() if v["tech"])
 
 
+# MITRE EMB3D — 장치 위협(TID) ↔ 행: 신설 > EMB3D 인용(근거 문단의 ATT&CK ID) > 분석(EMB3D_MAP)
+def resolve_cited(t):
+    """EMB3D가 인용한 ATT&CK ID → 행 키(폐기 ID·Enterprise 통합 규칙 적용). 매트릭스 밖 ID는 None(경고 없음)"""
+    t = ics.revoked.get(t, t)
+    seen = set()
+    while t in R.ENT_MERGE and t not in seen:
+        seen.add(t)
+        t = ics.revoked.get(R.ENT_MERGE[t], R.ENT_MERGE[t])
+    return t if (t in ics.tech or t in R.ENT_INCLUDE) else None
+
+
+emb3d_links = collections.defaultdict(dict)    # TID → {행 키: 연계 근거}
+emb3d_outside = collections.defaultdict(list)  # TID → 매트릭스 밖 인용 ID
+for tid, (keys, _) in R.EMB3D_MAP.items():
+    for k in keys:
+        emb3d_links[tid][k] = "분석"
+for tid, t in E3T.items():
+    for c in t["atk_cited"]:
+        k = resolve_cited(c)
+        if k:
+            emb3d_links[tid][k] = "EMB3D 인용"
+        else:
+            emb3d_outside[tid].append(c)
+for k, (_, _, _, _, tids) in R.EMB3D_NEW.items():
+    for tid in tids:
+        emb3d_links[tid][k] = "신설"
+for tid, links in emb3d_links.items():
+    if tid not in E3T:
+        WARN[f"EMB3D 추출본에 없는 위협 {tid}"].add("taxonomy_rules")
+        continue
+    for k, basis in links.items():
+        ev[k]["emb3d"][tid] = basis
+
+
+def emb3d_obs(x):
+    return [t for t in x["emb3d"] if E3T[t]["maturity"] == "관찰"]
+
+
+def emb3d_judgement(tid):
+    """EMB3D 위협 판정 (판정, 사유) — 신설 > 공식 연계 > 분석 연계 > 미연계"""
+    bases = set(emb3d_links.get(tid, {}).values())
+    if "신설" in bases:
+        return "신설", "ATT&CK에 대응 기법이 없는 장치 하드웨어 위협 — 효과가 나타나는 전술 아래 세부위협 신설"
+    if "EMB3D 인용" in bases:
+        why = "EMB3D 근거 문단이 인용한 ATT&CK 기법"
+        return "공식 연계", why + (" + 분석: " + R.EMB3D_MAP[tid][1] if tid in R.EMB3D_MAP else "")
+    if "분석" in bases:
+        return "분석 연계", R.EMB3D_MAP[tid][1]
+    return "미연계", ""
+
+
 # ===========================================================================
 # 3) 골격 조립 (전술 → 기법(Lv2) → 하위기법(Lv3))
 # ===========================================================================
 def has_ev(k):
     x = ev.get(k)
-    return bool(x and (x["real"] or x["research"] or x["intel"] or x["subj"] or x["cves"] or x["kev"] or x["excluded"]))
+    return bool(x and (x["real"] or x["research"] or x["intel"] or x["subj"] or x["cves"] or x["kev"] or x["excluded"]
+                       or x["emb3d"]))
 
 
 def tactic_items(code, short):
@@ -237,6 +304,13 @@ def tactic_items(code, short):
         else:
             leaves = [p]
         items.append(("Enterprise 편입", p, leaves, bool(subs)))
+    groups = collections.defaultdict(list)
+    for k, (c, g, *_) in R.EMB3D_NEW.items():
+        if c == code:
+            groups[g].append(k)
+    for g in sorted(groups):
+        ks = sorted(groups[g])
+        items.append(("EMB3D 신설", g, ks, ks != [g]))
     return items
 
 
@@ -290,7 +364,7 @@ def likelihood(x):
     real = len(x["real"])
     if real >= LIKELY_HIGH_REAL:
         return "상"
-    if real or x["subj"] or x["kev"] or x["intel"] or x["cves"] or x["research"]:
+    if real or x["subj"] or x["kev"] or x["intel"] or x["cves"] or x["research"] or x["emb3d"]:
         return "중"
     return "하"
 
@@ -298,9 +372,9 @@ def likelihood(x):
 def evidence_level(x):
     if x["real"]:
         return "실제 사고 확인"
-    if x["subj"] or x["kev"] or x["intel"]:
+    if x["subj"] or x["kev"] or x["intel"] or emb3d_obs(x):
         return "실사용 기법 포함"
-    if x["research"] or x["cves"]:
+    if x["research"] or x["cves"] or x["emb3d"]:
         return "실증·공개 취약점"
     return "이론·시나리오"
 
@@ -308,12 +382,44 @@ def evidence_level(x):
 def assets_of(key, src):
     if src == "ICS":
         a = ics.targets.get(key) or ics.targets.get(key.split(".")[0]) or []
+    elif src == "EMB3D 신설":
+        a = R.EMB3D_ASSETS
     else:
         a = R.ENT_ASSETS.get(key.split(".")[0], [])
     return sorted(set(a))
 
 
+def emb3d_mids(tids):
+    return sorted({m for t in tids if t in E3T for m in E3T[t]["mids"]})
+
+
+def _iec_sort(x):      # 'CR 3.14 RE 1' → (3, 14, 1) 정렬용
+    n = [int(v) for v in re.findall(r"\d+", x)]
+    return (n + [0, 0, 0])[:3]
+
+
+def standards_of(key, src, mitig_ids):
+    """행의 완화책에서 IEC 62443(3-3·4-2)·NIST SP 800-53 요구사항을 모음.
+    ATT&CK 완화책은 STIX labels, EMB3D 신설 행은 EMB3D 완화책의 62443-4-2 매핑."""
+    iec33, iec42, nist = set(), set(), set()
+    if src == "EMB3D 신설":
+        for m in emb3d_mids(R.EMB3D_NEW[key][4]):
+            for rid, _ in (E3M.get(m, {}).get("iec62443_4_2") or []):
+                iec42.add(rid)
+    else:
+        src_tbl = ics.mitig if src == "ICS" else ent.mitig
+        for m in (src_tbl.get(key) or src_tbl.get(key.split(".")[0]) or []):
+            std = ics.mitig_std.get(m)      # Enterprise 완화책은 표준 라벨이 없어 ICS 표에서만
+            if std:
+                iec33.update(std["iec33"])
+                iec42.update(std["iec42"])
+                nist.update(std["nist"])
+    return (sorted(iec33, key=_iec_sort), sorted(iec42, key=_iec_sort), sorted(nist))
+
+
 def mitigations_of(key, src):
+    if src == "EMB3D 신설":
+        return [f"EMB3D {m} {E3M[m]['name']}" for m in emb3d_mids(R.EMB3D_NEW[key][4]) if m in E3M]
     if src == "ICS":
         ids = ics.mitig.get(key) or ics.mitig.get(key.split(".")[0]) or []
         return [f"{m} {ics.mitigations[m][0]}" for m in sorted(set(ids)) if m in ics.mitigations]
@@ -346,7 +452,7 @@ for code, short, ko, en, tac_id, tac_desc in R.TACTICS:
             prof = {}
             for pname, _, pas in R.PROFILES:
                 if pname == "IoT·임베디드":
-                    on = leaf in R.IOT_APPLICABLE or p in R.IOT_APPLICABLE or bool(x["iot_inc"])
+                    on = leaf in R.IOT_APPLICABLE or p in R.IOT_APPLICABLE or bool(x["iot_inc"]) or bool(x["emb3d"])
                 else:
                     on = any(a in pas for a in assets)
                 prof[pname] = "●" if on else ""
@@ -372,14 +478,19 @@ for code, short, ko, en, tac_id, tac_desc in R.TACTICS:
                 detect=(txt or {}).get("detect") or "", text_src="분석가 작성" if txt else "작성 예정",
                 placeholder=first_sentence(info.get("desc", "")),
                 assets=assets, purdue=purdue, prof=prof, mitig=mitigations_of(leaf, src),
+                std=standards_of(leaf, src, None),
                 cloud=R.CLOUD_LINK.get(leaf) or R.CLOUD_LINK.get(p, ""), ai=R.AI_LINK.get(leaf) or R.AI_LINK.get(p, ""),
                 likelihood=lk, severity=sev, sev_why=sev_why, risk=RISK_MATRIX[(lk, sev)],
                 real=len(x["real"]), recent=len(x["recent"]), atk=len(x["subj"]), cves=len(x["cves"]),
                 recent_cves=len(x["recent_cves"]), advs=len(x["advs"]), kev=len(x["kev"]), research=len(x["research"]),
                 intel=len(x["intel"]), level=evidence_level(x),
+                emb3d="\n".join(f"{t} {R.EMB3D_NAME_KO.get(t, E3T[t]['name'])} ({E3T[t]['maturity']}·{b})"
+                                for t, b in sorted(x["emb3d"].items())),
+                n_emb3d=len(x["emb3d"]),
                 lk_why=(f"실제 사고 {len(x['real'])}건(최근 {len(x['recent'])}) · ATT&CK 사례 {len(x['subj'])}건 · "
                         f"공개 취약점 {len(x['cves'])}건 · KEV {len(x['kev'])}건 · 실증·연구 {len(x['research'])}건"
-                        + (f" · 위협인텔 {len(x['intel'])}건" if x["intel"] else "")),
+                        + (f" · 위협인텔 {len(x['intel'])}건" if x["intel"] else "")
+                        + (f" · EMB3D 위협 {len(x['emb3d'])}건(관찰 {len(emb3d_obs(x))})" if x["emb3d"] else "")),
                 basis=" · ".join(f"{b} {c}" for b, c in sorted(basis_n.items()) if c),
                 inc_ids=", ".join(inc_ids) + (("\n" + "\n".join(extra)) if extra else ""),
                 subjects=", ".join(subj_label(s) for s in sorted(x["subj"])),
@@ -402,7 +513,8 @@ RISK_COLOR = {"매우 높음": ("C0392B", "FFFFFF"), "높음": ("E67E22", "FFFFF
               "보통": ("F7DC6F", "000000"), "낮음": ("A9DFBF", "000000")}
 LEVEL_COLOR = {"실제 사고 확인": "1E8449", "실사용 기법 포함": "2E86C1",
                "실증·공개 취약점": "B9770E", "이론·시나리오": "7F8C8D"}
-SRC_COLOR = {"ICS": "D6EAF8", "Enterprise 편입": "FEF9E7"}
+SRC_COLOR = {"ICS": "D6EAF8", "Enterprise 편입": "FEF9E7", "EMB3D 신설": "E8F8F5"}
+SRC_MARK = {"ICS": "", "Enterprise 편입": "◆ ", "EMB3D 신설": "◇ "}
 HDR, NAVY, GRAY = "34495E", "1F3864", "8C8C8C"
 
 
@@ -477,6 +589,11 @@ def write_xlsx(path):
     high_dep = sum(1 for o in rows if o["likelihood"] == "상" and len(ev[o["key"]]["real"] - top_ids) < LIKELY_HIGH_REAL)
     n_ent_rows = sum(1 for o in rows if o["src"] == "Enterprise 편입")
     ent_keys = sorted({o["parent"] for o in rows if o["src"] == "Enterprise 편입"})
+    n_e3_rows = sum(1 for o in rows if o["src"] == "EMB3D 신설")
+    e3_judge = collections.Counter(emb3d_judgement(t)[0] for t in E3T)
+    e3_rows_linked = sum(1 for o in rows if o["n_emb3d"])
+    std_req = {i: {req for o in rows for req in o["std"][i]} for i in range(3)}
+    std_rows_n = sum(1 for o in rows if any(o["std"]))
 
     # ---------------- 개요 ----------------
     ws = wb.active
@@ -496,6 +613,9 @@ def write_xlsx(path):
                           f"집계 제외 {sum(1 for e in incidents if e['status'].startswith('제외'))}건"),
         ("CISA ICS 권고(CSAF)", f"ICS 권고 {vstat['adv']}건 · CVE {vstat['cve']}개(의료기기 권고 {vstat['adv_icsma']}건 제외) — CWE 규칙으로 기법 매핑 {vstat['mapped_cve']}개"),
         ("CISA KEV", f"ICS 권고와 교차 {vstat['kev_all']}개 — OT·IoT 제품·임베디드 구성요소·OT 네트워크 장비 OS {vstat['kev_ot']}개만 실사용 근거로 반영(범용 IT 구성요소 제외)"),
+        ("MITRE EMB3D", f"{emb3d.get('source', {}).get('file', '')} — 임베디드 장치 위협 {len(E3T)}개 · 완화책 {len(E3M)}개: "
+                        f"공식 연계 {e3_judge.get('공식 연계', 0)} · 분석 연계 {e3_judge.get('분석 연계', 0)} · 신설 {e3_judge.get('신설', 0)}"
+                        f"(세부위협 {n_e3_rows}행) · 미연계 {e3_judge.get('미연계', 0)}"),
         ("다른 매트릭스", "통합 클라우드 매트릭스 v5(CTC) · 통합 AI 매트릭스 v3.2(UT) 연계 열"), ("", ""),
         ("■ 시트 구성", ""),
         ("매트릭스 뷰", "전술(열)별 세부위협을 위험도 색으로 배치한 한눈 보기(ATT&CK for ICS Navigator와 같은 배치)"),
@@ -506,6 +626,9 @@ def write_xlsx(path):
         ("역매핑_사고사례", f"사고 DB {len(incidents)}건과 매핑 기법·매핑 근거(근거 추적용)"),
         ("취약점 근거", "기법별 공개 취약점(CWE 규칙)·KEV 집계, KEV 판정 내역, CWE 규칙"),
         ("Enterprise 판정", "ICS 캠페인·소프트웨어·사고 DB에 등장한 Enterprise 기법의 편입·통합·제외 판정과 근거"),
+        ("EMB3D 판정", "EMB3D 장치 위협 전체의 연계(공식 인용·분석)·신설 판정, 성숙도, CWE·완화책"),
+        ("표준 연계", "IEC 62443-3-3·4-2·NIST SP 800-53 요구사항 ↔ 세부위협(완화책의 표준 매핑 집계, 원문 미수록)"),
+        ("공격 체인 시나리오", "실제 사고 기반 IT 침투→OT 영향 흐름 — 단계별 OTC-ID 연결·탐지 포인트·초크 포인트"),
         ("평가 기준", "발생가능성·심각도·위험도·근거수준 산정 규칙과 AI·클라우드 매트릭스 근거 대응"),
         ("변경이력", "버전별 변경 내역"), ("", ""),
         ("■ 분류 체계", ""),
@@ -516,9 +639,14 @@ def write_xlsx(path):
         ("OT 특화 검토", "Enterprise 기법은 ICS 기법으로 표현되면 통합(근거 합산), 표현되지 않는 IT/OT 경계 메커니즘만 원래 전술에 대응하는 ICS 전술 아래 편입. "
                        "자격증명 접근은 [LM], 반출은 운영 정보 탈취(T0882)에 통합 — 판정은 'Enterprise 판정' 시트"),
         ("적용 프로파일", "제어계통 · 안전계통 · 원격 필드 · 감시·운영 · IT/OT 경계 = 기법의 대상 자산(ATT&CK 'targets')에서 자동 부여, "
-                        "IoT·임베디드 = 임베디드 기기 일반에 성립하는 기법(분석자 지정) 또는 IoT 사고 매핑"),
+                        "IoT·임베디드 = EMB3D 연계 행 + 임베디드 기기 일반에 성립하는 기법(분석자 지정) + IoT 사고 매핑"),
+        ("EMB3D 연계", "임베디드 장치 위협(TID)을 EMB3D가 인용한 ATT&CK 기법(공식)이나 정의가 같은 기법(분석)에 연계하고, "
+                     "ATT&CK에 대응 기법이 없는 하드웨어 위협(디버그 포트·결함 주입·물리 추출·부채널·신뢰 루트)은 세부위협으로 신설(◇) — 판정은 'EMB3D 판정' 시트"),
         ("", ""), ("■ 결과 요약", ""),
-        ("세부위협(Lv3)", f"{len(rows)}행 / 고유 기법 {len(keys)}개 / 도메인 {len(domains)}개 (ICS {len(rows) - n_ent_rows}행 · Enterprise 편입 {n_ent_rows}행)"),
+        ("세부위협(Lv3)", f"{len(rows)}행 / 고유 기법 {len(keys)}개 / 도메인 {len(domains)}개 "
+                       f"(ICS {len(rows) - n_ent_rows - n_e3_rows}행 · Enterprise 편입 {n_ent_rows}행 · EMB3D 신설 {n_e3_rows}행)"),
+        ("EMB3D 연계 행", f"{e3_rows_linked}행에 EMB3D 위협이 연계됨(IoT·임베디드 프로파일 부여)"),
+        ("표준 연계", f"{std_rows_n}행에 표준 요구사항 매핑 — IEC 62443-3-3 {len(std_req[0])}개 · 62443-4-2 {len(std_req[1])}개 · NIST SP 800-53 {len(std_req[2])}개"),
         ("위험도", " · ".join(f"{k} {rc.get(k, 0)}" for k in RISK_COLOR)),
         ("근거 수준", " · ".join(f"{k} {lc.get(k, 0)}" for k in LEVEL_COLOR)),
         ("OT 관점 문구", f"고유 기법 {len(written & keys)}/{len(keys)}개 작성" + (" — 전 기법 완료" if written >= keys else
@@ -537,6 +665,9 @@ def write_xlsx(path):
         ("중복 표시", "한 기법이 여러 전술에 속하면 전술마다 반복 표시(ATT&CK 원칙). 근거 수는 같은 기법 기준"),
         ("출처 표기", "MITRE ATT&CK® © The MITRE Corporation · CISA 권고·KEV(미국 정부 저작물) · 사고 출처는 '역매핑_사고사례' 시트. "
                     "IEC 62443 등 유료 표준은 원문 미수록"),
+        ("EMB3D 표기", "©2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation. "
+                     "— EMB3D™ 이용 조건(내부 업무·상업적 이용, 사본에 저작권 표시·라이선스 문구 포함, EMB3D@mitre.org에 이용 통지)은 "
+                     "data/emb3d.yaml 머리말 참고"),
     ]
     for i, (a, b) in enumerate(meta, 1):
         ws.cell(i, 1, a).font = Font(bold=a.startswith("■"), color=NAVY if a.startswith("■") else "000000")
@@ -549,7 +680,8 @@ def write_xlsx(path):
     by_c = collections.defaultdict(list)
     for o in rows:
         by_c[o["code"]].append(o)
-    ws.cell(1, 1, "매트릭스 뷰 — 셀 색 = 위험도 (빨강 매우 높음 · 주황 높음 · 노랑 보통 · 초록 낮음), [n] = 실제 사고 수, ◆ = Enterprise 편입 기법")
+    ws.cell(1, 1, "매트릭스 뷰 — 셀 색 = 위험도 (빨강 매우 높음 · 주황 높음 · 노랑 보통 · 초록 낮음), [n] = 실제 사고 수, "
+                  "◆ = Enterprise 편입 기법, ◇ = EMB3D 신설(장치 하드웨어 위협)")
     ws.cell(1, 1).font = Font(bold=True, color=NAVY)
     rank = {"매우 높음": 0, "높음": 1, "보통": 2, "낮음": 3}
     for j, d in enumerate(domains, 1):
@@ -558,7 +690,7 @@ def write_xlsx(path):
         c.font = Font(bold=True, color="FFFFFF")
         c.alignment = CENTER
         for i, o in enumerate(sorted(by_c[d["code"]], key=lambda o: (rank[o["risk"]], -o["real"], o["otc"])), 3):
-            cell = ws.cell(i, j, ("◆ " if o["src"] != "ICS" else "") + f"{o['otc']} {o['lv3']}" + (f" [{o['real']}]" if o["real"] else ""))
+            cell = ws.cell(i, j, SRC_MARK[o["src"]] + f"{o['otc']} {o['lv3']}" + (f" [{o['real']}]" if o["real"] else ""))
             _risk(cell, o["risk"])
             cell.alignment = Alignment(wrap_text=True, vertical="top")
             cell.font = Font(size=9, bold=o["risk"] == "매우 높음", color=RISK_COLOR[o["risk"]][1])
@@ -570,11 +702,12 @@ def write_xlsx(path):
     # ---------------- 통합 매트릭스 ----------------
     ws = wb.create_sheet("통합 매트릭스")
     prof_names = [p[0] for p in R.PROFILES]
-    groups = [("분류 체계", 11, "2E5496"), ("교차 매핑", 5 + len(prof_names), "1F7A8C"),
+    groups = [("분류 체계", 11, "2E5496"), ("교차 매핑", 9 + len(prof_names), "1F7A8C"),
               ("위험 평가", 5, "A04000"), ("실제 근거", 11, "1E8449"), ("탐지·대응", 1, "6C3483")]
     cols = (["도메인(Lv1)", "OTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "참조",
-             "ATT&CK ID", "ATT&CK 기법명", "구분", "통합된 Enterprise 기법", "설명 출처",
-             "대상 자산", "Purdue 계층"] + prof_names + ["ATT&CK 완화책", "클라우드 매트릭스 연계", "AI 매트릭스 연계(UT)",
+             "ATT&CK·EMB3D ID", "ATT&CK·EMB3D 위협명", "구분", "통합된 Enterprise 기법", "설명 출처",
+             "대상 자산", "Purdue 계층"] + prof_names + ["완화책(ATT&CK·EMB3D)", "클라우드 매트릭스 연계", "AI 매트릭스 연계(UT)",
+             "EMB3D 연계(성숙도·근거)", "IEC 62443-3-3(SR)", "IEC 62443-4-2(CR 등)", "NIST SP 800-53",
              "발생가능성", "심각도", "위험도", "발생가능성 근거 (자동 산정)", "심각도 근거",
              "실제 사고 수", "최근 사고(2025~)", "ATT&CK 사례 수", "공개 취약점(CVE)", "KEV(OT)", "실증·연구 수", "근거 수준",
              "사고 매핑 근거", "관련 사례 ID", "ATT&CK 사례 주체", "ATT&CK 링크", "탐지·대응 포인트"])
@@ -600,7 +733,8 @@ def write_xlsx(path):
                      o["key"], o["en_name"], o["src"], o["merged"], o["text_src"],
                      "\n".join(f"{a} {R.ASSET_KO.get(a, a)}" for a in o["assets"]), ", ".join(o["purdue"])]
              + [o["prof"][p] for p in prof_names]
-             + ["\n".join(o["mitig"]), o["cloud"], o["ai"],
+             + ["\n".join(o["mitig"]), o["cloud"], o["ai"], o["emb3d"],
+                ", ".join(o["std"][0]), ", ".join(o["std"][1]), ", ".join(o["std"][2]),
                 o["likelihood"], o["severity"], o["risk"], o["lk_why"], o["sev_why"],
                 o["real"], o["recent"], o["atk"], o["cves"], o["kev"], o["research"], o["level"],
                 o["basis"], o["inc_ids"], o["subjects"], o["link"], o["detect"]])
@@ -616,12 +750,12 @@ def write_xlsx(path):
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(rows) + 4}"
     _w(ws, [14, 12, 16, 18, 60, 80, 10, 22, 10, 16, 9, 20, 10] + [6] * len(prof_names)
-       + [26, 20, 18, 7, 7, 8, 30, 26, 7, 7, 7, 7, 7, 7, 11, 14, 20, 26, 22, 70])
+       + [26, 20, 18, 30, 16, 20, 16, 7, 7, 8, 30, 26, 7, 7, 7, 7, 7, 7, 11, 14, 20, 26, 22, 70])
 
     # ---------------- 통합매트릭스_LITE ----------------
     ws = wb.create_sheet("통합매트릭스_LITE")
     ws.cell(1, 1, f"통합 OT/ICS/IoT 보안위협 매트릭스 {VERSION} — LITE").font = Font(size=13, bold=True, color=NAVY)
-    lcols = ["도메인(Lv1)", "OTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "ATT&CK ID", "Purdue 계층", "적용 프로파일",
+    lcols = ["도메인(Lv1)", "OTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "ATT&CK·EMB3D ID", "Purdue 계층", "적용 프로파일",
              "발생가능성", "심각도", "위험도", "근거 수준", "실제 사고 수", "ATT&CK 사례 수", "탐지·대응 포인트"]
     _hdr(ws, 2, lcols)
     for r, o in enumerate(rows, 3):
@@ -688,7 +822,8 @@ def write_xlsx(path):
         os_ = [o for o in rows if o["prof"][pname]]
         rr = collections.Counter(o["risk"] for o in os_)
         top = sorted(os_, key=lambda o: (rank[o["risk"]], -o["real"], o["otc"]))[:3]
-        rule = ("대상 자산: " + ", ".join(f"{a} {R.ASSET_KO[a]}" for a in pas)) if pas else "임베디드 기기 일반에 성립하는 기법(분석자 지정) + IoT 사고 매핑"
+        rule = ("대상 자산: " + ", ".join(f"{a} {R.ASSET_KO[a]}" for a in pas)) if pas else \
+            "EMB3D 연계 행 + 임베디드 기기 일반에 성립하는 기법(분석자 지정) + IoT 사고 매핑"
         _row(ws, r, [pname, pdesc, rule, len(os_), rr.get("매우 높음", 0), rr.get("높음", 0),
                      sum(1 for o in os_ if o["level"] == "실제 사고 확인"),
                      "\n".join(f"{o['otc']} {o['lv3']} ({o['risk']})" for o in top)])
@@ -761,12 +896,97 @@ def write_xlsx(path):
         rr_ += 1
     _w(ws, [12, 40, 30, 8, 34, 40, 50])
 
+    # ---------------- EMB3D 판정 ----------------
+    ws = wb.create_sheet("EMB3D 판정")
+    ws.cell(1, 1, "MITRE EMB3D 장치 위협 판정 — 신설(◇ 세부위협) · 공식 연계(EMB3D 근거 문단이 인용한 ATT&CK 기법) · "
+                  "분석 연계(위협 정의가 같은 행위를 가리키는 기법)").font = Font(bold=True, color=NAVY)
+    ws.cell(2, 1, "©2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation."
+            ).font = Font(size=9, color="595959")
+    _hdr(ws, 3, ["TID", "위협(EMB3D)", "한글명", "분류", "성숙도", "판정", "연계 세부위협(근거)", "EMB3D 인용 ATT&CK ID",
+                 "판정 사유", "CWE", "CVE 예시 수", "완화책(MID)"])
+    otc_by_key = collections.defaultdict(list)
+    for o in rows:
+        otc_by_key[o["key"]].append(o["otc"])
+    for i, (tid, t) in enumerate(sorted(E3T.items()), 4):
+        judge, why = emb3d_judgement(tid)
+        linked = "\n".join(f"{'/'.join(otc_by_key.get(k, ['-']))} {name_ko(k)} ({b})"
+                           for k, b in sorted(emb3d_links.get(tid, {}).items()))
+        cited = ", ".join(c + (" (매트릭스 밖)" if c in emb3d_outside.get(tid, []) else "") for c in t["atk_cited"])
+        _row(ws, i, [tid, t["name"], R.EMB3D_NAME_KO.get(tid, ""), R.EMB3D_CATEGORY_KO.get(t["category"], t["category"]),
+                     t["maturity"], judge, linked, cited, why, ", ".join(t["cwes"]), len(t["cves"]), ", ".join(t["mids"])])
+    ws.freeze_panes = "B4"
+    ws.auto_filter.ref = f"A3:L{len(E3T) + 3}"
+    _w(ws, [9, 34, 26, 14, 11, 10, 44, 24, 50, 22, 8, 30])
+
+    # ---------------- 표준 연계 ----------------
+    ws = wb.create_sheet("표준 연계")
+    r = section(ws, 1, "1. IEC 62443·NIST SP 800-53 요구사항 → 세부위협 (ATT&CK 완화책의 표준 매핑·EMB3D 완화책의 62443-4-2 매핑 집계)")
+    ws.cell(r, 1, "출처: ATT&CK for ICS 완화책의 STIX labels(IEC 62443-3-3:2013 · 62443-4-2:2019 · NIST SP 800-53 Rev.5), "
+                  "EMB3D 완화책의 IEC 62443-4-2 매핑. 요구사항 원문은 유료 표준이라 수록하지 않고 ID만 연계.").font = Font(size=9, color="595959")
+    r += 1
+    std_titles = {"iec33": "IEC 62443-3-3 (SR)", "iec42": "IEC 62443-4-2 (CR·EDR·HDR·NDR)", "nist": "NIST SP 800-53 Rev.5"}
+    std_idx = {"iec33": 0, "iec42": 1, "nist": 2}
+    std_rows = {"iec33": collections.defaultdict(list), "iec42": collections.defaultdict(list),
+                "nist": collections.defaultdict(list)}
+    for o in rows:
+        for fam, i in std_idx.items():
+            for req in o["std"][i]:
+                std_rows[fam][req].append(o)
+    _hdr(ws, r, ["표준", "요구사항 ID", "연계 세부위협 수", "연계 세부위협(OTC-ID)"])
+    r += 1
+    for fam in ("iec42", "iec33", "nist"):
+        for req in sorted(std_rows[fam], key=_iec_sort if fam != "nist" else None):
+            os_ = std_rows[fam][req]
+            _row(ws, r, [std_titles[fam], req, len(os_),
+                         ", ".join(sorted(o["otc"] for o in os_))])
+            r += 1
+    r = section(ws, r + 1, "2. 세부위협별 표준 요구사항 (요구사항이 매핑된 행만)")
+    _hdr(ws, r, ["OTC-ID", "세부위협", "IEC 62443-3-3", "IEC 62443-4-2", "NIST SP 800-53"])
+    r += 1
+    for o in rows:
+        if any(o["std"]):
+            _row(ws, r, [o["otc"], o["lv3"], ", ".join(o["std"][0]), ", ".join(o["std"][1]), ", ".join(o["std"][2])])
+            r += 1
+    _w(ws, [28, 16, 12, 90])
+
+    # ---------------- 공격 체인 시나리오 ----------------
+    scn_data = yaml.safe_load(SCENARIOS.read_text(encoding="utf-8")) if SCENARIOS.exists() else {"scenarios": []}
+    otc_set = {o["otc"] for o in rows}
+    otc_row = {o["otc"]: o for o in rows}
+    ws = wb.create_sheet("공격 체인 시나리오")
+    ws.cell(1, 1, "공격 체인 시나리오 — 실제 사고 기반 IT 침투 → OT 영향 흐름. 각 단계는 매트릭스 OTC-ID에 연결(위험도 색). "
+                  "굵은 단계 = 흐름을 끊기 좋은 초크 포인트(진입·실행·영향 분기)").font = Font(bold=True, color=NAVY)
+    r = 3
+    for scn in scn_data["scenarios"]:
+        c = ws.cell(r, 1, f"{scn['id']}. {scn['title']}")
+        c.font = Font(size=12, bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor=NAVY)
+        ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6)
+        r += 1
+        ws.cell(r, 1, f"근거: {scn['ref']}  ·  사고: {', '.join(scn['based_on'])}  ·  {scn.get('note', '')}").font = Font(size=9, color="595959")
+        ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6)
+        r += 1
+        _hdr(ws, r, ["#", "전술", "OTC-ID", "세부위협", "행위", "탐지·대응 포인트"])
+        r += 1
+        for i, st in enumerate(scn["steps"], 1):
+            otc = st["otc"]
+            if otc not in otc_set:
+                WARN[f"시나리오 {scn['id']} 잘못된 OTC {otc}"].add("scenarios")
+            o = otc_row.get(otc)
+            _row(ws, r, [i, st["전술"], otc, o["lv3"] if o else "(없음)", st["행위"], st["탐지"]])
+            if o:
+                _risk(ws.cell(r, 3), o["risk"])
+            r += 1
+        r += 1
+    _w(ws, [4, 16, 12, 22, 50, 60])
+
     # ---------------- 평가 기준 ----------------
     ws = wb.create_sheet("평가 기준")
     crit = [
         ("■ 발생가능성 (근거에서 자동 산정 — AI 매트릭스 v3.2 · 클라우드 v5와 같은 수식)", ""),
         ("상", f"실제 사고 {LIKELY_HIGH_REAL}건 이상"),
-        ("중", "실제 사고 1건, 또는 ATT&CK 사례(ICS 절차·OT 주체의 Enterprise 절차)·KEV(OT)·위협인텔·공개 취약점·실증 연구 중 하나 이상"),
+        ("중", "실제 사고 1건, 또는 ATT&CK 사례(ICS 절차·OT 주체의 Enterprise 절차)·KEV(OT)·위협인텔·공개 취약점·실증 연구·"
+              "EMB3D 위협(관찰·알려진 취약점·개념 증명) 중 하나 이상"),
         ("하", "근거 없음(이론·시나리오)"),
         ("근거 대응", "AI '실제 사고(ATLAS Incident+OWASP 인용)' ↔ 클라우드 '사고 DB 실제 사고' ↔ OT '사고 DB 실제 사고(ICS 캠페인 포함)' / "
                     "AI 'Realized 기법' ↔ 클라우드 'ATT&CK 클라우드 사례' ↔ OT 'ATT&CK ICS 절차 + KEV(OT) + 위협인텔(능력 발견)' / "
@@ -785,8 +1005,9 @@ def write_xlsx(path):
         ("", ""),
         ("■ 근거 수준 (높은 순)", ""),
         ("실제 사고 확인", "사고 DB의 실제 사고(사고·캠페인·사례연구·정부 경보·공시, 검증된 건)와 연결"),
-        ("실사용 기법 포함", "실제 사고 연결은 없으나 ATT&CK 절차(ICS 전 주체, Enterprise는 ICS 캠페인·소프트웨어), KEV(OT), 위협인텔(능력 발견) 존재"),
-        ("실증·공개 취약점", "연구·시연 사례 또는 CISA ICS 권고의 공개 취약점(CWE 규칙 매핑)만 존재"),
+        ("실사용 기법 포함", "실제 사고 연결은 없으나 ATT&CK 절차(ICS 전 주체, Enterprise는 ICS 캠페인·소프트웨어), KEV(OT), 위협인텔(능력 발견), "
+                         "EMB3D '관찰' 위협 존재"),
+        ("실증·공개 취약점", "연구·시연 사례, CISA ICS 권고의 공개 취약점(CWE 규칙 매핑), EMB3D '알려진 취약점'·'개념 증명' 위협만 존재"),
         ("이론·시나리오", "공개 근거 없음 — '발생하지 않음'이 아님"),
         ("", ""),
         ("■ 사고 DB 집계", ""),
@@ -798,6 +1019,12 @@ def write_xlsx(path):
         ("■ 공개 취약점·KEV", ""),
         ("공개 취약점", "CISA ICS 권고(ICSA, 의료기기 ICSMA 제외)의 CVE를 CWE·공격 경로 규칙으로 1개 기법에 매핑 — 노출 여부가 환경에 달린 공개 애플리케이션 악용(T0819)은 CWE로 매핑하지 않음"),
         ("KEV(OT)", "ICS 권고와 교차된 KEV 중 OT·IoT 제품, 임베디드 구성요소, OT 네트워크 장비 내장 OS만 반영(범용 IT 구성요소 제외) — 실사용 근거(중 상한)"),
+        ("", ""),
+        ("■ EMB3D 연계", ""),
+        ("공식 연계", "EMB3D 근거 문단이 인용한 ATT&CK 기법(폐기 ID 변환·Enterprise 통합 규칙 적용) — Mobile·매트릭스 밖 Enterprise ID는 연계하지 않고 판정 시트에 표시"),
+        ("분석 연계", "위협 정의가 같은 행위를 가리키는 기법에 분석자가 연계(사유는 'EMB3D 판정' 시트)"),
+        ("신설", "ATT&CK에 대응 기법이 없는 장치 하드웨어 위협을 효과가 나타나는 전술 아래 세부위협으로 추가(◇) — 신설 행의 완화책은 EMB3D 완화책(MID)"),
+        ("근거 반영", "성숙도 '관찰' = 실사용 기법 포함, '알려진 취약점'·'개념 증명' = 실증·공개 취약점 — 모두 발생가능성 '중' 상한"),
         ("", ""),
         ("■ 참조 열 사례 라벨", "'■ 실제 사례' 줄 앞에 붙는 라벨 — 사례명(YYYY-MM): 경위·결과 (사고 ID, ATT&CK ID)"),
         ("[실제 사고]", "사고 DB에서 실제 사고로 집계된 건"),

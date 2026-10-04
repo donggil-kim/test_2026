@@ -8,7 +8,7 @@
 #   impact        물리적 영향 유형: 인명·안전 · 환경 · 설비 손상 · 제어 상실·조작 · 감시 상실·조작 · 운영 중단 · 운영 정보 탈취 · 기기 탈취 · 영향 없음
 #   attack_ref    ATT&CK 캠페인·소프트웨어 ID — 해당 객체의 ICS·Enterprise 공식 절차를 그대로 매핑(근거 'ATT&CK 공식').
 #                 캠페인 절차로 충분하면 소프트웨어는 붙이지 않음. 'S0608@ICS'처럼 쓰면 ICS 절차만(일반 기능인 Enterprise 절차 제외)
-#   ics / ent     분석 매핑(근거 '분석') — ICS 기법 / Enterprise 기법
+#   ics / ent     분석 매핑(근거 '분석') — ICS 기법(EMB3D 신설 행 키 'EMB3D-…' 포함) / Enterprise 기법
 #   sources       '출처 | URL' (URL은 확인된 것만)
 #
 # 집계 규칙(scripts/taxonomy_rules.py): 실제 사고 = kind ∈ {사고·캠페인·사례연구(익명)·정부 경보·공시}
@@ -49,6 +49,7 @@
     배전사 3곳의 변전소 차단기를 열었다(약 22만 5천 고객이 수 시간 정전). 직렬-이더넷 변환기 펌웨어를 덮어써
     원격 복구를 막고 KillDisk로 시스템을 지웠다.
   attack_ref: [C0028]
+  ics: [T0809]   # KillDisk로 시스템 삭제(C0028 공식 절차에 미포함 — 분석 매핑)
   sources:
     - MITRE ATT&CK C0028 | https://attack.mitre.org/campaigns/C0028/
     - Booz Allen Hamilton(2016) When The Lights Went Out | https://www.boozallen.com/content/dam/boozallen/documents/2016/09/ukraine-report-when-the-lights-went-out.pdf
@@ -300,6 +301,7 @@
     우크라이나 회계 소프트웨어 업데이트로 퍼진 와이퍼형 악성코드로, 머스크 컨테이너 터미널 운영과 머크 백신 생산이 멈추는 등
     전 세계 제조·물류 운영이 중단됐다.
   attack_ref: [S0368]
+  ics: [T0809, T0862]   # 와이퍼로 시스템 파괴(T0809) · M.E.Doc 회계 SW 업데이트 공급망 전파(T0862) — 분석 매핑
   sources:
     - MITRE ATT&CK S0368 | https://attack.mitre.org/software/S0368/
     - ESET(2017) TeleBots are back | https://www.welivesecurity.com/2017/06/30/telebots-back-supply-chain-attacks-against-ukraine/
@@ -605,9 +607,12 @@
   impact: [제어 상실·조작]
   summary: >-
     무선 신호로 시 전역의 옥외 비상 경보 사이렌 156기가 한밤중 약 90분간 반복 작동했다. 시는 무선 제어 신호의 재전송 공격으로 보고 암호화를 추가했다.
-  ics: [T0860, T1692.001]
+    월례 시험 때 송출된 제어 신호를 녹음해 반복 재생한 것으로 분석됐다(무선 수신이 선행 — EMB3D는 무선 스니핑의 관찰 사례로 인용).
+  ics: [T0860, T1692.001, T0887]
   sources:
     - 댈러스시 발표(2017-04)
+    - ZDNet(2017-04) Experts think they know how Dallas emergency sirens were hacked | https://www.zdnet.com/article/experts-think-they-know-how-dallas-emergency-sirens-were-hacked/
+    - MITRE EMB3D TID-407 Missing Message Replay Protection | https://emb3d.mitre.org/threats/TID-407.html
 
 - id: INC-035
   title: IoT 기기 파괴 악성코드(BrickerBot)
@@ -1359,10 +1364,12 @@
   actor: 연구자
   impact: [영향 없음]
   summary: >-
-    하드웨어 기반 신뢰 루트가 없어 부팅 시 펌웨어 무결성 검증을 우회하고 변조 펌웨어를 실행할 수 있음을 공개했다(CVE-2022-38773).
-  ics: [T1693.001]
+    부팅 시 펌웨어 무결성 검증을 맡는 하드웨어 신뢰 루트(별도 암호 칩) 구현의 결함으로 검증을 우회하고 변조 펌웨어를 실행할 수 있음을
+    공개했다(CVE-2022-38773). NAND 플래시 칩을 떼어 내용을 읽고 칩 간 I2C 통신에 접근하는 방식이 쓰였고, 결함이 하드웨어에 있어 펌웨어 패치로 고칠 수 없다.
+  ics: [T1693.001, EMB3D-CO.1, EMB3D-CO.3, EMB3D-LM.2]
   sources:
-    - Red Balloon Security(2023-01)
+    - Red Balloon Security(2023-01) Siemens SIMATIC S7-1500 discovery | https://redballoonsecurity.com/siemens-discovery/
+    - IEEE(2023) Uprooting Trust — Unpatchable Hardware Root-of-Trust Vulnerability in Siemens S7-1500 PLCs | https://ieeexplore.ieee.org/document/10133438
 
 - id: INC-080
   title: 임베디드 TCP/IP 스택 취약점 묶음(Ripple20)
@@ -1411,3 +1418,56 @@
   ics: [T1692.001]
   sources:
     - Mandiant(2023-05) COSMICENERGY
+
+# ── v3 추가: IoT·임베디드 ───────────────────────────────────────────
+- id: INC-083
+  title: 푸에르토리코 스마트 계량기 광포트 조작 전력 도용
+  date: 2010-05
+  kind: 정부 경보
+  verification: 언론 보도
+  relevance: IoT 기기
+  country: 미국(푸에르토리코)
+  sector: 전력
+  actor: 계량기 제조사 전 직원·전력사 직원(내부자)
+  impact: [감시 상실·조작]
+  summary: >-
+    현장 진단용 광포트에 광 변환기와 노트북을 연결하고 인터넷에서 구한 소프트웨어로 스마트 계량기의 사용량 기록 설정을 바꿔 전기를 훔쳤다.
+    FBI는 전 제조사 직원과 전력사 직원이 대가를 받고 계량기를 재프로그래밍했으며, 한 전력사의 손실이 연간 최대 4억 달러에 이를 수 있다고 경고했다.
+  ics: [EMB3D-IA, T0836, T0828]
+  sources:
+    - KrebsOnSecurity(2012-04) FBI — Smart Meter Hacks Likely to Spread(FBI 사이버 정보 경보 2010-05 인용) | https://krebsonsecurity.com/2012/04/fbi-smart-meter-hacks-likely-to-spread/
+
+- id: INC-084
+  title: 러시아 GRU의 우크라이나·인접국 IP 카메라 1만여 대 무단 접근
+  date: 2025-05
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 우크라이나·루마니아·폴란드 등
+  sector: 교통·물류
+  actor: GRU 26165부대(APT28)
+  impact: [운영 정보 탈취]
+  summary: >-
+    우크라이나 지원 물자의 이동을 추적하려고 국경 검문소·철도역·군 시설 주변 인터넷 연결 카메라 약 1만 대(우크라이나 80%, 루마니아 10%,
+    폴란드 4% 등)에 기본·취약 자격증명으로 접근해 RTSP 영상을 확보했다. 미국 CISA·NSA·FBI와 영국 NCSC 등 여러 국가 기관의 공동 권고다.
+  ics: [T0883, T1694.001, T0882]
+  sources:
+    - CISA 등 공동 권고 AA25-141A(2025-05) Russian GRU Targeting Western Logistics Entities and Technology Companies | https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-141a
+
+- id: INC-085
+  title: 사전 감염 IoT 기기 봇넷(BADBOX 2.0)
+  date: 2025-06
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 소비자 IoT
+  actor: 범죄 조직
+  impact: [기기 탈취]
+  summary: >-
+    출고 전에 악성코드가 심겨 있거나 초기 설정 때 백도어 앱을 내려받는 스트리밍 기기·프로젝터·차량 인포테인먼트 등 IoT 기기 수백만 대가
+    봇넷과 주거용 프록시로 쓰였다. FBI가 공공 안내(PSA I-060525)로 경고했다.
+  ics: [T0862, T1496.002]
+  sources:
+    - FBI 공공 안내 PSA I-060525(2025-06)
+    - HUMAN Security(2025-06) BADBOX 2.0 FBI PSA | https://www.humansecurity.com/learn/blog/badbox-2-fbi-psa/

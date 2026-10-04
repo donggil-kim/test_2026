@@ -8,6 +8,7 @@
       [실제 사고] ↔ 실제 사고 / [실증] ↔ 연구·시연 / [위협인텔] ↔ 위협인텔(능력 발견)
   · 근거 정합: '실제 사례'에 인용한 사고가 해당 기법에 매핑돼 있는지(문구와 근거 집계가 어긋나지 않게)
   · 절차 정합: '실제 사례'에 인용한 ATT&CK 캠페인·소프트웨어가 해당 기법(통합된 Enterprise 기법 포함)의 절차를 갖는지
+  · EMB3D 정합: [EMB3D] 줄이 인용한 위협(TID)이 존재하고 해당 행에 연계돼 있는지
 실행: python3 scripts/validate.py  (문제가 있으면 종료 코드 1)
 """
 import contextlib
@@ -23,13 +24,13 @@ with contextlib.redirect_stdout(io.StringIO()):
     g = runpy.run_path(str(HERE / "build_ot_threat_matrix.py"), run_name="validate")
 
 rows, ev, incidents, TEXT, ics = g["rows"], g["ev"], g["incidents"], g["TEXT"], g["ics"]
-ent, merged = g["ent"], g["merged_into"]
+ent, merged, E3T = g["ent"], g["merged_into"], g["E3T"]
 inc_by = {e["id"]: e for e in incidents}
 keys = {o["key"] for o in rows}
 codes = {o["code"] for o in rows}
 otc_ids = {o["otc"] for o in rows}
 LABEL_STATUS = {"실제 사고": "실제 사고", "실증": "실증·연구", "위협인텔": "위협인텔"}
-LABELS = {"실제 사고", "위협인텔", "공개 취약점", "실증", "시나리오"}
+LABELS = {"실제 사고", "위협인텔", "공개 취약점", "실증", "시나리오", "EMB3D"}
 
 problems, warnings = [], []
 
@@ -81,6 +82,8 @@ for tkey, t in TEXT.items():
         problems.append((tkey, "없는 사고 ID", x))
     for x in set(re.findall(r"ATT&CK ([CSG]\d{4})", text)) - set(ics.subjects):
         problems.append((tkey, "없는 ATT&CK 주체", x))
+    for x in set(re.findall(r"TID-\d{3}", text)) - set(E3T):
+        problems.append((tkey, "없는 EMB3D 위협", x))
 
     for line in cases:
         m = re.match(r"- \[([^\]]+)\]", line)
@@ -92,6 +95,14 @@ for tkey, t in TEXT.items():
         if label not in LABELS:
             problems.append((tkey, "알 수 없는 라벨", label))
             continue
+        if label == "EMB3D":
+            tids = re.findall(r"EMB3D (TID-\d{3})", line)
+            if not tids:
+                problems.append((tkey, "[EMB3D] 줄에 EMB3D TID 없음", line[:40]))
+            linked = set(ev[base]["emb3d"]) | set(ev[base.split(".")[0]]["emb3d"])
+            for t in tids:
+                if t not in linked:
+                    problems.append((tkey, "EMB3D 위협이 해당 행에 연계되지 않음", t))
         for sid in set(re.findall(r"ATT&CK ([CSG]\d{4})", line)) - proc_subjects(base):
             problems.append((tkey, "인용한 ATT&CK 주체에 이 기법 절차 없음", sid))
         cited = re.findall(r"INC-\d{3}", line)

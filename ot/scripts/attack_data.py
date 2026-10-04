@@ -67,6 +67,20 @@ class ICS:
 
         self.assets = {_eid(o): o["name"] for o in live if o["type"] == "x-mitre-asset"}
         self.mitigations = {_eid(o): (o["name"], clean(o.get("description"))) for o in live if o["type"] == "course-of-action"}
+        # 완화책 → 표준 매핑(STIX labels 필드): IEC 62443-3-3 SR / 62443-4-2 CR·EDR·HDR·NDR / NIST SP 800-53
+        self.mitig_std = {}
+        for o in live:
+            if o["type"] != "course-of-action":
+                continue
+            std = dict(iec33=[], iec42=[], nist=[])
+            for lab in o.get("labels", []):
+                if lab.startswith("IEC 62443-3-3"):
+                    std["iec33"] += re.findall(r"SR \d+\.\d+(?: RE \d+)?", lab)
+                elif lab.startswith("IEC 62443-4-2"):
+                    std["iec42"] += re.findall(r"(?:CR|EDR|HDR|NDR|SAR) \d+\.\d+(?: RE \d+)?", lab)
+                elif lab.startswith("NIST SP 800-53"):
+                    std["nist"] += re.findall(r"[A-Z]{2}-\d+(?:\(\d+\))?", lab)
+            self.mitig_std[_eid(o)] = std
         self.subjects = {}
         for o in live:
             if o["type"] in ("campaign", "malware", "tool", "intrusion-set"):
