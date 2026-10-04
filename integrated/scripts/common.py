@@ -190,6 +190,10 @@ def check_entry(entry, refs, kind):
         errs.append(f"{eid}: 대표 사례는 1~2줄")
     joined = "\n".join(refs)
     for c in cases:
+        if c.startswith("- 공개 사고 미확인"):  # 사례가 없는 기법: 원본의 '공개 사고 미확인' 근거가 있을 때만 허용
+            if "공개 사고 미확인" not in joined:
+                errs.append(f"{eid}: 원본에 '공개 사고 미확인' 근거 없음")
+            continue
         m = CASE_RE.match(c)
         if not m or m.group("tag") not in CASE_TAGS:
             errs.append(f"{eid}: 사례 형식 오류: {c[:40]}")

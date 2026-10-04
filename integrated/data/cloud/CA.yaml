@@ -43,8 +43,8 @@
   scenario: |-
     - 인포스틸러·AiTM 프록시·CI/CD 러너 메모리·연동 SaaS 침해로 토큰과 쿠키 확보 → 공격자 브라우저·API 클라이언트에 주입해 세션 재사용 → 메일·파일·CRM 조회와 다운스트림 조직 침해로 확대
   cases: |-
-    - [실제 사고] Salesloft Drift 공급망 침해(2025-08): GitHub·AWS 환경 접근으로 OAuth 토큰을 탈취해 700여 Salesforce 인스턴스 침해
-    - [실제 사고] BitoPro(2025-05): 클라우드 운영 직원을 침해해 탈취한 AWS 세션 토큰으로 MFA를 우회, 1,100만 달러 상당 암호화폐 탈취
+    - [실제 사고] Context.ai OAuth 토큰 침해(2026-04): 인포스틸러로 시작해 Context.ai AWS 환경에서 고객 OAuth 토큰을 탈취하고 Vercel 직원 Workspace에 접근
+    - [실제 사고] UNC4899 채용 미끼 악성코드(2025-07): 세션 쿠키를 탈취하고 CloudFront·S3의 JavaScript를 변조해 암호화폐 탈취
   controls: |-
     - 토큰·세션 수명 단축과 장치·IP 바인딩, 피싱 저항형 MFA
     - 통합 앱 토큰 범위 제한, 서비스 어카운트 토큰 자동 마운트 최소화
@@ -77,7 +77,7 @@
     - 침해 단말·CI 러너·코드 저장소에서 ~/.aws/credentials·kubeconfig·.env와 채팅 속 키 수집 → 획득 권한으로 Secrets Manager·Key Vault 비밀 일괄 조회 → 스토리지·DB 접근과 데이터 유출
   cases: |-
     - [실제 사고] Uber(2016-10): 비공개 GitHub 저장소 안의 AWS 자격증명으로 백업에 접근해 운전자·사용자 5,700만 명 정보 유출
-    - [실제 사고] LexisNexis 침해(2026-03): 미패치 취약점으로 AWS 환경에 접근해 Secrets Manager와 Redshift·VPC 내 DB에 접근
+    - [실제 사고] 외부 노출 앱 자격증명 침해(2026-06): IAM 사용자 생성·파이프라인 변조와 함께 Secrets Manager·Parameter Store에 접근해 RDS 데이터 유출 후 갈취
   controls: |-
     - 코드·이미지·CI·협업 도구 비밀 스캐닝과 하드코딩 금지, 단기 자격증명(OIDC) 전환
     - 비밀 저장소 조회 권한 최소화·비밀별 접근 정책
