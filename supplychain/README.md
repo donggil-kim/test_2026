@@ -8,6 +8,8 @@
 - **교차 매핑**: MITRE ATT&CK v19.2 · SLSA v1.2 위협 모델 · OWASP Top 10 CI/CD · OWASP Top 10 OSS · SAP Risk Explorer 공격 벡터(52개 전부) · CNCF 침해 유형
 - **실제 근거**: 공급망 보안사고 DB 167건(2003~2026, 공개 출처) · ATT&CK 공급망 맥락 절차 · CISA KEV 공급망 판정 80건 · OSV 악성 패키지 23.9만 건
 - **대응 기준**: OpenSSF S2C2F · NIST SSDF · OpenSSF Scorecard · NIST SP 800-53 · SAP 대응책
+- **공급망 관점 문구(v2)**: 60개 전 항목 — 핵심 요약 · 요약설명 · 참조(공급망 관점·실제 사례) · 탐지·대응, 검증기로 사고 DB와 대조
+- **공격 체인 시나리오(v2)**: 실제 사고 기반 9개(SolarWinds·3CX·xz·tj-actions·TeamPCP 연쇄·Shai-Hulud·Bybit·Kaseya·3·20)
 - **다른 매트릭스 연계**: 통합 AI·클라우드 매트릭스 v1(AI-·CL-), 통합 OT 매트릭스(OTC-)
 
 > 위치: 앞선 OT 매트릭스와 같이 이 저장소의 `supplychain/` 폴더에 두었습니다. 모든 경로가 이 폴더 기준이라 폴더째 옮겨도 빌드됩니다.
@@ -16,8 +18,35 @@
 
 | 경로 | 설명 |
 |---|---|
-| `output/통합_공급망보안위협_매트릭스_v1.xlsx` | v1 — 분류 체계·교차 매핑·근거 집계·위험평가(공급망 관점 문구는 v2) |
-| `output/통합_공급망보안위협_매트릭스_v1.csv` | 세부위협 60행 요약(검토·diff용, UTF-8 BOM) |
+| `output/통합_공급망보안위협_매트릭스_v2.xlsx` | **최신** — 15개 시트(아래), 공급망 관점 문구 60/60 |
+| `output/통합_공급망보안위협_매트릭스_v2.csv` | 세부위협 60행 요약(핵심 요약·요약설명 포함, 검토·diff용, UTF-8 BOM) |
+| `output/통합_공급망보안위협_매트릭스_v1.*` | v1 — 분류 체계·교차 매핑·근거 집계·위험평가(문구 없음) |
+| `docs/methodology.md` | 방법론 — 설계 원칙·입력 데이터·사고 DB·근거 집계·평가 로직·문구 규칙·검증기·시나리오·한계·로드맵 |
+| `reference/README.md` | 참조 자료와 이용 조건 |
+
+### 워크북 시트(v2)
+
+| 시트 | 내용 |
+|---|---|
+| 개요 | 기준 데이터·분류 체계·결과 요약·우선 위협 Top 10·주의 사항·검증 결과 |
+| 보고서용 간략 매트릭스 | 본문 삽입용 — 우선순위 순 세부위협·핵심 요약·위험도·실제 사고 수·대표 사례 1건·핵심 대응 1줄 |
+| 매트릭스 뷰 | 도메인(열)별 세부위협을 위험도 색으로 배치 |
+| 통합 매트릭스 | 분류 체계 · 교차 매핑 · 위험 평가 · 실제 근거 · 대응 기준 전체 열(문구 포함) |
+| 통합매트릭스_LITE | 핵심 열 발췌(필터·보고용) |
+| 도메인 요약 · 생태계 요약 | 도메인·생태계별 위험도·근거 분포, 매핑 사고, 대표 위협 |
+| 공격 체인 시나리오 | 실제 사고 기반 공격 흐름 9개 — 단계별 SCT-ID·행위·탐지 포인트·초크 포인트 |
+| 역매핑_사고사례 · KEV 근거 · 악성 패키지 현황 | 사고 DB 167건·KEV 판정 80건·OSV 생태계별 현황 |
+| 프레임워크 연계 · 대응 기준 연계 | 프레임워크·대응 기준 항목별 연계 위협(커버리지·통제 우선순위) |
+| 평가 기준 · 변경이력 | 산정 규칙·문구 작성 규칙·버전별 변경 |
+
+## 결과 요약(v2)
+
+- 위험도: 매우 높음 38 · 높음 16 · 보통 6 / 근거 수준: 실제 사고 확인 58 · 실사용 기법 포함 2
+- 우선 위협(단계 위협 기준, 결과 유형인 IM 도메인 제외): 정상 패키지·확장 악성 버전 게시(PB-01) → 다운로드 사이트 설치 파일 교체(PB-02.1)
+  → 서명 키 탈취·악성코드 서명(PB-03.1) → 업데이트 채널 장악(PB-02.2) → 자격증명 재사용·세션 탈취(SC-03.2) → 러너 비밀 수집(SC-02.1)
+  → 게시 토큰·OIDC 탈취(SC-02.2)
+- 최근(2025~2026) 사고가 몰린 위협: 연쇄 공급망 침해(IM-01.2, 최근 10건) · 악성 버전 게시(PB-01, 15건) · 러너 비밀 수집(SC-02.1, 7건)
+  — CI/CD 토큰 탈취가 다음 침해의 재료가 되는 연쇄형 공격(TeamPCP·Shai-Hulud 계열)이 두드러짐
 
 ## 도메인(Lv1)
 
@@ -32,12 +61,38 @@
 | CS | 소비·서드파티 연계 | 검증 없는 수용·MSP·RMM·내부 배포 도구·공급업체 접근·SaaS 연동 토큰·웹 스크립트·필수 설치 SW |
 | IM | 영향·확산 | 다운스트림 대량 침해·연쇄 공급망 침해·자가 전파 웜·비밀·소스 반출·금전 탈취·파괴 |
 
+## 공급망 관점 문구(`data/text/<도메인>.yaml`)
+
+```yaml
+SCT-BD-01.1:
+  oneline: 외부 PR로 신뢰된 파이프라인에서 코드 실행해 게시 자격 탈취      # 50자 이내
+  summary: |-                                                          # 2줄 개조식
+    - 공격자는 … 코드를 실행할 수 있음
+    - … 정상 게시 주체 명의로 악성 버전이 배포됨
+  reference: |-
+    ■ 공급망 관점
+    - 대상: … / 수법: … / 변형: …
+    ■ 실제 사례
+    - [실제 사고] TanStack 침해(2026-05): … (SCI-162, CVE-2026-45321, ATT&CK G1056)
+  detect: |-
+    ■ 탐지
+    - …
+    ■ 대응
+    - …
+```
+
+- 사례는 그 행에 매핑된 사고만, 수치·경위는 사고 DB 요약·출처에 있는 것만 씁니다. 라벨은 `[실제 사고]`·`[실증]`·`[공개 취약점]`·`[시나리오]`.
+- 문구를 고치면 `python3 scripts/validate.py`로 대조합니다(빌드 때도 자동 실행). 규칙 전체는 `docs/methodology.md` §9~10.
+
 ## 재생성
 
 ```bash
 pip install openpyxl pyyaml
-python3 scripts/build_supplychain_threat_matrix.py   # output/ 에 워크북·CSV 생성
+python3 scripts/validate.py                          # 데이터·문구 검증(오류 시 종료 코드 1, --strict는 경고도 실패)
+python3 scripts/build_supplychain_threat_matrix.py   # 검증 후 output/ 에 워크북·CSV 생성(--skip-validate로 검증 생략)
 
+# (선택) 문구 작성용 근거 정리본(도메인별 .md — 행별 매핑 사고·KEV·ATT&CK 주체)
+python3 scripts/build_supplychain_threat_matrix.py --worksheet /tmp/sct_worksheet
 # (선택) ATT&CK 추출본 재생성 — 저장소 루트의 enterprise-attack-v19.2.xlsx 사용
 python3 scripts/prepare_attack.py
 # (선택) OSV 악성 패키지 집계 재생성
@@ -45,4 +100,23 @@ git clone --depth 1 --filter=blob:none --no-checkout https://github.com/ossf/mal
 python3 scripts/prepare_osv_counts.py --repo /tmp/malpkg
 ```
 
-자세한 방법론·문구 작성 기준은 v2에서 `docs/methodology.md`와 함께 정리합니다. 참조 자료와 이용 조건은 [`reference/README.md`](reference/README.md)를 보세요.
+## 파일 구성
+
+| 경로 | 설명 |
+|---|---|
+| `data/taxonomy.yaml` | 분류 체계(도메인·위협분류·세부위협)와 교차 매핑·대응 기준·심각도 근거 |
+| `data/incidents.yaml` | 공급망 보안사고 DB 167건(사례별 매핑 세부위협·ATT&CK·KEV·출처) |
+| `data/text/*.yaml` | 공급망 관점 문구(도메인별 8개 파일) |
+| `data/scenarios.yaml` | 공격 체인 시나리오 9개 |
+| `data/frameworks.yaml` | 프레임워크·대응 기준 ID·명칭 카탈로그 |
+| `data/changelog.yaml` | 변경이력(워크북 '변경이력' 시트) |
+| `scripts/build_supplychain_threat_matrix.py` | 워크북·CSV 빌드 |
+| `scripts/validate.py` | 데이터·문구 검증기 |
+| `scripts/taxonomy_rules.py` | 집계·판정 규칙(사고 상태·ATT&CK 맥락·KEV 판정·미연계 사유) |
+| `scripts/prepare_attack.py` · `scripts/prepare_osv_counts.py` | 참조 자료 추출 |
+
+## 로드맵
+
+- v3 후보: 국내 사례 확충(KISA·국가정보원·금융보안원 공개 자료), SBOM·VEX·출처 증명 검증 실무 항목 보강, AI 모델·에이전트 공급망을 AI 매트릭스 v3.2와 정합 점검
+- 통합본: 통합 AI·클라우드 매트릭스 v1과 OT 매트릭스에 공급망 매트릭스를 묶는 통합 v2
+- 정기 갱신: KEV·OSV 재생성 → 사고 DB 분기 갱신 → 검증 → 빌드

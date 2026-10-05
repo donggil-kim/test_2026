@@ -7,7 +7,10 @@
 근거 : 공급망 보안사고 DB(data/incidents.yaml) · ATT&CK 절차(공급망 맥락) · CISA KEV(공급망 판정) · SAP 문헌 · OSV 악성 패키지
 논리 : 통합 AI 매트릭스 v3.2 · 클라우드 v5 · OT와 같은 발생가능성 수식(상 = 실제 사고 2건 이상), 심각도는 공급망 결과 기준
 
-실행 : python3 scripts/build_supplychain_threat_matrix.py
+문구 : data/text/*.yaml(핵심 요약·요약설명·참조·탐지·대응) — 빌드 전에 scripts/validate.py로 사례·참조 ID를 대조
+시나리오 : data/scenarios.yaml(실제 사고 기반 공격 체인)
+
+실행 : python3 scripts/build_supplychain_threat_matrix.py [--skip-validate] [--worksheet <폴더>]
        → output/통합_공급망보안위협_매트릭스_<버전>.xlsx · .csv
 """
 import collections
@@ -15,6 +18,7 @@ import csv
 import datetime
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -29,7 +33,7 @@ import taxonomy_rules as R  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 REF = ROOT / "reference"
-VERSION = "v1"
+VERSION = "v2"
 OUT = ROOT / "output" / f"통합_공급망보안위협_매트릭스_{VERSION}.xlsx"
 CSV_OUT = ROOT / "output" / f"통합_공급망보안위협_매트릭스_{VERSION}.csv"
 
@@ -72,19 +76,9 @@ for d in TAX["domains"]:
 ROW = {o["id"]: o for o in ROWS}
 
 
-def incident_status(e):
-    if e["kind"] in R.RESEARCH_KINDS:
-        return "실증·연구"
-    if e["kind"] in R.INTEL_KINDS:
-        return "위협인텔"
-    if e["verification"] in R.EXCLUDED_VERIFICATION:
-        return "제외(검증)"
-    return "실제 사고"
-
-
 for e in INCIDENTS:
     e["date"] = str(e["date"])
-    e["status"] = incident_status(e)
+    e["status"] = R.incident_status(e)
     e["recent"] = e["date"] >= R.RECENT_FROM
 
 INC = {e["id"]: e for e in INCIDENTS}
@@ -200,7 +194,8 @@ for o in ROWS:
                    f"실증·연구 {o['n_research']}건 · 공격 분류 문헌 {o['n_sap']}건")
     o["safeguards"] = row_safeguards(o)
     txt = TEXT.get(o["id"]) or {}
-    o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in ("summary", "reference", "detect"))
+    o["oneline"], o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in ("oneline", "summary", "reference",
+                                                                                         "detect"))
     o["text_src"] = "분석가 작성" if txt else "작성 예정"
 
 rank_key = {r: i for i, r in enumerate(R.RISK_ORDER)}
@@ -231,6 +226,49 @@ def atk_label(t):
 def inc_label(i):
     e = INC[i]
     return f"{i} {e['title']}({e['date']})"
+
+
+def _bullets(block, section):
+    """'■ 단락' 아래 '- ' 줄 목록"""
+    out, on = [], False
+    for ln in (block or "").splitlines():
+        if ln.startswith("■ "):
+            on = ln[2:].strip() == section
+        elif on and ln.startswith("- "):
+            out.append(ln[2:].strip())
+    return out
+
+
+def first_case(o):
+    """대표 사례 = '■ 실제 사례' 첫 줄 → '[라벨] 사례명(시점) (사고 ID)' (보고서용 간략 표기)"""
+    for b in _bullets(o["reference"], "실제 사례"):
+        if b.startswith("공개 사고 미확인"):
+            return "공개 사고 미확인"
+        if b.startswith("참고:"):
+            continue
+        ids = re.findall(r"SCI-\d{3}", b)
+        return b.split(": ", 1)[0] + (f" ({', '.join(ids)})" if ids else "")
+    return ""
+
+
+def first_control(o):
+    """핵심 대응 = '■ 대응' 첫 줄"""
+    b = _bullets(o["detect"], "대응")
+    return b[0] if b else ""
+
+
+def run_validate():
+    """scripts/validate.py 실행 — 오류가 있으면 빌드 중단, 결과 줄을 개요 시트에 기록"""
+    r = subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "validate.py")],
+                       capture_output=True, text=True, encoding="utf-8")
+    lines = [ln for ln in r.stdout.splitlines() if ln.strip()]
+    if r.returncode != 0:
+        print("\n".join(lines))
+        raise SystemExit("검증 오류 — 문구·데이터를 고친 뒤 다시 빌드(--skip-validate로 무시 가능)")
+    return next((ln for ln in reversed(lines) if ln.startswith("검증 결과")), "")
+
+
+VALIDATION = "검증 생략(--skip-validate)"
 
 
 # ===========================================================================
@@ -349,11 +387,14 @@ def write_xlsx(path):
         ("대응 기준", "OpenSSF S2C2F · NIST SSDF(SP 800-218) · OpenSSF Scorecard · NIST SP 800-53 Rev.5 · SAP 대응책(SG)"),
         ("다른 매트릭스", "통합 AI·클라우드 매트릭스 v1(AI-·CL- 요약 ID) · 통합 OT 매트릭스(OTC-) 연계 열"), ("", ""),
         ("■ 시트 구성", ""),
+        ("보고서용 간략 매트릭스", "본문 삽입용 — 우선순위 순 세부위협 · 핵심 요약(한 줄) · 위험도 · 실제 사고 수 · 대표 사례 1건 · 핵심 대응 1줄"),
         ("매트릭스 뷰", "도메인(열)별 세부위협을 위험도 색으로 배치한 한눈 보기"),
-        ("통합 매트릭스", "분류 체계 · 교차 매핑 · 위험 평가 · 실제 근거 · 대응 기준 전체 열"),
+        ("통합 매트릭스", "분류 체계 · 교차 매핑 · 위험 평가 · 실제 근거 · 대응 기준 전체 열(핵심 요약·요약설명·참조·탐지·대응 문구 포함)"),
         ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용)"),
         ("도메인 요약", "도메인별 위협 수 · 위험도/근거수준 분포 · 매핑 사고 수 · 최고위험 항목"),
         ("생태계 요약", "생태계·경로(npm·PyPI·Actions·확장·상용 SW 업데이트 등)별 실제 사고·영향·대표 세부위협·OSV 악성 패키지 수"),
+        ("공격 체인 시나리오", f"실제 사고 기반 공격 흐름 {len(SCENARIOS.get('scenarios', []))}개 — 단계별 세부위협(SCT-ID)·행위·탐지 포인트와 "
+                          "흐름을 끊는 초크 포인트"),
         ("역매핑_사고사례", f"사고 DB {len(INCIDENTS)}건과 매핑 세부위협·출처(근거 추적용)"),
         ("KEV 근거", "CISA KEV 공급망 판정 내역(구분·매핑 세부위협·관련 사고)"),
         ("악성 패키지 현황", "OSV 형식 악성 패키지 보고의 생태계·연도별 건수와 해석 유의사항"),
@@ -374,8 +415,9 @@ def write_xlsx(path):
         ("근거 수준", " · ".join(f"{k} {lc.get(k, 0)}" for k in R.LEVELS)),
         ("심각도", " · ".join(f"{k} {sc.get(k, 0)}" for k in ("상", "중", "하"))
          + " — '하'에 해당하는 공급망 위협(라이선스·품질 위험 등)은 범위에서 제외"),
-        ("공급망 관점 문구", f"{written}/{len(ROWS)}개 작성" + (" — 전 항목 완료" if written == len(ROWS) else
-                                                       " — 나머지는 영문명만 표시(회색, '작성 예정')")),
+        ("공급망 관점 문구", f"{written}/{len(ROWS)}개 작성(핵심 요약·요약설명·참조·탐지·대응)"
+                       + (" — 전 항목 완료" if written == len(ROWS) else " — 나머지는 영문명만 표시(회색, '작성 예정')")
+                       + f" | scripts/validate.py {VALIDATION}"),
         ("우선 위협 Top 10", "\n".join(f"{o['priority']}. {o['id']} {o['name']} — {o['risk']}, 실제 사고 {o['n_real']}건"
                                     f"(최근 {o['n_recent']})" for o in top)),
         ("", ""), ("■ 주의", ""),
@@ -403,6 +445,28 @@ def write_xlsx(path):
     ws.cell(1, 1).font = Font(size=15, bold=True, color=NAVY)
     _w(ws, [22, 140])
 
+    # ---------------- 보고서용 간략 매트릭스 ----------------
+    ws = wb.create_sheet("보고서용 간략 매트릭스")
+    bcols = ["순위", "도메인(Lv1)", "SCT-ID", "세부위협(Lv3)", "핵심 요약", "위험도", "발생가능성", "심각도", "실제 사고 수",
+             "최근(2025~)", "대표 사례", "핵심 대응"]
+    t = ws.cell(1, 1, f"보고서용 간략 매트릭스 {VERSION} — 본문 삽입용(상세 문구는 '통합 매트릭스')")
+    t.font = Font(size=13, bold=True, color=NAVY)
+    ws.cell(2, 1, "순위 = 위험도 → 실제 사고 수 → 최근 사고(2025~) → SCT-ID | 대표 사례 = 참조 '■ 실제 사례' 첫 줄 | "
+                  f"핵심 대응 = '■ 대응' 첫 줄 | {today}").font = Font(size=9, color="595959")
+    _hdr(ws, 4, bcols)
+    for r, o in enumerate(sorted(ROWS, key=lambda o: o["priority"]), 5):
+        _row(ws, r, [o["priority"], o["domain"], o["id"], o["name"], o["oneline"] or summary_cell(o), o["risk"], o["likelihood"],
+                     o["severity"], o["n_real"], o["n_recent"], first_case(o), first_control(o)])
+        ws.cell(r, 3).font = Font(bold=True)
+        ws.cell(r, 4).font = Font(bold=True)
+        _risk(ws.cell(r, 6), o["risk"])
+        for j in (1, 7, 8, 9, 10):
+            ws.cell(r, j).alignment = CENTER
+    ws.freeze_panes = "E5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(bcols))}{len(ROWS) + 4}"
+    _w(ws, [6, 14, 12, 26, 44, 9, 7, 7, 7, 7, 46, 54])
+    ws.print_title_rows = "4:4"
+
     # ---------------- 매트릭스 뷰 ----------------
     ws = wb.create_sheet("매트릭스 뷰")
     by_c = collections.defaultdict(list)
@@ -427,8 +491,8 @@ def write_xlsx(path):
 
     # ---------------- 통합 매트릭스 ----------------
     ws = wb.create_sheet("통합 매트릭스")
-    g_class = ["도메인(Lv1)", "SCT-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "참조", "영문명", "공격 단계(ATT&CK 전술)",
-               "설명 출처"]
+    g_class = ["도메인(Lv1)", "SCT-ID", "위협분류(Lv2)", "세부위협(Lv3)", "핵심 요약", "요약설명", "참조", "영문명",
+               "공격 단계(ATT&CK 전술)", "설명 출처"]
     g_cross = (["대상 자산"] + [f"프로파일:{p}" for p in R.PROFILES]
                + ["ATT&CK ID", "SLSA v1.2 위협", "OWASP CI/CD Top10", "OWASP OSS Top10", "SAP 공격 벡터(AV)", "CNCF 침해 유형",
                   "클라우드 매트릭스 연계", "AI 매트릭스 연계", "OT 매트릭스 연계", "ATT&CK 기법명", "적용 프로파일 수"])
@@ -460,7 +524,8 @@ def write_xlsx(path):
         x = EV[o["id"]]
         prof = ["●" if p in o["profiles"] else "" for p in R.PROFILES]
         subj = sorted(x["subj"])
-        _row(ws, r, [o["domain"], o["id"], o["lv2"], o["name"], summary_cell(o), o["reference"], o["en"], ", ".join(o["stage"]),
+        _row(ws, r, [o["domain"], o["id"], o["lv2"], o["name"], o["oneline"], summary_cell(o), o["reference"], o["en"],
+                     ", ".join(o["stage"]),
                      o["text_src"], ", ".join(o["assets"])] + prof
              + [", ".join(o["attack"]), "\n".join(fw_label("slsa", k) for k in o["slsa"]),
                 "\n".join(fw_label("owasp_cicd", k) for k in o["cicd"]), "\n".join(fw_label("owasp_oss", k) for k in o["oss"]),
@@ -483,7 +548,8 @@ def write_xlsx(path):
         _level(ws.cell(r, ci["근거 수준"]), o["level"])
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(ROWS) + 4}"
-    widths = {"도메인(Lv1)": 14, "SCT-ID": 12, "위협분류(Lv2)": 18, "세부위협(Lv3)": 24, "요약설명": 60, "참조": 80, "영문명": 26,
+    widths = {"도메인(Lv1)": 14, "SCT-ID": 12, "위협분류(Lv2)": 18, "세부위협(Lv3)": 24, "핵심 요약": 34, "요약설명": 60, "참조": 80,
+              "영문명": 26,
               "공격 단계(ATT&CK 전술)": 14, "설명 출처": 9, "대상 자산": 18, "ATT&CK ID": 14, "SLSA v1.2 위협": 22,
               "OWASP CI/CD Top10": 22, "OWASP OSS Top10": 20, "SAP 공격 벡터(AV)": 24, "CNCF 침해 유형": 14,
               "클라우드 매트릭스 연계": 12, "AI 매트릭스 연계": 12, "OT 매트릭스 연계": 10, "ATT&CK 기법명": 30,
@@ -497,21 +563,23 @@ def write_xlsx(path):
     # ---------------- 통합매트릭스_LITE ----------------
     ws = wb.create_sheet("통합매트릭스_LITE")
     ws.cell(1, 1, f"통합 소프트웨어 공급망 보안위협 매트릭스 {VERSION} — LITE").font = Font(size=13, bold=True, color=NAVY)
-    lcols = ["도메인(Lv1)", "SCT-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "공격 단계", "적용 프로파일", "발생가능성", "심각도",
-             "위험도", "우선순위", "근거 수준", "실제 사고 수", "최근 사고(2025~)", "탐지·대응 포인트"]
+    lcols = ["도메인(Lv1)", "SCT-ID", "위협분류(Lv2)", "세부위협(Lv3)", "핵심 요약", "요약설명", "공격 단계", "적용 프로파일",
+             "발생가능성", "심각도", "위험도", "우선순위", "근거 수준", "실제 사고 수", "최근 사고(2025~)", "탐지·대응 포인트"]
+    lc_ = {c: i + 1 for i, c in enumerate(lcols)}
     _hdr(ws, 2, lcols)
     for r, o in enumerate(ROWS, 3):
-        _row(ws, r, [o["domain"], o["id"], o["lv2"], o["name"], summary_cell(o), ", ".join(o["stage"]), " · ".join(o["profiles"]),
-                     o["likelihood"], o["severity"], o["risk"], o["priority"], o["level"], o["n_real"], o["n_recent"], o["detect"]])
+        _row(ws, r, [o["domain"], o["id"], o["lv2"], o["name"], o["oneline"], summary_cell(o), ", ".join(o["stage"]),
+                     " · ".join(o["profiles"]), o["likelihood"], o["severity"], o["risk"], o["priority"], o["level"], o["n_real"],
+                     o["n_recent"], o["detect"]])
         if o["text_src"] != "분석가 작성":
-            ws.cell(r, 5).font = Font(color=GRAY)
-        _risk(ws.cell(r, 10), o["risk"])
-        _level(ws.cell(r, 12), o["level"])
-        for j in (8, 9, 11, 13, 14):
-            ws.cell(r, j).alignment = CENTER
+            ws.cell(r, lc_["요약설명"]).font = Font(color=GRAY)
+        _risk(ws.cell(r, lc_["위험도"]), o["risk"])
+        _level(ws.cell(r, lc_["근거 수준"]), o["level"])
+        for c in ("발생가능성", "심각도", "우선순위", "실제 사고 수", "최근 사고(2025~)"):
+            ws.cell(r, lc_[c]).alignment = CENTER
     ws.freeze_panes = "E3"
     ws.auto_filter.ref = f"A2:{get_column_letter(len(lcols))}{len(ROWS) + 2}"
-    _w(ws, [14, 12, 18, 24, 60, 14, 18, 7, 7, 8, 7, 11, 7, 7, 70])
+    _w(ws, [14, 12, 18, 24, 34, 60, 14, 18, 7, 7, 8, 7, 11, 7, 7, 70])
 
     # ---------------- 도메인 요약 ----------------
     ws = wb.create_sheet("도메인 요약")
@@ -550,6 +618,43 @@ def write_xlsx(path):
                      f"{osv_total(OSV_KEYS[eco]):,}" if eco in OSV_KEYS else ""])
     ws.freeze_panes = "C5"
     _w(ws, [14, 22, 8, 8, 8, 30, 46, 52, 12])
+
+    # ---------------- 공격 체인 시나리오 ----------------
+    ws = wb.create_sheet("공격 체인 시나리오")
+    ws.cell(1, 1, "공격 체인 시나리오 — 실제 사고를 공급망 단계 흐름으로 재구성. 각 단계는 세부위협(SCT-ID, 위험도 색)에 연결하고, "
+                  "흐름을 가장 싸게 끊는 통제를 초크 포인트로 표시").font = Font(bold=True, color=NAVY)
+    ws.cell(2, 1, "행위는 사고 DB 요약에 있는 사실만 적음(data/scenarios.yaml, scripts/validate.py가 ID 대조)").font = Font(size=9, color="595959")
+    r = 4
+    for scn in SCENARIOS.get("scenarios", []):
+        c = ws.cell(r, 1, f"{scn['id']}. {scn['title']}")
+        c.font = Font(size=12, bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor=NAVY)
+        ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6)
+        r += 1
+        info = [("개요", scn["summary"]), ("근거 사고", " · ".join(inc_label(i) for i in scn["incidents"]))]
+        if scn.get("ref"):
+            info.append(("참조", scn["ref"]))
+        for k, v in info:
+            ws.cell(r, 1, k).font = Font(bold=True, size=9, color="595959")
+            ws.cell(r, 2, v).alignment = WRAP
+            ws.cell(r, 2).font = Font(size=9)
+            ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=6)
+            r += 1
+        _hdr(ws, r, ["#", "공격 단계", "SCT-ID", "세부위협", "행위", "탐지 포인트"])
+        r += 1
+        for i, st in enumerate(scn["steps"], 1):
+            rows_ = [ROW[k] for k in st["sct"]]
+            _row(ws, r, [i, st["단계"], "\n".join(o["id"] for o in rows_), "\n".join(o["name"] for o in rows_), st["행위"],
+                         st["탐지"]])
+            _risk(ws.cell(r, 3), min((o["risk"] for o in rows_), key=lambda x: rank_key[x]))
+            ws.cell(r, 1).alignment = CENTER
+            r += 1
+        ws.cell(r, 1, "초크").font = Font(bold=True, color="A04000")
+        ws.cell(r, 2, "\n".join(f"· {c}" for c in scn["chokepoints"])).alignment = WRAP
+        ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=6)
+        ws.row_dimensions[r].height = 15 * len(scn["chokepoints"]) + 4
+        r += 2
+    _w(ws, [6, 14, 14, 30, 56, 50])
 
     # ---------------- 역매핑_사고사례 ----------------
     ws = wb.create_sheet("역매핑_사고사례")
@@ -700,6 +805,16 @@ def write_xlsx(path):
         ("[공개 취약점]", "CVE·KEV·공식 보안 권고로 확인된 결함"),
         ("[실증]", "연구자·레드팀·보안업체가 실제 제품·서비스에서 재현한 공격(사고 DB 연구·시연)"),
         ("[시나리오]", "기준 문서(SLSA·OWASP 등)의 가정 사례"),
+        ("", ""), ("■ 공급망 관점 문구 작성 규칙(data/text/*.yaml)", ""),
+        ("핵심 요약", "한 줄 50자 이내, '수단 + 대상 + 결과'를 명사형으로 — 보고서 본문·슬라이드용"),
+        ("요약설명", "2줄 개조식 — ① 공격자는 [수단·경로]로 [행위]할 수 있음 ② 피해·확산 특성 또는 탐지·방어가 어려운 이유"),
+        ("참조", "■ 공급망 관점(대상·경로·수법·변형·연계 SCT-ID·다른 매트릭스 ID) / ■ 실제 사례('[라벨] 사례명(YYYY-MM): 경위·결과 "
+               "(사고 ID·CVE·ATT&CK ID)', 공개 사례가 없으면 '공개 사고 미확인 — 사유')"),
+        ("탐지·대응", "■ 탐지 / ■ 대응(예방 → 차단 → 탐지 순, 개발·운영 제약 반영, 매핑된 대응 기준 ID 병기)"),
+        ("사실 근거", "수치·사례는 사고 DB 요약·출처에 있는 것만 씀. 용어는 자격증명(인증정보·크리덴셜 쓰지 않음)·반출(행위)/유출(결과)"),
+        ("자동 검증", "scripts/validate.py — 인용 사고가 그 행에 매핑됐는지, 라벨이 집계 상태와 맞는지, 시점·CVE·ATT&CK ID가 사고 DB와 "
+                    "같은지, 설명 속 수치가 사고 요약에 있는지, SCT·S2C2F·SSDF·NIST·Scorecard·다른 매트릭스 ID가 존재하고 행 매핑과 "
+                    "맞는지, '실제 사고 확인' 행이 [실제 사고] 사례를 인용하는지 대조(빌드 전에 자동 실행)"),
     ]
     for i, (a, b) in enumerate(crit, 1):
         ws.cell(i, 1, a).font = Font(bold=a.startswith("■"), color=NAVY if a.startswith("■") else "000000")
@@ -724,20 +839,60 @@ def write_xlsx(path):
 
 
 def write_csv(path):
-    cols = ["도메인", "SCT-ID", "위협분류", "세부위협", "요약설명", "공격 단계", "적용 프로파일", "ATT&CK", "SLSA", "OWASP CI/CD",
+    cols = ["도메인", "SCT-ID", "위협분류", "세부위협", "핵심 요약", "요약설명", "공격 단계", "적용 프로파일", "ATT&CK", "SLSA",
+            "OWASP CI/CD",
             "OWASP OSS", "SAP AV", "발생가능성", "심각도", "위험도", "우선순위", "근거 수준", "실제 사고 수", "최근 사고",
             "ATT&CK 사례 수", "KEV", "관련 사례 ID"]
     with open(path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         w.writerow(cols)
         for o in ROWS:
-            w.writerow([o["domain"], o["id"], o["lv2"], o["name"], o["summary"].replace("\n", " "), ", ".join(o["stage"]),
+            w.writerow([o["domain"], o["id"], o["lv2"], o["name"], o["oneline"], o["summary"].replace("\n", " "),
+                        ", ".join(o["stage"]),
                         " · ".join(o["profiles"]), ", ".join(o["attack"]), ", ".join(o["slsa"]), ", ".join(o["cicd"]),
                         ", ".join(o["oss"]), ", ".join(o["sap"]), o["likelihood"], o["severity"], o["risk"], o["priority"],
                         o["level"], o["n_real"], o["n_recent"], o["n_atk"], o["n_kev"], ", ".join(sorted(EV[o["id"]]["real"]))])
 
 
+def write_worksheet(outdir):
+    """문구 작성용 근거 정리본 — 도메인별 마크다운(행별 매핑 사고·KEV·ATT&CK 주체·SAP AV)"""
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    for d in DOMAINS:
+        lines = [f"# [{d['code']}] {d['ko']} — 문구 작성용 근거 정리본", ""]
+        for o in [o for o in ROWS if o["code"] == d["code"]]:
+            x = EV[o["id"]]
+            lines += [f"## {o['id']} {o['name']} ({o['en']})", "",
+                      f"- 위험: {o['likelihood']}×{o['severity']}={o['risk']} · {o['lk_why']}",
+                      f"- ATT&CK: {', '.join(atk_label(t) for t in o['attack'])}",
+                      "- SAP AV: " + ", ".join(f"{k} {SAP_AV[k]['avName']}" for k in o["sap"]),
+                      f"- 연계: 클라우드 {o['cloud']} · AI {o['ai']} · OT {o['ot']}", "", "### 사고 DB"]
+            for i in sorted(x["real"] | x["research"] | x["intel"], key=lambda i: INC[i]["date"]):
+                e = INC[i]
+                lines.append(f"- {i} [{e['status']}] {e['title']}({e['date']}) — {' '.join(e['summary'].split())}"
+                             + (f" KEV {', '.join(e['kev'])}" if e.get("kev") else "")
+                             + (f" ATT&CK {', '.join(e['attack_ref'])}" if e.get("attack_ref") else ""))
+            if x["kev"]:
+                lines += ["", "### KEV(공급망)"] + [f"- {c} {KEV[c]['vendorProject']} {KEV[c]['product']} — "
+                                                     f"{R.KEV_SUPPLYCHAIN[c][2]}" for c in sorted(x["kev"])]
+            if x["subj"]:
+                lines += ["", "### ATT&CK 주체(공급망 맥락)", ", ".join(f"{s} {ATK['subjects'][s]['name']}" for s in sorted(x["subj"]))]
+            lines.append("")
+        (outdir / f"{d['code']}.md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"근거 정리본 → {outdir}")
+
+
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--worksheet", help="문구 작성용 근거 정리본(도메인별 .md)을 만들 폴더")
+    ap.add_argument("--skip-validate", action="store_true", help="scripts/validate.py 검증을 건너뜀")
+    args = ap.parse_args()
+    if not args.skip_validate:
+        VALIDATION = run_validate()
+        print(VALIDATION)
+    if args.worksheet:
+        write_worksheet(args.worksheet)
     write_xlsx(OUT)
     write_csv(CSV_OUT)
     rc = collections.Counter(o["risk"] for o in ROWS)
