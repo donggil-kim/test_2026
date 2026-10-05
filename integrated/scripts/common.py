@@ -42,9 +42,31 @@ CASE_TAGS = ["실제 사고", "공개 취약점", "실증", "ATT&CK 사례", "�
 # Lv0별 허용 사례 유형 — OT는 [위협인텔](배포 전에 발견된 공격 도구)·[EMB3D](EMB3D 장치 위협 인용)를 더 씀
 CASE_TAGS_BY_KIND = {"ai": CASE_TAGS, "cloud": CASE_TAGS, "ot": CASE_TAGS + ["위협인텔", "EMB3D"]}
 # 같은 Lv0 안 대표 사례 반복 사용 경고 — 대형 사고 5건에 근거가 몰린 OT에 적용(AI·클라우드는 v1에서 수동 검토)
+# 사례는 원본 참조 줄의 사고 ID(INC-…)로 묶어, 같은 사고의 다른 표기('2016 우크라이나'·'2016 우크라이나 송전 변전소')도 반복으로 셈
 CASE_REUSE_CHECK = {"ot"}
-# 반복이 불가피한 사례(구성 원본의 유일한 실제 사고 등) — {(Lv0, '사례명(시점)'): 사유}
-CASE_REUSE_ALLOWED = {}
+# 반복이 불가피한 사례 — {(Lv0, 사고 ID 또는 '사례명(시점)'): (허용 항목, 사유)}. 허용 항목 밖에서 또 쓰면 다시 경고
+# OT: 대형 5건은 가장 특징적인 항목(IR-01 2025 폴란드 · IP-02 2016 우크라이나 · IM-05 Triton · PE-01 Stuxnet ·
+#     EX-03 2015 우크라이나)에 두고, 구성 원본의 실제 사고가 다른 항목에 이미 배치된 사고뿐인 항목에서만 함께 씀
+CASE_REUSE_ALLOWED = {
+    ("ot", "INC-009"): ({"OT-PE-01", "OT-EX-02", "OT-EV-02"},
+                        "OT-EX-02·EV-02는 구성 원본의 실제 사고가 대형 5건뿐 — 주기 실행 블록 감염·PLC 루트킷은 Stuxnet의 다른 단계"),
+    ("ot", "INC-004"): ({"OT-IM-05", "OT-PV-01", "OT-LM-01"},
+                        "OT-PV-01·LM-01은 구성 원본의 실제 사고가 Triton·Stuxnet뿐 — 펌웨어 0-day 권한 상승·SIS 프로그램 추가는 Triton의 다른 단계"),
+    ("ot", "INC-008"): ({"OT-IR-01", "OT-RD-02"},
+                        "OT-RD-02는 구성 원본의 실제 사고가 Triton·2025 폴란드뿐 — LLM 생성 스크립트·페이로드 재작성은 준비 단계"),
+    ("ot", "INC-002"): ({"OT-EX-03", "OT-IR-05"},
+                        "OT-IR-05의 실제 사고 줄이 모두 다른 항목에 배치된 사고 — 직렬-이더넷 변환기 펌웨어 덮어쓰기는 펌웨어 변조의 대표 사례"),
+    ("ot", "INC-003"): ({"OT-IP-02", "OT-EV-01"},
+                        "OT-EV-01의 대형 5건 밖 사례(2022 우크라이나·NotPetya)는 OT-EX-01·PV-02·PE-02에 배치 — 전력 프로토콜 이름 위장은 OT 특화 사례"),
+    ("ot", "INC-006"): ({"OT-EX-01", "OT-PV-02"},
+                        "OT-EX-01·PV-02 모두 대형 5건 밖 실제 사고가 2022 우크라이나뿐 — SCADA 명령 도구 실행·GPO 와이퍼 배포는 다른 단계"),
+    ("ot", "INC-007"): ({"OT-IP-01", "OT-PE-03"},
+                        "OT-PE-03의 대형 5건 밖 사례는 2022 우크라이나·리비우뿐 — 웹셸 지속성·Modbus 파라미터 변조는 다른 단계"),
+    ("ot", "INC-013"): ({"OT-IA-06", "OT-EX-04"},
+                        "OT-EX-04의 대형 5건 밖 사례는 Dragonfly·2022 우크라이나뿐 — 벤더 설치 파일 변조·메일 첨부 실행은 캠페인의 다른 경로"),
+    ("ot", "INC-018"): ({"OT-DS-02", "OT-CO-03"},
+                        "OT-DS-02·CO-03 모두 대형 5건 밖 실제 사고가 VPNFilter뿐 — 패킷 스니퍼·ssler 중간자 모듈은 다른 기능"),
+}
 SOURCE_TAG_ALIAS = {"실증·연구": "실증"}
 RECENT_FROM = "2025"  # 최근 사고 기준 연도(이 해 1월 1일 이후)
 
@@ -366,17 +388,22 @@ def entry_prefix(kind, domain):
     return {"ai": f"AI-{domain[1:]}-", "cloud": f"CL-{domain}-", "ot": f"OT-{domain}-"}[kind]
 
 
-def case_keys(cases):
-    """대표 사례 줄 → '사례명(시점)' 목록 ([시나리오]·'공개 사고 미확인'은 제외)."""
+def case_incidents(cases, refs):
+    """대표 사례 줄 → [('사례명(시점)', 사고 ID 목록)] ([시나리오]·'공개 사고 미확인'은 제외).
+    사고 ID는 사례명(시점)이 실린 원본 참조 줄의 'INC-…'에서 가져오며, 없으면(공개 취약점·EMB3D 등) 빈 목록."""
     out = []
     for line in _lines(cases):
         m = CASE_RE.match(line.strip())
         if not m or m.group("tag") == "시나리오":
             continue
         n = NAMED_RE.match(m.group("body"))
-        if n:
-            name = n.group("name").strip()
-            out.append(f"{name}({n.group('date')})" if n.group("date") else name)
+        if not n:
+            continue
+        name = n.group("name").strip()
+        label = f"{name}({n.group('date')})" if n.group("date") else name
+        key = label if n.group("date") else f"] {name}:"  # check_entry의 출처 대조 키와 같음
+        hit = next((l for l in (refs or "").split("\n") if key in l), "")
+        out.append((label, list(dict.fromkeys(re.findall(r"INC-\d+", hit)))))
     return out
 
 
@@ -416,17 +443,25 @@ def check_all(src, summ):
                 continue
             if EVALUATE[kind](e, src[kind])["evidence"] == "실제 사고 확인" and "[실제 사고]" not in (e.get("cases") or ""):
                 warns.append(f"{e['id']}: 근거 수준 '실제 사고 확인'이나 대표 사례에 [실제 사고] 없음")
-    # 4) 대표 사례 분산: 같은 Lv0 안에서 같은 사례를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
+    # 4) 대표 사례 분산: 같은 Lv0 안에서 같은 사고를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
+    #    사고 ID가 없는 사례(공개 취약점·EMB3D 등)는 '사례명(시점)'으로 셈. 허용 목록의 항목 안에서만 반복을 허용
     for kind in KINDS:
         if kind not in CASE_REUSE_CHECK:
             continue
-        seen = collections.defaultdict(list)
-        for e in summ[kind]:
-            for key in dict.fromkeys(case_keys(e.get("cases"))):
-                seen[key].append(e["id"])
+        seen, labels = collections.defaultdict(list), collections.defaultdict(list)
+        for e in valid[kind]:
+            refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+            for label, incs in case_incidents(e.get("cases"), refs):
+                for key in incs or [label]:
+                    if e["id"] not in seen[key]:
+                        seen[key].append(e["id"])
+                    if label not in labels[key]:
+                        labels[key].append(label)
         for key, where in seen.items():
-            if len(where) > 1 and (kind, key) not in CASE_REUSE_ALLOWED:
-                warns.append(f"대표 사례 '{key}' 반복 사용: {', '.join(where)}")
+            allowed = CASE_REUSE_ALLOWED.get((kind, key), (set(), ""))[0]
+            if len(where) > 1 and not set(where) <= allowed:
+                name = key if labels[key] == [key] else f"{key} {'·'.join(labels[key])}"
+                warns.append(f"대표 사례 '{name}' 반복 사용: {', '.join(where)}")
     return errs, warns
 
 
