@@ -17,7 +17,7 @@ MITRE ATT&CK for ICS v19.2 킬체인을 뼈대로 하나의 위협 매트릭스�
 
 | 경로 | 설명 |
 |---|---|
-| `output/통합_OT보안위협_매트릭스_v3.xlsx` | 최신 매트릭스 — EMB3D·표준·시나리오까지 반영(v1 골격, v2 문구, v3 EMB3D, v4 표준·시나리오) |
+| `output/통합_OT보안위협_매트릭스_v5.xlsx` | 최신 매트릭스 — v1 골격, v2 문구, v3 EMB3D, v4 표준·시나리오, v5 표준 명칭·OWASP IoT·업종 프로파일 (v1·v2는 이전 버전. v3·v4는 같은 파일명으로 덮어써 따로 남지 않음) |
 | `scripts/build_ot_threat_matrix.py` | 빌드 스크립트(원천 자료 → 매트릭스 재생성) |
 | `scripts/taxonomy_rules.py` | 전술 코드, OT 특화 검토(편입·통합·제외), 심각도, 자산·Purdue·프로파일, CWE·KEV·EMB3D·키워드 규칙 |
 | `scripts/attack_data.py` | ATT&CK for ICS(STIX)·Enterprise(xlsx) 로더 — 완화책의 IEC 62443·NIST 라벨 포함 |

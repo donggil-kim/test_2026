@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxonomy_rules as R  # noqa: E402
 from attack_data import ICS, Enterprise, ROOT, first_sentence  # noqa: E402
 
-VERSION = "v3"
+VERSION = "v5"
 DATA = ROOT / "data"
 OUT = ROOT / "output" / f"통합_OT보안위협_매트릭스_{VERSION}.xlsx"
 REGISTRY = DATA / "id_registry.yaml"
@@ -860,7 +860,9 @@ def write_xlsx(path):
         for e in incs:
             for k in {kk.split(".")[0] if kk.split(".")[0] in key_row else kk for kk in e["links"]}:
                 tech_cnt[k] += 1
-        top = [f"{key_row[k]['otc']} {key_row[k]['lv3']} ({n}건)" for k, n in tech_cnt.most_common(5) if k in key_row]
+        # 동률은 OTC-ID 순 — 집합 순회 순서(해시 시드)에 따라 실행마다 바뀌지 않게 고정
+        ranked = sorted((k for k in tech_cnt if k in key_row), key=lambda k: (-tech_cnt[k], key_row[k]["otc"]))
+        top = [f"{key_row[k]['otc']} {key_row[k]['lv3']} ({tech_cnt[k]}건)" for k in ranked[:5]]
         _row(ws, r, [name, len(incs), ", ".join(f"{im}({n})" for im, n in impact.most_common(4)),
                      "\n".join(top), desc])
         r += 1
