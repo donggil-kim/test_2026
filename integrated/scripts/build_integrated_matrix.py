@@ -165,7 +165,7 @@ def uniq(seq):
 
 
 def build_rows(src, summ):
-    """요약 행 구성. 반환: (행 목록, 요약 항목으로 옮기지 못한 OT 원본 연계 참조 {'원본키→참조': 요약 ID})."""
+    """요약 행 구성. 반환: (행 목록, 요약 항목으로 옮기지 못한 OT 원본 연계 참조 {'원본키→참조': (요약 ID, 대상 Lv0)})."""
     ai_src, cl_src, ot_src = src["ai"], src["cloud"], src["ot"]
     ai_sum, cl_sum, ot_sum = summ["ai"], summ["cloud"], summ["ot"]
     every = ai_sum + cl_sum + ot_sum
@@ -202,7 +202,7 @@ def build_rows(src, summ):
                     if ref in to_summary[kind]:
                         link(e["id"], to_summary[kind][ref])
                     else:
-                        skipped.setdefault(f"{m}→{ref}", e["id"])
+                        skipped.setdefault(f"{m}→{ref}", (e["id"], kind))
     unknown = [t for k in links for t in links[k] if t not in names]
     if unknown:
         raise ValueError(f"연계 위협 ID 없음: {unknown}")
@@ -581,6 +581,10 @@ CRITERIA = [
     ("경계 이동", "도메인·전술 경계를 넘긴 10건 — 클라우드·AI 6건: T1684.x 은닉→초기 침투, T1546 지속성·권한 상승→실행, T1525 "
                 "지속성→실행, T1550.x 횡적 이동→자격증명 접근, AZT704 영향→수집, AI UT-14.2 D04→D06 / OT 4건(EMB3D 신설 행): "
                 "EMB3D-CO.2 수집→초기 침투, EMB3D-LM.1·LM.2 횡적 이동→수집, EMB3D-EV 회피→수집"),
+    ("OT 묶음 기준", "영향은 ATT&CK ICS 영향 분류 단위(가용성·생산 / 제어 / 감시 / 안전·보호·설비 / 운영 정보), 대응 기능 억제는 "
+                    "운영자 대응을 막는 수단별(파괴·정지·경보 억제·통신 차단·펌웨어·자격증명 변경), 제어기 로직 기법(태스크 변조·"
+                    "프로그램 변조·프로그램 다운로드)은 킬체인 위치가 달라 전술별 분리, Enterprise 편입 기법은 메커니즘이 같은 ICS "
+                    "기법과 묶고 아니면 Enterprise끼리 묶음, EMB3D 신설 7행은 하드웨어 공격 2개 항목으로 묶음"),
     ("단독 유지", "다른 항목과 메커니즘·통제가 달라 묶을 대상이 없는 항목. '통합 근거'에 '단독 유지 — 사유'로 기록"),
     ("■ 2. 위험 평가 (요약 Lv3 재산정)", None),
     ("위험도", "구성 원본별 위험도(발생가능성 × 심각도)의 최댓값. 발생가능성과 심각도를 서로 다른 원본에서 가져와 조합하지 않음"
@@ -611,7 +615,8 @@ CRITERIA = [
     ("위협 설명", "'- '로 시작하는 2줄. 1줄: 공격 방법·대상·결과를 담아 '~위협'으로 종결. 2줄: 영향·발생 조건·탐지 곤란 사유"),
     ("공격 시나리오", "1~2줄, 'A → B → C' 단계 흐름. 구성 원본의 참조·사례에 있는 경로만 사용"),
     ("대표 사례", "1~2줄, '[유형] 사례명(시점): 요지'. 구성 원본 참조에 있는 사례만 쓰며(빌드 검증기가 사례명·시점·유형 대조), "
-              "실제 사고를 우선하고 같은 사고가 여러 행에 반복되지 않게 배치(OT는 반복 사용 시 빌드 검증이 경고). "
+              "실제 사고를 우선하고 같은 사고가 여러 행에 반복되지 않게 배치(OT는 원본 참조의 사고 ID 기준으로 빌드 검증이 "
+              "반복을 경고하고, 구성 원본의 사고가 다른 항목에 이미 배치된 사고뿐이라 불가피한 반복만 허용 항목·사유를 등록). "
               "원본에 사례가 없으면 '공개 사고 미확인 — 사유'"),
     ("대응 방안", "2~3줄 명사형. 예방(권한·구성) → 차단·보호 → 탐지 순. OT는 계정 잠금·패치·재부팅이 운전에 주는 영향을 고려해 "
               "보상 통제(망 분리·허용 목록·OT 네트워크 감시)를 함께 적음"),
@@ -632,7 +637,8 @@ CRITERIA = [
     ("[ATT&CK 사례]", "MITRE ATT&CK에 기록된 그룹·소프트웨어·캠페인의 해당 기법 사용 사례"),
     ("[시나리오]", "OWASP 등 기준 문서의 가상 공격 시나리오"),
     ("[위협인텔]", "OT 전용. 배포 전에 발견된 공격 도구의 능력 분석(PIPEDREAM·COSMICENERGY) — 실제 사고로 세지 않음"),
-    ("[EMB3D]", "OT 전용. MITRE EMB3D 장치 위협(TID) 인용 — 시연·분석 근거로, 실제 사고·실증 사례가 없을 때 사용"),
+    ("[EMB3D]", "OT 전용. MITRE EMB3D 장치 위협(TID) 인용 — 시연·분석 근거로, 구성 원본에 실제 사고·실증 사례가 없을 때만 "
+                "사용(빌드 검증)"),
     ("■ 5. 용어", None),
     ("자격증명", "credential. 비밀번호·액세스 키·토큰·인증서 등 인증 수단 전체 (인증정보·크리덴셜 대신 사용)"),
     ("반출 / 유출", "반출: 공격자가 데이터를 밖으로 빼내는 행위(Exfiltration) / 유출: 데이터가 외부로 새어 나간 결과"),
@@ -839,7 +845,8 @@ def sheet_overview(wb, rows, src, maps, today, release):
               "요약 위험도는 구성 원본에서 재산정한 값(규칙: 부록-작성·평가 기준). 원본 개별 값은 원본 상세 시트에 그대로 유지",
               "AI 실제 사고 수 = ATLAS 사례 ID(중복 제거) + OWASP 인용 사고 — OWASP 인용 사고는 ID가 없어 참조의 사례명(시점)으로 "
               "원본 간 중복을 걸러냄",
-              "대표 사례는 구성 원본 참조에 수록된 사례만 사용(빌드 시 자동 대조) — 새로운 사실을 추가하지 않음",
+              "대표 사례는 구성 원본 참조에 수록된 사례만 사용(빌드 시 자동 대조) — 새로운 사실을 추가하지 않음. OT는 근거가 "
+              "대형 사고에 몰려 같은 사고(Stuxnet·Triton 등)가 여러 항목에 나올 수 있으며, 각 항목은 그 사고의 다른 단계·기능을 보여 줌",
               "모든 값은 정적 값(수식 없음). 재생성: python3 integrated/scripts/build_integrated_matrix.py [--release]"]:
         line("·", v)
     widths(ws, [20, 14, 10, 10, 9, 9, 9, 13, 13, 13, 12])
@@ -976,9 +983,17 @@ def main():
         print(f"  {LV0[kind]} {len(items)}개 | " + " · ".join(f"{k} {dist[k]}" for k in common.RISK_ORDER)
               + " | " + " · ".join(f"{k} {lvl[k]}" for k in common.EVIDENCE_ORDER))
     print(f"  재구성 매핑 {len(maps)}행 | 연계 위협이 있는 항목 {sum(bool(x['links_text']) for x in rows)}개")
-    if skipped:
-        print("  OT 원본 연계 중 요약 항목으로 옮기지 않은 참조(문안 links로 판단): "
-              + ", ".join(f"{k}({v})" for k, v in skipped.items()))
+    if skipped:  # 클라우드 v5에 없는 기법·AI Lv2 ID처럼 요약 ID로 바로 옮길 수 없는 참조 → 문안 links로 대체했는지 확인
+        manual = {e["id"]: [t for t in e.get("links") or []] for e in summ["ot"]}
+        prefix = {"cloud": "CL-", "ai": "AI-"}
+        covered, missing = [], []
+        for k, (sid, kind) in skipped.items():
+            subs = [t for t in manual.get(sid, []) if t.startswith(prefix[kind])]
+            (covered if subs else missing).append(f"{k}({sid}→{'·'.join(subs)})" if subs else f"{k}({sid})")
+        if covered:
+            print(f"  OT 원본 연계 중 요약 ID로 바로 옮길 수 없는 참조 {len(covered)}건 — 문안 links로 대체: " + ", ".join(covered))
+        for x in missing:
+            print(f"  [경고] OT 원본 연계 누락: {x} — 해당 항목 문안에 같은 Lv0의 links 지정 필요")
 
 if __name__ == "__main__":
     main()
