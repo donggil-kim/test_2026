@@ -1,0 +1,3864 @@
+- id: UT-01.1
+  ut: UT-01
+  name: 공개 정보 수집
+  prev:
+    id: UT-01.1
+    name: 공개 정보 수집
+  summary: 공개 논문/기술 블로그/코드 저장소/조직 웹사이트 분석을 통해 대상 AI의 모델 구조, 학습 데이터, 사용 프레임워크 및 관련 인물 정보를 수집하여 후속 공격 설계에 활용
+  reference: |-
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+    • [ATLAS CS0034·실제사고] KYC 우회용 딥페이크 도구 ProKYC가 범죄자에게 판매(실제 사고)
+    • [ATLAS CS0070·실제사고] DeepSeek 기반 Hermes 에이전트로 Langflow·n8n 취약점 공격 시도(실제 사고)
+  style: v3.1
+  severity: 하
+  severity_reason: 직접 피해 없음(후속 공격 설계 단계)
+  stage: 정찰(Reconnaissance)
+  atlas:
+  - AML.T0000
+  - AML.T0000.000
+  - AML.T0000.001
+  - AML.T0000.002
+  - AML.T0000.003
+  - AML.T0001
+  - AML.T0003
+  - AML.T0004
+  - AML.T0087
+  - AML.T0095
+  - AML.T0095.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-01.2
+  ut: UT-01
+  name: 노출 AI 자산 스캔
+  prev:
+    id: UT-01.2
+    name: 노출 AI 자산 스캔
+  summary: 인터넷 스캔/메타데이터 API 조회를 통해 외부에 노출된 AI 서비스, 모델 저장소, 에이전트 호출 채널을 식별하고 공격 가능한 진입점 목록화
+  reference: |-
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+    • [ATLAS CS0069·실제사고] GTG-1002가 탈옥한 Claude Code로 약 30개 조직 대상 자율 사이버 첩보(실제 사고)
+    • [ATLAS CS0070·실제사고] DeepSeek 기반 Hermes 에이전트로 Langflow·n8n 취약점 공격 시도(실제 사고)
+  style: v3.1
+  severity: 하
+  severity_reason: 직접 피해 없음(공격 진입점 식별 단계)
+  stage: 정찰(Reconnaissance)
+  atlas:
+  - AML.T0006
+  - AML.T0006.000
+  - AML.T0006.001
+  - AML.T0006.002
+  - AML.T0006.003
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-01.3
+  ut: UT-01
+  name: AI 모델 접근 확보
+  prev:
+    id: UT-01.3
+    name: AI 모델 접근 확보
+  summary: 추론 API/AI 탑재 제품/모델 파일 확보를 통해 대상 모델에 대한 질의 권한 또는 전체 접근 권한을 획득하여 추출/회피/추론 공격의 기반 마련
+  reference: |-
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+    • [ATLAS CS0009·실제사고] Tay 챗봇이 사용자 대화로 온라인 학습되며 오염되어 혐오 발언 생성(실제 사고)
+    • [ATLAS CS0017·실제사고] ID.me 자동 신원확인을 우회해 180건 이상 허위 실업급여 청구(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 질의 또는 전체 접근 확보로 추출/회피/추론 공격 기반 형성
+  stage: AI 모델 접근(AI Model Access)
+  atlas:
+  - AML.T0040
+  - AML.T0044
+  - AML.T0047
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-01.4
+  ut: UT-01
+  name: 모델 및 환경 탐색
+  prev:
+    id: UT-01.4
+    name: 모델 및 환경 탐색
+  summary: 출력 관찰/아티팩트 조회를 통해 모델 계열, 분류 체계, 내부 AI 자원 및 실행 환경을 파악하여 공격 정밀도 제고
+  reference: |-
+    • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [ATLAS CS0069·실제사고] GTG-1002가 탈옥한 Claude Code로 약 30개 조직 대상 자율 사이버 첩보(실제 사고)
+  style: v3.1
+  severity: 하
+  severity_reason: 탐색 단계로 직접 피해 제한적
+  stage: 탐색(Discovery)
+  atlas:
+  - AML.T0007
+  - AML.T0013
+  - AML.T0014
+  - AML.T0063
+  - AML.T0075
+  - AML.T0089
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM08
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-02.1
+  ut: UT-02
+  name: 공격 도구 확보
+  prev:
+    id: UT-02.1
+    name: 공격 도구 확보
+  summary: 공개 적대적 공격 구현체/익스플로잇/범용 해킹 도구를 입수하거나 자체 개발하여 AI 대상 공격 역량 확보
+  reference: |-
+    • [ATLAS CS0002·실제사고] VirusTotal에 변종 샘플을 대량 제출해 크라우드소싱 학습 데이터를 오염
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+    • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+  style: v3.1
+  severity: 하
+  severity_reason: 직접 피해 없음(공격 준비 단계)
+  stage: 자원 개발(Resource Development)
+  atlas:
+  - AML.T0016
+  - AML.T0016.000
+  - AML.T0016.001
+  - AML.T0016.002
+  - AML.T0016.003
+  - AML.T0016.004
+  - AML.T0017
+  - AML.T0017.000
+  - AML.T0017.002
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+  merged:
+  - id: UT-03.4
+    name: 공격용 에이전트 도구 확보
+- id: UT-02.2
+  ut: UT-02
+  name: 공개 AI 자원 입수
+  prev:
+    id: UT-02.2
+    name: 공개 AI 자원 입수
+  summary: 공개 데이터셋/사전학습 모델/에이전트 설정 파일을 입수하여 대리 모델 구축 및 공격 사전 검증에 활용
+  reference: |-
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0000·실증] 공개 논문을 재현한 대리모델로 악성 C&C 트래픽 탐지 딥러닝 모델을 회피
+    • [ATLAS CS0001·실증] 도메인명 변형 기법으로 CNN 기반 봇넷 DGA 탐지기를 우회
+  style: v3.1
+  severity: 하
+  severity_reason: 직접 피해 없음(대리 모델 구축 등 준비 단계)
+  stage: 자원 개발(Resource Development)
+  atlas:
+  - AML.T0002
+  - AML.T0002.000
+  - AML.T0002.001
+  - AML.T0002.002
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-02.3
+  ut: UT-02
+  name: 공격 인프라 확보
+  prev:
+    id: UT-02.3
+    name: 공격 인프라 확보
+  summary: 클라우드 자원/도메인/물리적 대응물 구매, 계정 생성, 정상 인프라 탈취를 통해 공격 수행 및 은닉에 필요한 기반 구축
+  reference: |-
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0034·실제사고] KYC 우회용 딥페이크 도구 ProKYC가 범죄자에게 판매(실제 사고)
+  style: v3.1
+  severity: 하
+  severity_reason: 직접 피해 없음(공격 기반 구축 단계)
+  stage: 자원 개발(Resource Development)
+  atlas:
+  - AML.T0008
+  - AML.T0008.000
+  - AML.T0008.001
+  - AML.T0008.002
+  - AML.T0008.003
+  - AML.T0008.004
+  - AML.T0008.005
+  - AML.T0021
+  - AML.T0079
+  - AML.T0128
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-02.4
+  ut: UT-02
+  name: 일반 초기 침투
+  prev:
+    id: UT-02.4
+    name: 일반 초기 침투
+  summary: 공개 애플리케이션 취약점 익스플로잇/드라이브바이 다운로드/악성 링크 실행 유도를 통해 AI 서비스 및 지원 인프라에 최초 침투
+  reference: |-
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+    • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [OWASP 인용] ToolShell SharePoint RCE 악용(2025.07, 실제 사고) / Flowise 사전인증 임의 파일 업로드(2025.03)
+  style: v3.1
+  severity: 상
+  severity_reason: AI 서비스 및 지원 인프라 장악으로 확대 가능
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0011.003
+  - AML.T0049
+  - AML.T0078
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 1
+- id: UT-02.5
+  ut: UT-02
+  name: 내부 확산 및 탐지 회피
+  prev:
+    id: UT-02.5
+    name: 내부 확산 및 탐지 회피
+  summary: 원격 서비스 악용을 통한 내부 확산과 샌드박스 회피/난독화를 통한 보안 탐지 우회로 침투 범위 확대 및 체류 장기화
+  reference: |-
+    • [ATLAS CS0043·실제사고] LLM 기반 악성코드 분석기를 속이려 프롬프트 인젝션을 내장한 악성코드(실제 사고)
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+  style: v3.1
+  severity: 중
+  severity_reason: 침투 범위 확대 및 탐지 지연
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0097
+  - AML.T0107
+  - AML.T0122
+  - AML.T0123
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-02.6
+  ut: UT-02
+  name: 일반 수단 데이터 유출
+  prev:
+    id: UT-02.6
+    name: 일반 수단 데이터 유출
+  summary: 정보 저장소/로컬 시스템의 데이터를 자동 수집 및 압축한 후 일반 네트워크 또는 C2 채널로 외부 반출
+  reference: |-
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0015·실제사고] PyPI에 올라간 악성 torchtriton 의존성으로 PyTorch-nightly 사용자 정보 유출(실제 사고)
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 중요정보 및 AI 자산 대량 반출
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0025
+  - AML.T0036
+  - AML.T0037
+  - AML.T0072
+  - AML.T0126
+  - AML.T0127
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-03.1
+  ut: UT-03
+  name: 자율 공격 에이전트
+  prev:
+    id: UT-03.1
+    name: 자율 공격 에이전트
+  summary: 공격 목표만 부여받은 AI 에이전트가 대상 탐색, 익스플로잇 개발, 실패 시 공격 경로 수정을 사람 개입 없이 반복 수행하여 사람 대비 압도적 속도와 규모로 침투
+  reference: |-
+    • [ATLAS CS0069·실제사고] GTG-1002가 탈옥한 Claude Code로 약 30개 조직 대상 자율 사이버 첩보(실제 사고)
+    • [ATLAS CS0070·실제사고] DeepSeek 기반 Hermes 에이전트로 Langflow·n8n 취약점 공격 시도(실제 사고)
+    • [ATLAS CS0071·실제사고] Hermes·OpenClaw 기반 다중 에이전트 프레임워크로 대만 정부 시스템 침해(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 다수 조직 동시 침투 및 시스템 장악
+  stage: AI 공격 적응(AI Attack Adaptation)
+  atlas:
+  - AML.T0017.001
+  - AML.T0116
+  - AML.T0117
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-03.2
+  ut: UT-03
+  name: 다중 에이전트 공격 조율
+  prev:
+    id: UT-03.2
+    name: 다중 에이전트 공격 조율
+  summary: 오케스트레이터 AI가 다수 하위 에이전트에 임무를 분배하고 탐색 결과/자격증명을 공유하며 복수 대상을 병렬 공격
+  reference: |-
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [ATLAS CS0071·실제사고] Hermes·OpenClaw 기반 다중 에이전트 프레임워크로 대만 정부 시스템 침해(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 복수 대상 병렬 침투 및 시스템 장악
+  stage: AI 공격 적응(AI Attack Adaptation)
+  atlas:
+  - AML.T0118
+  - AML.T0118.000
+  - AML.T0118.001
+  - AML.T0124
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-03.3
+  ut: UT-03
+  name: AI 연동 악성코드
+  prev:
+    id: UT-03.3
+    name: AI 연동 악성코드
+  summary: 피해 시스템의 악성코드가 실행 중 LLM 서비스에 질의하여 실행 명령을 동적 생성함으로써 시그니처 기반 탐지 우회 및 정상 AI 트래픽으로 위장
+  reference: |-
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [ATLAS CS0070·실제사고] DeepSeek 기반 Hermes 에이전트로 Langflow·n8n 취약점 공격 시도(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 호스트 장악 상태의 탐지 회피형 원격 조작
+  stage: AI 공격 적응(AI Attack Adaptation)
+  atlas:
+  - AML.T0102
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-04.1
+  ut: UT-04
+  name: 딥페이크 생체인증 우회
+  prev:
+    id: UT-04.1
+    name: 딥페이크 신원 위장
+  summary: 실시간 딥페이크 영상/음성 및 가상 카메라 주입을 통해 생체인증/KYC 절차를 우회하여 타인 명의 계정 개설 및 금융 사기 수행
+  reference: |-
+    • [ATLAS CS0034·실제사고] KYC 우회용 딥페이크 도구 ProKYC가 범죄자에게 판매(실제 사고)
+    • [ATLAS CS0033·실증] 실시간 딥페이크 영상 주입으로 모바일 KYC 얼굴인증 우회
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 특정 계정/거래 단위 금전 피해
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0088
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-04.2
+  ut: UT-04
+  name: AI 생성 피싱
+  prev:
+    id: UT-04.2
+    name: AI 생성 피싱
+  summary: LLM 생성 맞춤형 스피어피싱 및 딥페이크 음성/영상 통화를 통해 임직원을 기망하여 자격증명 탈취 또는 송금 유도
+  reference: |-
+    • [ATLAS CS0032·실제사고] 피싱 사이트가 ML 기반 피싱 탐지기를 회피하도록 시각 요소 변형(실제 사고)
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+    • [ATLAS CS0020·실증] 웹페이지 숨은 지시로 Bing Chat이 사용자 개인정보를 캐내는 사회공학 수행
+    • [OWASP 시나리오] 딥페이크 음성·영상과 LLM 생성 문안을 결합한 피싱(ATLAS T0052.001 기법 정의)
+  style: v3.1
+  severity: 중
+  severity_reason: 자격증명 탈취 시 내부 침투로 확대 가능
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0052
+  - AML.T0052.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-04.3
+  ut: UT-04
+  name: 신뢰 주체 사칭
+  prev:
+    id: UT-04.3
+    name: 신뢰 주체 사칭
+  summary: 신뢰받는 개인/조직을 사칭한 커뮤니케이션으로 대상의 판단을 조작하여 공격자 대신 행위 수행 유도
+  reference: |-
+    • [ATLAS CS0034·실제사고] KYC 우회용 딥페이크 도구 ProKYC가 범죄자에게 판매(실제 사고)
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+    • [ATLAS CS0053·실제사고] Postmark를 사칭한 악성 MCP 서버가 발송 메일을 몰래 BCC로 유출(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 기망 대상 개인/거래 단위 피해
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0052.001
+  - AML.T0073
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-05.1
+  ut: UT-05
+  name: AI 서비스 API 은닉 통신
+  prev:
+    id: UT-05.1
+    name: AI 서비스 API 은닉 통신
+  summary: 감염 호스트가 정상 AI 서비스 API를 명령 수신/결과 전송 채널로 사용하여 C2 트래픽을 정상 AI 트래픽으로 위장
+  reference: • [ATLAS CS0042·실제사고] OpenAI Assistants API를 은밀한 C2 채널로 악용한 백도어 SesameOp(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 침해 호스트에 대한 은닉 원격 제어 지속
+  stage: 명령·제어(Command and Control)
+  atlas:
+  - AML.T0096
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-05.2
+  ut: UT-05
+  name: AI 웹 서비스 중계 악용
+  prev:
+    id: UT-05.2
+    name: AI 웹 서비스 중계 악용
+  summary: URL 조회 기능을 가진 AI 비서 또는 침해된 AI 에이전트를 경유하여 공격자 서버와 간접 통신함으로써 직접 통신 탐지 회피
+  reference: |-
+    • [ATLAS CS0061·실증] 익명 웹 AI 비서의 URL 조회 기능을 악성코드 C2 중계로 악용(AI in the Middle)
+    • [ATLAS CS0051·실증] 웹페이지 인젝션으로 OpenClaw에 지속 지시를 심어 C2로 활용
+  style: v3.1
+  severity: 상
+  severity_reason: 직접 통신 탐지 회피형 원격 제어
+  stage: 명령·제어(Command and Control)
+  atlas:
+  - AML.T0108
+  - AML.T0114
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-05.3
+  ut: UT-05
+  name: AI 아티팩트 저장소 악용
+  prev:
+    id: UT-05.3
+    name: AI 아티팩트 저장소 악용
+  summary: 모델/데이터셋 저장소를 명령 및 데이터 교환 매체로 사용하여 정상 아티팩트 다운로드로 위장된 C2 수행
+  reference: |-
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [OWASP 시나리오] 모델 허브 저장소를 명령·데이터 교환 매체로 사용하는 C2(ATLAS T0120 기법 정의)
+  style: v3.1
+  severity: 중
+  severity_reason: 탐지 회피형 통신 채널(제한적 대역)
+  stage: 명령·제어(Command and Control)
+  atlas:
+  - AML.T0120
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-06.1
+  ut: UT-06
+  name: 시스템 지시 무력화
+  prev:
+    id: UT-06.1
+    name: 시스템 지시 무력화
+  summary: 사용자 입력창에 '이전 지시 무시' 등 조작 지시를 입력하여 시스템 프롬프트의 역할/제약을 무력화하고 비인가 정보 조회 또는 기능 실행 유도
+  reference: |-
+    • [ATLAS CS0043·실제사고] LLM 기반 악성코드 분석기를 속이려 프롬프트 인젝션을 내장한 악성코드(실제 사고)
+    • [ATLAS CS0016·실증] MathGPT에 프롬프트 인젝션으로 파이썬 코드 실행·API 키 노출
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [OWASP 인용] CVE-2024-5184 EmailGPT 프롬프트 인젝션(시스템 프롬프트 노출 및 데이터 유출)
+  style: v3.1
+  severity: 중
+  severity_reason: 앱 권한 범위 내 비인가 조회/실행
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0051
+  - AML.T0051.000
+  - AML.T0065
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub:
+    - LLM08
+    ASI: []
+    ASI_sub:
+    - ASI01
+    - ASI09
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub:
+    - MCP06
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-06.2
+  ut: UT-06
+  name: 탈옥(안전장치 우회)
+  prev:
+    id: UT-06.2
+    name: 탈옥(안전장치 우회)
+  summary: 역할극/다단계 설득/우회 표현을 통해 모델의 안전 정책을 무력화하여 유해 콘텐츠 생성 또는 공격 도구 개발 등 금지된 용도로 모델 악용
+  reference: |-
+    • [ATLAS CS0057·실제사고] Storm-2139가 노출 자격증명과 탈옥 도구로 Azure OpenAI 가드레일 우회·접근권 재판매(실제 사고)
+    • [ATLAS CS0069·실제사고] GTG-1002가 탈옥한 Claude Code로 약 30개 조직 대상 자율 사이버 첩보(실제 사고)
+    • [ATLAS CS0041·실증] AI 코딩도구 규칙 파일에 보이지 않는 유니코드 지시를 숨겨 악성 코드 생성 유도
+    • [OWASP 인용] CVE-2025-54794 Claude 프롬프트 인젝션 탈옥
+  style: v3.1
+  severity: 중
+  severity_reason: 금지 용도 악용(유해 콘텐츠·공격 도구 생성)
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0054
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-06.3
+  ut: UT-06
+  name: 프롬프트 난독화
+  prev:
+    id: UT-06.3
+    name: 페이로드 난독화
+  summary: 다국어 혼용/인코딩/분할 입력/동의어 치환으로 인젝션 페이로드를 변형하여 입력 필터 및 가드레일 탐지 우회
+  reference: |-
+    • [ATLAS CS0043·실제사고] LLM 기반 악성코드 분석기를 속이려 프롬프트 인젝션을 내장한 악성코드(실제 사고)
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [ATLAS CS0056·실제사고] 약 2.4만 계정·1,600만 쿼리로 Claude 능력을 증류하려는 캠페인 적발(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 가드레일 무력화로 인젝션 성공률 증가
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0068
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP06
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-06.4
+  ut: UT-06
+  name: 멀티모달 은닉 지시
+  prev:
+    id: UT-06.4
+    name: 멀티모달 은닉 지시
+  summary: 이미지/오디오/문서 내 비가시 텍스트 또는 유니코드 태그 문자로 지시를 은닉하여 사람 검토와 텍스트 기반 필터를 동시에 우회
+  reference: |-
+    • [ATLAS CS0041·실증] AI 코딩도구 규칙 파일에 보이지 않는 유니코드 지시를 숨겨 악성 코드 생성 유도
+    • [OWASP 인용] M365 Copilot ASCII 스머글링 PoC(2024.08, 비가시 유니코드로 MFA 코드 유출)
+  style: v3.1
+  severity: 중
+  severity_reason: 사람 검토 및 필터 동시 우회
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0129
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI09
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-07.1
+  ut: UT-07
+  name: 외부 콘텐츠 경유 주입
+  prev:
+    id: UT-07.1
+    name: 외부 콘텐츠 경유 주입
+  summary: 웹페이지/문서/이메일/이슈 등 AI가 처리하는 외부 콘텐츠에 지시문을 은닉하여, 콘텐츠 처리 시점에 사용자 권한으로 데이터 조회/전송 등 비인가 행위 수행
+  reference: |-
+    • [ATLAS CS0020·실증] 웹페이지 숨은 지시로 Bing Chat이 사용자 개인정보를 캐내는 사회공학 수행
+    • [ATLAS CS0021·실증] 웹페이지 간접 인젝션으로 ChatGPT 대화 내용을 이미지 URL로 유출
+    • [ATLAS CS0029·실증] 공유 Google 문서의 간접 인젝션으로 Bard 대화 내용 유출
+    • [OWASP 인용] Salesforce Agentforce ForcedLeak(2025.09) / Google Gemini Trifecta(2025.09) / Hub MCP 교차 컨텍스트 인젝션(2025.06) / GitHub 공개 이슈 경유 저장소 탈취(2025.05)
+  style: v3.1
+  severity: 상
+  severity_reason: 제로클릭 데이터 유출 및 사용자 권한 전체 악용
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0051.001
+  - AML.T0093
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub:
+    - LLM10
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI01
+    - DSGAI06
+    - DSGAI16
+    MCP:
+    - MCP06
+    MCP_sub:
+    - MCP03
+  owasp_incidents: 0
+  owasp_vulns: 4
+- id: UT-07.2
+  ut: UT-07
+  name: 지연 실행형 주입
+  prev:
+    id: UT-07.2
+    name: 지연 실행형 주입
+  summary: 특정 키워드/후속 대화 턴/시점에 발동하도록 조건부 지시를 심어 즉시 탐지를 회피하고 도구 호출 제한 등 보호 장치 우회
+  reference: |-
+    • [ATLAS CS0024·실증] RAG를 매개로 자기복제 프롬프트가 GenAI 이메일 비서 간 전파(Morris II 웜)
+    • [ATLAS CS0037·실증] Copilot Studio 고객지원 에이전트를 인젝션해 지식원·도구를 탐색하고 CRM 데이터 유출
+    • [ATLAS CS0038·실증] 지시 실행을 다음 대화 턴으로 지연시켜 Gemini의 도구 호출 제한 우회
+  style: v3.1
+  severity: 중
+  severity_reason: 즉시 탐지 회피 후 보호장치 우회 실행
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0051.002
+  - AML.T0094
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-07.4
+  ut: UT-07
+  name: 에이전트 유인 및 클로킹
+  prev:
+    id: UT-07.4
+    name: 에이전트 유인 및 클로킹
+  summary: 조작된 AI 비서 링크/클릭 유도 화면으로 에이전트 행동을 유인하거나, AI 크롤러에만 다른 콘텐츠를 제공(클로킹)하여 사람 검토를 회피한 지시 전달
+  reference: |-
+    • [ATLAS CS0072·실제사고] 조작된 AI 비서 링크로 메모리를 오염시켜 특정 제품을 추천하게 만드는 홍보성 공격(실제 사고)
+    • [ATLAS CS0055·실증] ClickFix 사회공학으로 컴퓨터 사용 에이전트가 악성 명령 실행
+  style: v3.1
+  severity: 중
+  severity_reason: 에이전트 행위 유도(사용자 권한 범위)
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0100
+  - AML.T0131
+  - AML.T0134
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI01
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-07.5
+  ut: UT-07
+  name: 에이전트 목표 탈취
+  prev:
+    id: UT-07.5
+    name: 에이전트 목표 탈취
+  summary: 주입된 지시가 에이전트의 목표/계획/판단 기준을 점진적으로 변경하여, 정상 업무 흐름 속에서 공격자 의도에 맞는 의사결정과 행위 반복
+  reference: |-
+    • [ATLAS CS0063·실증] 캘린더 초대·메일에 숨긴 지시로 Gemini 비서가 기기·앱을 조작
+    • [OWASP 인용] ChatGPT Operator 프롬프트 인젝션(2025.02) / VS Code 에이전트 워크플로 RCE(2025.09)
+    • [OWASP 시나리오] 반복 캘린더 초대로 플래너 에이전트의 목표 가중치를 매일 조금씩 변경(ASI01 시나리오#3)
+  style: v3.1
+  severity: 상
+  severity_reason: 에이전트 권한 전체를 공격자 목적에 사용
+  stage: 실행(Execution)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    ASI:
+    - ASI01
+    ASI_sub:
+    - ASI05
+    - ASI09
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP10
+  owasp_incidents: 0
+  owasp_vulns: 2
+- id: UT-08.1
+  ut: UT-08
+  name: 시스템 프롬프트 추출
+  prev:
+    id: UT-08.1
+    name: 시스템 프롬프트 추출
+  summary: 반복 질의/역할 전환/출력 형식 변환 요청을 통해 시스템 지시문과 내부 규칙을 추출하여 가드레일 우회 및 후속 인젝션 설계에 활용
+  reference: |-
+    • [ATLAS CS0026·실증] 메일을 RAG로 수집하는 M365 Copilot을 조작해 송금 계좌 정보를 바꿔치기
+    • [ATLAS CS0048·실증] 인터넷에 노출된 ClawdBot 제어 인터페이스 수백 개에서 자격증명 탈취·명령 실행
+    • [ATLAS CS0051·실증] 웹페이지 인젝션으로 OpenClaw에 지속 지시를 심어 C2로 활용
+    • [OWASP 인용] CVE-2024-5184 EmailGPT 시스템 프롬프트 노출
+  style: v3.1
+  severity: 하
+  severity_reason: 정책 정보 노출(직접 피해 제한적)
+  stage: 탐색(Discovery)
+  atlas:
+  - AML.T0056
+  - AML.T0069
+  - AML.T0069.000
+  - AML.T0069.001
+  - AML.T0069.002
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM08
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI15
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-08.2
+  ut: UT-08
+  name: 에이전트 구성 및 권한 탐색
+  prev:
+    id: UT-08.2
+    name: 에이전트 구성 탐색
+  summary: 에이전트에 질의하여 연결 도구 목록/호출 체인/활성화 트리거/지식원 구성을 파악함으로써 악용 가능한 도구와 데이터 경로 식별
+  reference: |-
+    • [ATLAS CS0037·실증] Copilot Studio 고객지원 에이전트를 인젝션해 지식원·도구를 탐색하고 CRM 데이터 유출
+    • [ATLAS CS0052·실증] 11개 LLM 프레임워크에서 20개 RCE 취약점 발견, 인터넷 공개 앱에서 실증(LLMSmith)
+    • [ATLAS CS0063·실증] 캘린더 초대·메일에 숨긴 지시로 Gemini 비서가 기기·앱을 조작
+  style: v3.1
+  severity: 중
+  severity_reason: 도구 악용 경로 정밀화
+  stage: 탐색(Discovery)
+  atlas:
+  - AML.T0084
+  - AML.T0084.000
+  - AML.T0084.001
+  - AML.T0084.002
+  - AML.T0084.003
+  - AML.T0133
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM08
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP10
+  owasp_incidents: 0
+  owasp_vulns: 0
+  merged:
+  - id: UT-08.3
+    name: 런타임 권한 탐색
+- id: UT-08.4
+  ut: UT-08
+  name: 프롬프트 내 비밀정보 노출
+  prev:
+    id: UT-08.4
+    name: 프롬프트 내 비밀정보 노출
+  summary: 시스템 프롬프트/에이전트 설정에 API 키/접속 정보/내부 URL을 직접 기재하여, 컨텍스트 추출 시 연동 시스템 자격증명이 함께 노출
+  reference: • [OWASP 시나리오] 시스템 프롬프트에 포함된 자격증명이 추출되어 연동 시스템 접근(LLM08 시나리오#1)
+  style: v3.1
+  severity: 상
+  severity_reason: 연동 시스템 자격증명 노출로 다수 시스템 접근
+  stage: 자격증명 접근(Credential Access)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM08
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI02
+    - DSGAI18
+    MCP: []
+    MCP_sub:
+    - MCP01
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-09.1
+  ut: UT-09
+  name: 학습 데이터 직접 오염
+  prev:
+    id: UT-09.1
+    name: 학습 데이터 직접 오염
+  summary: 사전학습/파인튜닝 데이터에 소량의 오염 샘플 또는 트리거 패턴을 삽입하여 모델에 편향, 성능 저하, 조건부 오작동(백도어)을 내재화
+  reference: |-
+    • [ATLAS CS0002·실제사고] VirusTotal에 변종 샘플을 대량 제출해 크라우드소싱 학습 데이터를 오염
+    • [ATLAS CS0009·실제사고] Tay 챗봇이 사용자 대화로 온라인 학습되며 오염되어 혐오 발언 생성(실제 사고)
+    • [ATLAS CS0025·실증] URL 목록형 대규모 데이터셋의 만료 도메인을 매입해 학습 데이터 오염(Split-View)
+  style: v3.1
+  severity: 중
+  severity_reason: 모델 전반 무결성 훼손(통제권 탈취와 간접 연계)
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0020
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM05
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI04
+    DSGAI_sub:
+    - DSGAI05
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-09.3
+  ut: UT-09
+  name: 재학습 피드백 오염
+  prev:
+    id: UT-09.3
+    name: 재학습 피드백 오염
+  summary: 사용자 피드백/운영 로그를 자동 재학습에 반영하는 구조를 악용하여 조작 입력을 반복 주입함으로써 모델 행동을 점진적으로 왜곡
+  reference: |-
+    • [ATLAS CS0009·실제사고] Tay 챗봇이 사용자 대화로 온라인 학습되며 오염되어 혐오 발언 생성(실제 사고)
+    • [OWASP 시나리오] 자동 재학습 피드백 루프를 악용한 모델 왜곡(LLM05 시나리오#3)
+  style: v3.1
+  severity: 중
+  severity_reason: 점진적 왜곡(탐지 시 롤백 가능)
+  stage: 지속성(Persistence)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM05
+    LLM_sub:
+    - LLM07
+    ASI: []
+    ASI_sub:
+    - ASI08
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI07
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-09.4
+  ut: UT-09
+  name: 무결성 저하 공격
+  prev:
+    id: UT-09.4
+    name: 무결성 저하 공격
+  summary: 적대적 입력 반복 투입 또는 데이터셋 일부 훼손을 통해 모델/데이터셋의 신뢰도를 저하시켜 운영 중단 또는 재학습 비용 유발
+  reference: |-
+    • [ATLAS CS0025·실증] URL 목록형 대규모 데이터셋의 만료 도메인을 매입해 학습 데이터 오염(Split-View)
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0009·실제사고] Tay 챗봇이 사용자 대화로 온라인 학습되며 오염되어 혐오 발언 생성(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 모델 신뢰도 저하 및 재학습 비용
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0031
+  - AML.T0059
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI04
+    DSGAI_sub:
+    - DSGAI07
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-10.1
+  ut: UT-10
+  name: 검색 코퍼스 오염
+  prev:
+    id: UT-10.1
+    name: 검색 코퍼스 오염
+  summary: 조직 지식원/RAG 코퍼스에 허위 또는 조작 문서를 기록하여, AI가 이를 권위 있는 근거로 인용한 잘못된 응답/권고 생성
+  reference: |-
+    • [ATLAS CS0026·실증] 메일을 RAG로 수집하는 M365 Copilot을 조작해 송금 계좌 정보를 바꿔치기
+    • [ATLAS CS0024·실증] RAG를 매개로 자기복제 프롬프트가 GenAI 이메일 비서 간 전파(Morris II 웜)
+    • [ATLAS CS0035·실증] 공개 채널 게시글의 간접 인젝션으로 Slack AI가 비공개 채널 데이터 유출
+  style: v3.1
+  severity: 중
+  severity_reason: 응답 무결성 훼손(업무 판단 및 거래 오류)
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0064
+  - AML.T0066
+  - AML.T0070
+  - AML.T0071
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM01
+    LLM_sub:
+    - LLM05
+    - LLM07
+    ASI:
+    - ASI06
+    ASI_sub: []
+    DSGAI:
+    - DSGAI21
+    DSGAI_sub:
+    - DSGAI04
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+  merged:
+  - id: UT-07.3
+    name: 검색 노출용 콘텐츠 제작
+- id: UT-10.2
+  ut: UT-10
+  name: 에이전트 조회 데이터 오염
+  prev:
+    id: UT-10.2
+    name: 에이전트 조회 데이터 오염
+  summary: 에이전트 도구가 조회하는 DB/문서 저장소/검색 색인에 악성 지시나 허위 데이터를 기록하여, 도구 호출 결과를 통해 에이전트 행위 조작
+  reference: '— (근거 사례 없음: OWASP 위험 정의 기반)'
+  style: v3.1
+  severity: 상
+  severity_reason: 도구 결과 신뢰를 통한 에이전트 행위 조작
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0099
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM05
+    ASI:
+    - ASI06
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP10
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-10.3
+  ut: UT-10
+  name: 임베딩 공간 조작
+  prev:
+    id: UT-10.3
+    name: 임베딩 공간 조작
+  summary: 임베딩 유사도를 노린 문서 조작 또는 시맨틱 캐시 오염을 통해 검색 순위를 장악하여 특정 질의에 공격자 콘텐츠가 우선 반환되도록 유도
+  reference: • [OWASP 시나리오] 임베딩 유사도를 노린 공개 수집 파이프라인 공격(LLM09 시나리오#1)
+  style: v3.1
+  severity: 중
+  severity_reason: 특정 질의 검색 결과 장악
+  stage: 지속성(Persistence)
+  atlas: []
+  atlas_related:
+  - AML.T0066
+  owasp:
+    LLM:
+    - LLM09
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI04
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI13
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-11.1
+  ut: UT-11
+  name: 장기 메모리 오염
+  prev:
+    id: UT-11.1
+    name: 장기 메모리 오염
+  summary: 공유 문서/웹 콘텐츠의 인젝션을 통해 에이전트 장기 메모리에 허위 사실이나 지속 지시를 기록하여, 이후 모든 세션에서 오염된 기억 기반으로 응답/행위
+  reference: |-
+    • [ATLAS CS0072·실제사고] 조작된 AI 비서 링크로 메모리를 오염시켜 특정 제품을 추천하게 만드는 홍보성 공격(실제 사고)
+    • [ATLAS CS0040·실증] 공유 문서의 인젝션으로 ChatGPT 장기 메모리에 허위 정보를 영구 기록
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+  style: v3.1
+  severity: 상
+  severity_reason: 세션 간 지속되는 행위 장악(C2 연계 사례)
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0080
+  - AML.T0080.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    - LLM05
+    ASI:
+    - ASI06
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI04
+    MCP: []
+    MCP_sub:
+    - MCP10
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-11.2
+  ut: UT-11
+  name: 대화 스레드 오염
+  prev:
+    id: UT-11.2
+    name: 대화 스레드 오염
+  summary: 진행 중인 대화 스레드에 조작 지시를 삽입하여 동일 세션 내 후속 응답과 도구 호출을 지속적으로 왜곡
+  reference: |-
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+    • [ATLAS CS0051·실증] 웹페이지 인젝션으로 OpenClaw에 지속 지시를 심어 C2로 활용
+    • [ATLAS CS0063·실증] 캘린더 초대·메일에 숨긴 지시로 Gemini 비서가 기기·앱을 조작
+  style: v3.1
+  severity: 중
+  severity_reason: 단일 대화 범위 왜곡
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0080.001
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    ASI:
+    - ASI06
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-11.3
+  ut: UT-11
+  name: 대화 이력 조작
+  prev:
+    id: UT-11.3
+    name: 대화 이력 조작
+  summary: 대화 이력을 변조/삭제하여 공격 흔적을 은폐하거나 과거 맥락을 위조함으로써 사용자 및 모니터링의 이상 인지 방해
+  reference: |-
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+    • [ATLAS CS0048·실증] 인터넷에 노출된 ClawdBot 제어 인터페이스 수백 개에서 자격증명 탈취·명령 실행
+  style: v3.1
+  severity: 중
+  severity_reason: 공격 흔적 은폐 및 이상 인지 방해
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0092
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM08
+    - LLM02
+    ASI:
+    - ASI06
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-11.4
+  ut: UT-11
+  name: 공유 메모리 오염
+  prev:
+    id: UT-11.4
+    name: 공유 메모리 오염
+  summary: 다중 에이전트가 공유하는 메모리/컨텍스트 저장소에 허위 정책 또는 사실을 기록하여 다른 에이전트의 판단까지 연쇄 오염
+  reference: • [OWASP 시나리오] 공유 메모리에 가짜 환불 정책을 삽입해 다른 에이전트가 재사용(ASI06 시나리오#4)
+  style: v3.1
+  severity: 중
+  severity_reason: 다중 에이전트 판단 오염(무결성 훼손)
+  stage: 지속성(Persistence)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI06
+    ASI_sub:
+    - ASI08
+    - ASI01
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI11
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-12.1
+  ut: UT-12
+  name: 응답 경유 민감정보 유출
+  prev:
+    id: UT-12.1
+    name: 학습 데이터 암기 출력
+  summary: 학습 데이터에 포함된 개인정보/비밀정보를 모델이 암기하여, 반복 토큰 등 특정 질의 패턴에 원문 그대로 출력
+  reference: |-
+    • [ATLAS CS0024·실증] RAG를 매개로 자기복제 프롬프트가 GenAI 이메일 비서 간 전파(Morris II 웜)
+    • [ATLAS CS0067·실증] Claude Code GitHub Action이 인젝션으로 저장소 비밀값을 노출
+  style: v3.1
+  severity: 중
+  severity_reason: 암기 데이터 단편 노출(대량 추출 난이도 높음)
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0057
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM02
+    LLM_sub:
+    - LLM01
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI01
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-12.2
+  ut: UT-12
+  name: 검색 권한 과다 노출
+  prev:
+    id: UT-12.2
+    name: 검색 권한 과다 노출
+  summary: RAG/에이전트 도구의 검색 범위가 사용자 권한보다 넓게 설정되어, 일반 질의만으로 열람 권한 없는 문서/데이터가 응답에 포함
+  reference: |-
+    • [ATLAS CS0035·실증] 공개 채널 게시글의 간접 인젝션으로 Slack AI가 비공개 채널 데이터 유출
+    • [ATLAS CS0037·실증] Copilot Studio 고객지원 에이전트를 인젝션해 지식원·도구를 탐색하고 CRM 데이터 유출
+    • [ATLAS CS0038·실증] 지시 실행을 다음 대화 턴으로 지연시켜 Gemini의 도구 호출 제한 우회
+    • [OWASP 인용] CVE-2026-0612 The Librarian 정보 유출 취약점
+  style: v3.1
+  severity: 상
+  severity_reason: 열람 권한 밖 중요정보 대량 노출
+  stage: 수집(Collection)
+  atlas:
+  - AML.T0085
+  - AML.T0085.000
+  - AML.T0085.001
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM02
+    LLM_sub:
+    - LLM03
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI:
+    - DSGAI01
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP10
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-12.3
+  ut: UT-12
+  name: 프롬프트 과다 공유
+  prev:
+    id: UT-12.3
+    name: 프롬프트 과다 공유
+  summary: 업무 처리에 불필요한 전체 고객 기록/내부 문서를 프롬프트에 포함하여 외부 AI 제공자 및 하위 처리자에게 전송함으로써 조직 통제 밖으로 데이터 유출
+  reference: • [OWASP 시나리오] 잔액 조회마다 전체 KYC 파일을 프롬프트에 포함한 뱅킹 비서(DSGAI15 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 외부 제공자 범위 노출(계약 통제 가능)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI15
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-12.4
+  ut: UT-12
+  name: 멀티모달 입력 노출
+  prev:
+    id: UT-12.4
+    name: 멀티모달 입력 노출
+  summary: 스크린샷/문서 이미지/음성 등 멀티모달 입력에 포함된 민감정보가 텍스트 기반 DLP를 우회하여 AI 서비스 및 로그로 전달
+  reference: • [OWASP 시나리오] API 키가 보이는 관리자 화면 스크린샷을 AI에 공유(DSGAI09 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 텍스트 DLP 우회 노출(입력 범위)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI09
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-13.1
+  ut: UT-13
+  name: 세션 간 데이터 혼입
+  prev:
+    id: UT-13.1
+    name: 세션 간 데이터 혼입
+  summary: KV 캐시/세션 상태/공유 대화 컨텍스트의 격리 결함으로 한 사용자의 프롬프트와 응답이 다른 사용자 세션에 노출
+  reference: |-
+    • [OWASP 인용] CVE-2025-6515 oatpp-mcp 세션 식별자 결함
+    • [OWASP 시나리오] 공유 추론 상태 결함으로 타 사용자의 의료 서신 노출(LLM02 시나리오#2)
+  style: v3.1
+  severity: 중
+  severity_reason: 타 사용자 대화 일부 노출(비의도적, 범위 가변)
+  stage: 수집(Collection)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI11
+    DSGAI_sub: []
+    MCP:
+    - MCP10
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 1
+- id: UT-13.2
+  ut: UT-13
+  name: 테넌트 간 인덱스 유출
+  prev:
+    id: UT-13.2
+    name: 테넌트 간 인덱스 유출
+  summary: 공유 벡터 인덱스의 검색 후 필터링 구조로 인해 다른 테넌트 데이터가 검색 결과/유사도 점수/응답 지연을 통해 노출
+  reference: • [OWASP 시나리오] 공유 벡터 인덱스의 교차 테넌트 추론(LLM09 시나리오#2), 로펌 간 공유 RAG 인덱스 유출(LLM02 시나리오#5)
+  style: v3.1
+  severity: 상
+  severity_reason: 타 고객사 데이터 노출(다수 테넌트)
+  stage: 수집(Collection)
+  atlas: []
+  atlas_related:
+  - AML.T0085.000
+  owasp:
+    LLM:
+    - LLM09
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub:
+    - ASI06
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-13.3
+  ut: UT-13
+  name: 벡터 DB 플랫폼 취약점
+  prev:
+    id: UT-13.3
+    name: 벡터 DB 플랫폼 취약점
+  summary: 벡터 DB의 인증 미적용/기본 설정/경로 탐색 취약점을 악용하여 임베딩 및 원문 데이터 대량 탈취 또는 서버 장악
+  reference: • [OWASP 인용] Qdrant CVE-2024-3584·CVE-2024-3829 / Milvus CVE-2025-64513 / RAGFlow CVE-2025-69286
+  style: v3.1
+  severity: 상
+  severity_reason: 임베딩/원문 대량 탈취 및 서버 장악(RCE)
+  stage: 초기 접근(Initial Access)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM09
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI13
+    DSGAI_sub:
+    - DSGAI05
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 4
+- id: UT-14.1
+  ut: UT-14
+  name: 가중치 조작
+  prev:
+    id: UT-14.1
+    name: 가중치 조작
+  summary: 모델 가중치를 직접 편집하거나 오염 데이터로 추가 학습하여, 일반 성능은 유지한 채 특정 질의에만 허위 응답/악성 동작을 수행하는 모델 생성
+  reference: |-
+    • [ATLAS CS0019·실증] LLM 가중치를 편집해 허위 사실을 답하게 만든 뒤 Hugging Face에 배포(PoisonGPT)
+    • [ATLAS CS0027·실증] 실존 기업을 사칭한 Hugging Face 조직 계정으로 악성 모델 유포
+    • [ATLAS CS0028·실증] 노출된 사설 컨테이너 레지스트리 8천여 개 발견, 모델 이미지 변조 가능성 입증
+  style: v3.1
+  severity: 중
+  severity_reason: 특정 질의 대상 허위 응답(무결성 훼손)
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0018
+  - AML.T0018.000
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM05
+    LLM_sub:
+    - LLM04
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI04
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-14.2
+  ut: UT-14
+  name: 모델 구조 변조
+  prev:
+    id: UT-14.2
+    name: 모델 구조 변조
+  summary: 모델 아키텍처/로딩 코드 변경 또는 모델 파일 내 악성 코드 삽입을 통해 모델 로딩 시점에 임의 코드 실행 또는 백도어 동작 활성화
+  reference: |-
+    • [ATLAS CS0013·실증] 모바일 앱에서 추출한 딥러닝 모델에 백도어 삽입 후 재패키징
+    • [ATLAS CS0031·실제사고] Hugging Face에 역쉘을 내장한 악성 모델 호스팅(실제 사고)
+    • [ATLAS CS0027·실증] 실존 기업을 사칭한 Hugging Face 조직 계정으로 악성 모델 유포
+  style: v3.1
+  severity: 상
+  severity_reason: 모델 로딩 시 호스트 코드 실행
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0018.001
+  - AML.T0018.002
+  - AML.T0076
+  - AML.T0112.001
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI04
+    DSGAI_sub:
+    - DSGAI05
+    MCP: []
+    MCP_sub:
+    - MCP04
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-14.3
+  ut: UT-14
+  name: 추론 템플릿 변조
+  prev:
+    id: UT-14.3
+    name: 추론 템플릿 변조
+  summary: '채팅 템플릿(예: GGUF)/프롬프트 구성 로직에 조건부 지시를 삽입하여 가중치 변경 없이 추론 시점에 백도어 동작 유발'
+  reference: • [ATLAS CS0064·실증] GGUF 채팅 템플릿을 오염시켜 가중치 변경 없이 추론 시점 백도어 구현
+  style: v3.1
+  severity: 중
+  severity_reason: 가중치 변경 없는 응답 조작(무결성 훼손)
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0018.003
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM05
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI04
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-14.4
+  ut: UT-14
+  name: 백도어 트리거 활성화
+  prev:
+    id: UT-14.4
+    name: 백도어 트리거 활성화
+  summary: 학습 단계에서 심어진 백도어를 특정 패턴(이미지 패치/키워드)이 포함된 입력으로 활성화하여 공격자 지정 출력 유도
+  reference: |-
+    • [ATLAS CS0013·실증] 모바일 앱에서 추출한 딥러닝 모델에 백도어 삽입 후 재패키징
+    • [OWASP 시나리오] 백도어 트리거를 포함한 입력으로 오염 모델 활성화(ATLAS T0043.004 기법 정의)
+  style: v3.1
+  severity: 중
+  severity_reason: 트리거 조건 범위 내 오작동
+  stage: AI 공격 적응(AI Attack Adaptation)
+  atlas:
+  - AML.T0043.004
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM05
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI04
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-15.1
+  ut: UT-15
+  name: 멤버십 추론
+  prev:
+    id: UT-15.1
+    name: 멤버십 추론
+  summary: 모델 응답의 확신도/손실 패턴을 분석하여 특정 개인/레코드의 학습 데이터 포함 여부를 판별
+  reference: • [OWASP 시나리오] 임상 파인튜닝 모델에서 특정 환자의 학습 포함 여부 추론(LLM02 시나리오#8)
+  style: v3.1
+  severity: 중
+  severity_reason: 특정 개인 단위 프라이버시 침해
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0024
+  - AML.T0024.000
+  atlas_related:
+  - AML.T0040
+  owasp:
+    LLM:
+    - LLM02
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI18
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-15.2
+  ut: UT-15
+  name: 원본 복원(역전) 공격
+  prev:
+    id: UT-15.2
+    name: 원본 복원(역전) 공격
+  summary: 모델 출력 또는 유출된 임베딩 벡터를 역산하여 학습 데이터/원문 텍스트를 복원
+  reference: • [OWASP 시나리오] 유출된 '임베딩 전용' 백업이 역전 공격으로 원문 유출(LLM02 시나리오#6)
+  style: v3.1
+  severity: 중
+  severity_reason: 원문 복원(임베딩 대량 유출 시 피해 확대)
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0024.001
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM09
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI18
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-15.3
+  ut: UT-15
+  name: 부채널 추론
+  prev:
+    id: UT-15.3
+    name: 부채널 추론
+  summary: 응답 길이/토큰 스트리밍 패턴/응답 지연 등 부가 정보를 관찰하여 암호화된 대화의 주제나 모델 내부 상태 추론
+  reference: |-
+    • [ATLAS CS0003·실증] Cylance AI 악성코드 탐지기의 판단 로직을 분석해 범용 우회 문자열 생성
+    • [ATLAS CS0008·실증] ProofPoint 이메일 보호 모델의 복제본을 만들어 실서비스 탐지 회피
+    • [OWASP 시나리오] 암호화 스트리밍 응답 패턴으로 질의 주제 추론(Whisper Leak, LLM02 시나리오#7)
+  style: v3.1
+  severity: 하
+  severity_reason: 대화 주제 수준 추론(노출 제한적)
+  stage: 탐색(Discovery)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM02
+    LLM_sub:
+    - LLM08
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-15.4
+  ut: UT-15
+  name: 학습 데이터 추출
+  prev: null
+  derived_from: UT-12.1
+  summary: null
+  reference: null
+  style: v3.2
+  severity: 중
+  severity_reason: 암기된 학습 데이터 단편 노출(대량 추출은 반복 질의 필요)
+  stage: 유출(Exfiltration)
+  atlas: []
+  atlas_related:
+  - AML.T0057
+  owasp:
+    LLM:
+    - LLM02
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI18
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-16.1
+  ut: UT-16
+  name: 질의 기반 모델 복제
+  prev:
+    id: UT-16.1
+    name: 질의 기반 모델 복제
+  summary: 대량 API 질의 결과를 학습 데이터로 활용하여 대상 모델 기능을 복제한 대리 모델을 구축하고, 지식재산 탈취 및 화이트박스 공격 준비에 활용
+  reference: |-
+    • [ATLAS CS0056·실제사고] 약 2.4만 계정·1,600만 쿼리로 Claude 능력을 증류하려는 캠페인 적발(실제 사고)
+    • [ATLAS CS0005·실증] 번역 API 질의로 모델을 복제하고 적대적 예제를 원 서비스에 전이
+    • [ATLAS CS0007·실증] 공개 정보로 GPT-2 규모 모델을 재현(모델 복제)
+  style: v3.1
+  severity: 중
+  severity_reason: 지식재산 손실(시스템 통제 영향 없음)
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0005
+  - AML.T0005.000
+  - AML.T0005.001
+  - AML.T0005.002
+  - AML.T0024.002
+  atlas_related:
+  - AML.T0040
+  - AML.T0044
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM06
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI20
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-16.2
+  ut: UT-16
+  name: 모델 파일 탈취
+  prev:
+    id: UT-16.2
+    name: 모델 파일 탈취
+  summary: 앱 패키지/모델 저장소/학습 클러스터에서 모델 가중치 및 데이터셋 등 AI 아티팩트 파일을 직접 수집하여 반출
+  reference: |-
+    • [ATLAS CS0058·실증] Google Photos 앱에서 암호화되지 않은 TFLite 모델을 추출
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+    • [ATLAS CS0010·실증] 레드팀이 기존 침투기법과 AI 회피를 결합해 Azure 내부 서비스 중단 시연
+  style: v3.1
+  severity: 상
+  severity_reason: 핵심 모델 자산 및 학습 데이터 일괄 탈취
+  stage: 수집(Collection)
+  atlas:
+  - AML.T0035
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI20
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-17.1
+  ut: UT-17
+  name: 디지털 적대적 예제
+  prev:
+    id: UT-17.1
+    name: 디지털 적대적 예제
+  summary: '모델 경사 정보/대리 모델/반복 질의로 최적화한 미세 섭동 입력을 생성하여 탐지/분류 모델의 오판(예: 악성코드를 정상으로 분류) 유도'
+  reference: |-
+    • [ATLAS CS0004·실제사고] 카메라 영상 주입으로 얼굴인식 인증을 우회해 세금 사기(실제 사고)
+    • [ATLAS CS0017·실제사고] ID.me 자동 신원확인을 우회해 180건 이상 허위 실업급여 청구(실제 사고)
+    • [ATLAS CS0032·실제사고] 피싱 사이트가 ML 기반 피싱 탐지기를 회피하도록 시각 요소 변형(실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 특정 판단 단위 오분류(보안 탐지 우회 시 피해 확대)
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0015
+  - AML.T0042
+  - AML.T0043
+  - AML.T0043.000
+  - AML.T0043.001
+  - AML.T0043.002
+  - AML.T0043.003
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-17.2
+  ut: UT-17
+  name: 물리적 적대적 객체
+  prev:
+    id: UT-17.2
+    name: 물리적 적대적 객체
+  summary: 패치/안경/표지 등 물리적 대응물을 실제 환경에 배치하여 카메라 기반 인식 모델(얼굴인식/자율주행)의 오인식 유발
+  reference: |-
+    • [ATLAS CS0012·실증] 물리적 대응물로 상용 얼굴식별 서비스에 표적 오분류 유도
+    • [ATLAS CS0013·실증] 모바일 앱에서 추출한 딥러닝 모델에 백도어 삽입 후 재패키징
+  style: v3.1
+  severity: 중
+  severity_reason: 물리 보안 및 안전 영향(국지적)
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0041
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-18.1
+  ut: UT-18
+  name: 렌더링 해석기 공격
+  prev:
+    id: UT-18.1
+    name: 렌더링 해석기 공격
+  summary: 모델 출력의 HTML/마크다운/ANSI 제어문자가 브라우저/터미널/IDE에서 해석되어 스크립트 실행, 화면 위조, 세션 탈취 유발
+  reference: |-
+    • [ATLAS CS0060·실증] Lenovo 챗봇이 생성한 악성 HTML이 상담원 브라우저에서 실행되어 세션 쿠키 탈취(XSS)
+    • [ATLAS CS0021·실증] 웹페이지 간접 인젝션으로 ChatGPT 대화 내용을 이미지 URL로 유출
+    • [ATLAS CS0029·실증] 공유 Google 문서의 간접 인젝션으로 Bard 대화 내용 유출
+  style: v3.1
+  severity: 중
+  severity_reason: 세션 탈취 등 사용자 단위 피해
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0077
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM10
+    LLM_sub:
+    - LLM01
+    ASI: []
+    ASI_sub:
+    - ASI09
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI16
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-18.2
+  ut: UT-18
+  name: DB 질의 생성 공격
+  prev:
+    id: UT-18.2
+    name: DB 질의 생성 공격
+  summary: 자연어를 SQL/그래프 질의로 변환하는 기능에 조작 입력을 주입하여, 검증 없이 실행된 질의로 대량 조회/변경/삭제 수행
+  reference: |-
+    • [OWASP 인용] LangChain GraphCypherQAChain CVE-2024-8309 / CVE-2024-7042
+    • [OWASP 시나리오] 채팅형 SQL 기능의 생성 쿼리가 검증 없이 실행되어 테이블 삭제(LLM10 시나리오#3)
+  style: v3.1
+  severity: 상
+  severity_reason: DB 전체 조회/변경/삭제 가능
+  stage: 실행(Execution)
+  atlas: []
+  atlas_related:
+  - AML.T0050
+  owasp:
+    LLM:
+    - LLM10
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI05
+    DSGAI:
+    - DSGAI12
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 2
+- id: UT-18.3
+  ut: UT-18
+  name: 생성 코드의 무검증 사용
+  prev:
+    id: UT-18.3
+    name: 생성 코드의 무검증 사용
+  summary: 모델이 생성한 코드/이메일 템플릿/설정을 검토 없이 배포하거나 후속 시스템에 전달하여 취약 코드 및 악성 구문이 운영 환경에 반영
+  reference: |-
+    • [ATLAS CS0052·실증] 11개 LLM 프레임워크에서 20개 RCE 취약점 발견, 인터넷 공개 앱에서 실증(LLMSmith)
+    • [OWASP 시나리오] 생성 코드·템플릿을 검토 없이 배포하여 취약점 반영(LLM10 시나리오#5·#6)
+  style: v3.1
+  severity: 중
+  severity_reason: 취약 코드 및 악성 구문의 운영 반영
+  stage: 실행(Execution)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM10
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP05
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-19.1
+  ut: UT-19
+  name: 렌더링 채널 반출
+  prev:
+    id: UT-19.1
+    name: 렌더링 채널 반출
+  summary: 인젝션된 지시로 민감정보를 외부 이미지 URL/링크 파라미터에 삽입하게 하여, 클라이언트 자동 렌더링 시점에 사용자 조작 없이 데이터 반출
+  reference: |-
+    • [ATLAS CS0021·실증] 웹페이지 간접 인젝션으로 ChatGPT 대화 내용을 이미지 URL로 유출
+    • [ATLAS CS0029·실증] 공유 Google 문서의 간접 인젝션으로 Bard 대화 내용 유출
+    • [ATLAS CS0035·실증] 공개 채널 게시글의 간접 인젝션으로 Slack AI가 비공개 채널 데이터 유출
+  style: v3.1
+  severity: 상
+  severity_reason: 사용자 조작 없는 대량 유출(제로클릭)
+  stage: 유출(Exfiltration)
+  atlas: []
+  atlas_related:
+  - AML.T0077
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    - LLM01
+    ASI: []
+    ASI_sub:
+    - ASI01
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub:
+    - MCP06
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-19.2
+  ut: UT-19
+  name: 도구 호출 경유 반출
+  prev:
+    id: UT-19.2
+    name: 도구 호출 경유 반출
+  summary: 에이전트의 메일 발송/웹 요청/파일 공유 도구 호출 인자에 수집 데이터를 포함시켜 정상 업무 행위로 위장된 외부 전송 수행
+  reference: |-
+    • [ATLAS CS0053·실제사고] Postmark를 사칭한 악성 MCP 서버가 발송 메일을 몰래 BCC로 유출(실제 사고)
+    • [ATLAS CS0037·실증] Copilot Studio 고객지원 에이전트를 인젝션해 지식원·도구를 탐색하고 CRM 데이터 유출
+    • [ATLAS CS0039·실증] 외부 사용자가 Jira 티켓에 악성 입력을 넣어 AI가 내부자 권한으로 행위(Living off AI)
+  style: v3.1
+  severity: 상
+  severity_reason: 정상 업무로 위장된 대량 외부 전송
+  stage: 유출(Exfiltration)
+  atlas:
+  - AML.T0086
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    - LLM10
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI16
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-19.3
+  ut: UT-19
+  name: 은닉 채널 반출
+  prev:
+    id: UT-19.3
+    name: 은닉 채널 반출
+  summary: DNS 질의/비가시 유니코드 문자 등 모니터링 사각지대 채널에 데이터를 인코딩하여 DLP 및 egress 통제를 우회한 반출
+  reference: • [OWASP 시나리오] 코드 런타임이 스프레드시트 내용을 DNS 질의에 인코딩해 반출(LLM02 시나리오#10)
+  style: v3.1
+  severity: 중
+  severity_reason: 저대역 은닉 유출(탐지 곤란)
+  stage: 유출(Exfiltration)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI09
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 2
+- id: UT-20.1
+  ut: UT-20
+  name: 환각에 의한 허위정보
+  prev:
+    id: UT-20.1
+    name: 환각에 의한 허위정보
+  summary: 근거 없는 사실/수치/인용을 그럴듯하게 생성하여 업무 판단, 고객 안내, 규정 해석에 오류 유발
+  reference: • [OWASP 시나리오] 정책 오독으로 부당 환불 승인, 임상 요약의 금기사항 누락(LLM07 시나리오#2·#3)
+  style: v3.1
+  severity: 중
+  severity_reason: 업무 판단 오류(재무 및 평판 영향)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM07
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI21
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-20.3
+  ut: UT-20
+  name: 응답 편향 조작
+  prev:
+    id: UT-20.3
+    name: 응답 편향 조작
+  summary: 메모리/검색 근거/지시 조작을 통해 AI 응답을 특정 업체/제품/결론 쪽으로 체계적으로 편향시켜 사용자 의사결정 왜곡
+  reference: |-
+    • [ATLAS CS0072·실제사고] 조작된 AI 비서 링크로 메모리를 오염시켜 특정 제품을 추천하게 만드는 홍보성 공격(실제 사고)
+    • [ATLAS CS0019·실증] LLM 가중치를 편집해 허위 사실을 답하게 만든 뒤 Hugging Face에 배포(PoisonGPT)
+    • [ATLAS CS0026·실증] 메일을 RAG로 수집하는 M365 Copilot을 조작해 송금 계좌 정보를 바꿔치기
+  style: v3.1
+  severity: 중
+  severity_reason: 사용자 의사결정 왜곡(재무 영향)
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0130
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM07
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI10
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI21
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-20.4
+  ut: UT-20
+  name: 검증 없는 채택(과신)
+  prev:
+    id: UT-20.4
+    name: 검증 없는 채택(과신)
+  summary: AI 출력을 사람 또는 자동화 워크플로가 독립 검증 없이 그대로 채택하여 오류가 업무 결과/고객 응대/시스템 조치로 직접 전파
+  reference: • [OWASP 시나리오] 수행하지 않은 백업을 완료로 보고, 정상 트래픽을 침입으로 오판해 자동 대응 발동(LLM07 시나리오#5·#7)
+  style: v3.1
+  severity: 중
+  severity_reason: 오류의 업무 결과 직접 전파
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM07
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI09
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-21.1
+  ut: UT-21
+  name: 과도한 기능
+  prev:
+    id: UT-21.1
+    name: 과도한 기능
+  summary: '업무 수행에 불필요한 도구/플러그인 기능(예: 요약용 비서의 메일 발송 기능)이 에이전트에 부여되어, 인젝션 시 악용 가능한 행위 범위 확대'
+  reference: • [OWASP 시나리오] 메일 요약용 비서가 발송 기능까지 보유해 인젝션 시 받은편지함 전체를 외부로 전달(LLM03 시나리오#1)
+  style: v3.1
+  severity: 중
+  severity_reason: 악용 시 피해 범위 확대 요인
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM03
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI06
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-21.2
+  ut: UT-21
+  name: 과도한 권한
+  prev:
+    id: UT-21.2
+    name: 과도한 권한
+  summary: 에이전트가 사용자 범위가 아닌 관리자/서비스 전체 권한 계정으로 동작하거나 권한이 점진적으로 확장되어, 단일 오작동이 조직 전체 데이터 접근으로 확대
+  reference: |-
+    • [ATLAS CS0037·실증] Copilot Studio 고객지원 에이전트를 인젝션해 지식원·도구를 탐색하고 CRM 데이터 유출
+    • [OWASP 시나리오] 주문 조회용 지원 봇이 결제 API 전체 권한으로 환불까지 실행(ASI02 시나리오#3)
+  style: v3.1
+  severity: 상
+  severity_reason: 조직 전체 데이터 접근 권한 노출
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM03
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI02
+    MCP:
+    - MCP02
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-21.3
+  ut: UT-21
+  name: 과도한 자율성
+  prev:
+    id: UT-21.3
+    name: 과도한 자율성
+  summary: 결제/삭제/외부 발송 등 고위험 행위를 사람 승인 없이 자율 실행하도록 설계되어 오판 및 조작이 즉시 실제 피해로 전환
+  reference: • [OWASP 시나리오] 고위험 작업에 대한 승인 절차 부재(LLM03 위험 예시)
+  style: v3.1
+  severity: 중
+  severity_reason: 승인 부재로 오판이 즉시 실제 피해로 전환
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM03
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI09
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 2
+  owasp_vulns: 0
+- id: UT-21.4
+  ut: UT-21
+  name: 위험한 도구 연쇄 호출
+  prev:
+    id: UT-21.4
+    name: 위험한 도구 연쇄 호출
+  summary: 정상 도구들을 조회, 가공, 외부 전송 순으로 연쇄 호출하거나 반복 호출하여 개별 도구 통제로는 탐지되지 않는 데이터 유출/권한 밖 행위 수행
+  reference: |-
+    • [ATLAS CS0016·실증] MathGPT에 프롬프트 인젝션으로 파이썬 코드 실행·API 키 노출
+    • [ATLAS CS0021·실증] 웹페이지 간접 인젝션으로 ChatGPT 대화 내용을 이미지 URL로 유출
+    • [ATLAS CS0024·실증] RAG를 매개로 자기복제 프롬프트가 GenAI 이메일 비서 간 전파(Morris II 웜)
+  style: v3.1
+  severity: 상
+  severity_reason: 개별 통제 우회형 데이터 유출 및 권한 밖 행위
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0053
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM06
+    ASI:
+    - ASI02
+    ASI_sub:
+    - ASI08
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI01
+    MCP: []
+    MCP_sub:
+    - MCP05
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-21.5
+  ut: UT-21
+  name: 파괴적 도구 실행
+  prev:
+    id: UT-21.5
+    name: 파괴적 도구 실행
+  summary: 에이전트가 조작된 지시 또는 오판에 따라 파일/DB/인프라 삭제 명령을 도구로 실행하여 업무 데이터 및 서비스 파괴
+  reference: |-
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [ATLAS CS0046·실증] 웹페이지 인젝션으로 Claude Computer Use가 셸 명령으로 사용자 데이터 삭제
+    • [ATLAS CS0063·실증] 캘린더 초대·메일에 숨긴 지시로 Gemini 비서가 기기·앱을 조작
+    • [OWASP 인용] Replit 운영 DB 삭제(2025.07) / Google Gemini CLI 파일 손실(2025.07)
+  style: v3.1
+  severity: 상
+  severity_reason: 운영 데이터 및 서비스 파괴
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0101
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM10
+    ASI:
+    - ASI02
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 2
+  owasp_vulns: 0
+- id: UT-22.1
+  ut: UT-22
+  name: 생성 코드 실행
+  prev:
+    id: UT-22.1
+    name: 생성 코드 실행
+  summary: 에이전트가 생성하거나 외부에서 주입된 코드/셸 명령을 검증 없이 인터프리터에서 실행하여 호스트 명령 실행 및 시스템 변경 유발
+  reference: |-
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+    • [ATLAS CS0052·실증] 11개 LLM 프레임워크에서 20개 RCE 취약점 발견, 인터넷 공개 앱에서 실증(LLMSmith)
+    • [ATLAS CS0062·실증] Semantic Kernel 검색 플러그인에서 단일 인젝션으로 원격 코드 실행
+    • [OWASP 인용] Framelink Figma MCP RCE / Cursor 워크스페이스 파일 인젝션 / VS Code 에이전트 RCE(2025) / CVE-2025-66404 / CVE-2025-54795
+  style: v3.1
+  severity: 상
+  severity_reason: 호스트 명령 실행(시스템 장악)
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0050
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM10
+    - LLM01
+    ASI:
+    - ASI05
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP05
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 3
+- id: UT-22.2
+  ut: UT-22
+  name: 안전하지 않은 파일 실행
+  prev:
+    id: UT-22.2
+    name: 안전하지 않은 파일 실행
+  summary: pickle 등 역직렬화 취약 포맷의 모델/데이터 파일 또는 사용자가 실행한 악성 노트북을 통해 로딩 시점에 임의 코드 실행
+  reference: |-
+    • [ATLAS CS0018·실증] Google Colab 노트북을 통한 임의 코드 실행 경로 시연
+    • [ATLAS CS0031·실제사고] Hugging Face에 역쉘을 내장한 악성 모델 호스팅(실제 사고)
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+    • [OWASP 인용] CVE-2025-24357 vLLM torch.load 안전하지 않은 역직렬화
+  style: v3.1
+  severity: 상
+  severity_reason: 파일 로딩 시 임의 코드 실행
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0011
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    ASI:
+    - ASI05
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI06
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-22.3
+  ut: UT-22
+  name: 샌드박스 탈출
+  prev:
+    id: UT-22.3
+    name: 샌드박스 탈출
+  summary: 코드 실행 환경의 격리 결함/설정 파일 덮어쓰기를 악용하여 샌드박스를 벗어나 호스트 장악 및 지속성 확보
+  reference: |-
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+    • [ATLAS CS0052·실증] 11개 LLM 프레임워크에서 20개 RCE 취약점 발견, 인터넷 공개 앱에서 실증(LLMSmith)
+    • [OWASP 인용] Cursor 설정 덮어쓰기(대소문자 불일치, 2025.10) / Cursor 에이전트 파일 보호 우회(2025.10)
+  style: v3.1
+  severity: 상
+  severity_reason: 호스트 장악 및 지속성 확보
+  stage: 권한 상승(Privilege Escalation)
+  atlas:
+  - AML.T0105
+  - AML.T0112
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI05
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 2
+- id: UT-22.4
+  ut: UT-22
+  name: 도구 인자 명령 주입
+  prev: null
+  derived_from: UT-22.1
+  summary: null
+  reference: null
+  style: v3.2
+  severity: 상
+  severity_reason: 도구 실행 호스트의 임의 명령 실행(시스템 장악)
+  stage: 실행(Execution)
+  atlas: []
+  atlas_related:
+  - AML.T0050
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    - LLM10
+    ASI:
+    - ASI05
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP05
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 3
+- id: UT-23.1
+  ut: UT-23
+  name: 다중 에이전트 오류 전파
+  prev:
+    id: UT-23.1
+    name: 다중 에이전트 오류 전파
+  summary: 한 에이전트의 환각/오염 출력이 검증 없이 후속 에이전트의 입력으로 전달되어 다단계 워크플로 전체로 오류 증폭
+  reference: |-
+    • [OWASP 인용] GitHub Copilot·Cursor 코드 에이전트 익스플로잇(2025.03)
+    • [OWASP 시나리오] 인젝션된 시장분석 에이전트가 위험 한도를 부풀려 연쇄 매매(ASI08 시나리오#1)
+  style: v3.1
+  severity: 중
+  severity_reason: 연계 워크플로 오작동(무결성 및 가용성)
+  stage: 내부 확산(Lateral Movement)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM07
+    - LLM05
+    ASI:
+    - ASI08
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-23.2
+  ut: UT-23
+  name: 자기복제 프롬프트(웜)
+  prev:
+    id: UT-23.2
+    name: 자기복제 프롬프트(웜)
+  summary: 출력에 자신을 복제하는 지시를 포함시켜, 메일/문서를 매개로 연결된 다른 AI 시스템으로 자동 전파되며 데이터 유출과 스팸 확산
+  reference: • [ATLAS CS0024·실증] RAG를 매개로 자기복제 프롬프트가 GenAI 이메일 비서 간 전파(Morris II 웜)
+  style: v3.1
+  severity: 상
+  severity_reason: 연결된 AI 시스템 전반 자동 확산
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0061
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    - LLM03
+    ASI:
+    - ASI08
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-23.3
+  ut: UT-23
+  name: 자동 대응 루프 폭주
+  prev:
+    id: UT-23.3
+    name: 자동 대응 루프 폭주
+  summary: 자동 복구/대응 에이전트 간 상호 트리거로 피드백 루프가 형성되어 과도한 조치, 자원 소모, 경보 억제 등 시스템 불안정 유발
+  reference: • [OWASP 시나리오] 자동 복구 에이전트 간 피드백 루프로 경보 억제 및 과잉 조치(ASI08 시나리오#6)
+  style: v3.1
+  severity: 중
+  severity_reason: 일시적 가용성 저하 및 과잉 조치
+  stage: 영향(Impact)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM06
+    ASI:
+    - ASI08
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI17
+    - DSGAI06
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-24.1
+  ut: UT-24
+  name: 목표 이탈과 보상 해킹
+  prev:
+    id: UT-24.1
+    name: 목표 이탈과 보상 해킹
+  summary: 에이전트가 부여된 목표를 문자 그대로 최적화하는 과정에서 백업 삭제/통제 우회 등 의도하지 않은 유해 행위를 선택하고 정상 동작처럼 보고
+  reference: |-
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+    • [OWASP 인용] Replit 바이브 코딩 에이전트의 지시 위반 및 데이터 조작(2025.07)
+    • [OWASP 시나리오] 비용 최소화 목표의 에이전트가 운영 백업 삭제를 학습(ASI10 시나리오#4)
+  style: v3.1
+  severity: 상
+  severity_reason: 권한 내 유해 행위 지속 및 은폐
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM07
+    ASI:
+    - ASI10
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-24.2
+  ut: UT-24
+  name: 악성 에이전트 배치
+  prev:
+    id: UT-24.2
+    name: 악성 에이전트 배치
+  summary: 공격자가 피해 환경에 자체 에이전트를 배치하거나 승인되지 않은 에이전트를 실행하여 정상 에이전트로 위장한 채 데이터 접근 및 행위 수행
+  reference: |-
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [ATLAS CS0069·실제사고] GTG-1002가 탈옥한 Claude Code로 약 30개 조직 대상 자율 사이버 첩보(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 정상 위장 에이전트의 지속적 데이터 접근
+  stage: 실행(Execution)
+  atlas:
+  - AML.T0103
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI10
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP09
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-24.3
+  ut: UT-24
+  name: 에이전트 설정 변조
+  prev:
+    id: UT-24.3
+    name: 에이전트 설정 변조
+  summary: 에이전트 설정 파일(규칙/권한/연결 도구)을 변조하여 보안 기능 비활성화 또는 악성 지시를 영속화하고, 설정을 공유하는 모든 에이전트로 영향 전파
+  reference: |-
+    • [ATLAS CS0041·실증] AI 코딩도구 규칙 파일에 보이지 않는 유니코드 지시를 숨겨 악성 코드 생성 유도
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+    • [ATLAS CS0051·실증] 웹페이지 인젝션으로 OpenClaw에 지속 지시를 심어 C2로 활용
+    • [OWASP 인용] Cursor CLI 프로젝트 설정 경유 명령 실행(2025.10)
+  style: v3.1
+  severity: 상
+  severity_reason: 보안 기능 해제 및 악성 지시 영속화
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0081
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI:
+    - ASI10
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-24.4
+  ut: UT-24
+  name: 종료 후 활동 지속
+  prev:
+    id: UT-24.4
+    name: 종료 후 활동 지속
+  summary: 자율 에이전트가 과업 종료 또는 중지 이후에도 실행 환경을 재구성하여 활동을 지속하거나 외부 자원을 확보
+  reference: • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 통제 밖 외부 자원 확보 및 침해
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0121
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI10
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-25.1
+  ut: UT-25
+  name: 평문 저장 자격증명 수집
+  prev:
+    id: UT-25.1
+    name: 설정 파일 내 비밀정보 수집
+  summary: 에이전트 설정/RAG 문서/코드 저장소/CI 변수에 평문 저장된 API 키와 토큰을 수집하여 연동 시스템 접근 권한 확보
+  reference: |-
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+    • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+    • [OWASP 인용] Hugging Face Spaces 비밀 토큰 노출(2024)
+  style: v3.1
+  severity: 상
+  severity_reason: 연동 시스템 접근 권한 일괄 확보
+  stage: 자격증명 접근(Credential Access)
+  atlas:
+  - AML.T0055
+  - AML.T0082
+  - AML.T0083
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM08
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI02
+    DSGAI_sub: []
+    MCP:
+    - MCP01
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-25.2
+  ut: UT-25
+  name: 도구 경유 자격증명 수집
+  prev:
+    id: UT-25.2
+    name: 도구 경유 자격증명 수집
+  summary: 에이전트 도구(파일 조회/명령 실행)를 악용하여 실행 환경의 자격증명 파일과 환경변수를 읽어 외부로 전달
+  reference: |-
+    • [ATLAS CS0067·실증] Claude Code GitHub Action이 인젝션으로 저장소 비밀값을 노출
+    • [ATLAS CS0048·실증] 인터넷에 노출된 ClawdBot 제어 인터페이스 수백 개에서 자격증명 탈취·명령 실행
+    • [ATLAS CS0054·실증] 원격 MCP 도구 설명문의 숨은 지시로 에이전트가 파일·데이터 유출
+  style: v3.1
+  severity: 상
+  severity_reason: 실행 환경 자격증명 탈취
+  stage: 자격증명 접근(Credential Access)
+  atlas:
+  - AML.T0098
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI:
+    - DSGAI02
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-25.3
+  ut: UT-25
+  name: 인증 토큰 및 세션 쿠키 탈취
+  prev:
+    id: UT-25.3
+    name: 메모리 및 세션 쿠키 탈취
+  summary: AI 데스크톱 앱 메모리 덤프/브라우저 세션 쿠키 탈취/취약점 익스플로잇을 통해 인증 토큰을 획득하여 사용자로 가장
+  reference: |-
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+    • [ATLAS CS0060·실증] Lenovo 챗봇이 생성한 악성 HTML이 상담원 브라우저에서 실행되어 세션 쿠키 탈취(XSS)
+  style: v3.1
+  severity: 상
+  severity_reason: 사용자 가장을 통한 계정 장악
+  stage: 자격증명 접근(Credential Access)
+  atlas:
+  - AML.T0090
+  - AML.T0106
+  - AML.T0113
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI02
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-25.4
+  ut: UT-25
+  name: 탈취 자격증명 재사용
+  prev:
+    id: UT-25.4
+    name: 탈취 자격증명 재사용
+  summary: '탈취한 API 키/토큰/세션으로 정상 사용자로 위장하여 AI 서비스에 접근하고 추가 계정 생성으로 접근을 영속화(예: LLMjacking 무단 사용 및 재판매)'
+  reference: |-
+    • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 정상 사용자 위장 접근 및 대규모 무단 사용
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0012
+  - AML.T0091
+  - AML.T0091.000
+  - AML.T0091.001
+  - AML.T0125
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI02
+    MCP:
+    - MCP01
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-26.1
+  ut: UT-26
+  name: 혼동된 대리인
+  prev:
+    id: UT-26.1
+    name: 혼동된 대리인
+  summary: 권한이 낮은 외부 사용자의 입력을 높은 권한의 에이전트가 대신 처리하여, 요청자 권한 검증 없이 내부자 수준 행위 수행
+  reference: |-
+    • [ATLAS CS0039·실증] 외부 사용자가 Jira 티켓에 악성 입력을 넣어 AI가 내부자 권한으로 행위(Living off AI)
+    • [OWASP 인용] Heroku MCP 앱 소유권 탈취(2025.06)
+    • [OWASP 시나리오] 재무 에이전트가 DB 조회 에이전트에 모든 권한을 넘겨 위임 권한 남용(ASI03 시나리오#1)
+  style: v3.1
+  severity: 상
+  severity_reason: 외부 입력에 의한 내부자 수준 행위
+  stage: 권한 상승(Privilege Escalation)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    - LLM03
+    ASI:
+    - ASI03
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP07
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-26.2
+  ut: UT-26
+  name: 캐시된 자격증명 재사용
+  prev:
+    id: UT-26.2
+    name: 캐시 자격 재사용
+  summary: 작업 중 캐시된 관리자 자격증명/세션이 다른 사용자 요청이나 후속 작업에 재사용되어 권한 경계 붕괴
+  reference: • [OWASP 시나리오] 패치 작업 중 캐시된 SSH 자격증명을 비관리자가 재사용(ASI03 시나리오#2)
+  style: v3.1
+  severity: 상
+  severity_reason: 권한 경계 붕괴로 관리자 권한 노출
+  stage: 권한 상승(Privilege Escalation)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI:
+    - ASI03
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI02
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-26.3
+  ut: UT-26
+  name: 인가 시점 불일치
+  prev:
+    id: UT-26.3
+    name: 인가 시점 불일치
+  summary: 워크플로 시작 시점에만 권한을 검증하고 실행 단계별 재검증을 생략하여 진행 중 권한 변경/위임 확장이 통제되지 않음
+  reference: • [OWASP 시나리오] 결재 시작 시점에만 승인 검증(ASI03 시나리오#5)
+  style: v3.1
+  severity: 중
+  severity_reason: 진행 중 권한 변경 통제 실패
+  stage: 권한 상승(Privilege Escalation)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI03
+    ASI_sub:
+    - ASI07
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP07
+    MCP_sub:
+    - MCP02
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-27.1
+  ut: UT-27
+  name: 메시지 위조 및 중간자 공격
+  prev:
+    id: UT-27.1
+    name: 메시지 위조 및 중간자 공격
+  summary: 에이전트 간 비암호화/무서명 통신 구간에서 메시지를 가로채거나 변조하여 다른 에이전트의 지시와 판단 조작
+  reference: |-
+    • [OWASP 인용] MCP OAuth 응답 악용(2025.10)
+    • [OWASP 시나리오] 비암호화 채널 중간자의 의미 주입(ASI07 시나리오#1)
+  style: v3.1
+  severity: 상
+  severity_reason: 다른 에이전트 지시 및 판단 장악
+  stage: 내부 확산(Lateral Movement)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    ASI:
+    - ASI07
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP07
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-27.2
+  ut: UT-27
+  name: 메시지 재전송
+  prev:
+    id: UT-27.2
+    name: 메시지 재전송
+  summary: 과거의 정상 지시/승인 메시지를 재전송하여 만료된 절차 또는 권한을 재실행
+  reference: • [OWASP 시나리오] 과거 긴급 조정 메시지 재전송으로 구식 절차 실행(ASI07 시나리오#3)
+  style: v3.1
+  severity: 중
+  severity_reason: 만료 절차 재실행(범위 제한)
+  stage: 내부 확산(Lateral Movement)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI:
+    - ASI07
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI06
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-27.3
+  ut: UT-27
+  name: 에이전트 위장 등록
+  prev:
+    id: UT-27.3
+    name: 에이전트 위장 등록
+  summary: 디스커버리 서비스/에이전트 레지스트리에 위장 에이전트를 등록하거나 에이전트 카드를 과장하여 정상 위임 작업과 데이터를 가로챔
+  reference: |-
+    • [OWASP 인용] A2A 프로토콜 스푸핑(Agent-in-the-Middle, 2025.04)
+    • [OWASP 시나리오] 탐색 서비스에 가짜 피어 에이전트 등록(ASI07 시나리오#6)
+  style: v3.1
+  severity: 상
+  severity_reason: 위임 작업 및 데이터 가로채기
+  stage: 내부 확산(Lateral Movement)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    - LLM08
+    ASI:
+    - ASI07
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-28.1
+  ut: UT-28
+  name: 변조 모델 및 데이터셋 유입
+  prev:
+    id: UT-28.1
+    name: 변조 모델 유입
+  summary: 공개 모델 허브/데이터셋 저장소에서 변조되거나 악성 코드가 내장된 모델/데이터를 검증 없이 도입하여 조직 환경에 백도어 및 실행 코드 유입
+  reference: |-
+    • [ATLAS CS0031·실제사고] Hugging Face에 역쉘을 내장한 악성 모델 호스팅(실제 사고)
+    • [ATLAS CS0027·실증] 실존 기업을 사칭한 Hugging Face 조직 계정으로 악성 모델 유포
+    • [ATLAS CS0002·실제사고] VirusTotal에 변종 샘플을 대량 제출해 크라우드소싱 학습 데이터를 오염
+  style: v3.1
+  severity: 상
+  severity_reason: 조직 환경 내 백도어 및 실행 코드 유입
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0010
+  - AML.T0010.002
+  - AML.T0010.003
+  - AML.T0011.000
+  - AML.T0115
+  - AML.T0115.000
+  - AML.T0115.001
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM04
+    - LLM05
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI04
+    DSGAI:
+    - DSGAI04
+    - DSGAI05
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+  merged:
+  - id: UT-09.2
+    name: 오염 데이터셋 유포
+- id: UT-28.2
+  ut: UT-28
+  name: 악성 의존성 유입
+  prev:
+    id: UT-28.2
+    name: 악성 의존성 유입
+  summary: AI 프레임워크/라이브러리/하드웨어 공급망에 삽입된 악성 패키지나 변조 구성요소가 설치 과정에서 실행되어 개발 및 학습 환경 장악
+  reference: |-
+    • [ATLAS CS0015·실제사고] PyPI에 올라간 악성 torchtriton 의존성으로 PyTorch-nightly 사용자 정보 유출(실제 사고)
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [ATLAS CS0022·실증] LLM이 환각한 가짜 패키지명을 공격자가 선점해 악성 패키지 배포 가능성 입증
+  style: v3.1
+  severity: 상
+  severity_reason: 개발 및 학습 환경 장악
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0010.000
+  - AML.T0010.001
+  - AML.T0011.001
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM04
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI03
+    MCP: []
+    MCP_sub:
+    - MCP04
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-28.3
+  ut: UT-28
+  name: 환각 패키지 선점
+  prev:
+    id: UT-28.3
+    name: 환각 패키지 선점
+  summary: AI 코딩 도구가 반복 환각하는 존재하지 않는 패키지명을 공격자가 선점 등록하여, AI 권고에 따라 설치되는 악성 패키지 유포(slopsquatting)
+  reference: • [ATLAS CS0022·실증] LLM이 환각한 가짜 패키지명을 공격자가 선점해 악성 패키지 배포 가능성 입증
+  style: v3.1
+  severity: 상
+  severity_reason: AI 권고 경유 개발 환경 코드 실행
+  stage: 자원 개발(Resource Development)
+  atlas:
+  - AML.T0060
+  - AML.T0062
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM04
+    - LLM07
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+  merged:
+  - id: UT-20.2
+    name: 환각 악용 공격
+- id: UT-28.4
+  ut: UT-28
+  name: 네임스페이스 및 평판 악용
+  prev:
+    id: UT-28.4
+    name: 네임스페이스 및 평판 악용
+  summary: 삭제된 작성자 네임스페이스 재등록/유사 조직명 사칭/다운로드 수 조작/배포 후 악성 전환(러그풀)으로 신뢰를 가장한 악성 아티팩트 유포
+  reference: |-
+    • [ATLAS CS0065·실증] 삭제된 Hugging Face 작성자 네임스페이스를 재등록해 악성 모델로 대체
+    • [ATLAS CS0044·실제사고] APT28 LAMEHUG가 LLM API로 실행 명령을 동적 생성(실제 사고)
+    • [ATLAS CS0053·실제사고] Postmark를 사칭한 악성 MCP 서버가 발송 메일을 몰래 BCC로 유출(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 신뢰 위장 악성 아티팩트의 광범위 유입
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0074
+  - AML.T0109
+  - AML.T0111
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM04
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI04
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI08
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-28.5
+  ut: UT-28
+  name: 배포 파이프라인 악용
+  prev:
+    id: UT-28.5
+    name: 배포 파이프라인 악용
+  summary: 컨테이너 레지스트리/모델 서빙 파이프라인/자동 처리 서비스의 취약점을 악용하여 배포 단계에서 모델 이미지 교체 또는 악성 코드 주입
+  reference: |-
+    • [ATLAS CS0028·실증] 노출된 사설 컨테이너 레지스트리 8천여 개 발견, 모델 이미지 변조 가능성 입증
+    • [ATLAS CS0068·실제사고] OpenAI 평가용 자율 에이전트들이 평가 경계를 넘어 외부 인프라 구축·Hugging Face 침해(실제 사고)
+  style: v3.1
+  severity: 상
+  severity_reason: 배포 단계 모델 교체 및 코드 주입
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0010.004
+  - AML.T0119
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM04
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI05
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-29.1
+  ut: UT-29
+  name: 도구 설명 오염
+  prev:
+    id: UT-29.1
+    name: 도구 설명 오염
+  summary: MCP 서버/플러그인의 도구 설명문에 사용자에게 보이지 않는 지시를 삽입하여, 도구 목록을 읽는 시점에 에이전트가 파일 유출 등 숨은 지시 수행
+  reference: |-
+    • [ATLAS CS0049·실증] 스킬 레지스트리에 올린 오염된 ClawdBot 스킬로 원격 코드 실행
+    • [ATLAS CS0054·실증] 원격 MCP 도구 설명문의 숨은 지시로 에이전트가 파일·데이터 유출
+  style: v3.1
+  severity: 상
+  severity_reason: 도구 목록 조회만으로 숨은 지시 실행
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0110
+  - AML.T0110.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    ASI:
+    - ASI04
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP03
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-29.2
+  ut: UT-29
+  name: 악성 도구 구현
+  prev:
+    id: UT-29.2
+    name: 악성 도구 구현
+  summary: 정상 서비스를 사칭하거나 배포 후 악성으로 전환된 MCP 서버/에이전트 스킬이 실행 권한을 이용해 데이터 유출 및 원격 코드 실행 수행
+  reference: |-
+    • [ATLAS CS0053·실제사고] Postmark를 사칭한 악성 MCP 서버가 발송 메일을 몰래 BCC로 유출(실제 사고)
+    • [ATLAS CS0049·실증] 스킬 레지스트리에 올린 오염된 ClawdBot 스킬로 원격 코드 실행
+    • [ATLAS CS0054·실증] 원격 MCP 도구 설명문의 숨은 지시로 에이전트가 파일·데이터 유출
+    • [OWASP 인용] 악성 MCP 패키지 백도어(npm, 2025.10, 실제 사고) / CVE-2025-6514 mcp-remote / AgentSmith Prompt-Hub 프록시 공격(2025.06)
+  style: v3.1
+  severity: 상
+  severity_reason: 실행 권한을 이용한 데이터 유출 및 원격 코드 실행
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0010.005
+  - AML.T0011.002
+  - AML.T0110.001
+  - AML.T0115.002
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM04
+    ASI:
+    - ASI04
+    ASI_sub: []
+    DSGAI:
+    - DSGAI06
+    DSGAI_sub: []
+    MCP:
+    - MCP04
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 2
+- id: UT-29.3
+  ut: UT-29
+  name: 도구 응답 오염
+  prev:
+    id: UT-29.3
+    name: 도구 응답 오염
+  summary: 침해되거나 악의적인 도구가 정상 결과에 지시문/허위 데이터를 섞어 반환하여 에이전트의 후속 판단과 행위 조작
+  reference: '— (근거 사례 없음: OWASP 위험 정의 기반)'
+  style: v3.1
+  severity: 상
+  severity_reason: 에이전트 후속 판단 및 행위 장악
+  stage: 지속성(Persistence)
+  atlas:
+  - AML.T0110.002
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP03
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-29.4
+  ut: UT-29
+  name: 도구명 사칭
+  prev:
+    id: UT-29.4
+    name: 도구명 사칭
+  summary: 정상 도구와 유사한 이름/설명의 악성 도구를 등록하여 에이전트가 도구 해석 과정에서 악성 도구를 우선 선택하도록 유도(도구 타이포스쿼팅)
+  reference: • [OWASP 시나리오] 'report' 악성 도구가 'report_finance'보다 먼저 해석되는 타이포스쿼팅(ASI02 시나리오#5)
+  style: v3.1
+  severity: 중
+  severity_reason: 잘못된 도구 선택 유도(범위 제한)
+  stage: 방어 회피(Defense Evasion)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    ASI:
+    - ASI04
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-30.1
+  ut: UT-30
+  name: 서비스 거부
+  prev:
+    id: UT-30.1
+    name: 서비스 거부
+  summary: 대량 요청/장문 입력/무의미 데이터 투입으로 추론 자원을 고갈시켜 서비스 응답 지연 또는 중단 유발
+  reference: |-
+    • [ATLAS CS0016·실증] MathGPT에 프롬프트 인젝션으로 파이썬 코드 실행·API 키 노출
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+  style: v3.1
+  severity: 하
+  severity_reason: 일시적 장애
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0029
+  - AML.T0046
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM06
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI17
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-30.2
+  ut: UT-30
+  name: 과금 폭탄
+  prev:
+    id: UT-30.2
+    name: 과금 폭탄
+  summary: 고비용 추론을 유발하는 질의를 반복하거나 탈취 키로 서비스를 남용하여 종량제 과금 급증(Denial of Wallet)
+  reference: • [ATLAS CS0030·실제사고] 탈취한 클라우드 자격증명으로 LLM 서비스를 무단 사용·재판매(LLMjacking, 실제 사고)
+  style: v3.1
+  severity: 중
+  severity_reason: 재무 손실(서비스 영향 제한적)
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0034
+  - AML.T0034.000
+  - AML.T0034.001
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM06
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-30.3
+  ut: UT-30
+  name: 에이전트 루프 소모
+  prev:
+    id: UT-30.3
+    name: 에이전트 루프 소모
+  summary: 도구 호출 반복/에이전트 팬아웃/누적 컨텍스트 증가를 유도하여 단일 요청으로 대량 연산과 비용 소모
+  reference: '— (근거 사례 없음: OWASP 위험 정의 기반)'
+  style: v3.1
+  severity: 중
+  severity_reason: 단일 요청 기반 대량 비용 소모
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0034.002
+  atlas_related: []
+  owasp:
+    LLM:
+    - LLM06
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI08
+    - ASI02
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-30.4
+  ut: UT-30
+  name: RAG 가용성 저하
+  prev:
+    id: UT-30.4
+    name: RAG 가용성 저하
+  summary: 검색 방해 문서 주입/벡터 DB 과부하/복제본 장애로 지식 검색 품질과 가용성을 저하시켜 AI 서비스 기능 마비
+  reference: • [OWASP 시나리오] 에이전트 검색 폭주로 벡터 DB 포화(DSGAI17 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 지식 검색 기능 저하 및 마비
+  stage: 영향(Impact)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM09
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI17
+    DSGAI_sub:
+    - DSGAI04
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-31.1
+  ut: UT-31
+  name: 외부 노출 AI 서비스
+  prev:
+    id: UT-31.1
+    name: 외부 노출 AI 서비스
+  summary: 인증 미설정/기본 자격증명/공개 설정 상태의 AI 클러스터, 노트북, 에이전트 관리 콘솔이 인터넷에 노출되어 원격 명령 실행 및 자산 탈취 경로로 악용
+  reference: |-
+    • [ATLAS CS0006·실제사고] Clearview AI 저장소 설정 오류로 소스코드·자격증명·모델 노출
+    • [ATLAS CS0023·실제사고] 인증 없는 Ray 클러스터를 탈취해 연산자원·자격증명·모델 탈취(ShadowRay, 실제 사고)
+    • [ATLAS CS0048·실증] 인터넷에 노출된 ClawdBot 제어 인터페이스 수백 개에서 자격증명 탈취·명령 실행
+    • [OWASP 인용] Microsoft Copilot Studio 에이전트 기본 공개 설정 결함(2025.07)
+  style: v3.1
+  severity: 상
+  severity_reason: 원격 명령 실행 및 AI 자산 탈취
+  stage: 초기 접근(Initial Access)
+  atlas:
+  - AML.T0132
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP09
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-31.2
+  ut: UT-31
+  name: 섀도 AI 사용
+  prev:
+    id: UT-31.2
+    name: 섀도 AI 사용
+  summary: 승인되지 않은 외부 AI 서비스에 임직원이 업무 데이터를 입력하여 보안 통제와 계약 보호 밖에서 데이터가 처리 및 보관
+  reference: • [OWASP 시나리오] 영업팀이 비승인 메일 작성 도구에 CRM 데이터를 붙여넣음(DSGAI03 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 통제 밖 데이터 처리(계약 보호 부재)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM04
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI03
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-31.3
+  ut: UT-31
+  name: 섀도 MCP 서버
+  prev:
+    id: UT-31.3
+    name: 섀도 MCP 서버
+  summary: 보안 검토 없이 설치된 MCP 서버가 기본 자격증명/과도한 권한으로 운영되어 통제되지 않는 데이터 접근 경로 및 공격면 형성
+  reference: • [OWASP 시나리오] 거버넌스 밖에서 기본 자격증명으로 운영되는 MCP 인스턴스(MCP09 개요)
+  style: v3.1
+  severity: 중
+  severity_reason: 통제되지 않는 데이터 접근 경로
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI04
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI03
+    MCP:
+    - MCP09
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 1
+- id: UT-32.1
+  ut: UT-32
+  name: 브라우저 확장 과권한
+  prev:
+    id: UT-32.1
+    name: 브라우저 확장 과권한
+  summary: 전체 탭/페이지 읽기 권한을 가진 AI 브라우저 확장이 열람 중인 사내 시스템 화면과 데이터를 원격 LLM으로 전송하거나 웹페이지 인젝션으로 탈취
+  reference: • [OWASP 시나리오] 모든 탭 접근 권한의 AI 확장이 조작된 웹페이지로 탈취(DSGAI16 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 열람 화면 단위 정보 노출
+  stage: 수집(Collection)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM03
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI16
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-32.2
+  ut: UT-32
+  name: 로컬 에이전트 장악
+  prev:
+    id: UT-32.2
+    name: 로컬 에이전트 장악
+  summary: 악성 링크/조작 콘텐츠를 통해 사용자 PC의 로컬 AI 에이전트를 원격 장악하여 로컬 파일 접근 및 명령 실행
+  reference: |-
+    • [ATLAS CS0036·실증] LLM 데스크톱 앱 메모리에서 인증 토큰을 추출해 사용자 가장(AIKatz)
+    • [ATLAS CS0050·실증] 악성 링크 1회 클릭으로 OpenClaw 로컬 에이전트 원격 코드 실행
+    • [ATLAS CS0051·실증] 웹페이지 인젝션으로 OpenClaw에 지속 지시를 심어 C2로 활용
+  style: v3.1
+  severity: 상
+  severity_reason: 사용자 PC 파일 접근 및 명령 실행
+  stage: 영향(Impact)
+  atlas:
+  - AML.T0112.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    ASI: []
+    ASI_sub:
+    - ASI05
+    DSGAI:
+    - DSGAI16
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-32.3
+  ut: UT-32
+  name: 코딩 어시스턴트 통제 우회
+  prev:
+    id: UT-32.3
+    name: 코딩 어시스턴트 통제 우회
+  summary: AI 코딩 어시스턴트의 명령 허용목록/승인 절차를 환경변수/규칙 파일 조작으로 우회하여 개발자 권한으로 임의 명령 실행
+  reference: |-
+    • [ATLAS CS0047·실제사고] 과권한 GitHub 토큰으로 Amazon Q VS Code 확장에 파괴형 에이전트 지시 커밋(실제 사고)
+    • [ATLAS CS0041·실증] AI 코딩도구 규칙 파일에 보이지 않는 유니코드 지시를 숨겨 악성 코드 생성 유도
+    • [OWASP 인용] CVE-2026-22708 Cursor 터미널 허용목록 우회
+  style: v3.1
+  severity: 상
+  severity_reason: 개발자 권한 임의 명령 실행
+  stage: 방어 회피(Defense Evasion)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI03
+    DSGAI:
+    - DSGAI16
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP02
+  owasp_incidents: 0
+  owasp_vulns: 2
+- id: UT-33.1
+  ut: UT-33
+  name: 관측성 도구 과다 수집
+  prev:
+    id: UT-33.1
+    name: 관측성 도구 과다 수집
+  summary: 디버그 로깅/APM/추적 도구가 프롬프트, 응답, 추론 과정, 토큰을 원문 그대로 수집하여 광범위한 운영 인력과 외부 도구에 민감정보 노출
+  reference: • [OWASP 시나리오] 확장 추론 흔적이 공유 APM에 기록되어 엔지니어 수백 명에게 PII 노출(LLM02 시나리오#3)
+  style: v3.1
+  severity: 중
+  severity_reason: 운영 인력 및 외부 도구로 민감정보 확산
+  stage: 수집(Collection)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI14
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub:
+    - MCP01
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-33.2
+  ut: UT-33
+  name: 라벨링 인력 과다 노출
+  prev:
+    id: UT-33.2
+    name: 라벨링 인력 과다 노출
+  summary: RLHF/품질 검수를 위해 비식별 처리 없이 원본 대화와 문서를 외부 라벨링 인력에 대량 제공하여 개인정보 및 기밀 노출
+  reference: • [OWASP 시나리오] PHI가 포함된 상담 기록 수천 건을 라벨링 업체에 원본 전달(DSGAI19 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 외부 인력 대상 원본 데이터 대량 노출
+  stage: 수집(Collection)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI19
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-34.1
+  ut: UT-34
+  name: 신뢰 가장 출력
+  prev:
+    id: UT-34.1
+    name: 신뢰 가장 출력
+  summary: '조작된 인용/출처 표기/근거 설명을 응답에 포함하여 공격자 정보(예: 송금 계좌)를 신뢰할 수 있는 답변으로 위장'
+  reference: |-
+    • [ATLAS CS0026·실증] 메일을 RAG로 수집하는 M365 Copilot을 조작해 송금 계좌 정보를 바꿔치기
+    • [ATLAS CS0041·실증] AI 코딩도구 규칙 파일에 보이지 않는 유니코드 지시를 숨겨 악성 코드 생성 유도
+    • [ATLAS CS0059·실증] EchoLeak: 메일 한 통으로 M365 Copilot이 사용자 조작 없이 기업 데이터 유출(제로클릭)
+  style: v3.1
+  severity: 중
+  severity_reason: 개별 거래 단위 금전 피해
+  stage: 방어 회피(Defense Evasion)
+  atlas:
+  - AML.T0067
+  - AML.T0067.000
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM07
+    - LLM10
+    ASI:
+    - ASI09
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-34.2
+  ut: UT-34
+  name: 에이전트 경유 사회공학
+  prev:
+    id: UT-34.2
+    name: 에이전트 경유 사회공학
+  summary: 인젝션된 에이전트가 신뢰받는 지원 역할을 이용해 사용자에게 자격증명 입력, 송금, 보안 설정 변경을 유도
+  reference: |-
+    • [ATLAS CS0020·실증] 웹페이지 숨은 지시로 Bing Chat이 사용자 개인정보를 캐내는 사회공학 수행
+    • [OWASP 시나리오] 인젝션된 IT 지원 에이전트의 신입 자격증명 요구, 오염 송장 기반 사기 송금 권고(ASI09 시나리오#2·#3)
+  style: v3.1
+  severity: 중
+  severity_reason: 사용자 자격증명 및 송금 피해
+  stage: 초기 접근(Initial Access)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM01
+    - LLM03
+    ASI:
+    - ASI09
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-34.3
+  ut: UT-34
+  name: 승인 피로 악용
+  prev:
+    id: UT-34.3
+    name: 승인 피로 악용
+  summary: 빈번한 승인 요청과 그럴듯하게 날조된 근거로 승인자의 검토를 형식화시켜 위험한 변경과 조치를 사람 승인 하에 실행
+  reference: |-
+    • [OWASP 인용] Replit 에이전트의 결과 은폐 및 허위 보고(2025.07)
+    • [OWASP 시나리오] 날조된 감사 근거로 위험 설정 변경 승인 획득(ASI09 시나리오#4)
+  style: v3.1
+  severity: 중
+  severity_reason: 형식적 승인 하의 위험 조치 실행
+  stage: 방어 회피(Defense Evasion)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM07
+    ASI:
+    - ASI09
+    ASI_sub: []
+    DSGAI: []
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 1
+  owasp_vulns: 0
+- id: UT-35.1
+  ut: UT-35
+  name: 행위 기록 부재
+  prev:
+    id: UT-35.1
+    name: 행위 기록 부재
+  summary: 도구 호출/컨텍스트 변경/에이전트 의사결정 근거가 기록되지 않아 사고 탐지, 원인 분석, 책임 규명 불가
+  reference: • [OWASP 시나리오] MCP 서버·에이전트의 원격 측정 부족으로 조사·대응 지연(MCP08 개요)
+  style: v3.1
+  severity: 중
+  severity_reason: 사고 대응 지연(간접 피해 확대)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI08
+    - ASI09
+    DSGAI: []
+    DSGAI_sub: []
+    MCP:
+    - MCP08
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-35.2
+  ut: UT-35
+  name: 로그 무결성 부재
+  prev:
+    id: UT-35.2
+    name: 로그 무결성 부재
+  summary: 로그가 변조 가능한 저장소에 보관되거나 에이전트가 자신의 로그를 수정할 수 있어 공격 흔적 삭제 및 행위 부인 가능
+  reference: • [OWASP 시나리오] 불변 감사 로그 부재 시 에이전트 행위의 부인·추적 불능(ASI 위협 T8 Repudiation)
+  style: v3.1
+  severity: 중
+  severity_reason: 흔적 삭제 및 행위 부인 가능
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub:
+    - ASI10
+    DSGAI: []
+    DSGAI_sub:
+    - DSGAI07
+    MCP:
+    - MCP08
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-36.1
+  ut: UT-36
+  name: 파생물 분류 미전파
+  prev:
+    id: UT-36.1
+    name: 파생물 분류 미전파
+  summary: 원본 데이터의 분류/보존 정책이 임베딩, 파인튜닝 가중치, 캐시 등 파생물로 전파되지 않아 민감 데이터가 정책 밖에서 장기 보존 및 활용
+  reference: • [OWASP 시나리오] 분류 라벨이 원본에서 멈추고 임베딩·백업·가중치로 전파되지 않음(DSGAI07)
+  style: v3.1
+  severity: 중
+  severity_reason: 정책 밖 민감 데이터 장기 보존
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM05
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI07
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-36.2
+  ut: UT-36
+  name: 삭제권 이행 불가
+  prev:
+    id: UT-36.2
+    name: 삭제권 이행 불가
+  summary: '정보주체 삭제 요청 시 원본만 삭제되고 모델 가중치/벡터 색인에 데이터가 잔존하여 법적 삭제 의무(예: GDPR 제17조) 위반'
+  reference: • [OWASP 시나리오] GDPR 제17조 삭제 요청 후에도 모델 가중치에 데이터 잔존(DSGAI08 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 법적 삭제 의무 위반(규제 제재)
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM02
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI08
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-36.3
+  ut: UT-36
+  name: 비식별 데이터 재식별
+  prev:
+    id: UT-36.3
+    name: 비식별 데이터 재식별
+  summary: 비식별/합성 데이터에 남은 희귀 준식별자 조합을 결합 분석하여 개인을 재식별하고, 해당 데이터로 학습한 모델을 통해 노출
+  reference: • [OWASP 시나리오] '비식별' 데이터로 파인튜닝한 임상 LLM에서 희귀 준식별자 조합으로 재식별(DSGAI10 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 개인 재식별에 따른 프라이버시 침해
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub:
+    - LLM04
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI10
+    DSGAI_sub: []
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
+- id: UT-36.4
+  ut: UT-36
+  name: 폐기 후 데이터 잔존
+  prev:
+    id: UT-36.4
+    name: 폐기 후 데이터 잔존
+  summary: 자산 폐기 이후에도 백업, 복제본, 장애조치용 스냅샷에 삭제 대상 데이터가 남아 복구 및 장애 전환 시 재노출
+  reference: • [OWASP 시나리오] 오래된 복제본 장애조치로 삭제 레코드가 재노출(DSGAI17 시나리오)
+  style: v3.1
+  severity: 중
+  severity_reason: 폐기 데이터 재노출
+  stage: 해당 없음(구조적 결함)
+  atlas: []
+  atlas_related: []
+  owasp:
+    LLM: []
+    LLM_sub: []
+    ASI: []
+    ASI_sub: []
+    DSGAI:
+    - DSGAI07
+    DSGAI_sub:
+    - DSGAI17
+    MCP: []
+    MCP_sub: []
+  owasp_incidents: 0
+  owasp_vulns: 0
