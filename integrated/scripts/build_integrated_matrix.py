@@ -7,9 +7,12 @@
   - integrated/output/통합_AI클라우드_보안위협_매트릭스_v1.xlsx
   - integrated/output/통합_요약매트릭스_v1.csv (요약 매트릭스 검토·diff용)
   - integrated/output/통합_요약목록_v1.md (도메인별 요약 위협 목록)
+  - --release: integrated/output/통합_AI클라우드_보안위협_매트릭스_v1_배포본.xlsx
+    (고객 배포본 — 클라우드 상세 시트의 CSA Top Threats 열을 이슈 ID만 남김)
 
-사용: python3 integrated/scripts/build_integrated_matrix.py
+사용: python3 integrated/scripts/build_integrated_matrix.py [--release]
 """
+import argparse
 import collections
 import csv
 import datetime
@@ -20,6 +23,7 @@ import sys
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.pagebreak import Break
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
@@ -27,9 +31,12 @@ import common  # noqa: E402
 VERSION = "v1"
 OUT_DIR = os.path.join(common.ROOT, "integrated", "output")
 XLSX = os.path.join(OUT_DIR, f"통합_AI클라우드_보안위협_매트릭스_{VERSION}.xlsx")
+XLSX_RELEASE = os.path.join(OUT_DIR, f"통합_AI클라우드_보안위협_매트릭스_{VERSION}_배포본.xlsx")
 CSV = os.path.join(OUT_DIR, f"통합_요약매트릭스_{VERSION}.csv")
 MD = os.path.join(OUT_DIR, f"통합_요약목록_{VERSION}.md")
 LV0 = {"ai": "AI 보안위협", "cloud": "클라우드 보안위협"}
+# 요약표 '공격 단계'의 AI(ATLAS) 용어를 클라우드(ATT&CK v19.2 국문) 용어로 통일. 대응 용어가 없는 단계는 원문 유지
+STAGE_NORM = {"초기 접근": "초기 침투", "내부 확산": "횡적 이동", "유출": "반출"}
 
 # ---------------------------------------------------------------- 서식 (클라우드 v5 빌드 스크립트와 같은 색 체계)
 FONT = "맑은 고딕"
@@ -165,14 +172,15 @@ def build_rows(ai_src, cl_src, ai_sum, cl_sum):
         owasp = uniq(x for d in mem for x in re.split(r",\s*", d["OWASP 매핑 (주)"] or ""))
         atlas = uniq(x.split(".")[0] for d in mem for x in re.split(r",\s*", d["ATLAS 기법 (주)"] or ""))
         refs = ([f"OWASP {', '.join(owasp)}"] if owasp else []) + ([f"ATLAS {', '.join(atlas)}"] if atlas else [])
-        stages = uniq(re.sub(r"\([A-Za-z][^()]*\)$", "", d["주 공격 단계"]).strip() for d in mem)
+        stages = uniq(STAGE_NORM.get(x, x) for x in
+                      (re.sub(r"\([A-Za-z][^()]*\)$", "", d["주 공격 단계"]).strip() for d in mem))
         rows.append(dict(e, kind="ai", lv0=LV0["ai"], lv1=ai_src["domains"][e["domain"]], ev=ev,
-                         stage="·".join(stages), refs="\n".join(refs), origin=", ".join(e["members"])))
+                         stage=", ".join(stages), refs="\n".join(refs), origin=", ".join(e["members"])))
     for e in cl_sum:
         ev = common.evaluate_cloud(e, cl_src)
         tech = [cl_src["tech"][m] for m in e["members"]]
         others = sorted({t for x in tech for t in x["tactics"]} - {e["domain"]}, key=common.TACTICS.index)
-        stage = tactic_ko[e["domain"]] + (f" (연관: {'·'.join(tactic_ko[t] for t in others)})" if others else "")
+        stage = tactic_ko[e["domain"]] + (f" (연관: {', '.join(tactic_ko[t] for t in others)})" if others else "")
         attack = [m for m in e["members"] if m.startswith("T")]
         azure = [m for m in e["members"] if not m.startswith("T")]
         csa = sorted({s for x in tech for s in re.findall(r"SI-\d+", x["row"]["CSA Top Threats 2026"] or "")})
@@ -182,11 +190,37 @@ def build_rows(ai_src, cl_src, ai_sum, cl_sum):
                          stage=stage, refs="\n".join(refs), origin=", ".join(c for x in tech for c in x["ctc"])))
     for r in rows:
         r["links_text"] = "\n".join(f"{t} {names[t]}" for t in sorted(links[r["id"]], key=order.get))
+        r["case1"] = first_case(r["cases"])
+        r["control1"] = r["controls"].split("\n")[0][2:].strip()
+    # 우선순위: 같은 Lv0 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) → 위협 ID 순
+    for kind in LV0:
+        ranked = sorted((r for r in rows if r["kind"] == kind), key=priority_key)
+        for i, r in enumerate(ranked, 1):
+            r["rank"] = i
     return rows
 
 
+def priority_key(r):
+    return (RISK_RANK[r["ev"]["risk"]], -r["ev"]["incidents"], -r["ev"]["recent"], r["id"])
+
+
+def first_case(cases):
+    """대표 사례 첫 줄 → '[유형] 사례명(시점)' (보고서용 간략 표기)."""
+    line = cases.split("\n")[0].strip()
+    if line.startswith("- 공개 사고 미확인"):
+        return "공개 사고 미확인"
+    m = common.CASE_RE.match(line)
+    n = common.NAMED_RE.match(m.group("body")) if m.group("tag") != "시나리오" else None
+    if not n:
+        body = m.group("body")
+        return f"[{m.group('tag')}] " + (body if len(body) <= 40 else body[:39] + "…")
+    name = n.group("name").strip()
+    return f"[{m.group('tag')}] {name}({n.group('date')})" if n.group("date") else f"[{m.group('tag')}] {name}"
+
+
 # ---------------------------------------------------------------- 재구성 매핑 (원본 Lv3 → 요약 Lv3)
-def mapping_rows(ai_src, cl_src, ai_sum, cl_sum):
+def mapping_rows(ai_src, cl_src, ai_sum, cl_sum, rows):
+    rep = {r["id"]: r["ev"]["rep"] for r in rows}
     out = []
     for e in ai_sum:
         n = len(e["members"])
@@ -196,7 +230,8 @@ def mapping_rows(ai_src, cl_src, ai_sum, cl_sum):
             if d["domain"] != e["domain"]:
                 kind = f"도메인 이동({d['domain']}→{e['domain']})" + ("" if n == 1 else " · 유사 위협 통합")
             out.append([LV0["ai"], d["도메인 (Lv1)"], m, "-", d["세부 위협 (Lv3)"], d["위험도"],
-                        e["id"], e["name"], ai_src["domains"][e["domain"]], kind, e["basis"]])
+                        e["id"], e["name"], ai_src["domains"][e["domain"]], kind,
+                        "●" if rep[e["id"]] == m else "", e["basis"]])
     for e in cl_sum:
         n = len(e["members"])
         for m in e["members"]:
@@ -212,21 +247,22 @@ def mapping_rows(ai_src, cl_src, ai_sum, cl_sum):
                 else:
                     kind = f"전술 이동({t}→{e['domain']})" + ("" if n == 1 else " · 유사 위협 통합")
                 out.append([LV0["cloud"], r["도메인(Lv1)"], r["CTC-ID"], m, r["세부위협(Lv3)"], r["위험도"],
-                            e["id"], e["name"], cl_src["tactics"][e["domain"]], kind, e["basis"]])
+                            e["id"], e["name"], cl_src["tactics"][e["domain"]], kind,
+                            "●" if rep[e["id"]] == m else "", e["basis"]])
     return out
 
 
 # ---------------------------------------------------------------- 시트 작성
-SUMMARY_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "위협 설명", "공격 시나리오", "대표 사례",
-                "발생가능성", "심각도", "위험도", "근거 수준", "실제 사고 수", "대응 방안",
+SUMMARY_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "핵심 요약", "위협 설명", "공격 시나리오", "대표 사례",
+                "발생가능성", "심각도", "위험도", "근거 수준", "실제 사고 수", "최근 사고(2025~)", "우선순위", "대응 방안",
                 "공격 단계", "관련 기준", "연계 위협", "원본 Lv3 ID"]
 
 
 def summary_values(r):
     ev = r["ev"]
-    return [r["lv0"], r["lv1"], r["id"], r["name"], r["description"], r["scenario"], r["cases"],
-            ev["likelihood"], ev["severity"], ev["risk"], ev["evidence"], ev["incidents"], r["controls"],
-            r["stage"], r["refs"], r["links_text"], r["origin"]]
+    return [r["lv0"], r["lv1"], r["id"], r["name"], r["summary"], r["description"], r["scenario"], r["cases"],
+            ev["likelihood"], ev["severity"], ev["risk"], ev["evidence"], ev["incidents"], ev["recent"], r["rank"],
+            r["controls"], r["stage"], r["refs"], r["links_text"], r["origin"]]
 
 
 def sheet_summary(wb, rows, today):
@@ -235,7 +271,7 @@ def sheet_summary(wb, rows, today):
           f"AI {sum(r['kind'] == 'ai' for r in rows)}개 · 클라우드 {sum(r['kind'] == 'cloud' for r in rows)}개 | "
           f"원본: AI 보안위협 매트릭스 v3.2 LITE(Lv3 124) · 클라우드 보안위협 매트릭스 v5(Lv3 154행) | {today}",
           len(SUMMARY_COLS))
-    groups(ws, 3, [("분류 체계", 4, "2E5496"), ("위협 내용", 3, "117A65"), ("위험 평가", 5, "A04000"),
+    groups(ws, 3, [("분류 체계", 4, "2E5496"), ("위협 내용", 4, "117A65"), ("위험 평가", 7, "A04000"),
                    ("대응", 1, "6C3483"), ("교차 매핑·추적", 4, "1F7A8C")])
     header(ws, 4, SUMMARY_COLS)
     for i, r in enumerate(rows, 5):
@@ -243,20 +279,47 @@ def sheet_summary(wb, rows, today):
         ws.cell(i, 1).fill = fill(LV0_FILL[r["kind"]])
         ws.cell(i, 3).font = font(10, True)
         ws.cell(i, 4).font = font(10, True)
-        for col in (8, 9, 12):
+        for col in (9, 10, 13, 14, 15):
             ws.cell(i, col).alignment = CENTER
-        paint_risk(ws.cell(i, 10), r["ev"]["risk"])
-        paint_level(ws.cell(i, 11), r["ev"]["evidence"])
+        paint_risk(ws.cell(i, 11), r["ev"]["risk"])
+        paint_level(ws.cell(i, 12), r["ev"]["evidence"])
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(SUMMARY_COLS))}{len(rows) + 4}"
-    widths(ws, [11, 18, 10, 22, 58, 52, 56, 7, 7, 9, 11, 7, 44, 18, 24, 30, 22])
+    widths(ws, [11, 18, 10, 22, 30, 58, 52, 56, 7, 7, 9, 11, 7, 7, 7, 44, 18, 24, 30, 22])
+    print_setup(ws, "3:4")
+
+
+BRIEF_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "핵심 요약", "위험도", "우선순위", "실제 사고 수",
+              "대표 사례", "핵심 대응"]
+
+
+def sheet_brief(wb, rows, today):
+    ws = wb.create_sheet("보고서용 간략 매트릭스")
+    title(ws, f"보고서용 간략 매트릭스 {VERSION} — 본문 삽입용 (상세 문안은 '통합 요약 매트릭스')",
+          "우선순위 = 같은 구분(Lv0) 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) 순 | 대표 사례 = 첫 번째 대표 사례 | "
+          f"핵심 대응 = 첫 번째 대응 방안 | {today}", len(BRIEF_COLS))
+    groups(ws, 3, [("분류 체계", 4, "2E5496"), ("요약", 1, "117A65"), ("위험 평가", 3, "A04000"),
+                   ("사례·대응", 2, "6C3483")])
+    header(ws, 4, BRIEF_COLS)
+    for i, r in enumerate(rows, 5):
+        put_row(ws, i, [r["lv0"], r["lv1"], r["id"], r["name"], r["summary"], r["ev"]["risk"], r["rank"],
+                        r["ev"]["incidents"], r["case1"], r["control1"]])
+        ws.cell(i, 1).fill = fill(LV0_FILL[r["kind"]])
+        ws.cell(i, 3).font = font(10, True)
+        ws.cell(i, 4).font = font(10, True)
+        paint_risk(ws.cell(i, 6), r["ev"]["risk"])
+        for col in (7, 8):
+            ws.cell(i, col).alignment = CENTER
+    ws.freeze_panes = "E5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(BRIEF_COLS))}{len(rows) + 4}"
+    widths(ws, [11, 18, 10, 24, 44, 9, 8, 8, 36, 46])
     print_setup(ws, "3:4")
 
 
 def sheet_matrix_view(wb, rows, ai_src, cl_src):
     ws = wb.create_sheet("매트릭스 뷰")
     ws.cell(1, 1, "매트릭스 뷰 — 셀 색 = 위험도 (빨강 매우 높음 · 주황 높음 · 노랑 보통 · 초록 낮음), [n] = 실제 사고 수, "
-                  "같은 도메인 안에서 위험도·사고 수 순 정렬").font = font(11, True, NAVY)
+                  "같은 도메인 안에서 우선순위 순 정렬").font = font(11, True, NAVY)
     r0 = 3
     for kind, doms in [("ai", ai_src["domains"]), ("cloud", cl_src["tactics"])]:
         items = [r for r in rows if r["kind"] == kind]
@@ -266,8 +329,7 @@ def sheet_matrix_view(wb, rows, ai_src, cl_src):
         ws.row_dimensions[r0].height = 20
         depth = 0
         for j, (code, label) in enumerate(doms.items(), 1):
-            col = sorted((r for r in items if r["domain"] == code),
-                         key=lambda r: (RISK_RANK[r["ev"]["risk"]], -r["ev"]["incidents"], r["id"]))
+            col = sorted((r for r in items if r["domain"] == code), key=priority_key)
             h = ws.cell(r0 + 1, j, f"{label}\n({len(col)})")
             h.fill, h.font, h.alignment, h.border = fill(NAVY), font(9, True, "FFFFFF"), CENTER, BORDER
             for i, r in enumerate(col, r0 + 2):
@@ -287,7 +349,7 @@ def sheet_domain_summary(wb, rows, ai_src, cl_src):
     cols = ["구분(Lv0)", "도메인(Lv1)", "원본 Lv3 수", "요약 위협 수", "매우 높음", "높음", "보통", "낮음",
             "실제 사고 확인", "주요 고위험 위협"]
     title(ws, "도메인 요약 — Lv1 도메인별 요약 위협 수·위험도 분포", "원본 Lv3 수: AI는 Lv3 항목 수, 클라우드는 v5 행 수"
-          "(전술 중복 행 포함). 위험도는 같은 Lv0 안에서 비교", len(cols))
+          "(전술 중복 행 포함). 위험도·우선순위는 같은 Lv0 안에서 비교", len(cols))
     header(ws, 4, cols)
     r = 5
     for kind, doms in [("ai", ai_src["domains"]), ("cloud", cl_src["tactics"])]:
@@ -300,9 +362,9 @@ def sheet_domain_summary(wb, rows, ai_src, cl_src):
                 n_src = sum(len(cl_src["tech"][m]["ctc"]) for x in items for m in x["members"])
             dist = collections.Counter(x["ev"]["risk"] for x in items)
             real = sum(x["ev"]["evidence"] == "실제 사고 확인" for x in items)
-            top = sorted(items, key=lambda x: (RISK_RANK[x["ev"]["risk"]], -x["ev"]["incidents"], x["id"]))[:2]
+            top = sorted(items, key=priority_key)[:2]
             put_row(ws, r, [LV0[kind], label, n_src, len(items)] + [dist[k] for k in common.RISK_ORDER] +
-                    [real, "\n".join(f"{x['id']} {x['name']} ({x['ev']['risk']})" for x in top)])
+                    [real, "\n".join(f"{x['id']} {x['name']} ({x['ev']['risk']}, 우선순위 {x['rank']})" for x in top)])
             ws.cell(r, 1).fill = fill(LV0_FILL[kind])
             for col in range(3, 10):
                 ws.cell(r, col).alignment = CENTER
@@ -371,17 +433,24 @@ def sheet_ai_detail(wb, ai_src, ai_sum):
                  [10, 11, 18, 7, 16, 8, 18, 50, 80, 7, 7, 9, 11, 7, 22, 16, 22, 13, 30, 16, 8])
 
 
-def sheet_cloud_detail(wb, cl_src, cl_sum):
+def csa_ids(value):
+    """CSA Top Threats 연계 표기에서 이슈 ID만 남김: 'SI-01 부적절한 IAM · SI-07 APT' → 'SI-01 · SI-07'."""
+    return " · ".join(re.findall(r"SI-\d+", value or "")) or None
+
+
+def sheet_cloud_detail(wb, cl_src, cl_sum, release):
     back = {m: e["id"] for e in cl_sum for m in e["members"]}
     data = []
     for r in cl_src["rows"]:
         tid = str(r["ATT&CK ID"])
+        tail = [csa_ids(r[c]) if (release and c == "CSA Top Threats 2026") else r[c] for c in CLOUD_SRC_TAIL]
         vals = [back[tid], LV0["cloud"], r["도메인(Lv1)"], tid.split(".")[0], r["위협분류(Lv2)"], r["CTC-ID"],
                 r["세부위협(Lv3)"], r["요약설명"], r["참조"], r["발생가능성"], r["심각도"], r["위험도"], r["근거 수준"],
-                r["실제 사고 수"], r["심각도 근거"]] + [r[c] for c in CLOUD_SRC_TAIL]
+                r["실제 사고 수"], r["심각도 근거"]] + tail
         data.append(("cloud", vals, r["위험도"], r["근거 수준"]))
+    csa_note = " · CSA 열은 이슈 ID만 표기(배포본)" if release else ""
     detail_sheet(wb, "클라우드 위협 상세", f"원본 그대로: 통합 클라우드 보안위협 매트릭스 v5 통합 매트릭스 {len(data)}행 "
-                 "(전술 중복 행 포함) + 통합 위협 ID 역참조. Lv2 ID는 ATT&CK 상위기법 ID",
+                 f"(전술 중복 행 포함) + 통합 위협 ID 역참조. Lv2 ID는 ATT&CK 상위기법 ID{csa_note}",
                  CLOUD_DETAIL_COLS, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
                   ("기법·교차 매핑 (원본)", 12, "1F7A8C"), ("실제 근거 (원본)", 7, "1E8449"), ("탐지·대응", 1, "6C3483")],
@@ -392,12 +461,13 @@ def sheet_cloud_detail(wb, cl_src, cl_sum):
 def sheet_mapping(wb, maps):
     ws = wb.create_sheet("부록-재구성 매핑")
     cols = ["구분(Lv0)", "원본 도메인(Lv1)", "원본 ID(Lv3)", "ATT&CK ID", "원본 세부 위협(Lv3)", "원본 위험도",
-            "통합 위협 ID", "통합 세부 위협(Lv3)", "통합 도메인(Lv1)", "처리 유형", "통합 근거"]
+            "통합 위협 ID", "통합 세부 위협(Lv3)", "통합 도메인(Lv1)", "처리 유형", "위험 대표", "통합 근거"]
     kinds = collections.Counter(m[9].split(" · ")[0].split("(")[0] for m in maps)
     title(ws, "부록 — 재구성 매핑 (원본 Lv3 → 통합 요약 Lv3)",
           f"AI {sum(m[0] == LV0['ai'] for m in maps)}개 · 클라우드 {sum(m[0] == LV0['cloud'] for m in maps)}행 전수 | "
-          + " · ".join(f"{k} {v}" for k, v in kinds.most_common()), len(cols))
-    groups(ws, 3, [("원본", 6, "2E5496"), ("통합 요약", 3, "7B241C"), ("재구성", 2, "1F7A8C")])
+          + " · ".join(f"{k} {v}" for k, v in kinds.most_common())
+          + " | 위험 대표 ● = 요약 위험도(발생가능성·심각도)를 결정한 원본", len(cols))
+    groups(ws, 3, [("원본", 6, "2E5496"), ("통합 요약", 3, "7B241C"), ("재구성", 3, "1F7A8C")])
     header(ws, 4, cols)
     for i, m in enumerate(maps, 5):
         put_row(ws, i, m, 9)
@@ -406,9 +476,11 @@ def sheet_mapping(wb, maps):
         ws.cell(i, 7).font = font(9, True)
         if not m[9].startswith(("단독", "유사")):
             ws.cell(i, 10).font = font(9, True, "A04000")
+        ws.cell(i, 11).alignment = CENTER
+        ws.cell(i, 11).font = font(9, True, "C0392B")
     ws.freeze_panes = "D5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(maps) + 4}"
-    widths(ws, [11, 20, 12, 10, 28, 9, 10, 26, 22, 22, 70])
+    widths(ws, [11, 20, 12, 10, 28, 9, 10, 26, 22, 22, 7, 70])
     print_setup(ws, "3:4")
 
 
@@ -425,15 +497,23 @@ CRITERIA = [
                 "T1550.x 횡적 이동→자격증명 접근, AZT704 영향→수집, AI UT-14.2 D04→D06"),
     ("단독 유지", "다른 항목과 메커니즘·통제가 달라 묶을 대상이 없는 항목. '통합 근거'에 '단독 유지 — 사유'로 기록"),
     ("■ 2. 위험 평가 (요약 Lv3 재산정)", None),
-    ("발생가능성", "상: 구성 원본의 실제 사고(중복 제거 합집합) 2건 이상 / 중: 1건, 또는 구성 원본 중 발생가능성 '중' 이상이 있음 / 하: 그 외"),
-    ("실제 사고 수", "AI: ATLAS Incident 유형 사례 ID(중복 제거) + 원본 OWASP 인용 사고 수 합. 클라우드: 사고 DB 680건 중 집계 대상 "
-                  "유형(사고·캠페인·사례연구(익명)·규제공시(8-K)·위협인텔 보고서, 집계 포함=Y)의 사고 ID(중복 제거)"),
-    ("심각도", "구성 원본 심각도의 최댓값"),
-    ("위험도", "발생가능성 × 심각도 3×3: 상×상 매우 높음 / 상×중·중×상 높음 / 중×중·상×하·하×상 보통 / 그 외 낮음 (원본 두 매트릭스와 같은 표)"),
+    ("위험도", "구성 원본별 위험도(발생가능성 × 심각도)의 최댓값. 발생가능성과 심각도를 서로 다른 원본에서 가져와 조합하지 않음"
+             "(교차 결합 금지). 3×3 표: 상×상 매우 높음 / 상×중·중×상 높음 / 중×중·상×하·하×상 보통 / 그 외 낮음 (원본 두 매트릭스와 같은 표)"),
+    ("발생가능성 보정", "구성 원본의 실제 사고 합집합이 2건 이상이면, 사고가 1건 이상 확인된 원본만 발생가능성을 '상'으로 보정"),
+    ("발생가능성·심각도", "위험도 최댓값을 낸 원본(대표 원본)의 값을 표시. 대표 원본은 '부록-재구성 매핑'의 '위험 대표' 열에 ● 표시"),
+    ("실제 사고 수", "AI: ATLAS Incident 유형 사례 ID(중복 제거) + OWASP 인용 사고 수(원본 건수 합에서, 참조에 같은 사례명(시점)으로 "
+                  "실린 중복분을 뺌). 클라우드: 사고 DB 680건 중 집계 대상 유형(사고·캠페인·사례연구(익명)·규제공시(8-K)·"
+                  "위협인텔 보고서, 집계 포함=Y)의 사고 ID(중복 제거)"),
+    ("최근 사고(2025~)", "실제 사고 중 2025년 이후 사고 수. 클라우드: 사고 DB 기준일. AI: ATLAS 사례 일자 + 참조에 시점이 적힌 "
+                       "OWASP 인용 사고(시점이 없는 인용 사고는 제외)"),
+    ("우선순위", "같은 Lv0 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) → 위협 ID 순으로 매긴 순위 (1 = 최우선)"),
     ("근거 수준", "구성 원본 중 가장 강한 수준: 실제 사고 확인 > 실사용 기법 포함 > 실증·공개 취약점 > 이론·시나리오"),
     ("Lv0 간 비교 유의", "클라우드는 사고 DB(680건) 기반이라 실제 사고 근거가 AI(ATLAS 사례·OWASP 인용)보다 촘촘함. "
-                       "위험도·사고 수는 같은 Lv0 안에서 비교하고, AI와 클라우드의 등급을 직접 비교하지 않음"),
+                       "위험도·사고 수·우선순위는 같은 Lv0 안에서 비교하고, AI와 클라우드의 등급을 직접 비교하지 않음"),
+    ("신규 공격면 유의", "발생가능성은 확인된 실제 사고 기준이라, 공개 취약점은 많으나 사고 보고가 적은 신규 공격면"
+                      "(예: 간접 프롬프트 인젝션)은 과소평가될 수 있음"),
     ("■ 3. 문안 작성 기준", None),
+    ("핵심 요약", "한 줄 50자 이내. '수단 + 대상 + 결과'를 명사형으로 — 보고서 본문·슬라이드용"),
     ("위협 설명", "'- '로 시작하는 2줄. 1줄: 공격 방법·대상·결과를 담아 '~위협'으로 종결. 2줄: 영향·발생 조건·탐지 곤란 사유"),
     ("공격 시나리오", "1~2줄, 'A → B → C' 단계 흐름. 구성 원본의 참조·사례에 있는 경로만 사용"),
     ("대표 사례", "1~2줄, '[유형] 사례명(시점): 요지'. 구성 원본 참조에 있는 사례만 쓰며(빌드 검증기가 사례명·시점·유형 대조), "
@@ -442,6 +522,11 @@ CRITERIA = [
     ("관련 기준", "AI: OWASP 주 매핑 + ATLAS 기법(상위 ID). 클라우드: ATT&CK ID(상위기법별 축약) + CSA Top Threats 2026 이슈 ID. "
               "CSA·CCM 문서 내용은 싣지 않고 연계 ID만 표기"),
     ("연계 위협", "AI↔클라우드 교차 연계. 클라우드 원본 'AI 매트릭스 연계(UT)' 열과 요약 작성 시 검토한 연계를 양방향으로 표기"),
+    ("공격 단계", "AI: 구성 원본 '주 공격 단계'(ATLAS 전술)를 클라우드(ATT&CK v19.2 국문) 용어로 통일 — 초기 접근→초기 침투, "
+              "내부 확산→횡적 이동, 유출→반출 (방어 회피처럼 1:1 대응 용어가 없는 단계는 원문 유지). 클라우드: 주 전술 + "
+              "연관 전술. 원본 상세 시트는 원문 그대로"),
+    ("배포본", "CSA Top Threats 2026은 '개인·비상업적 용도, 재배포 금지' 자료이므로, 고객 배포본(--release)은 클라우드 "
+             "상세 시트의 CSA 열도 이슈 ID만 남김. 외부 배포 전 각 출처 이용약관 확인"),
     ("■ 4. 사례 유형", None),
     ("[실제 사고]", "공개 보도·공시·위협 인텔로 확인된 실제 침해·악용 (AI: ATLAS Incident·OWASP 인용 사고, 클라우드: 사고 DB 집계 대상)"),
     ("[공개 취약점]", "CVE·공개 보안 권고로 확인된 취약점"),
@@ -474,10 +559,12 @@ def sheet_criteria(wb):
     print_setup(ws, paper="A4")
 
 
-def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
+def sheet_overview(wb, rows, ai_src, cl_src, maps, today, release):
     ws = wb.create_sheet("개요", 0)
     ws.cell(1, 1, f"통합 AI·클라우드 보안위협 매트릭스 {VERSION}").font = font(16, True, NAVY)
-    ws.cell(2, 1, f"컨설팅 보고서용 요약 위협 매트릭스 | 작성 {today}").font = font(10, color="404040")
+    variant = "고객 배포본" if release else "내부본"
+    ws.cell(2, 1, f"컨설팅 보고서용 요약 위협 매트릭스 | {variant} | 작성 {today}").font = font(10, color="404040")
+    merge_rows = []  # 서술형 줄: B~K 병합
     r = 4
 
     def section(text):
@@ -491,6 +578,19 @@ def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
         ws.cell(r, 1).alignment = Alignment(vertical="top")
         c = ws.cell(r, 2, v)
         c.font, c.alignment = font(10), Alignment(wrap_text=True, vertical="top")
+        merge_rows.append(r)
+        r += 1
+
+    def table_header(cells):
+        """cells: [(열 시작, 열 끝, 제목)]"""
+        nonlocal r
+        for c0, c1, text in cells:
+            for col in range(c0, c1 + 1):
+                ws.cell(r, col).fill, ws.cell(r, col).border = fill(HDR), BORDER
+            cell = ws.cell(r, c0, text)
+            cell.font, cell.alignment = font(10, True, "FFFFFF"), CENTER
+            if c1 > c0:
+                ws.merge_cells(start_row=r, start_column=c0, end_row=r, end_column=c1)
         r += 1
 
     ai_n = sum(x["kind"] == "ai" for x in rows)
@@ -508,21 +608,18 @@ def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
     r += 1
     section("■ 구조")
     line("Lv0 구분", "AI 보안위협 / 클라우드 보안위협")
-    line("Lv1 도메인", f"AI: 원본 10개 도메인(D01~D10) / 클라우드: 원본 ATT&CK 14개 전술(RD~IM) 유지")
+    line("Lv1 도메인", "AI: 원본 10개 도메인(D01~D10) / 클라우드: 원본 ATT&CK 14개 전술(RD~IM) 유지")
     line("Lv3 세부 위협", f"원본 Lv3를 내용 분석 후 재구성·재작성 — AI {len(ai_src['lv3'])} → {ai_n}개, 클라우드 "
                        f"{len(cl_src['rows'])}행({len(cl_src['tech'])}기법) → {cl_n}개, 합계 {ai_n + cl_n}개")
-    line("요약 열", "위협 설명 · 공격 시나리오 · 대표 사례 · 위험 평가(발생가능성·심각도·위험도·근거 수준·실제 사고 수) · 대응 방안 · "
-                  "공격 단계 · 관련 기준 · 연계 위협 · 원본 Lv3 ID")
+    line("요약 열", "핵심 요약 · 위협 설명 · 공격 시나리오 · 대표 사례 · 위험 평가(발생가능성·심각도·위험도·근거 수준·실제 사고 수·"
+                  "최근 사고·우선순위) · 대응 방안 · 공격 단계 · 관련 기준 · 연계 위협 · 원본 Lv3 ID")
     r += 1
     section("■ 결과 요약")
     cols = ["구분(Lv0)", "원본 Lv3", "요약 Lv3", "매우 높음", "높음", "보통", "낮음", "실제 사고 확인", "실사용 기법 포함",
             "실증·공개 취약점", "이론·시나리오"]
-    for j, c in enumerate(cols, 1):
-        cell = ws.cell(r, j, c)
-        cell.fill, cell.font, cell.alignment, cell.border = fill(HDR), font(10, True, "FFFFFF"), CENTER, BORDER
+    table_header([(j, j, c) for j, c in enumerate(cols, 1)])
     for k, col in zip(common.RISK_ORDER, range(4, 8)):
-        ws.cell(r, col).fill, ws.cell(r, col).font = fill(RISK_COLOR[k][0]), font(10, True, RISK_COLOR[k][1])
-    r += 1
+        ws.cell(r - 1, col).fill, ws.cell(r - 1, col).font = fill(RISK_COLOR[k][0]), font(10, True, RISK_COLOR[k][1])
     for kind, n_src in [("ai", len(ai_src["lv3"])), ("cloud", f"{len(cl_src['rows'])}행 / {len(cl_src['tech'])}기법")]:
         items = [x for x in rows if x["kind"] == kind]
         risk = collections.Counter(x["ev"]["risk"] for x in items)
@@ -536,11 +633,31 @@ def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
     kinds = collections.Counter(m[9].split(" · ")[0].split("(")[0] for m in maps)
     line("재구성 유형", " · ".join(f"{k} {v}" for k, v in kinds.most_common()) + " (원본 Lv3 단위, '부록-재구성 매핑' 시트)")
     r += 1
+    for kind in LV0:
+        if kind == "cloud":  # 인쇄 시 표 제목과 본문이 쪽 경계에서 갈라지지 않도록
+            ws.row_breaks.append(Break(id=r - 1))
+        section(f"■ 우선 위협 Top 10 — {LV0[kind]} (위험도 → 실제 사고 수 → 최근 사고 순)")
+        table_header([(1, 1, "우선순위"), (2, 2, "위협 ID"), (3, 6, "세부 위협(Lv3)"), (7, 7, "위험도"),
+                      (8, 8, "실제 사고 수"), (9, 9, "최근 사고(2025~)"), (10, 11, "근거 수준")])
+        for x in sorted((x for x in rows if x["kind"] == kind), key=lambda x: x["rank"])[:10]:
+            vals = {1: x["rank"], 2: x["id"], 3: x["name"], 7: x["ev"]["risk"], 8: x["ev"]["incidents"],
+                    9: x["ev"]["recent"], 10: x["ev"]["evidence"]}
+            for col in range(1, 12):
+                ws.cell(r, col).border = BORDER
+            for col, v in vals.items():
+                c = ws.cell(r, col, v)
+                c.font, c.alignment = font(10), CENTER
+            ws.cell(r, 2).font = font(10, True)
+            ws.cell(r, 3).alignment = Alignment(vertical="center")
+            ws.cell(r, 1).fill = fill(LV0_FILL[kind])
+            ws.merge_cells(start_row=r, start_column=3, end_row=r, end_column=6)
+            ws.merge_cells(start_row=r, start_column=10, end_row=r, end_column=11)
+            paint_risk(ws.cell(r, 7), x["ev"]["risk"])
+            paint_level(ws.cell(r, 10), x["ev"]["evidence"])
+            r += 1
+        r += 1
     section("■ 위험도 산정 (발생가능성 × 심각도, 원본 두 매트릭스와 같은 표)")
-    for j, c in enumerate(["발생가능성 \\ 심각도", "상", "중", "하"], 1):
-        cell = ws.cell(r, j, c)
-        cell.fill, cell.font, cell.alignment, cell.border = fill(HDR), font(10, True, "FFFFFF"), CENTER, BORDER
-    r += 1
+    table_header([(1, 1, "발생가능성 \\ 심각도"), (2, 2, "상"), (3, 3, "중"), (4, 4, "하")])
     for lik in ["상", "중", "하"]:
         c = ws.cell(r, 1, lik)
         c.font, c.fill, c.alignment, c.border = font(10, True), fill("F2F3F4"), CENTER, BORDER
@@ -549,34 +666,52 @@ def sheet_overview(wb, rows, ai_src, cl_src, maps, today):
             paint_risk(c, common.risk_of(lik, sev))
             c.border = BORDER
         r += 1
-    line("", "발생가능성 — 상: 구성 원본의 실제 사고(중복 제거) 2건 이상 · 중: 1건, 또는 구성 원본 중 '중' 이상 · 하: 그 외 | "
-             "심각도 — 구성 원본 최댓값 | 근거 수준 — 구성 원본 중 가장 강한 수준")
+    line("", "요약 위험도 = 구성 원본별 위험도의 최댓값(발생가능성·심각도를 서로 다른 원본에서 조합하지 않음) | 구성 원본의 실제 사고 "
+             "합집합이 2건 이상이면 사고가 확인된 원본만 발생가능성 '상'으로 보정 | 근거 수준 = 구성 원본 중 가장 강한 수준")
     r += 1
     section("■ 시트 안내")
-    for k, v in [("통합 요약 매트릭스", "보고서용 본표 — Lv0·Lv1·Lv3 위협별 설명·시나리오·사례·위험 평가·대응 방안"),
+    for k, v in [("보고서용 간략 매트릭스", "본문 삽입용 — 위협·핵심 요약·위험도·우선순위·대표 사례 1건·핵심 대응 1줄"),
+                 ("통합 요약 매트릭스", "상세 본표(부록용) — 설명·시나리오·사례·위험 평가·대응 방안·교차 매핑 전체"),
                  ("매트릭스 뷰", "Lv0별로 도메인(열)마다 요약 위협을 위험도 색으로 배치한 한눈 보기"),
-                 ("도메인 요약", "Lv1 도메인별 원본·요약 항목 수, 위험도 분포, 주요 고위험 위협"),
+                 ("도메인 요약", "Lv1 도메인별 원본·요약 항목 수, 위험도 분포, 주요 위협"),
                  ("AI 위협 상세", "AI 원본 Lv3 124개 원문 그대로 + 통합 위협 ID 역참조·실제 사고 산정 근거"),
-                 ("클라우드 위협 상세", "클라우드 원본 154행 원문 그대로 + 통합 위협 ID 역참조"),
-                 ("부록-재구성 매핑", "원본 Lv3 → 요약 Lv3 대응, 처리 유형(단독·통합·전술 중복·이동)과 통합 근거"),
+                 ("클라우드 위협 상세", "클라우드 원본 154행 원문 그대로 + 통합 위협 ID 역참조"
+                                   + (" (CSA 열은 이슈 ID만)" if release else "")),
+                 ("부록-재구성 매핑", "원본 Lv3 → 요약 Lv3 대응, 처리 유형, 위험 대표 원본, 통합 근거"),
                  ("부록-작성·평가 기준", "재구성 원칙, 위험 재산정 규칙, 문안·사례 표기 기준, 용어")]:
         line(k, v)
     r += 1
+    section("■ 출처·이용조건")
+    csa = ("원문은 싣지 않고 이슈 ID만 연계(이 배포본은 상세 시트 포함 ID만 표기)" if release else
+           "요약표는 이슈 ID만 연계. 내부본의 클라우드 상세 시트는 v5 원본 이슈명을 유지 — 고객 배포는 배포본(--release) 사용")
+    for k, v in [("MITRE ATT&CK®", "Enterprise v19.2 © The MITRE Corporation — ATT&CK 이용약관에 따른 출처 표기"),
+                 ("MITRE ATLAS™", "v2026.09 © The MITRE Corporation"),
+                 ("OWASP", "GenAI Security Project — LLM Top 10 2026 · Agentic Top 10 2026 · GenAI Data Security 2026 · "
+                           "MCP Top 10. 각 문서의 라이선스 조건(변형물 포함) 확인"),
+                 ("AWS · Microsoft", "AWS Threat Technique Catalog · Azure Threat Research Matrix · Threat Matrix for "
+                                     "Kubernetes — 각 원저작권자"),
+                 ("CSA", "Top Threats to Cloud Computing 2026 · CCM v4.1 © Cloud Security Alliance — 개인·비상업적 용도, "
+                         "재배포 금지. " + csa),
+                 ("사고 DB", "클라우드 보안사고 DB 680건 — Wiz, ramimac, SEC, GTI 등 공개 출처 종합"),
+                 ("·", "외부 배포 전 각 출처의 이용약관(특히 상업적 이용·변형물 조건)을 확인")]:
+        line(k, v)
+    r += 1
     section("■ 활용 시 유의사항")
-    for v in ["위험도·실제 사고 수는 같은 Lv0 안에서 비교 — 클라우드는 사고 DB 기반이라 AI보다 실제 사고 근거가 촘촘함",
-              "요약의 위험도는 구성 원본에서 재산정한 값(규칙: 부록-작성·평가 기준). 원본 개별 값은 원본 상세 시트에 그대로 유지",
+    for v in ["위험도·실제 사고 수·우선순위는 같은 Lv0 안에서 비교 — 클라우드는 사고 DB 기반이라 AI보다 실제 사고 근거가 촘촘함",
+              "발생가능성은 확인된 실제 사고 기준 — 공개 취약점은 많으나 사고 보고가 적은 신규 공격면(예: 간접 프롬프트 인젝션)은 "
+              "과소평가될 수 있음",
+              "요약 위험도는 구성 원본에서 재산정한 값(규칙: 부록-작성·평가 기준). 원본 개별 값은 원본 상세 시트에 그대로 유지",
+              "AI 실제 사고 수 = ATLAS 사례 ID(중복 제거) + OWASP 인용 사고 — OWASP 인용 사고는 ID가 없어 참조의 사례명(시점)으로 "
+              "원본 간 중복을 걸러냄",
               "대표 사례는 구성 원본 참조에 수록된 사례만 사용(빌드 시 자동 대조) — 새로운 사실을 추가하지 않음",
-              "CSA Top Threats·CCM은 연계 ID만 표기(문서 내용 재배포 없음). 원본 상세 시트의 CSA 열은 원본 표기를 그대로 둠",
-              "모든 값은 정적 값(수식 없음). 재생성: python3 integrated/scripts/build_integrated_matrix.py"]:
+              "모든 값은 정적 값(수식 없음). 재생성: python3 integrated/scripts/build_integrated_matrix.py [--release]"]:
         line("·", v)
     widths(ws, [20, 14, 10, 10, 9, 9, 9, 13, 13, 13, 12])
     print_setup(ws, paper="A4")
-    # 서술형 줄은 B~K 병합으로 폭 확보 (결과 요약 표 행 제외)
-    for row in range(4, r):
-        if ws.cell(row, 2).value and isinstance(ws.cell(row, 2).value, str) and ws.cell(row, 3).value is None \
-                and len(ws.cell(row, 2).value) > 14:
-            ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=11)
-            ws.row_dimensions[row].height = 15 * (1 + len(ws.cell(row, 2).value) // 95)
+    for row in merge_rows:  # 서술형 줄은 B~K 병합으로 폭 확보
+        text = ws.cell(row, 2).value or ""
+        ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=11)
+        ws.row_dimensions[row].height = 15 * (1 + len(text) // 95)
 
 
 # ---------------------------------------------------------------- 요약 목록 (Markdown, 저장소에서 바로 보기용)
@@ -588,27 +723,35 @@ def write_markdown(path, rows, ai_src, cl_src):
         items = [x for x in rows if x["kind"] == kind]
         dist = collections.Counter(x["ev"]["risk"] for x in items)
         out.append(f"| {LV0[kind]} | {len(items)} | " + " | ".join(str(dist[k]) for k in common.RISK_ORDER) + " |")
+    for kind in LV0:
+        out += ["", f"## 우선 위협 Top 10 — {LV0[kind]}", "",
+                "| 순위 | 위협 ID | 세부 위협(Lv3) | 핵심 요약 | 위험도 | 실제 사고 | 최근 사고(2025~) |",
+                "|---:|---|---|---|---|---:|---:|"]
+        for x in sorted((x for x in rows if x["kind"] == kind), key=lambda x: x["rank"])[:10]:
+            out.append(f"| {x['rank']} | {x['id']} | {x['name']} | {x['summary']} | {x['ev']['risk']} | "
+                       f"{x['ev']['incidents']} | {x['ev']['recent']} |")
     for kind, doms in [("ai", ai_src["domains"]), ("cloud", cl_src["tactics"])]:
         out += ["", f"## {LV0[kind]}"]
         for code, label in doms.items():
             items = [x for x in rows if x["kind"] == kind and x["domain"] == code]
             out += ["", f"### {label} ({len(items)})", "",
-                    "| 위협 ID | 세부 위협(Lv3) | 위험도 | 근거 수준 | 실제 사고 | 원본 Lv3 |", "|---|---|---|---|---:|---|"]
+                    "| 위협 ID | 세부 위협(Lv3) | 핵심 요약 | 위험도 | 우선순위 | 실제 사고 | 근거 수준 | 원본 Lv3 |",
+                    "|---|---|---|---|---:|---:|---|---|"]
             for x in items:
                 origin = ", ".join(x["members"])
-                out.append(f"| {x['id']} | {x['name']} | {x['ev']['risk']} | {x['ev']['evidence']} | "
-                           f"{x['ev']['incidents']} | {origin} |")
+                out.append(f"| {x['id']} | {x['name']} | {x['summary']} | {x['ev']['risk']} | {x['rank']} | "
+                           f"{x['ev']['incidents']} | {x['ev']['evidence']} | {origin} |")
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(out) + "\n")
 
 
 # ---------------------------------------------------------------- 산출물 재검증
-def verify(path, rows, n_ai, n_cloud_rows, n_maps):
+def verify(path, rows, n_ai, n_cloud_rows, n_maps, release):
     """저장한 워크북을 다시 열어 시트·행 수·역참조·값 유효성을 확인."""
     import openpyxl
     wb = openpyxl.load_workbook(path)
-    expect = ["개요", "통합 요약 매트릭스", "매트릭스 뷰", "도메인 요약", "AI 위협 상세", "클라우드 위협 상세",
-              "부록-재구성 매핑", "부록-작성·평가 기준"]
+    expect = ["개요", "보고서용 간략 매트릭스", "통합 요약 매트릭스", "매트릭스 뷰", "도메인 요약", "AI 위협 상세",
+              "클라우드 위협 상세", "부록-재구성 매핑", "부록-작성·평가 기준"]
     assert wb.sheetnames == expect, wb.sheetnames
     ids = {r["id"] for r in rows}
 
@@ -619,13 +762,23 @@ def verify(path, rows, n_ai, n_cloud_rows, n_maps):
 
     summ = body("통합 요약 매트릭스", len(SUMMARY_COLS))
     assert len(summ) == len(rows) and {v[2] for v in summ} == ids
-    assert all(v[9] in RISK_COLOR and v[10] in LEVEL_COLOR for v in summ)
+    assert all(v[10] in RISK_COLOR and v[11] in LEVEL_COLOR for v in summ)
+    assert all(v[4] and len(v[4]) <= common.LIMITS["summary"] for v in summ)
+    for lv0 in LV0.values():  # 우선순위는 Lv0마다 1..N 중복 없이
+        ranks = sorted(v[14] for v in summ if v[0] == lv0)
+        assert ranks == list(range(1, len(ranks) + 1)), lv0
+    brief = body("보고서용 간략 매트릭스", len(BRIEF_COLS))
+    assert [v[2] for v in brief] == [v[2] for v in summ] and all(v[5] in RISK_COLOR and v[8] for v in brief)
     for name, n in [("AI 위협 상세", n_ai), ("클라우드 위협 상세", n_cloud_rows)]:
         det = body(name, 14)
         assert len(det) == n and all(v[0] in ids for v in det), name
         assert all(v[11] in RISK_COLOR for v in det), name
-    maps = body("부록-재구성 매핑", 11)
+    maps = body("부록-재구성 매핑", 12)
     assert len(maps) == n_maps and all(v[6] in ids for v in maps)
+    assert sorted({v[6] for v in maps if v[10] == "●"}) == sorted(ids)  # 요약 항목마다 위험 대표 원본 표시
+    csa_col = 15 + CLOUD_SRC_TAIL.index("CSA Top Threats 2026")
+    csa = [v for v in (wb["클라우드 위협 상세"].cell(i, csa_col + 1).value for i in range(5, n_cloud_rows + 5)) if v]
+    assert csa and all(re.fullmatch(r"SI-\d+( · SI-\d+)*", v) for v in csa) == release, "CSA 열 표기"
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for c in row:
@@ -636,6 +789,9 @@ def verify(path, rows, n_ai, n_cloud_rows, n_maps):
 
 # ---------------------------------------------------------------- 실행
 def main():
+    ap = argparse.ArgumentParser(description="통합 AI·클라우드 보안위협 매트릭스 빌드")
+    ap.add_argument("--release", action="store_true", help="고객 배포본: 클라우드 상세 시트의 CSA 열을 이슈 ID만 남김")
+    args = ap.parse_args()
     ai_src, cl_src = common.load_ai(), common.load_cloud()
     ai_sum, cl_sum = common.load_summary()
     errs, warns = common.check_all(ai_src, cl_src, ai_sum, cl_sum)
@@ -646,35 +802,38 @@ def main():
             print("  [오류]", e)
         sys.exit(f"검증 오류 {len(errs)}건 — 빌드 중단")
     rows = build_rows(ai_src, cl_src, ai_sum, cl_sum)
-    maps = mapping_rows(ai_src, cl_src, ai_sum, cl_sum)
+    maps = mapping_rows(ai_src, cl_src, ai_sum, cl_sum, rows)
     assert len([m for m in maps if m[0] == LV0["ai"]]) == len(ai_src["lv3"])
     assert len([m for m in maps if m[0] == LV0["cloud"]]) == len(cl_src["rows"])
 
     today = datetime.date.today().isoformat()
     wb = Workbook()
     wb.remove(wb.active)
+    sheet_brief(wb, rows, today)
     sheet_summary(wb, rows, today)
     sheet_matrix_view(wb, rows, ai_src, cl_src)
     sheet_domain_summary(wb, rows, ai_src, cl_src)
     sheet_ai_detail(wb, ai_src, ai_sum)
-    sheet_cloud_detail(wb, cl_src, cl_sum)
+    sheet_cloud_detail(wb, cl_src, cl_sum, args.release)
     sheet_mapping(wb, maps)
     sheet_criteria(wb)
-    sheet_overview(wb, rows, ai_src, cl_src, maps, today)
-    for ws, color in zip(wb.worksheets, ["1F3864", "C0392B", "E67E22", "2E5496", "6C3483", "1F618D", "7F8C8D", "7F8C8D"]):
+    sheet_overview(wb, rows, ai_src, cl_src, maps, today, args.release)
+    tabs = ["1F3864", "117A65", "C0392B", "E67E22", "2E5496", "6C3483", "1F618D", "7F8C8D", "7F8C8D"]
+    for ws, color in zip(wb.worksheets, tabs):
         ws.sheet_properties.tabColor = color
     os.makedirs(OUT_DIR, exist_ok=True)
-    wb.save(XLSX)
-    with open(CSV, "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.writer(f)
-        w.writerow(SUMMARY_COLS)
-        for r in rows:
-            w.writerow(summary_values(r))
-
-    write_markdown(MD, rows, ai_src, cl_src)
-    n = verify(XLSX, rows, len(ai_src["lv3"]), len(cl_src["rows"]), len(maps))
-    print(f"저장: {os.path.relpath(XLSX, common.ROOT)} (재검증 통과: 요약 {n}행)")
-    for kind in ["ai", "cloud"]:
+    path = XLSX_RELEASE if args.release else XLSX
+    wb.save(path)
+    if not args.release:  # CSV·목록은 두 판이 같으므로 내부본 빌드 때만 갱신
+        with open(CSV, "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(SUMMARY_COLS)
+            for r in rows:
+                w.writerow(summary_values(r))
+        write_markdown(MD, rows, ai_src, cl_src)
+    n = verify(path, rows, len(ai_src["lv3"]), len(cl_src["rows"]), len(maps), args.release)
+    print(f"저장: {os.path.relpath(path, common.ROOT)} (재검증 통과: 요약 {n}행)")
+    for kind in LV0:
         items = [x for x in rows if x["kind"] == kind]
         dist = collections.Counter(x["ev"]["risk"] for x in items)
         lvl = collections.Counter(x["ev"]["evidence"] for x in items)

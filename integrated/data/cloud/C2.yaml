@@ -1,6 +1,7 @@
 # [C2] 명령·제어 — 재구성 Lv3 (원본 1행 → 1)
 - id: CL-C2-01
   name: 프록시 경유 C2 은닉
+  summary: 침해 VM·CDN·Tor 프록시로 C2 트래픽을 중계해 출처 은닉
   members: [T1090]
   basis: 단독 유지 — 명령·제어 전술의 유일한 클라우드 연관 기법
   links: [AI-01-09]

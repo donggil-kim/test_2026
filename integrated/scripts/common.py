@@ -31,6 +31,7 @@ AI_DOMAINS = ["D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D1
 TACTICS = ["RD", "IA", "EX", "PE", "PV", "ST", "DI", "CA", "DS", "LM", "CO", "C2", "EF", "IM"]
 CASE_TAGS = ["실제 사고", "공개 취약점", "실증", "ATT&CK 사례", "시나리오"]
 SOURCE_TAG_ALIAS = {"실증·연구": "실증"}
+RECENT_FROM = "2025"  # 최근 사고 기준 연도(이 해 1월 1일 이후)
 
 
 def risk_of(likelihood, severity):
@@ -58,16 +59,39 @@ def load_ai():
         if c["type"] == "Incident":
             for l in c["lv3"]:
                 incidents[l].add(c["id"])
+    atlas_dates = {c["id"]: str(c.get("date") or "") for c in cases if c["type"] == "Incident"}
     for k, d in lv3.items():
         d["atlas_incidents"] = sorted(incidents[k])
         d["owasp_incidents"] = base[k].get("owasp_incidents") or 0
         d["owasp_vulns"] = base[k].get("owasp_vulns") or 0
         if len(d["atlas_incidents"]) + d["owasp_incidents"] != d["실제 사고 수"]:
             raise ValueError(f"AI 실제 사고 수 재현 불일치: {k}")
+        d["owasp_named"] = owasp_incident_lines(d["참조"])
+        if len(d["owasp_named"]) > d["owasp_incidents"]:
+            raise ValueError(f"AI OWASP 인용 사고 줄이 건수보다 많음: {k}")
     domains = collections.OrderedDict()
     for d in lv3.values():
         domains.setdefault(d["domain"], d["도메인 (Lv1)"])
-    return {"lv3": lv3, "header": header, "lv2": lv2, "domains": domains, "cases": cases}
+    return {"lv3": lv3, "header": header, "lv2": lv2, "domains": domains, "cases": cases, "atlas_dates": atlas_dates}
+
+
+SOURCE_RE = re.compile(r"\(([^()]*(?:ATLAS|OWASP)[^()]*)\)\s*$")
+
+
+def owasp_incident_lines(ref):
+    """참조 열에서 OWASP 출처로 집계된 [실제 사고] 줄 → [(사례명(시점), 시점)] (ATLAS 사례 ID가 붙은 줄은 제외)."""
+    out = []
+    for line in (ref or "").split("\n"):
+        m = CASE_RE.match(line.strip())
+        if not m or m.group("tag") != "실제 사고":
+            continue
+        src = SOURCE_RE.search(line.strip())
+        if not src or "OWASP" not in src.group(1) or "AML.CS" in src.group(1):
+            continue
+        n = NAMED_RE.match(m.group("body"))
+        name, date = (n.group("name").strip(), n.group("date") or "") if n else (m.group("body")[:30], "")
+        out.append((f"{name}({date})" if date else name, date))
+    return out
 
 
 def load_cloud():
@@ -79,6 +103,7 @@ def load_cloud():
     inc = list(wb["역매핑_사고사례"].iter_rows(values_only=True))
     ih = {k: i for i, k in enumerate(inc[0])}
     real = {x[ih["사건ID"]] for x in inc[1:] if x[ih["사례유형"]] in CLOUD_REAL_KINDS and x[ih["집계 포함"]] == "Y"}
+    inc_dates = {x[ih["사건ID"]]: str(x[ih["기준일"]] or "") for x in inc[1:]}
     tech = collections.OrderedDict()
     for r in rows:
         t = str(r["ATT&CK ID"])
@@ -87,6 +112,8 @@ def load_cloud():
         r["real_incidents"] = sorted(ids & real)
         if len(r["real_incidents"]) != r["실제 사고 수"]:
             raise ValueError(f"클라우드 실제 사고 수 재현 불일치: {r['CTC-ID']}")
+        if sum(inc_dates[i][:4] >= RECENT_FROM for i in r["real_incidents"]) != (r["최근 사고(2025~)"] or 0):
+            raise ValueError(f"클라우드 최근 사고 수 재현 불일치: {r['CTC-ID']}")
         if t not in tech:
             tech[t] = {"row": r, "ctc": [], "tactics": []}
         tech[t]["ctc"].append(r["CTC-ID"])
@@ -94,7 +121,7 @@ def load_cloud():
     tactics = collections.OrderedDict()
     for r in rows:
         tactics.setdefault(r["tactic"], r["도메인(Lv1)"])
-    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": CLOUD_XLSX}
+    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": CLOUD_XLSX, "inc_dates": inc_dates}
 
 
 # ---------------------------------------------------------------- 요약 문안 로더
@@ -116,38 +143,61 @@ def load_summary():
 
 
 # ---------------------------------------------------------------- 근거 재산정
-def evaluate_ai(entry, src):
-    mem = [src["lv3"][m] for m in entry["members"]]
-    atlas = sorted(set().union(*[set(d["atlas_incidents"]) for d in mem]))
-    owasp = sum(d["owasp_incidents"] for d in mem)
-    n = len(atlas) + owasp
-    lik = "상" if n >= 2 else ("중" if n == 1 or any(LEVEL[d["발생가능성"]] >= 2 for d in mem) else "하")
-    sev = LEVEL_INV[max(LEVEL[d["심각도"]] for d in mem)]
+# 요약 위험도 = 구성 원본별 위험도(발생가능성 × 심각도)의 최댓값.
+# 발생가능성·심각도를 서로 다른 원본에서 가져와 조합하지 않는다(교차 결합 금지).
+# 실제 사고 합집합이 2건 이상이면, 사고가 1건 이상 확인된 원본만 발생가능성을 '상'으로 보정한다.
+# 표시하는 발생가능성·심각도는 최댓값을 낸 원본(대표 원본)의 값이다.
+def _representative(members, union_n):
+    best = None
+    for i, m in enumerate(members):
+        lik = "상" if (union_n >= 2 and m["own"] >= 1) else m["lik"]
+        risk = risk_of(lik, m["sev"])
+        key = (RISK_ORDER.index(risk), -m["own"], -LEVEL[m["sev"]], -LEVEL[lik], i)
+        if best is None or key < best[0]:
+            best = (key, m["id"], lik, m["sev"])
+    return best[1:]
+
+
+def _result(entry, rep, lik, sev, evidence, n, recent, **extra):
     if entry.get("severity_override"):
         sev = entry["severity_override"]
-    evid = min((d["근거 수준"] for d in mem), key=EVIDENCE_ORDER.index)
-    return {"likelihood": lik, "severity": sev, "risk": risk_of(lik, sev), "evidence": evid,
-            "incidents": n, "incident_ids": atlas, "owasp_incidents": owasp}
+    out = {"likelihood": lik, "severity": sev, "risk": risk_of(lik, sev), "evidence": evidence,
+           "incidents": n, "recent": recent, "rep": rep}
+    out.update(extra)
+    return out
+
+
+def evaluate_ai(entry, src):
+    mem = [(m, src["lv3"][m]) for m in entry["members"]]
+    atlas = sorted(set().union(*[set(d["atlas_incidents"]) for _, d in mem]))
+    # OWASP 인용 사고는 ID 없이 건수만 있으므로, 참조에 같은 사례명(시점)으로 실린 중복분을 원본 간에 뺀다
+    named = collections.Counter(k for _, d in mem for k in {k for k, _ in d["owasp_named"]})
+    owasp = sum(d["owasp_incidents"] for _, d in mem) - sum(v - 1 for v in named.values())
+    n = len(atlas) + owasp
+    dates = dict(x for _, d in mem for x in d["owasp_named"])
+    recent = sum(src["atlas_dates"].get(c, "")[:4] >= RECENT_FROM for c in atlas) + \
+        sum(dt[:4] >= RECENT_FROM for dt in dates.values())
+    members = [dict(id=m, lik=d["발생가능성"], sev=d["심각도"], own=len(d["atlas_incidents"]) + d["owasp_incidents"])
+               for m, d in mem]
+    rep, lik, sev = _representative(members, n)
+    evidence = min((d["근거 수준"] for _, d in mem), key=EVIDENCE_ORDER.index)
+    return _result(entry, rep, lik, sev, evidence, n, recent, incident_ids=atlas, owasp_incidents=owasp)
 
 
 def evaluate_cloud(entry, src):
-    mem = [src["tech"][t]["row"] for t in entry["members"]]
-    ids = sorted(set().union(*[set(r["real_incidents"]) for r in mem]))
-    n = len(ids)
-    lik = "상" if n >= 2 else ("중" if n == 1 or any(LEVEL[r["발생가능성"]] >= 2 for r in mem) else "하")
-    sev = LEVEL_INV[max(LEVEL[r["심각도"]] for r in mem)]
-    if entry.get("severity_override"):
-        sev = entry["severity_override"]
-    evid = min((r["근거 수준"] for r in mem), key=EVIDENCE_ORDER.index)
-    recent = sorted(set().union(*[set(r["real_incidents"]) for r in mem if r["최근 사고(2025~)"]]))  # 참고용
-    return {"likelihood": lik, "severity": sev, "risk": risk_of(lik, sev), "evidence": evid,
-            "incidents": n, "incident_ids": ids}
+    mem = [(t, src["tech"][t]["row"]) for t in entry["members"]]
+    ids = sorted(set().union(*[set(r["real_incidents"]) for _, r in mem]))
+    recent = sum(src["inc_dates"].get(i, "")[:4] >= RECENT_FROM for i in ids)
+    members = [dict(id=t, lik=r["발생가능성"], sev=r["심각도"], own=len(r["real_incidents"])) for t, r in mem]
+    rep, lik, sev = _representative(members, len(ids))
+    evidence = min((r["근거 수준"] for _, r in mem), key=EVIDENCE_ORDER.index)
+    return _result(entry, rep, lik, sev, evidence, len(ids), recent, incident_ids=ids)
 
 
 # ---------------------------------------------------------------- 문안 검증
 CASE_RE = re.compile(r"^- \[(?P<tag>[^\]]+)\] (?P<body>.+)$")
 NAMED_RE = re.compile(r"^(?P<name>[^:]+?)(?:\((?P<date>[^()]*(?:\([^()]*\))?[^()]*)\))?: (?P<gist>.+)$")
-LIMITS = {"name": 30, "description": 130, "scenario": 175, "cases": 130, "controls": 80}
+LIMITS = {"name": 30, "summary": 50, "description": 130, "scenario": 175, "cases": 130, "controls": 80}
 BANNED = {"인증정보": "자격증명", "크리덴셜": "자격증명", "엑스필": "반출"}
 
 
@@ -159,13 +209,16 @@ def check_entry(entry, refs, kind):
     """문안 형식·길이·사례 출처 대조. refs: 구성 원본의 참조 문자열 목록."""
     errs, warns = [], []
     eid = entry.get("id", "?")
-    for f in ["id", "name", "members", "description", "scenario", "cases", "controls", "basis"]:
+    for f in ["id", "name", "summary", "members", "description", "scenario", "cases", "controls", "basis"]:
         if not entry.get(f):
             errs.append(f"{eid}: '{f}' 누락")
     if errs:
         return errs, warns
     if len(entry["name"]) > LIMITS["name"]:
         warns.append(f"{eid}: 위협명 {len(entry['name'])}자 (>{LIMITS['name']})")
+    summary = str(entry["summary"])
+    if "\n" in summary.strip() or summary.startswith("- ") or len(summary) > LIMITS["summary"]:
+        errs.append(f"{eid}: 핵심 요약은 '- ' 없는 한 줄 {LIMITS['summary']}자 이내 ({len(summary)}자)")
     desc = _lines(entry["description"])
     if len(desc) != 2 or not all(l.startswith("- ") for l in desc):
         errs.append(f"{eid}: 위협 설명은 '- '로 시작하는 2줄이어야 함")
@@ -182,7 +235,7 @@ def check_entry(entry, refs, kind):
             if len(l) > LIMITS[field]:
                 warns.append(f"{eid}: {field} 한 줄 {len(l)}자 (>{LIMITS[field]})")
     for bad, good in BANNED.items():
-        for field in ["name", "description", "scenario", "cases", "controls"]:
+        for field in ["name", "summary", "description", "scenario", "cases", "controls"]:
             if bad in (entry.get(field) or ""):
                 errs.append(f"{eid}: 용어 '{bad}' → '{good}'")
     cases = _lines(entry["cases"])
