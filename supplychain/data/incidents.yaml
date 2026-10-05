@@ -2458,7 +2458,8 @@
   summary: >-
     2025년 11월 말 다시 퍼진 변종이 npm 패키지 수백 개를 감염시키고 GitHub 저장소 2만 5천 개 이상에 탈취 정보를 올렸다.
     설치 전(preinstall) 단계에서 실행되고, 자격증명을 찾지 못하면 홈 디렉터리를 지우는 파괴 기능까지 갖췄다.
-  sct: [SCT-IM-02, SCT-DP-03.2, SCT-IM-05, SCT-IM-03, SCT-SC-02.1]
+    감염 단말을 SHA1HULUD라는 이름의 GitHub 자체 호스팅 러너로 등록하고 Discussions 본문을 셸로 실행하는 워크플로(discussion.yaml)를 심어 원격 명령 실행 통로로 썼다.
+  sct: [SCT-IM-02, SCT-DP-03.2, SCT-IM-05, SCT-IM-03, SCT-SC-02.1, SCT-BD-02.3]
   attack_ref: [S9008]
   sources:
     - Semgrep(2025) Sha1-Hulud — The Second Coming of the NPM Worm | https://ai.semgrep.dev/blog/2025/digging-for-secrets-sha1-hulud-the-second-coming-of-the-npm-worm

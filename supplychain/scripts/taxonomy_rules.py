@@ -19,6 +19,18 @@ KINDS = ["사고", "캠페인", "정부 경보", "공시", "사례연구(익명)
 RECENT_FROM = "2025-01"      # 최근 사고 기준(통합 매트릭스 v1과 같은 2025년 이후)
 LIKELY_HIGH_REAL = 2         # 발생가능성 '상' = 실제 사고 2건 이상
 
+
+def incident_status(e):
+    """사고 DB 항목의 집계 상태 — 실제 사고 / 실증·연구 / 위협인텔 / 제외(검증)"""
+    if e["kind"] in RESEARCH_KINDS:
+        return "실증·연구"
+    if e["kind"] in INTEL_KINDS:
+        return "위협인텔"
+    if e["verification"] in EXCLUDED_VERIFICATION:
+        return "제외(검증)"
+    return "실제 사고"
+
+
 RISK_MATRIX = {
     ("상", "상"): "매우 높음", ("상", "중"): "높음", ("상", "하"): "보통",
     ("중", "상"): "높음", ("중", "중"): "보통", ("중", "하"): "낮음",

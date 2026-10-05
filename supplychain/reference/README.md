@@ -31,7 +31,7 @@
 
 | 파일 | 설명 |
 | --- | --- |
-| `enterprise-attack-v19.2-subset.json` | 분류 체계가 쓰는 기법 52개의 명칭·전술·URL과 그 기법을 쓰는 주체(그룹·소프트웨어·캠페인)의 절차 설명 |
+| `enterprise-attack-v19.2-subset.json` | 분류 체계가 쓰는 기법 52개의 명칭·전술·URL과 그 기법을 쓰는 주체(그룹·소프트웨어·캠페인)의 절차 설명, 전체 기법·그룹·소프트웨어·캠페인의 ID→명칭 색인 1,754개(`scripts/validate.py`의 ID 검증용) |
 
 - `scripts/prepare_attack.py`가 저장소 루트의 `enterprise-attack-v19.2.xlsx`에서 만듭니다(폴더만 옮겨도 빌드가 재현되도록).
 - MITRE ATT&CK® © The MITRE Corporation — [이용약관](https://attack.mitre.org/resources/legal-and-branding/terms-of-use/)

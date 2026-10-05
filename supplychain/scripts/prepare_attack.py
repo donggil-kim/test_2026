@@ -5,6 +5,7 @@ MITRE ATT&CK Enterprise v19.2 → 공급망 매트릭스용 최소 추출본
 data/taxonomy.yaml이 쓰는 기법의 정보(명칭·전술·URL)와 그 기법을 쓰는 주체(그룹·소프트웨어·캠페인)의
 절차(mapping description)만 뽑아 reference/attack/enterprise-attack-v19.2-subset.json으로 저장한다.
 원본 xlsx(약 5MB)를 폴더에 복제하지 않고도 빌드를 재현하기 위한 것.
+index에는 전체 기법·그룹·소프트웨어·캠페인의 ID→명칭만 담아 사고 DB·문구의 ATT&CK ID 검증(scripts/validate.py)에 쓴다.
 
 실행 : python3 scripts/prepare_attack.py [--xlsx <enterprise-attack-v19.2.xlsx 경로>]
        기본 경로는 저장소 루트의 enterprise-attack-v19.2.xlsx
@@ -58,6 +59,8 @@ def main():
     for sheet, kind in (("groups", "그룹"), ("software", "소프트웨어"), ("campaigns", "캠페인")):
         for r in rows_of(wb[sheet]):
             subjects[r["ID"]] = dict(name=r["name"], kind=kind, url=r["url"])
+    index = {k: v["name"] for k, v in sorted(tech.items())}
+    index.update({k: v["name"] for k, v in sorted(subjects.items())})
 
     procs = {t: [] for t in used}
     for r in rows_of(wb["relationships"]):
@@ -73,10 +76,12 @@ def main():
         techniques={t: tech[t] for t in used},
         subjects={s: subjects[s] for s in sorted({p["subject"] for v in procs.values() for p in v})},
         procedures={t: sorted(v, key=lambda p: p["subject"]) for t, v in procs.items()},
+        index=index,
     )
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"기법 {len(used)}개 · 주체 {len(out['subjects'])}개 · 절차 {sum(len(v) for v in procs.values())}건 → {OUT}")
+    print(f"기법 {len(used)}개 · 주체 {len(out['subjects'])}개 · 절차 {sum(len(v) for v in procs.values())}건 · "
+          f"ID 색인 {len(index)}개 → {OUT}")
 
 
 if __name__ == "__main__":

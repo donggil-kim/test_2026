@@ -276,7 +276,7 @@ domains:
             oss: [OSS-RISK-2, OSS-RISK-4]
             sap: [AV-800, AV-601]
             cncf: [Malicious Maintainer]
-            s2c2f: [SCA-5, REB-1]
+            s2c2f: [SCA-5, REB-1, ING-4]
             ssdf: [PW.4, PS.1]
             scorecard: [Contributors, Maintained, Code-Review]
             nist: [SR-6, PS-7, SA-11]
@@ -725,7 +725,7 @@ domains:
             ai: []
             ot: []
             severity: 상
-            severity_why: 계속 살아 있는 러너를 장악하면 이후 모든 빌드·릴리스 작업과 그 비밀에 접근함 — PyTorch 2024 연구(포크 PR로 릴리스 파이프라인 장악 가능성 시연)
+            severity_why: 계속 살아 있는 러너를 장악하면 이후 모든 빌드·릴리스 작업과 그 비밀에 접근함 — PyTorch 2024 연구(포크 PR로 릴리스 파이프라인 장악 가능성 시연), Shai-Hulud 2차 2025(감염 단말을 러너로 등록해 백도어로 사용)
       - id: SCT-BD-03
         name: CI/CD 시스템·서비스 침해
         lv3:

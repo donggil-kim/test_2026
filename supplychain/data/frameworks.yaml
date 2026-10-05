@@ -70,7 +70,7 @@ slsa:
   G:   [Distribution channel, 배포 채널 변조]
   H:   [Package selection, 패키지 선택 오류(의존성 혼동·타이포스쿼팅)]
   I:   [Usage, 부적절한 사용]
-  DEP: [Dependency threats, 의존성 위협(취약·악성 의존성, 설치 시점 코드 실행, 변조 빌드 도구)]
+  DEP: [Dependency threats, '의존성 위협(취약·악성 의존성·설치 시점 코드 실행·변조 빌드 도구)']
   AVL: [Availability threats, 가용성 위협(코드·의존성·산출물 삭제)]
   VER: [Verification threats, 검증 위협(기대값 변조·해시 충돌)]
 
@@ -203,14 +203,14 @@ ssdf:
   PS.3: [Archive and Protect Each Software Release, 릴리스 보관·보호]
   PW.1: [Design Software to Meet Security Requirements and Mitigate Security Risks, 보안 요구사항 반영 설계]
   PW.2: [Review the Software Design to Verify Compliance, 설계 검토]
-  PW.4: [Reuse Existing, Well-Secured Software When Feasible, 검증된 소프트웨어 재사용]
+  PW.4: ['Reuse Existing, Well-Secured Software When Feasible', 검증된 소프트웨어 재사용]
   PW.5: [Create Source Code by Adhering to Secure Coding Practices, 시큐어 코딩]
-  PW.6: [Configure the Compilation, Interpreter, and Build Processes to Improve Executable Security, 컴파일·빌드 과정 보안 설정]
+  PW.6: ['Configure the Compilation, Interpreter, and Build Processes to Improve Executable Security', 컴파일·빌드 과정 보안 설정]
   PW.7: [Review and/or Analyze Human-Readable Code, 소스 코드 검토·분석]
   PW.8: [Test Executable Code to Identify Vulnerabilities, 실행 코드 보안 시험]
   PW.9: [Configure Software to Have Secure Settings by Default, 안전한 기본 설정]
   RV.1: [Identify and Confirm Vulnerabilities on an Ongoing Basis, 취약점 지속 식별·확인]
-  RV.2: [Assess, Prioritize, and Remediate Vulnerabilities, 취약점 평가·우선순위·조치]
+  RV.2: ['Assess, Prioritize, and Remediate Vulnerabilities', 취약점 평가·우선순위·조치]
   RV.3: [Analyze Vulnerabilities to Identify Their Root Causes, 취약점 근본 원인 분석]
 
 # OpenSSF Scorecard 점검 항목
