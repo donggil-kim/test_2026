@@ -1,0 +1,1473 @@
+# OT/ICS/IoT 보안사고 DB v1 — 공개 출처 기반(2000~2025)
+#
+# 필드
+#   date          발생(또는 공개) 시점 YYYY-MM
+#   kind          사고 · 캠페인 · 사례연구(익명) · 정부 경보 · 공시 · 연구·시연 · 위협인텔(능력 발견)
+#   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
+#   relevance     OT 관련도: OT 직접 · IT 경유 OT 영향 · OT 접근·노출 · OT 정보 탈취 · IoT 기기 · 판정 보류 · IT 한정
+#   impact        물리적 영향 유형: 인명·안전 · 환경 · 설비 손상 · 제어 상실·조작 · 감시 상실·조작 · 운영 중단 · 운영 정보 탈취 · 기기 탈취 · 영향 없음
+#   attack_ref    ATT&CK 캠페인·소프트웨어 ID — 해당 객체의 ICS·Enterprise 공식 절차를 그대로 매핑(근거 'ATT&CK 공식').
+#                 캠페인 절차로 충분하면 소프트웨어는 붙이지 않음. 'S0608@ICS'처럼 쓰면 ICS 절차만(일반 기능인 Enterprise 절차 제외)
+#   ics / ent     분석 매핑(근거 '분석') — ICS 기법(EMB3D 신설 행 키 'EMB3D-…' 포함) / Enterprise 기법
+#   sources       '출처 | URL' (URL은 확인된 것만)
+#
+# 집계 규칙(scripts/taxonomy_rules.py): 실제 사고 = kind ∈ {사고·캠페인·사례연구(익명)·정부 경보·공시}
+#   이면서 verification ∉ {행위자 주장·논란·원인 번복}, relevance ≠ IT 한정.
+#   연구·시연은 실증 근거, 위협인텔(능력 발견)은 실사용 근거(중 상한)로만 반영.
+
+# ── ATT&CK for ICS 캠페인 ───────────────────────────────────────────
+- id: INC-001
+  title: 마루치 하수처리 시스템 침해
+  date: 2000-03
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 호주
+  sector: 수처리
+  actor: 전 협력업체 직원(내부자)
+  impact: [환경, 제어 상실·조작]
+  summary: >-
+    하수처리 시스템을 구축한 업체의 전 직원이 빼돌린 무선 장비와 제어 소프트웨어로 펌프장에 위조 명령을 보내
+    경보를 끄고 펌프를 조작해, 약 80만 리터의 미처리 하수를 지역 하천과 공원으로 방류시켰다.
+  attack_ref: [C0020]
+  sources:
+    - MITRE ATT&CK C0020 | https://attack.mitre.org/campaigns/C0020/
+    - MITRE(Abrams·Weiss, 2008) Malicious Control System Cyber Security Attack Case Study | https://www.mitre.org/sites/default/files/pdf/08_1145.pdf
+
+- id: INC-002
+  title: 2015 우크라이나 배전망 공격
+  date: 2015-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 우크라이나
+  sector: 전력
+  actor: Sandworm Team(G0034)
+  impact: [운영 중단, 제어 상실·조작, 감시 상실·조작]
+  summary: >-
+    스피어피싱으로 BlackEnergy3에 감염시킨 뒤 탈취한 자격증명과 VPN으로 제어망에 들어가, 운영자 HMI를 원격 조작해
+    배전사 3곳의 변전소 차단기를 열었다(약 22만 5천 고객이 수 시간 정전). 직렬-이더넷 변환기 펌웨어를 덮어써
+    원격 복구를 막고 KillDisk로 시스템을 지웠다.
+  attack_ref: [C0028]
+  ics: [T0809]   # KillDisk로 시스템 삭제(C0028 공식 절차에 미포함 — 분석 매핑)
+  sources:
+    - MITRE ATT&CK C0028 | https://attack.mitre.org/campaigns/C0028/
+    - Booz Allen Hamilton(2016) When The Lights Went Out | https://www.boozallen.com/content/dam/boozallen/documents/2016/09/ukraine-report-when-the-lights-went-out.pdf
+
+- id: INC-003
+  title: 2016 우크라이나 송전 변전소 공격(Industroyer)
+  date: 2016-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 우크라이나
+  sector: 전력
+  actor: Sandworm Team(G0034)
+  impact: [운영 중단, 제어 상실·조작]
+  summary: >-
+    Industroyer(CrashOverride)가 IEC 60870-5-101/104·IEC 61850·OPC DA 프로토콜로 키이우 북부 송전 변전소의 차단기를 직접 개방해
+    약 1시간 정전을 일으켰다. 보호 계전기 서비스 거부 모듈과 와이퍼를 함께 썼다.
+  attack_ref: [C0025, S0604]
+  sources:
+    - MITRE ATT&CK C0025 | https://attack.mitre.org/campaigns/C0025/
+    - ESET(2017) Win32/Industroyer | https://www.welivesecurity.com/wp-content/uploads/2017/06/Win32_Industroyer.pdf
+    - Dragos(2018) CRASHOVERRIDE | https://www.dragos.com/wp-content/uploads/CRASHOVERRIDE2018.pdf
+
+- id: INC-004
+  title: 석유화학 시설 안전계통(SIS) 공격(Triton)
+  date: 2017-08
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 사우디아라비아
+  sector: 화학·석유화학
+  actor: TEMP.Veles(G0088)
+  impact: [인명·안전, 운영 중단]
+  summary: >-
+    IT망에서 DMZ를 거쳐 엔지니어링 워크스테이션을 장악한 뒤 Triconex 안전 제어기에 악성 로직을 넣어 안전 기능을 무력화하려 했다.
+    악성코드 오류로 안전 계통이 작동해 공정이 정지되면서 발견됐다.
+  attack_ref: [C0030, S1009]
+  sources:
+    - MITRE ATT&CK C0030 | https://attack.mitre.org/campaigns/C0030/
+    - FireEye(2017) Attackers Deploy New ICS Attack Framework TRITON | https://www.fireeye.com/blog/threat-research/2017/12/attackers-deploy-new-ics-attack-framework-triton.html
+    - Dragos(2017) TRISIS | https://dragos.com/blog/trisis/TRISIS-01.pdf
+
+- id: INC-005
+  title: Unitronics PLC·HMI 화면 변조 캠페인
+  date: 2023-11
+  kind: 캠페인
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국 외 다국
+  sector: 수처리
+  actor: CyberAv3ngers(G1027)
+  impact: [감시 상실·조작, 운영 중단]
+  summary: >-
+    인터넷에 노출된 Unitronics Vision PLC·HMI에 기본 암호로 접속해 HMI 화면을 반이스라엘 문구로 바꾸고 일부 장치를 사용 불능으로 만들었다.
+    미국 펜실베이니아 알리퀴파 수도국 가압장은 수동 운전으로 전환했다.
+  attack_ref: [C0031]
+  sources:
+    - MITRE ATT&CK C0031 | https://attack.mitre.org/campaigns/C0031/
+    - CISA AA23-335A | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-335a
+
+- id: INC-006
+  title: 2022 우크라이나 전력 공격(MicroSCADA 경유)
+  date: 2022-10
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 우크라이나
+  sector: 전력
+  actor: Sandworm Team(G0034)
+  impact: [운영 중단, 제어 상실·조작]
+  summary: >-
+    하이퍼바이저에 올라간 MicroSCADA 서버의 정상 도구(scilc.exe)로 변전소 차단기 개방 명령을 내려 미사일 공습과 같은 시기에 정전을 일으켰다.
+    이틀 뒤 그룹 정책으로 CaddyWiper를 배포해 IT 측 흔적을 지웠다.
+  attack_ref: [C0034]
+  sources:
+    - MITRE ATT&CK C0034 | https://attack.mitre.org/campaigns/C0034/
+    - Mandiant(2023) Sandworm Disrupts Power in Ukraine Using a Novel Attack Against Operational Technology | https://www.mandiant.com/resources/blog/sandworm-disrupts-power-ukraine-operational-technology
+
+- id: INC-007
+  title: 우크라이나 리비우 지역난방 공격(FrostyGoop)
+  date: 2024-01
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 우크라이나
+  sector: 에너지(가스·열)
+  actor: 미상
+  impact: [운영 중단, 제어 상실·조작, 감시 상실·조작]
+  summary: >-
+    외부 노출 라우터를 통해 들어온 공격자가 Modbus TCP로 ENCO 난방 제어기의 값을 바꾸고 일부 장치 펌웨어를 다운그레이드해,
+    영하의 날씨에 약 600개 아파트 건물의 난방을 이틀가량 끊었다.
+  attack_ref: [C0041, S1165]
+  sources:
+    - MITRE ATT&CK C0041 | https://attack.mitre.org/campaigns/C0041/
+    - Dragos(2024) FROSTYGOOP ICS Malware | https://hub.dragos.com/hubfs/Reports/Dragos-FrostyGoop-ICS-Malware-Intel-Brief-0724_r2.pdf
+
+- id: INC-008
+  title: 2025 폴란드 에너지 시설 와이퍼 공격
+  date: 2025-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 폴란드
+  sector: 전력
+  actor: 러시아 국가 배후(ESET는 Sandworm으로 귀속)
+  impact: [감시 상실·조작]
+  summary: >-
+    풍력·태양광 발전단지 30여 곳, 열병합발전소, 제조업체를 노렸다. 인터넷에 노출된 FortiGate VPN으로 들어와 2단계 인증을 해제하고
+    그룹 정책으로 와이퍼(DynoWiper·LazyWiper)를 배포했으며, 분산 전원과 배전 운영자 간 통신을 끊었으나 발전·열 공급에는 영향이 없었다.
+  attack_ref: [C0063]
+  sources:
+    - MITRE ATT&CK C0063 | https://attack.mitre.org/campaigns/C0063/
+    - CERT Polska(2026) Energy Sector Incident Report 2025 | https://cert.pl/uploads/docs/CERT_Polska_Energy_Sector_Incident_Report_2025.pdf
+    - ESET(2026) DynoWiper | https://www.welivesecurity.com/en/eset-research/dynowiper-update-technical-analysis-attribution/
+
+# ── ATT&CK for ICS 소프트웨어로 문서화된 사건 ─────────────────────────
+- id: INC-009
+  title: 이란 우라늄 농축 시설 원심분리기 파괴(Stuxnet)
+  date: 2010-06
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 이란
+  sector: 원자력
+  actor: 미상(국가 배후 추정)
+  impact: [설비 손상, 제어 상실·조작, 감시 상실·조작]
+  summary: >-
+    USB와 다수의 제로데이로 폐쇄망에 들어가 Siemens Step 7 프로젝트를 감염시키고 S7 PLC 로직을 바꿔 원심분리기 회전 속도를 조작했다.
+    그동안 운영자 화면에는 정상값을 재생해 이상을 숨겼다.
+  attack_ref: [S0603]
+  sources:
+    - MITRE ATT&CK S0603 | https://attack.mitre.org/software/S0603/
+    - Symantec(2011) W32.Stuxnet Dossier | https://docs.broadcom.com/doc/security-response-w32-stuxnet-dossier-11-en
+
+- id: INC-010
+  title: Duqu 산업 정보 수집 캠페인
+  date: 2011-10
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: OT 정보 탈취
+  country: 다국
+  sector: 제조
+  actor: 미상
+  impact: [운영 정보 탈취]
+  summary: >-
+    Stuxnet과 코드를 공유하는 모듈형 악성코드로, 산업 기반시설과 제어 시스템 제조사 등에서 향후 공격 설계에 쓸 정보를 수집했다.
+  attack_ref: [S0038]
+  sources:
+    - MITRE ATT&CK S0038 | https://attack.mitre.org/software/S0038/
+    - Symantec(2011) W32.Duqu | https://www.symantec.com/content/en/us/enterprise/media/security_response/whitepapers/w32_duqu_the_precursor_to_the_next_stuxnet.pdf
+
+- id: INC-011
+  title: Flame 정보 수집 캠페인
+  date: 2012-05
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: OT 정보 탈취
+  country: 중동
+  sector: 다수 업종
+  actor: 미상
+  impact: [운영 정보 탈취]
+  summary: >-
+    중동 지역을 주로 노린 정보 수집 도구로, AutoCAD 설계 자료와 Visio 도면처럼 운영 정보가 담길 수 있는 문서를 수집했다.
+  attack_ref: [S0143]
+  sources:
+    - MITRE ATT&CK S0143 | https://attack.mitre.org/software/S0143/
+    - Kaspersky(2012) The Flame Questions and Answers | https://securelist.com/the-flame-questions-and-answers-51/34344/
+
+- id: INC-012
+  title: AutoCAD 도면 탈취 웜(ACAD/Medre.A)
+  date: 2012-06
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: OT 정보 탈취
+  country: 페루 등
+  sector: 제조
+  actor: 미상
+  impact: [운영 정보 탈취]
+  summary: >-
+    AutoCAD 스크립트로 퍼지는 웜으로, 감염된 PC의 도면(.dwg)을 모아 외부 메일 계정으로 보냈다. 산업 설비 설계 정보가 새어 나갈 수 있는 산업 스파이 사례다.
+  attack_ref: [S1000]
+  sources:
+    - MITRE ATT&CK S1000 | https://attack.mitre.org/software/S1000/
+    - ESET(2012) ACAD/Medre.A | https://www.welivesecurity.com/wp-content/uploads/200x/white-papers/ESET_ACAD_Medre_A_whitepaper.pdf
+
+- id: INC-013
+  title: 에너지 기업 대상 Dragonfly(Havex) 캠페인
+  date: 2014-06
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: OT 정보 탈취
+  country: 미국·유럽
+  sector: 전력
+  actor: Dragonfly(G0035)
+  impact: [운영 정보 탈취]
+  summary: >-
+    ICS 원격 접속 장비·산업용 카메라 업체 웹사이트의 정상 설치 파일을 트로이 목마로 바꿔 배포하고,
+    OPC 서버를 열거하는 모듈로 제어 시스템 정보를 수집했다.
+  attack_ref: [S0093]
+  sources:
+    - MITRE ATT&CK S0093 | https://attack.mitre.org/software/S0093/
+    - "Symantec(2017) Dragonfly: Western energy sector targeted | https://docs.broadcom.com/doc/dragonfly_threat_against_western_energy_suppliers"
+
+- id: INC-014
+  title: 독일 원전 연료 취급 설비 PC 악성코드 감염(Conficker)
+  date: 2016-04
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: OT 직접
+  country: 독일
+  sector: 원자력
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    군드레밍엔 원전 B호기의 연료 취급 설비용 PC와 이동식 저장장치에서 Conficker 등 악성코드가 발견돼 점검 절차를 진행했다.
+    ATT&CK은 이로 인한 시설 일시 정지로 기술한다.
+  attack_ref: [S0608@ICS]
+  sources:
+    - MITRE ATT&CK S0608 | https://attack.mitre.org/software/S0608/
+
+- id: INC-015
+  title: WannaCry 확산에 따른 공장 가동 중단
+  date: 2017-05
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 다국
+  sector: 제조
+  actor: Lazarus Group(G0032)
+  impact: [운영 중단]
+  summary: >-
+    SMBv1 취약점(EternalBlue)으로 퍼진 웜형 랜섬웨어가 IT망에서 산업망까지 번져 르노·닛산 등 자동차 공장의 생산이 멈췄다.
+  attack_ref: [S0366]
+  sources:
+    - MITRE ATT&CK S0366 | https://attack.mitre.org/software/S0366/
+    - FireEye(2017) WannaCry Malware Profile | https://www.fireeye.com/blog/threat-research/2017/05/wannacry-malware-profile.html
+
+- id: INC-016
+  title: NotPetya 파괴형 악성코드에 따른 운영 중단
+  date: 2017-06
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 다국
+  sector: 다수 업종
+  actor: Sandworm Team(G0034)
+  impact: [운영 중단]
+  summary: >-
+    우크라이나 회계 소프트웨어 업데이트로 퍼진 와이퍼형 악성코드로, 머스크 컨테이너 터미널 운영과 머크 백신 생산이 멈추는 등
+    전 세계 제조·물류 운영이 중단됐다.
+  attack_ref: [S0368]
+  ics: [T0809, T0862]   # 와이퍼로 시스템 파괴(T0809) · M.E.Doc 회계 SW 업데이트 공급망 전파(T0862) — 분석 매핑
+  sources:
+    - MITRE ATT&CK S0368 | https://attack.mitre.org/software/S0368/
+    - ESET(2017) TeleBots are back | https://www.welivesecurity.com/2017/06/30/telebots-back-supply-chain-attacks-against-ukraine/
+
+- id: INC-017
+  title: Bad Rabbit 랜섬웨어의 우크라이나 교통 기관 감염
+  date: 2017-10
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: IT 경유 OT 영향
+  country: 우크라이나·러시아
+  sector: 교통
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    침해된 웹사이트의 가짜 Flash 설치 파일로 퍼진 랜섬웨어로, 오데사 공항과 키이우 지하철 등 우크라이나 교통 기관의 시스템이 암호화됐다.
+  attack_ref: [S0606]
+  sources:
+    - MITRE ATT&CK S0606 | https://attack.mitre.org/software/S0606/
+    - ESET(2017) Bad Rabbit | https://www.welivesecurity.com/2017/10/24/bad-rabbit-not-petya-back/
+
+- id: INC-018
+  title: VPNFilter 라우터·NAS 봇넷
+  date: 2018-05
+  kind: 캠페인
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 통신·IoT
+  actor: 러시아 국가 배후(FBI·ATT&CK 귀속)
+  impact: [기기 탈취, 운영 정보 탈취]
+  summary: >-
+    50여 개국의 라우터·NAS 50만 대 이상을 감염시킨 모듈형 악성코드로, 패킷 스니퍼 모듈이 Modbus 통신을 감시하고
+    장치를 쓸 수 없게 만드는 파괴 기능도 갖췄다.
+  attack_ref: [S1010]
+  sources:
+    - MITRE ATT&CK S1010 | https://attack.mitre.org/software/S1010/
+    - Cisco Talos(2018) VPNFilter update | https://blog.talosintelligence.com/2018/06/vpnfilter-update.html
+
+- id: INC-019
+  title: 노르스크 하이드로 랜섬웨어(LockerGoga)
+  date: 2019-03
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 노르웨이
+  sector: 금속·철강
+  actor: 미상
+  impact: [운영 중단, 감시 상실·조작]
+  summary: >-
+    LockerGoga 랜섬웨어로 전사 IT가 마비되자 160여 생산 거점 대부분을 수동 운전으로 전환했고, 일부 압출 공장은 가동을 멈췄다.
+  attack_ref: [S0372]
+  sources:
+    - MITRE ATT&CK S0372 | https://attack.mitre.org/software/S0372/
+
+- id: INC-020
+  title: 혼다 공장 랜섬웨어(EKANS)
+  date: 2020-06
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 일본 외 다국
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    ICS 소프트웨어 프로세스를 강제 종료하는 목록을 가진 EKANS 랜섬웨어에 감염돼 혼다의 일부 공장 생산이 일시 중단됐다.
+  attack_ref: [S0605]
+  sources:
+    - MITRE ATT&CK S0605 | https://attack.mitre.org/software/S0605/
+    - Dragos(2020) EKANS Ransomware and ICS Operations | https://www.dragos.com/blog/industry-news/ekans-ransomware-and-ics-operations/
+
+- id: INC-021
+  title: 우크라이나 고압 변전소 공격 시도(Industroyer2)
+  date: 2022-04
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 우크라이나
+  sector: 전력
+  actor: Sandworm Team(G0034)
+  impact: [영향 없음]
+  summary: >-
+    IEC 60870-5-104로 변전소 장치의 차단기 상태를 바꾸도록 설정된 Industroyer2를 4월 8일에 실행되게 심었으나, 실행 전에 발견돼 차단됐다.
+    같은 작전에 CaddyWiper와 리눅스·솔라리스용 와이퍼도 쓰였다.
+  attack_ref: [S1072]
+  sources:
+    - MITRE ATT&CK S1072 | https://attack.mitre.org/software/S1072/
+    - CERT-UA(2022-04) Sandworm 대상 공격 대응 공지
+
+- id: INC-022
+  title: PIPEDREAM(INCONTROLLER) ICS 공격 도구 발견
+  date: 2022-04
+  kind: 위협인텔(능력 발견)
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국(발표)
+  sector: 다수 업종
+  actor: 미상(Dragos 명명 CHERNOVITE)
+  impact: [영향 없음]
+  summary: >-
+    Schneider Electric·Omron PLC와 OPC UA 서버를 탐색·조작하는 모듈형 공격 도구가 실제 배포 전에 발견됐다.
+    장치 탐색, 로직 다운로드, 플랫폼별 취약점 악용 기능을 갖췄다.
+  attack_ref: [S1045]
+  sources:
+    - MITRE ATT&CK S1045 | https://attack.mitre.org/software/S1045/
+    - CISA AA22-103A | https://www.cisa.gov/uscert/ncas/alerts/aa22-103a
+
+- id: INC-023
+  title: 모스크바 지하 유틸리티 센서망 공격(Fuxnet)
+  date: 2024-04
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 러시아
+  sector: 공공·유틸리티
+  actor: Blackjack(우크라이나 정보기관 연계 추정)
+  impact: [감시 상실·조작, 설비 손상]
+  summary: >-
+    지하 유틸리티 센서망 운영사 Moscollector의 센서 게이트웨이를 원격 접속으로 장악해 NAND 메모리를 반복 기록으로 파괴하고,
+    M-Bus로 센서에 쓰레기 데이터를 보내 감시를 마비시켰다. 피해 규모는 공격자 주장과 분석 결과가 다르다.
+  attack_ref: [S1157]
+  sources:
+    - MITRE ATT&CK S1157 | https://attack.mitre.org/software/S1157/
+    - Claroty Team82(2024) Unpacking the Blackjack Group's Fuxnet Malware | https://claroty.com/team82/research/unpacking-the-blackjack-groups-fuxnet-malware
+
+- id: INC-024
+  title: PLC 웜 시연(PLC-Blaster)
+  date: 2016-03
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 독일(연구진)
+  sector: 제조
+  actor: 연구자
+  impact: [영향 없음]
+  summary: >-
+    Siemens S7-1200 PLC 안에서만 동작하며 네트워크의 다른 S7 PLC를 찾아 스스로 복제하는 웜을 Black Hat Asia 2016에서 시연했다.
+  attack_ref: [S1006]
+  sources:
+    - MITRE ATT&CK S1006 | https://attack.mitre.org/software/S1006/
+    - Spenneberg 외(2016) PLC-Blaster | https://www.blackhat.com/docs/asia-16/materials/asia-16-Spenneberg-PLC-Blaster-A-Worm-Living-Solely-In-The-PLC.pdf
+
+# ── 그 밖의 공개 OT·IoT 사고(분석 매핑) ───────────────────────────────
+- id: INC-025
+  title: 데이비스-베시 원전 감시 시스템 웜 감염(Slammer)
+  date: 2003-01
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 원자력
+  actor: 미상(웜 자동 확산)
+  impact: [감시 상실·조작]
+  summary: >-
+    협력업체 네트워크 연결로 들어온 SQL Slammer 웜이 발전소 네트워크에 퍼져 안전 변수 표시 시스템(SPDS)이 약 5시간 동안 작동하지 않았다.
+    발전소는 당시 정지 상태였다.
+  ics: [T0866, T0829]
+  sources:
+    - 미국 원자력규제위원회(NRC) Information Notice 2003-14
+
+- id: INC-026
+  title: CSX 철도 신호·배차 시스템 웜 감염(Sobig)
+  date: 2003-08
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 교통
+  actor: 미상(웜 자동 확산)
+  impact: [운영 중단]
+  summary: >-
+    메일로 퍼진 Sobig 웜이 CSX 본사 네트워크를 마비시키면서 신호·배차 시스템이 멈춰 워싱턴 DC 일대 여객·화물 열차 운행이 지연·중단됐다.
+  ics: [T0863, T0826]
+  sources:
+    - CSX 발표(2003-08)
+
+- id: INC-027
+  title: 폴란드 우치 트램 선로 전환기 무단 조작
+  date: 2008-01
+  kind: 사고
+  verification: 언론 보도
+  relevance: OT 직접
+  country: 폴란드
+  sector: 교통
+  actor: 개인(청소년)
+  impact: [인명·안전, 설비 손상]
+  summary: >-
+    10대 청소년이 TV 리모컨을 개조해 적외선 신호로 트램 선로 전환기를 조작하는 바람에 트램 4대가 탈선하고 승객 10여 명이 다쳤다.
+  ics: [T0860, T1692.001, T0879]
+  sources:
+    - The Telegraph(2008-01) 등 언론 보도
+
+- id: INC-028
+  title: 미국 보먼 애비뉴 댐 SCADA 무단 접속
+  date: 2013-08
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 접근·노출
+  country: 미국
+  sector: 수처리
+  actor: 이란 IRGC 연계 인물(미 법무부 기소)
+  impact: [영향 없음]
+  summary: >-
+    셀룰러 모뎀으로 소형 홍수 조절 댐의 SCADA에 접속해 수위·온도·수문 상태를 반복 조회했다. 수문은 정비로 분리돼 있어 조작되지 않았다.
+  ics: [T0883, T0801]
+  sources:
+    - 미국 법무부 기소 발표(2016-03)
+
+- id: INC-029
+  title: 독일 제철소 용광로 손상
+  date: 2014-12
+  kind: 사례연구(익명)
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 독일
+  sector: 금속·철강
+  actor: 미상
+  impact: [설비 손상, 제어 상실·조작]
+  summary: >-
+    스피어피싱과 사회공학으로 사무망에 들어온 공격자가 생산망까지 침투해 제어 구성요소가 잇따라 고장 났고,
+    용광로를 정상적으로 정지하지 못해 설비가 크게 손상됐다.
+  ics: [T0865, T0827, T0879]
+  sources:
+    - 독일 연방정보보안청(BSI) 연례 보안 보고서(2014)
+
+- id: INC-030
+  title: 인터넷 노출 HMI 대상 BlackEnergy 캠페인
+  date: 2014-10
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: OT 접근·노출
+  country: 미국 등
+  sector: 다수 업종
+  actor: BlackEnergy 운영 조직
+  impact: [영향 없음]
+  summary: >-
+    2011년부터 인터넷에 노출된 GE CIMPLICITY, Advantech/Broadwin WebAccess, Siemens WinCC HMI의 취약점을 악용해 BlackEnergy를 설치했다.
+    제어 공정 피해는 확인되지 않았다.
+  ics: [T0819, T0883]
+  sources:
+    - ICS-CERT ICS-ALERT-14-281-01(2014-10)
+
+- id: INC-031
+  title: 수도사업자 제어 시스템 침해(Kemuri Water Company 사례)
+  date: 2016-03
+  kind: 사례연구(익명)
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 미상(익명)
+  sector: 수처리
+  actor: 미상
+  impact: [제어 상실·조작]
+  summary: >-
+    인터넷에 노출된 결제 애플리케이션이 제어망과 연결된 노후 시스템(AS/400)에서 돌고 있었다. 공격자는 이 경로로 들어가
+    정수 화학약품 주입 밸브와 유량을 조작했다.
+  ics: [T0819, T0836, T0831]
+  sources:
+    - Verizon Data Breach Digest(2016)
+
+- id: INC-032
+  title: Mirai IoT 봇넷과 대규모 DDoS
+  date: 2016-10
+  kind: 캠페인
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 통신·IoT
+  actor: Mirai 제작자(2017 유죄 인정)
+  impact: [기기 탈취]
+  summary: >-
+    텔넷 기본 계정으로 IP 카메라·DVR 등 수십만 대의 IoT 기기를 감염시켜 봇넷을 만들고, Dyn DNS 서비스 등에 대규모 DDoS를 일으켰다.
+  ics: [T1694.001, T0883]
+  ent: [T1496.002]
+  sources:
+    - 미국 법무부 발표(2017-12)
+
+- id: INC-033
+  title: 핀란드 아파트 난방 제어 시스템 DDoS
+  date: 2016-11
+  kind: 사고
+  verification: 언론 보도
+  relevance: OT 직접
+  country: 핀란드
+  sector: 빌딩·시설
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    라펜란타의 아파트 2개 동 빌딩 자동화 시스템이 DDoS 공격을 받아 난방·온수 제어기가 재부팅을 반복하면서 겨울철 난방이 멈췄다.
+  ics: [T0814, T0826]
+  sources:
+    - Metro(핀란드, 2016-11) 등 언론 보도
+
+- id: INC-034
+  title: 댈러스 비상 경보 사이렌 무단 작동
+  date: 2017-04
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 공공·유틸리티
+  actor: 미상
+  impact: [제어 상실·조작]
+  summary: >-
+    무선 신호로 시 전역의 옥외 비상 경보 사이렌 156기가 한밤중 약 90분간 반복 작동했다. 시는 무선 제어 신호의 재전송 공격으로 보고 암호화를 추가했다.
+    월례 시험 때 송출된 제어 신호를 녹음해 반복 재생한 것으로 분석됐다(무선 수신이 선행 — EMB3D는 무선 스니핑의 관찰 사례로 인용).
+  ics: [T0860, T1692.001, T0887]
+  sources:
+    - 댈러스시 발표(2017-04)
+    - ZDNet(2017-04) Experts think they know how Dallas emergency sirens were hacked | https://www.zdnet.com/article/experts-think-they-know-how-dallas-emergency-sirens-were-hacked/
+    - MITRE EMB3D TID-407 Missing Message Replay Protection | https://emb3d.mitre.org/threats/TID-407.html
+
+- id: INC-035
+  title: IoT 기기 파괴 악성코드(BrickerBot)
+  date: 2017-04
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: IoT 기기
+  country: 다국
+  sector: 통신·IoT
+  actor: 미상
+  impact: [설비 손상]
+  summary: >-
+    기본 자격증명으로 텔넷에 접속한 뒤 저장장치를 덮어쓰고 네트워크 설정을 지워, 보안이 취약한 IoT 기기를 영구적으로 쓸 수 없게 만들었다.
+  ics: [T1694.001, T0883, T0809]
+  sources:
+    - Radware(2017-04) BrickerBot
+
+- id: INC-036
+  title: 에너지 시설 대상 러시아 정부 배후 침투(Dragonfly 2.0)
+  date: 2018-03
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: OT 접근·노출
+  country: 미국
+  sector: 전력
+  actor: Dragonfly(G0035)
+  impact: [운영 정보 탈취]
+  summary: >-
+    협력업체를 먼저 침해해 거점으로 삼고, 스피어피싱과 워터링홀로 에너지 기업 망에 들어가 제어 시스템 접근 정보와 HMI 화면을 수집했다.
+  ics: [T0817, T0865, T0859, T0852]
+  sources:
+    - US-CERT TA18-074A(2018-03) | https://www.us-cert.gov/ncas/alerts/TA18-074A
+
+- id: INC-037
+  title: TSMC 반도체 공장 악성코드 감염
+  date: 2018-08
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: OT 직접
+  country: 대만
+  sector: 제조
+  actor: 미상(WannaCry 변종)
+  impact: [운영 중단]
+  summary: >-
+    신규 장비를 설치하면서 바이러스 검사를 거치지 않은 소프트웨어로 WannaCry 변종이 들어와 생산 장비와 서버에 퍼졌고,
+    여러 공장의 생산이 며칠간 차질을 빚었다.
+  ics: [T0862, T0866, T0828]
+  sources:
+    - TSMC 발표(2018-08)
+
+- id: INC-038
+  title: 미국 해양 시설 랜섬웨어(Ryuk)
+  date: 2019-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 교통
+  actor: 미상
+  impact: [감시 상실·조작, 운영 중단]
+  summary: >-
+    피싱 메일 링크로 들어온 Ryuk 랜섬웨어가 IT망 전체로 퍼져 출입 통제·CCTV와 핵심 공정 제어 감시 시스템을 마비시켰고,
+    시설 운영이 30시간 넘게 멈췄다.
+  ics: [T0865, T0829, T0828]
+  ent: [T1486]
+  sources:
+    - 미국 해안경비대 Marine Safety Information Bulletin 10-19(2019-12)
+
+- id: INC-039
+  title: 천연가스 압축 시설 랜섬웨어
+  date: 2020-02
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 석유·가스
+  actor: 미상
+  impact: [감시 상실·조작, 운영 중단]
+  summary: >-
+    스피어피싱 링크로 IT망에 들어온 공격자가 IT·OT 분리가 없는 틈으로 OT망까지 들어가 HMI·데이터 히스토리언·폴링 서버를 랜섬웨어로 암호화했다.
+    감시 기능을 잃은 시설은 약 2일간 파이프라인 운영을 멈췄다.
+  ics: [T0865, T0829, T0828]
+  ent: [T1486]
+  sources:
+    - CISA AA20-049A | https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-049a
+
+- id: INC-040
+  title: 이스라엘 상하수도 제어 시스템 공격 시도
+  date: 2020-04
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 접근·노출
+  country: 이스라엘
+  sector: 수처리
+  actor: 미상(이란 배후 보도)
+  impact: [영향 없음]
+  summary: >-
+    이스라엘 국가사이버국이 상하수도 시설 제어 시스템을 노린 공격 시도를 발표하고 운영 시스템 암호 변경을 지시했다.
+    보도에 따르면 염소 투입량 조작이 시도됐으나 피해로 이어지지 않았다.
+  ics: [T0883, T0836]
+  sources:
+    - 이스라엘 국가사이버국(INCD) 경보(2020-04)
+
+- id: INC-041
+  title: 올즈마 정수장 수산화나트륨 설정값 변경
+  date: 2021-02
+  kind: 사고
+  verification: 논란·원인 번복
+  relevance: OT 직접
+  country: 미국
+  sector: 수처리
+  actor: 미상
+  impact: [제어 상실·조작]
+  summary: >-
+    원격 접속 도구(TeamViewer) 화면에서 수산화나트륨 설정값이 100ppm에서 11,100ppm으로 바뀌는 것을 운영자가 보고 즉시 되돌렸다.
+    처음에는 외부 침입으로 발표됐으나 2023년 당시 시 관계자가 직원 실수 가능성을 언급해 원인이 불분명하다(실제 사고 집계 제외).
+  ics: [T0822, T0823, T0836]
+  sources:
+    - 피넬러스 카운티 보안관실 발표(2021-02)
+    - 언론 보도(2023-04)
+
+- id: INC-042
+  title: 미국 베이 지역 정수장 프로그램 삭제
+  date: 2021-01
+  kind: 사고
+  verification: 언론 보도
+  relevance: OT 직접
+  country: 미국
+  sector: 수처리
+  actor: 미상
+  impact: [제어 상실·조작]
+  summary: >-
+    퇴사한 직원의 TeamViewer 계정으로 정수장 제어 시스템에 접속해 정수 처리에 쓰는 프로그램을 삭제했다. 다음 날 발견돼 복구됐고 주민 피해는 없었다.
+  ics: [T0822, T0859, T0809]
+  sources:
+    - NBC News(2021-06)
+
+- id: INC-043
+  title: 캔자스 농촌 수도조합 내부자 원격 조작
+  date: 2019-03
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 수처리
+  actor: 전 직원(내부자)
+  impact: [제어 상실·조작]
+  summary: >-
+    퇴사한 직원이 남아 있던 원격 접속 권한으로 수도 시스템에 로그인해 정수장의 세척·소독 공정을 정지시켰다(2021년 기소).
+  ics: [T0822, T0859, T0831]
+  sources:
+    - 미국 법무부 발표(2021-03)
+
+- id: INC-044
+  title: 콜로니얼 파이프라인 운영 중단(DarkSide)
+  date: 2021-05
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 석유·가스
+  actor: DarkSide
+  impact: [운영 중단]
+  summary: >-
+    다중 인증이 없는 휴면 VPN 계정과 유출된 암호로 IT망에 들어와 랜섬웨어를 실행했다. OT 확산을 우려한 회사가
+    미국 동부 최대 연료 파이프라인을 약 6일간 예방적으로 세웠다.
+  ics: [T0822, T0859, T0828]
+  ent: [T1486]
+  sources:
+    - 미국 상원 국토안보위원회 청문회 증언(2021-06)
+    - FBI 성명(2021-05)
+
+- id: INC-045
+  title: JBS 식육 가공 공장 랜섬웨어(REvil)
+  date: 2021-06
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 미국·호주·캐나다
+  sector: 식품·음료
+  actor: REvil 운영 조직
+  impact: [운영 중단]
+  summary: >-
+    REvil 랜섬웨어 공격으로 미국·호주·캐나다의 소고기 가공 공장 가동이 멈췄고, 회사는 1,100만 달러를 지불했다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - JBS USA 발표(2021-06)
+    - FBI 성명(2021-06)
+
+- id: INC-046
+  title: 몰슨 쿠어스 양조 운영 차질
+  date: 2021-03
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 식품·음료
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 보안 사고로 양조장 운영·생산과 출하가 지연됐다고 미국 증권거래위원회 공시(8-K)로 밝혔다.
+  ics: [T0828]
+  sources:
+    - Molson Coors SEC 8-K(2021-03)
+
+- id: INC-047
+  title: 이란 철도 운행 시스템 공격(Predatory Sparrow)
+  date: 2021-07
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  relevance: IT 경유 OT 영향
+  country: 이란
+  sector: 교통
+  actor: Predatory Sparrow
+  impact: [운영 중단]
+  summary: >-
+    와이퍼(Meteor)로 이란 철도 시스템을 파괴해 열차 지연·취소가 잇따랐고, 역 전광판에는 문의처로 최고지도자실 번호가 떴다.
+  ics: [T0809, T0828]
+  sources:
+    - SentinelOne(2021-07) MeteorExpress
+
+- id: INC-048
+  title: 이란 주유소 연료 배급 시스템 마비(2021)
+  date: 2021-10
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 이란
+  sector: 석유·가스
+  actor: Predatory Sparrow(주장)
+  impact: [운영 중단]
+  summary: >-
+    정부 보조 연료 카드 결제 시스템이 공격받아 이란 전역 약 4,300곳의 주유소 운영이 며칠간 차질을 빚었다.
+  ics: [T0826, T0828]
+  sources:
+    - 이란 정부 발표·언론 보도(2021-10)
+
+- id: INC-049
+  title: 이란 제철소 생산 중단(Predatory Sparrow)
+  date: 2022-06
+  kind: 사고
+  verification: 언론 보도
+  relevance: OT 직접
+  country: 이란
+  sector: 금속·철강
+  actor: Predatory Sparrow
+  impact: [운영 중단]
+  summary: >-
+    이란 철강사 3곳이 공격을 받아 생산을 멈췄다. 공격 그룹은 쇳물이 쏟아지며 불이 난 영상을 공개했으나 물리적 피해의 규모는 확인되지 않았다.
+  ics: [T0828]
+  sources:
+    - Check Point Research(2022-07)
+    - 언론 보도(2022-06)
+
+- id: INC-050
+  title: 위성 모뎀 파괴에 따른 풍력 발전기 원격 감시 상실(AcidRain)
+  date: 2022-02
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 유럽(우크라이나·독일 등)
+  sector: 전력
+  actor: 러시아 국가 배후(EU·영국·미국 귀속)
+  impact: [감시 상실·조작]
+  summary: >-
+    러시아의 우크라이나 침공 당일 위성 통신망 관리 경로로 수만 대의 위성 모뎀 저장장치를 지워(AcidRain), 독일 Enercon 풍력 발전기
+    약 5,800기의 원격 감시가 끊겼다(발전은 계속됨).
+  ics: [T0809, T0829]
+  sources:
+    - SentinelOne(2022-03) AcidRain
+    - EU 이사회 성명(2022-05)
+
+- id: INC-051
+  title: 독일 석유 터미널 운영사 랜섬웨어
+  date: 2022-01
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 독일
+  sector: 석유·가스
+  actor: 미상(BlackCat 보도)
+  impact: [운영 중단]
+  summary: >-
+    석유 저장·물류 업체 Oiltanking과 Mabanaft의 시스템이 공격받아 독일 내 터미널의 출하가 제한 운영됐다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - Oiltanking 발표(2022-02)
+
+- id: INC-052
+  title: 협력업체 공격에 따른 도요타 일본 공장 전면 중단
+  date: 2022-03
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 일본
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    부품 협력업체 고지마 프레스공업의 시스템이 공격받아 부품 공급 관리가 멈추자, 도요타가 일본 내 14개 공장의 가동을 하루 동안 중단했다.
+  ics: [T0828]
+  sources:
+    - 도요타 발표(2022-02)
+
+- id: INC-053
+  title: 브리지스톤 미주 공장 가동 중단
+  date: 2022-02
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국 외
+  sector: 제조
+  actor: LockBit(주장)
+  impact: [운영 중단]
+  summary: >-
+    랜섬웨어 공격으로 브리지스톤 아메리카스의 북미·중남미 공장 다수가 며칠간 가동을 멈췄다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - Bridgestone Americas 발표(2022-02)
+
+- id: INC-054
+  title: 돌(Dole) 랜섬웨어에 따른 생산·출하 중단
+  date: 2023-02
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 식품·음료
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    랜섬웨어 공격으로 돌의 북미 생산 공장 가동과 식료품 출하가 일시 중단됐다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - Dole plc 발표(2023-02)
+
+- id: INC-055
+  title: 덴마크 에너지 기업 22곳 경계 방화벽 침해
+  date: 2023-05
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: OT 접근·노출
+  country: 덴마크
+  sector: 전력
+  actor: 미상(일부 Sandworm 연관 지표)
+  impact: [기기 탈취]
+  summary: >-
+    Zyxel 방화벽 취약점(CVE-2023-28771)으로 덴마크 에너지 기업 22곳의 경계 방화벽이 침해됐다. 일부 장비는 Mirai 계열 봇넷에 편입됐고,
+    몇몇 기업은 예방 차원에서 외부망과 분리해 단독 운전으로 전환했다.
+  ics: [T0819]
+  ent: [T1496.002]
+  sources:
+    - SektorCERT(2023-11) The attack against Danish, critical infrastructure
+
+- id: INC-056
+  title: 나고야항 컨테이너 터미널 운영 중단(LockBit)
+  date: 2023-07
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 일본
+  sector: 교통
+  actor: LockBit
+  impact: [운영 중단]
+  summary: >-
+    랜섬웨어로 항만 통합 터미널 시스템이 멈춰 일본 최대 무역항의 컨테이너 반출입이 약 이틀간 중단됐다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - 나고야항운협회 발표(2023-07)
+
+- id: INC-057
+  title: 폴란드 철도 무선 비상정지 신호 악용
+  date: 2023-08
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 폴란드
+  sector: 교통
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    인증 없이 동작하는 아날로그 무선 'Radio-Stop' 비상정지 신호를 무단 송신해 폴란드 열차 20여 대를 세웠다.
+  ics: [T0860, T1692.001, T0826]
+  sources:
+    - 폴란드 정부·철도 당국 발표(2023-08)
+
+- id: INC-058
+  title: 클로락스 생산 차질
+  date: 2023-08
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 공격으로 일부 시스템이 손상돼 수작업 운영으로 전환하면서 생산과 주문 처리가 크게 줄었다고 SEC 공시(8-K)로 밝혔다.
+  ics: [T0828]
+  sources:
+    - Clorox SEC 8-K(2023-08)
+
+- id: INC-059
+  title: DP World 호주 항만 운영 중단
+  date: 2023-11
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 호주
+  sector: 교통
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 사고에 대응해 인터넷 연결을 끊으면서 시드니·멜버른·브리즈번·프리맨틀 항만 터미널의 화물 반출입이 약 3일간 멈췄다.
+  ics: [T0828]
+  sources:
+    - DP World 호주 발표(2023-11)
+
+- id: INC-060
+  title: 이란 주유소 시스템 마비(2023)
+  date: 2023-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: IT 경유 OT 영향
+  country: 이란
+  sector: 석유·가스
+  actor: Predatory Sparrow(주장)
+  impact: [운영 중단]
+  summary: >-
+    이란 전역 주유소의 약 70%가 시스템 장애로 운영에 차질을 빚었다고 석유장관이 밝혔고, Predatory Sparrow가 자신들의 소행이라고 주장했다.
+  ics: [T0826, T0828]
+  sources:
+    - 언론 보도(2023-12)
+
+- id: INC-061
+  title: 텍사스 소도시 상수도 HMI 조작
+  date: 2024-01
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 수처리
+  actor: Cyber Army of Russia Reborn(주장)
+  impact: [제어 상실·조작, 운영 중단]
+  summary: >-
+    텍사스주 뮬슈 등 소도시 수도 시스템의 원격 HMI에 접속해 설정을 바꾸는 바람에 물탱크가 넘쳤고, 시설은 수동 운전으로 전환했다.
+    친러시아 핵티비스트가 조작 영상을 공개했다.
+  ics: [T0883, T0836, T0831]
+  sources:
+    - 뮬슈시 관계자 발언(CNN, 2024-04)
+
+- id: INC-062
+  title: 바르타 배터리 공장 가동 중단
+  date: 2024-02
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 독일
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 공격에 대응해 IT 시스템과 생산을 예방적으로 차단하면서 바르타의 공장 5곳 가동이 멈췄다.
+  ics: [T0828]
+  sources:
+    - VARTA AG 발표(2024-02)
+
+- id: INC-063
+  title: 미국 기반시설 사전 침투(Volt Typhoon)
+  date: 2024-02
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: OT 접근·노출
+  country: 미국
+  sector: 다수 업종
+  actor: Volt Typhoon(중국 국가 배후)
+  impact: [영향 없음]
+  summary: >-
+    탈취한 SOHO 라우터 봇넷(KV-botnet)을 중계로 삼아 경계 장비 취약점과 유효 계정으로 통신·에너지·수도·교통 기관의 IT망에 장기간 잠복했고,
+    일부는 OT 인접 시스템에 접근했다. 파괴 공격을 위한 사전 거점 확보로 평가됐다.
+  ics: [T0819, T0859, T0884]
+  ent: [T1584.008, T1003]
+  sources:
+    - CISA AA24-038A | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a
+
+- id: INC-064
+  title: 친러시아 핵티비스트의 인터넷 노출 OT 장치 조작
+  date: 2024-05
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국·유럽
+  sector: 다수 업종
+  actor: 친러시아 핵티비스트
+  impact: [제어 상실·조작]
+  summary: >-
+    인터넷에 노출된 VNC로 기본·취약 암호의 HMI에 접속해 설정값을 최대치로 바꾸고 관리자 암호를 변경해 운영자를 잠갔다.
+    물리적 피해는 제한적이었으나 일부 시설은 수동 운전으로 전환했다.
+  ics: [T0883, T0822, T1694.001, T0836, T0892]
+  sources:
+    - CISA 외(2024-05) Defending OT Operations Against Ongoing Pro-Russia Hacktivist Activity
+
+- id: INC-065
+  title: IoT 기기 26만 대 봇넷(Raptor Train)
+  date: 2024-09
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 통신·IoT
+  actor: Flax Typhoon(중국 국가 배후)
+  impact: [기기 탈취]
+  summary: >-
+    라우터·IP 카메라·NVR·NAS 등 약 26만 대의 IoT 기기를 알려진 취약점으로 감염시켜 봇넷을 만들고 공격 중계 인프라로 썼다.
+  ics: [T0819]
+  ent: [T1584.008]
+  sources:
+    - FBI·NSA 외 공동 권고(2024-09)
+
+- id: INC-066
+  title: 캔자스주 아칸소시티 정수장 수동 운전 전환
+  date: 2024-09
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: 판정 보류
+  country: 미국
+  sector: 수처리
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 보안 사고를 확인한 정수장이 예방 차원에서 수동 운전으로 전환했고 수돗물 공급에는 영향이 없었다. 침투 경로와 기법은 공개되지 않았다.
+  sources:
+    - 아칸소시티 발표(2024-09)
+
+- id: INC-067
+  title: IoT·OT 기기 대상 IOCONTROL 악성코드
+  date: 2024-12
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  relevance: IoT 기기
+  country: 이스라엘·미국
+  sector: 석유·가스
+  actor: CyberAv3ngers(IRGC 연계)
+  impact: [기기 탈취]
+  summary: >-
+    라우터·PLC·HMI·IP 카메라·연료 관리 시스템 등 리눅스 기반 IoT·OT 기기를 노린 맞춤형 악성코드로, MQTT로 명령을 받고
+    이스라엘·미국의 연료 관리 시스템 침해에 쓰였다.
+  ics: [T0883, T0869]
+  sources:
+    - Claroty Team82(2024-12) IOCONTROL
+
+- id: INC-068
+  title: 노르웨이 브레망에르 댐 방류 밸브 무단 개방
+  date: 2025-04
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 노르웨이
+  sector: 수처리
+  actor: 친러시아 세력(노르웨이 경찰보안국 지목)
+  impact: [제어 상실·조작]
+  summary: >-
+    약한 암호로 보호된 웹 제어 화면에 접속해 댐의 방류 밸브를 열어 약 4시간 동안 필요 이상의 물이 흘러나갔다.
+    2025년 8월 노르웨이 경찰보안국이 친러시아 세력의 소행으로 지목했다.
+  ics: [T0883, T0831]
+  sources:
+    - 노르웨이 경찰보안국(PST) 발언(2025-08)
+
+- id: INC-069
+  title: 뉴코 철강 생산 일부 중단
+  date: 2025-05
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 금속·철강
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 보안 사고 대응으로 일부 시설의 생산을 예방적으로 중단했다고 SEC 공시(8-K)로 밝혔다.
+  ics: [T0828]
+  sources:
+    - Nucor SEC 8-K(2025-05)
+
+- id: INC-070
+  title: 재규어 랜드로버 전 세계 생산 중단
+  date: 2025-09
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 영국 외
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    사이버 공격으로 IT 시스템을 차단하면서 전 세계 공장의 생산이 5주 넘게 멈췄고, 부품 협력업체로 피해가 번지자 영국 정부가 대출 보증을 지원했다.
+  ics: [T0828]
+  sources:
+    - JLR 발표(2025-09)
+    - 영국 정부 발표(2025-09)
+
+- id: INC-071
+  title: 아사히그룹 랜섬웨어에 따른 맥주 공장 가동 중단
+  date: 2025-09
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 일본
+  sector: 식품·음료
+  actor: 미상(Qilin 주장)
+  impact: [운영 중단]
+  summary: >-
+    랜섬웨어 공격으로 수주·출하 시스템이 멈추면서 아사히의 일본 내 공장 대부분이 생산을 중단했다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - 아사히그룹홀딩스 발표(2025-10)
+
+- id: INC-072
+  title: 캐나다 인터넷 노출 ICS 핵티비스트 조작
+  date: 2025-10
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 캐나다
+  sector: 다수 업종
+  actor: 핵티비스트
+  impact: [제어 상실·조작]
+  summary: >-
+    핵티비스트가 인터넷에 노출된 제어 장치에 접속해 수도 시설의 압력값, 석유·가스 시설의 자동 탱크 게이지, 곡물 건조 사일로의 온도·습도를 조작했다고
+    캐나다 사이버보안센터가 경보를 냈다.
+  ics: [T0883, T0836]
+  sources:
+    - 캐나다 사이버보안센터 경보(2025-10)
+
+- id: INC-073
+  title: 한국수력원자력 내부 자료 유출
+  date: 2014-12
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 정보 탈취
+  country: 한국
+  sector: 원자력
+  actor: 북한 연계(정부 합동수사단 발표)
+  impact: [운영 정보 탈취]
+  summary: >-
+    임직원을 노린 악성 메일 이후 원전 설계도면·운전 매뉴얼·임직원 정보가 인터넷에 공개되고 원전 가동 중단 협박이 이어졌다. 제어망 피해는 확인되지 않았다.
+  ics: [T0865, T0882]
+  sources:
+    - 정부 합동수사단 수사 결과 발표(2015-03)
+
+- id: INC-074
+  title: Verkada 클라우드 관리 보안 카메라 무단 접근
+  date: 2021-03
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 빌딩·시설
+  actor: 핵티비스트 집단
+  impact: [운영 정보 탈취]
+  summary: >-
+    인터넷에 노출된 서버에서 찾은 관리자 계정으로 Verkada의 클라우드 관리 플랫폼에 접속해 병원·공장·교도소 등 고객사 카메라 약 15만 대의 영상을 열람했다.
+  ics: [T0859, T0882]
+  sources:
+    - Verkada 발표(2021-03)
+
+- id: INC-075
+  title: Ring 가정용 카메라 계정 탈취
+  date: 2019-12
+  kind: 사고
+  verification: 언론 보도
+  relevance: IoT 기기
+  country: 미국
+  sector: 통신·IoT
+  actor: 미상
+  impact: [기기 탈취]
+  summary: >-
+    다른 서비스에서 유출된 계정 정보를 대입(크리덴셜 스터핑)해 가정용 Ring 카메라에 접속하고 스피커로 거주자를 위협하는 사례가 잇따랐다.
+  ics: [T0859]
+  ent: [T1110]
+  sources:
+    - 언론 보도(2019-12)
+
+- id: INC-076
+  title: 텔벤트 SCADA 공급업체 침해
+  date: 2012-09
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: OT 정보 탈취
+  country: 캐나다·미국 외
+  sector: 석유·가스
+  actor: 미상
+  impact: [운영 정보 탈취]
+  summary: >-
+    파이프라인 원격 감시제어 솔루션(OASyS DNA) 공급업체 Telvent의 내부망에 악성코드가 설치되고 고객사 프로젝트 파일이 유출됐다.
+    회사는 고객사 원격 접속을 차단했다.
+  ics: [T0882]
+  sources:
+    - Telvent 고객 공지(2012-09)
+
+# ── 연구·시연, 위협인텔 ─────────────────────────────────────────────
+- id: INC-077
+  title: 발전기 물리 파괴 시연(Aurora 시험)
+  date: 2007-03
+  kind: 연구·시연
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 전력
+  actor: 아이다호 국립연구소(시험)
+  impact: [설비 손상]
+  summary: >-
+    차단기를 동기에서 벗어난 상태로 빠르게 여닫는 원격 명령만으로 대형 디젤 발전기를 물리적으로 파괴할 수 있음을 시연했다.
+  ics: [T1692.001, T0879]
+  sources:
+    - 미국 국토안보부·아이다호 국립연구소 시험(2007)
+
+- id: INC-078
+  title: S7 PLC 위장 엔지니어링 스테이션 공격 시연(Rogue7)
+  date: 2019-08
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 이스라엘(연구진)
+  sector: 제조
+  actor: 연구자
+  impact: [영향 없음]
+  summary: >-
+    S7comm-plus 프로토콜의 암호 보호를 우회해 위장 엔지니어링 스테이션으로 S7-1500 PLC에 로직을 내려받고, 운영자에게는 원래 로직을 보여 주는 공격을
+    Black Hat USA 2019에서 시연했다.
+  ics: [T0843, T0889]
+  sources:
+    - Biham 외(2019) Rogue7, Black Hat USA
+
+- id: INC-079
+  title: S7-1500 펌웨어 무결성 검증 우회 시연
+  date: 2023-01
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 미국(연구진)
+  sector: 제조
+  actor: 연구자
+  impact: [영향 없음]
+  summary: >-
+    부팅 시 펌웨어 무결성 검증을 맡는 하드웨어 신뢰 루트(별도 암호 칩) 구현의 결함으로 검증을 우회하고 변조 펌웨어를 실행할 수 있음을
+    공개했다(CVE-2022-38773). NAND 플래시 칩을 떼어 내용을 읽고 칩 간 I2C 통신에 접근하는 방식이 쓰였고, 결함이 하드웨어에 있어 펌웨어 패치로 고칠 수 없다.
+  ics: [T1693.001, EMB3D-CO.1, EMB3D-CO.3, EMB3D-LM.2]
+  sources:
+    - Red Balloon Security(2023-01) Siemens SIMATIC S7-1500 discovery | https://redballoonsecurity.com/siemens-discovery/
+    - IEEE(2023) Uprooting Trust — Unpatchable Hardware Root-of-Trust Vulnerability in Siemens S7-1500 PLCs | https://ieeexplore.ieee.org/document/10133438
+
+- id: INC-080
+  title: 임베디드 TCP/IP 스택 취약점 묶음(Ripple20)
+  date: 2020-06
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  relevance: IoT 기기
+  country: 다국
+  sector: 다수 업종
+  actor: 연구자
+  impact: [영향 없음]
+  summary: >-
+    산업·의료·IoT 기기에 널리 내장된 Treck TCP/IP 스택에서 원격 코드 실행이 가능한 취약점 19개를 공개했다. 공급망으로 퍼진 구성요소라 영향 제품을 모두 파악하기 어렵다.
+  ics: [T0866]
+  sources:
+    - JSOF(2020-06) Ripple20
+
+- id: INC-081
+  title: PLC를 무기화한 엔지니어링 워크스테이션 공격 시연(Evil PLC)
+  date: 2022-08
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 다국(연구진)
+  sector: 제조
+  actor: 연구자
+  impact: [영향 없음]
+  summary: >-
+    조작한 PLC에서 엔지니어가 로직을 업로드하면 엔지니어링 소프트웨어의 취약점이 터져 워크스테이션이 장악되는 공격을 7개 벤더 제품에서 시연했다.
+  ics: [T0845, T0863]
+  sources:
+    - Claroty Team82(2022-08) Evil PLC
+
+- id: INC-082
+  title: COSMICENERGY 전력망 공격 도구 발견
+  date: 2023-05
+  kind: 위협인텔(능력 발견)
+  verification: 보안업체·연구기관 분석
+  relevance: OT 직접
+  country: 러시아(추정 출처)
+  sector: 전력
+  actor: 미상(레드팀 도구 가능성)
+  impact: [영향 없음]
+  summary: >-
+    IEC 60870-5-104로 원격 단말 장치에 명령을 보내 송·배전 설비를 조작하도록 만든 악성코드가 발견됐다. 러시아 연습용 레드팀 도구였을 가능성이 제기됐다.
+  ics: [T1692.001]
+  sources:
+    - Mandiant(2023-05) COSMICENERGY
+
+# ── v3 추가: IoT·임베디드 ───────────────────────────────────────────
+- id: INC-083
+  title: 푸에르토리코 스마트 계량기 광포트 조작 전력 도용
+  date: 2010-05
+  kind: 정부 경보
+  verification: 언론 보도
+  relevance: IoT 기기
+  country: 미국(푸에르토리코)
+  sector: 전력
+  actor: 계량기 제조사 전 직원·전력사 직원(내부자)
+  impact: [감시 상실·조작]
+  summary: >-
+    현장 진단용 광포트에 광 변환기와 노트북을 연결하고 인터넷에서 구한 소프트웨어로 스마트 계량기의 사용량 기록 설정을 바꿔 전기를 훔쳤다.
+    FBI는 전 제조사 직원과 전력사 직원이 대가를 받고 계량기를 재프로그래밍했으며, 한 전력사의 손실이 연간 최대 4억 달러에 이를 수 있다고 경고했다.
+  ics: [EMB3D-IA, T0836, T0828]
+  sources:
+    - KrebsOnSecurity(2012-04) FBI — Smart Meter Hacks Likely to Spread(FBI 사이버 정보 경보 2010-05 인용) | https://krebsonsecurity.com/2012/04/fbi-smart-meter-hacks-likely-to-spread/
+
+- id: INC-084
+  title: 러시아 GRU의 우크라이나·인접국 IP 카메라 1만여 대 무단 접근
+  date: 2025-05
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 우크라이나·루마니아·폴란드 등
+  sector: 교통·물류
+  actor: GRU 26165부대(APT28)
+  impact: [운영 정보 탈취]
+  summary: >-
+    우크라이나 지원 물자의 이동을 추적하려고 국경 검문소·철도역·군 시설 주변 인터넷 연결 카메라 약 1만 대(우크라이나 80%, 루마니아 10%,
+    폴란드 4% 등)에 기본·취약 자격증명으로 접근해 RTSP 영상을 확보했다. 미국 CISA·NSA·FBI와 영국 NCSC 등 여러 국가 기관의 공동 권고다.
+  ics: [T0883, T1694.001, T0882]
+  sources:
+    - CISA 등 공동 권고 AA25-141A(2025-05) Russian GRU Targeting Western Logistics Entities and Technology Companies | https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-141a
+
+- id: INC-085
+  title: 사전 감염 IoT 기기 봇넷(BADBOX 2.0)
+  date: 2025-06
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  relevance: IoT 기기
+  country: 다국
+  sector: 소비자 IoT
+  actor: 범죄 조직
+  impact: [기기 탈취]
+  summary: >-
+    출고 전에 악성코드가 심겨 있거나 초기 설정 때 백도어 앱을 내려받는 스트리밍 기기·프로젝터·차량 인포테인먼트 등 IoT 기기 수백만 대가
+    봇넷과 주거용 프록시로 쓰였다. FBI가 공공 안내(PSA I-060525)로 경고했다.
+  ics: [T0862, T1496.002]
+  sources:
+    - FBI 공공 안내 PSA I-060525(2025-06)
+    - HUMAN Security(2025-06) BADBOX 2.0 FBI PSA | https://www.humansecurity.com/learn/blog/badbox-2-fbi-psa/
