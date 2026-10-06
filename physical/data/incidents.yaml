@@ -22,4 +22,1356 @@
 #   data/taxonomy.yaml 도메인 context(맥락 통계)에만 적음.
 # 익명화: 개인은 실명을 쓰지 않음. 국내 피해 기업명이 공개 발표에 없으면 업종으로만 적음(예: '국내 반도체 기업').
 
-[]
+
+# ---------------------------------------------------------------------------
+# 위장취업 — 북한 IT 인력·랩톱 팜(IN-01)
+# ---------------------------------------------------------------------------
+- id: PHI-001
+  title: 미국 '랩톱 팜' 운영자의 북한 IT 인력 위장취업 지원(기업 309곳)
+  date: "2024-05"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [IT·소프트웨어, 방산·항공우주, 자동차·조선·기계, 금융·서비스]
+  actor: 북한 IT 인력·미국 내 조력자
+  actor_type: [외부자, 공모]
+  impact: [내부 접근 확보, 금전 피해]
+  summary: >-
+    미국 거주 조력자가 미국인·거주자로 위장한 북한 IT 인력이 309개 미국 기업(포춘 500 기업 포함)에 원격 IT 직원으로 취업하도록 돕고,
+    피해 기업이 보낸 노트북을 자택에 모아 둔 '랩톱 팜'을 운영해 미국 안에서 일하는 것처럼 속였다. 이 수법으로 1,700만 달러 이상의 수익이
+    본인과 북한에 돌아갔고, 운영자는 2025-07 징역 102개월을 선고받았다.
+  pht: [PHT-IN-01.1, PHT-IN-01.2, PHT-IM-05]
+  sources:
+    - 미 법무부 콜롬비아특별구 연방검찰(2025) Arizona Woman Sentenced for $17M Information Technology Worker Fraud Scheme | https://www.justice.gov/usao-dc/pr/arizona-woman-sentenced-17m-it-worker-fraud-scheme-illegally-generated-revenue-north
+    - NK News(2025) American who ran laptop farm for North Korean IT workers sentenced to prison | https://nknews.org/2025/07/american-who-ran-laptop-farm-for-north-korean-it-workers-sentenced-to-prison/
+
+- id: PHI-002
+  title: 보안교육 기업의 북한 위장 IT 인력 채용(지급 노트북 악성코드로 탐지)
+  date: "2024-07"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 북한 IT 인력
+  actor_type: [외부자, 내부자(악의)]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    미국인에게서 도용한 신원으로 채용 절차를 통과한 북한 인력이 사내 IT팀 소프트웨어 엔지니어로 채용됐다. 회사가 보낸 노트북에 악성코드가
+    올라오자 보안관제팀이 7월 15일 이상 행위를 탐지해 약 25분 만에 차단했고, 회사는 불법 접근·자료 유출은 없었다고 밝혔다.
+  pht: [PHT-IN-01.1]
+  origin: [IDI-104]
+  sources:
+    - KnowBe4(2024) How a North Korean Fake IT Worker Tried to Infiltrate Us | https://blog.knowbe4.com/how-a-north-korean-fake-it-worker-tried-to-infiltrate-us
+    - CyberScoop(2024) Cyber firm KnowBe4 hired a fake IT worker from North Korea | https://cyberscoop.com/cyber-firm-knowbe4-hired-a-fake-it-worker-from-north-korea/
+
+- id: PHI-003
+  title: 미 법무부의 북한 원격 IT 인력 일제 단속(16개 주 랩톱 팜 29곳 수색)
+  date: "2025-06"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 북한 IT 인력·미국·중국·UAE·대만 조력자
+  actor_type: [외부자, 공모]
+  impact: [내부 접근 확보, 금전 피해]
+  summary: >-
+    북한 인력이 도용·위조 신원으로 미국 기업 100곳 이상에 원격 IT 인력으로 취업하고, 미국 내 조력자가 위장 회사·웹사이트를 만들고 회사 지급
+    노트북을 모아 원격 접속하게 한 조직을 기소했다. 16개 주의 랩톱 팜 29곳을 수색해 컴퓨터 약 200대, 금융 계좌 29개, 위장 웹사이트 21개를 압수했다.
+  pht: [PHT-IN-01.1, PHT-IN-01.2]
+  origin: [IDI-105]
+  sources:
+    - BleepingComputer(2025) US disrupts North Korean IT worker laptop farm scheme in 16 states | https://www.bleepingcomputer.com/news/security/us-disrupts-north-korean-it-worker-laptop-farm-scheme-in-16-states/
+    - TechCrunch(2025) US government takes down major North Korean remote IT workers operation | https://techcrunch.com/2025/06/30/us-government-takes-down-major-north-korean-remote-it-workers-operation
+
+- id: PHI-004
+  title: FBI 경보 — 딥페이크·도용 개인정보로 원격 근무직 지원
+  date: "2022-06"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 미상(지원자 위장)
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    FBI 인터넷범죄신고센터(IC3)는 딥페이크 영상과 도용한 개인정보로 IT·프로그래밍·데이터베이스 원격 근무직에 지원하는 신고가 늘었다고 경고했다.
+    일부 직무는 고객 개인정보·금융 데이터·사내 데이터베이스에 접근하며, 면접 영상의 입 모양과 음성이 맞지 않는 점과 신원 조회에 낸 개인정보가
+    다른 사람 것이라는 점이 단서였다.
+  pht: [PHT-IN-01.1]
+  sources:
+    - WilmerHale(2022) FBI Warns That Scammers Are Using Deepfakes to Apply for Sensitive Jobs | https://www.wilmerhale.com/en/insights/blogs/wilmerhale-privacy-and-cybersecurity-law/20220701-fbi-warns-that-scammers-are-using-deepfakes-to-apply-for-sensitive-jobs
+    - PetaPixel(2022) FBI Warns Deepfakes Might Be Used in Remote Job Interviews | https://petapixel.com/2022/07/05/fbi-warns-deepfakes-might-be-used-in-remote-job-interviews
+
+- id: PHI-005
+  title: 정부 합동주의보 — 국적·신분 위장 북한 IT 인력 고용 주의
+  date: "2022-12"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 한국
+  sector: [IT·소프트웨어]
+  actor: 북한 IT 인력
+  actor_type: [외부자]
+  impact: [금전 피해]
+  summary: >-
+    외교부·국가정보원·과학기술정보통신부·통일부·고용노동부·경찰청·공정거래위원회가 국적·신분을 위장한 북한 IT 인력이 국내 기업에서 일감을
+    수주할 가능성에 대비해 합동주의보를 내고 신원 확인 강화를 요청했다. 북한 IT 인력은 프리랜서 계약으로 웹·모바일 앱·가상화폐 개발 일감을
+    받아 외화를 벌며, 국내 기업이 이들과 계약하면 국내법과 유엔 안보리 결의 위반으로 제재받을 수 있다.
+  pht: [PHT-IN-01.1]
+  sources:
+    - 경향신문(2022) 북한 IT 인력 국적·신분 위장 일감 수주 주의 — 정부 합동주의보 | https://www.khan.co.kr/article/202212081743001
+
+# ---------------------------------------------------------------------------
+# 포섭·매수 — 금전·약점·SNS 구인(HU-01)
+# ---------------------------------------------------------------------------
+- id: PHI-006
+  title: 테슬라 공장 직원에게 100만 달러 제시하며 악성코드 설치 포섭 시도
+  date: "2020-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [자동차·조선·기계]
+  actor: 러시아 사이버범죄 조직 연계 러시아인
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    러시아인이 미국에 입국해 네바다 기가팩토리 직원에게 100만 달러를 제시하며 공장 내부망에 악성코드를 설치하도록 포섭하려 했다. 자료를 빼내
+    공개를 빌미로 400만 달러를 요구할 계획이었으나, 직원이 제안을 회사와 FBI에 알려 2020-08 체포됐고 징역 10개월을 선고받았다.
+  pht: [PHT-HU-01.1]
+  sources:
+    - The Record(2021) Russian who tried to hack Tesla last summer pleads guilty | https://therecord.media/russian-who-tried-to-hack-tesla-last-summer-pleads-guilty/
+    - Al Jazeera(2021) US to deport Russian man who tried to hack Tesla | https://www.aljazeera.com/economy/2021/5/24/us-to-deport-russian-man-who-tried-to-hack-tesla
+
+- id: PHI-007
+  title: 미 해군 수병 2명의 중국 정보요원 대가성 군사정보 제공(사진·영상·설계도)
+  date: "2023-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [정부·군]
+  actor: 중국 정보요원(온라인 접촉)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    상륙강습함 소속 수병은 2022-02 중국 정보요원과 접촉해 요청에 따라 함정 사진·영상과 기술·기계 매뉴얼, 훈련 정보를 넘겼고, 다른 기지의 수병은
+    2021-08부터 2023-05까지 대가를 받고 군사 정보를 몰래 기록해 오키나와 기지 레이더 설계도와 대규모 훈련 작전계획 등을 보냈다.
+    두 사람은 2023-08 같은 날 체포됐다.
+  pht: [PHT-HU-01.1, PHT-IN-02.1, PHT-EX-03, PHT-IM-01]
+  sources:
+    - USNI News(2023) Two California Sailors Arrested on Espionage Charges | https://news.usni.org/2023/08/03/two-california-sailors-arrested-on-charges-related-to-national-security-concerns
+    - Al Jazeera(2023) Two US Navy sailors arrested for allegedly giving China military secrets | https://www.aljazeera.com/news/2023/8/3/us-arrests-navy-sailors-over-alleged-schemes-to-send-china-military-secrets
+
+- id: PHI-008
+  title: 북한 공작원 지령으로 현역 장교 가상화폐 포섭·시계형 몰래카메라 부대 반입
+  date: "2022-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [정부·군]
+  actor: 북한 공작원(가상화폐 거래소 운영자 경유)
+  actor_type: [외부자, 내부자(악의), 공모]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    가상화폐 거래소 운영자가 2021-07 북한 해커로부터 군사기밀 탐지에 필요한 현역 장교를 포섭하라는 지령을 받고 텔레그램으로 현역 대위에게
+    가상화폐를 주겠다며 접근했다. 대위는 4,800만 원 상당의 비트코인을 받고 포섭돼 운영자가 보낸 시계형 몰래카메라를 군부대에 반입했다.
+    군사안보지원사령부가 적발했고 운영자는 징역 4년이 확정됐다.
+  pht: [PHT-HU-01.1, PHT-SV-02.2]
+  sources:
+    - 파이낸셜뉴스(2022) 현역 장교 포섭해 군사기밀 유출 — 시계형 몰래카메라 | https://www.fnnews.com/news/202204281522421448
+    - 서울신문(2025) 7억에 북 해커 지령받고 장교 포섭·기밀유출 시도…코인거래소 운영자 형 확정 | https://m.seoul.co.kr/news/2025/12/28/20251228500011
+
+- id: PHI-009
+  title: 국군정보사령부 군무원의 블랙요원 정보 유출(중국 측 포섭·금전 수수)
+  date: "2024-07"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [정부·군]
+  actor: 중국 정보요원 추정 인물
+  actor_type: [내부자(악의), 공모]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    정보사 군무원이 2017-04 중국 옌지 공항에서 중국 측에 체포돼 조사받던 중 포섭 제의를 받았고, 2019년부터 약 40차례 돈을 요구해 1억 6,205만 원을
+    받으며 신분을 숨기고 활동하는 블랙요원 명단 등 군사기밀을 문서 12건·음성 메시지 18건으로 넘겼다. 징역 20년이 확정됐다.
+  pht: [PHT-HU-01.1, PHT-HU-01.2, PHT-IN-02.1, PHT-IM-01]
+  sources:
+    - 다음·문화일보(2024) 軍 정보사 군무원, 조선족에 블랙요원 현황 등 2, 3급 기밀 파일로 유출 | https://v.daum.net/v/20240729150213788
+    - 헤럴드경제(2026) 中에 1.6억받고 블랙요원 정보 유출 50대 군무원 징역 20년 확정 | https://www.heraldk.com/article/2026011920230608357
+
+- id: PHI-010
+  title: 전직 CIA 요원의 LinkedIn 헤드헌터 접근 후 기밀 판매(SD 카드)
+  date: "2017-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [정부·군]
+  actor: 중국 정보요원(싱크탱크 사칭)
+  actor_type: [외부자, 내부자(악의)]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    23만 달러 빚을 진 전직 CIA 요원에게 중국 싱크탱크 소속이라는 헤드헌터가 LinkedIn 메시지로 접근했고, 요원은 2만 5천 달러를 받고 중국 정보요원에게
+    기밀을 팔았다. 기밀 문서를 SD 카드로 스캔하려던 장면이 매장 감시카메라에 찍혔으며 2018-06 간첩 혐의로 유죄 평결, 징역 20년을 받았다.
+  pht: [PHT-RC-03.1, PHT-HU-01.1, PHT-EX-01, PHT-IM-01]
+  sources:
+    - NBC News(2019) How a $230,000 debt and a LinkedIn message led an ex-CIA officer to spy for China | https://www.nbcnews.com/news/ncna990691
+    - CBS News(2019) How a former CIA officer was caught betraying his country | https://cbsn.ws/2rOsMrO
+
+- id: PHI-011
+  title: 중국 국가안전부 지시로 미 방산업체 기술자 8명 신상 조사(포섭 대상 물색)
+  date: "2018-09"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [방산·항공우주]
+  actor: 중국 국가안전부(장쑤성 국가안전청)
+  actor_type: [외부자]
+  impact: [개인정보 유출]
+  summary: >-
+    시카고의 중국인 유학생이 장쑤성 국가안전청의 지시를 받아, 포섭 대상이 될 수 있는 대만·중국 출신 미국 시민 과학기술자 8명(7명은 방산업체 근무,
+    다수가 항공우주 분야)의 신상 보고서를 모아 넘겼다. 2018-09 체포, 2022-09 유죄 평결 후 징역 8년을 선고받았다.
+  pht: [PHT-RC-01]
+  sources:
+    - WTTW(2023) Former Chicago Graduate Student Gets 8 Years After Spying for Chinese Government | https://news.wttw.com/2023/01/26/former-chicago-graduate-students-gets-8-years-after-spying-chinese-government
+    - Defense News(2023) Ex-student gets 8 years for spying for Chinese government | https://www.defensenews.com/global/asia-pacific/2023/01/26/ex-student-gets-8-years-for-spying-for-chinese-government/
+
+- id: PHI-012
+  title: 중국 정보요원의 대학 강연 초청 위장 항공기 엔진 기술 탈취 시도
+  date: "2018-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [방산·항공우주]
+  actor: 중국 국가안전부 요원
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    국가안전부 요원이 가명·위장 회사·대학을 내세워 항공 기업 직원을 물색하고 대학 강연을 명목으로 중국에 초청해 체재비·사례금을 주며 정보를 요구했다.
+    복합소재 엔진 팬 기술을 노린 대상 기업 직원이 FBI와 협조해 요원이 벨기에에서 체포·인도됐고 2021-11 유죄 평결, 징역 20년을 받았다.
+  pht: [PHT-RC-03.2, PHT-HU-03, PHT-HU-01.1]
+  sources:
+    - 미 법무부(2022) Chinese Government Intelligence Officer Sentenced to 20 Years in Prison for Espionage Crimes | https://www.justice.gov/opa/pr/chinese-government-intelligence-officer-sentenced-20-years-prison-espionage-crimes-attempting
+    - Export Compliance Daily(2022) Chinese Intelligence Agent Sentenced for Attempting to Steal Trade Secrets From US Aviation Firms | https://exportcompliancedaily.com/news/2022/11/18/Chinese-Intelligence-Agent-Sentenced-for-Attempting-to-Steal-Trade-Secrets-From-US-Aviation-Firms-2211170036
+
+- id: PHI-013
+  title: 가상자산 거래소 해외 고객지원 인력 매수로 고객 정보 유출
+  date: "2025-05"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 미국
+  sector: [금융·서비스]
+  actor: 미상(지원 인력 매수)
+  actor_type: [외부자, 공모, 제3자]
+  impact: [개인정보 유출, 금전 피해]
+  summary: >-
+    범죄자들이 해외 고객지원 인력과 협력사 직원을 매수해 월간 거래 사용자 1% 미만의 이름·주소·신분증 이미지·잔액 등을 빼내고 거래소를 사칭한
+    사회공학으로 고객 자산을 노렸다. 회사는 2천만 달러 갈취 요구를 거부했고 대응 비용을 최대 4억 달러로 추정했다.
+  pht: [PHT-HU-01.1, PHT-IN-04, PHT-IM-05]
+  origin: [IDI-012]
+  sources:
+    - Coinbase(2025) Protecting Our Customers — Standing Up to Extortionists | https://www.coinbase.com/blog/protecting-our-customers-standing-up-to-extortionists
+    - CNBC(2025) Coinbase says hackers bribed staff to steal customer data and are demanding $20 million ransom | https://www.cnbc.com/2025/05/15/coinbase-says-hackers-bribed-staff-to-steal-customer-data-and-are-demanding-20-million-ransom.html
+
+- id: PHI-014
+  title: 폴란드 철도 노선 은닉 카메라 설치 스파이망(텔레그램 모집·가상화폐 지급)
+  date: "2023-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 러시아 정보기관
+  actor_type: [외부자]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    폴란드 국내보안청(ABW)은 우크라이나행 무기·지원 물자 수송 경로인 철도 구간과 공항 인근에 은닉 카메라를 설치해 열차 이동을 촬영·전송한
+    러시아 스파이망을 적발했다. 구성원은 텔레그램으로 지시를 받고 가상화폐로 보수(카메라 설치 300~400달러 등)를 받았으며, 사보타주도 준비했다.
+    2023-12 러시아·벨라루스·우크라이나 국적 14명이 유죄 판결을 받았다.
+  pht: [PHT-HU-01.3, PHT-SV-02.1]
+  sources:
+    - 폴란드 정부 특수정보기관(2023) Poland's counter-intelligence agency busts a spy ring | https://www.gov.pl/web/special-services/polands-counter-intelligence-agency-busts-a-spy-ring
+    - Notes from Poland(2023) Fourteen members of Russian spy ring who planned to derail Ukraine aid train sentenced in Poland | https://notesfrompoland.com/2023/12/19/fourteen-members-of-russian-spy-ring-who-planned-to-derail-ukraine-aid-train-sentenced-in-poland/
+
+- id: PHI-015
+  title: 와그너 그룹이 텔레그램으로 모집한 영국인들의 우크라이나 지원 창고 방화
+  date: "2024-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 와그너 그룹(러시아 국가 대리)
+  actor_type: [외부자]
+  impact: [설비 손상·사보타주]
+  summary: >-
+    와그너 그룹과 텔레그램으로 접촉한 영국인이 일당을 모아 2024-03 런던의 우크라이나 업체 창고(인도적 지원 물자·위성 통신 장비 보관)에 불을 질러
+    약 100만 파운드 피해를 냈고, 추가 공격을 위해 다른 업체 두 곳의 정찰도 조직했다. 영국 국가안보법 2023으로 처음 유죄가 선고된 사건이다.
+  pht: [PHT-HU-01.3, PHT-RC-02, PHT-IM-02]
+  sources:
+    - 영국 대테러경찰(2025) Group convicted after Russian-ordered arson attack in London | https://www.counterterrorism.police.uk/group-convicted-after-russian-ordered-arson-attack-in-london/
+    - Euromaidan Press(2025) Six Britons get up to 23 years for Russia's Wagner Group arson attack on Ukraine aid warehouse | https://euromaidanpress.com/2025/10/25/six-britons-get-up-to-23-years-for-russias-wagner-group-arson-attack-on-ukraine-aid-warehouse/
+
+# ---------------------------------------------------------------------------
+# 인재 영입·연구 협력·투자 위장(HU-02·03·05)
+# ---------------------------------------------------------------------------
+- id: PHI-016
+  title: 삼성 출신 임원·연구원의 20나노 D램 공정 기술 중국 신생 업체 유출
+  date: "2024-09"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 임원·연구원(중국 업체 이직)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    삼성전자·하이닉스에서 약 30년 일한 전 임원과 수석연구원이 중국 지방정부 투자로 세운 D램 업체에 삼성의 20나노 D램 공정 기술을 넘긴 혐의로
+    구속 송치·기소됐다. 이 업체는 공장 준공 1년 3개월 만인 2022-04 시범 웨이퍼 생산에 성공했고(통상 4~5년), 경찰은 피해 기술의 경제적 가치를
+    4조 3천억 원으로 추산했다.
+  pht: [PHT-IN-03.2, PHT-HU-02, PHT-IM-01]
+  sources:
+    - YTN(2024) 기술유출 혐의 삼성전자 전 임직원 2명 구속 송치 | https://www.ytn.co.kr/_ln/0103_202409102202394993
+    - SBS Biz(2024) 삼성 반도체 기술 中 빼돌려 지분·돈 챙긴 전 임원, 구속 기소 | https://biz.sbs.co.kr/amp/article/20000193814
+
+- id: PHI-017
+  title: 반도체 핵심 인력을 중국 업체에 알선한 헤드헌팅 업체 대표 구속(직업안정법 첫 적용)
+  date: "2024-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 엔지니어 출신 컨설팅·헤드헌팅 업체 대표
+  actor_type: [외부자, 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    중국 D램 업체 설립 단계에 고문으로 참여한 삼성전자 엔지니어 출신이 국내에 헤드헌팅 업체를 차리고 기존 연봉의 2~3배를 약속하며 삼성 핵심 인력을
+    중국으로 끌어들였다. 서울경찰청 산업기술안보수사대는 국외 유료직업소개 미등록 혐의로 대표를 구속 송치하고 헤드헌팅 대표 2명·업체 1곳을
+    불구속 송치했다. 기술유출 알선업자에게 직업안정법을 적용한 첫 사례다.
+  pht: [PHT-HU-02]
+  sources:
+    - 헤럴드경제(2024) 삼성 반도체 핵심인력 中에 취업시킨 업체 대표 구속 송치 | https://heraldk.com/?p=2469293
+    - SBS Biz(2024) 반도체 핵심인력 中에 빼돌려…삼성 출신 엔지니어 구속 송치 | https://biz.sbs.co.kr/amp/article/20000204858
+
+- id: PHI-018
+  title: 전 임원의 반도체 공장 설계자료 유출로 중국 '복제 공장' 건설 시도(투자 유치 연계)
+  date: "2023-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 임원(중국 현지 업체 설립)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    삼성전자 전 상무가 2018~2019년 반도체 공장 BED(기본 설계 데이터)·공정 배치도·설계도면을 부정 취득·사용해 중국 시안의 삼성 공장에서
+    1.5km 떨어진 곳에 복제 공장을 지으려 한 혐의로 구속 기소됐고 6명이 함께 기소됐다. 대만 전자제품 업체가 약정한 8조 원 투자가 불발돼 공장은
+    지어지지 않았으며, 검찰은 기술 가치를 최소 3천억 원에서 최대 수조 원으로 봤다.
+  pht: [PHT-HU-05.2, PHT-IN-03.2, PHT-IM-01]
+  sources:
+    - 뉴시스(2023) 삼성전자 반도체 기술 빼돌려 중국에 복제 시도...전 임원 구속 기소 | https://www.newsis.com/view/NISX20230612_0002335382
+    - 보안뉴스(2023) 메모리 반도체 분야 세계 1위 삼성전자의 공장 설계자료 유출한 전 임원 구속 | https://m.boannews.com/html/detail.html?idx=119083
+
+- id: PHI-019
+  title: 인수한 외국 자동차 기업 요구로 연구원들이 하이브리드 제어 소스코드 제공
+  date: "2009-11"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 한국
+  sector: [자동차·조선·기계]
+  actor: 대주주(외국 자동차 기업) 측 연구소 간부
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    서울중앙지검은 쌍용차 종합기술연구소장 등 연구원 7명이 2006-07 대주주인 상하이차 측 중국인 부소장의 요구로 이사회 결의 등 절차 없이
+    디젤 하이브리드차 중앙통제장치(HCU) 소스코드를 넘긴 혐의로 불구속 기소했다. 이 기술은 정부가 개발비 절반(56억 원)을 지원했고 2007-08
+    국가핵심기술로 지정됐다.
+  pht: [PHT-HU-05.1, PHT-IN-02.1, PHT-IM-01]
+  sources:
+    - 경향신문(2009) 쌍용차 하이브리드 기술 상하이차 유출 — 연구원 7명 기소 | https://www.khan.co.kr/article/20091111132551A
+    - 머니투데이(2009) 쌍용차 숨가쁜 하루하루, 기술유출 증명되나 | https://www.mt.co.kr/stock/2009/01/11/2009011115404385628
+
+- id: PHI-020
+  title: 배터리 경쟁사의 대규모 인력 채용과 영업비밀 침해(미 ITC 최종 판결·2조 원 합의)
+  date: "2021-02"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 민사 판결·합의
+  region: 한국
+  sector: [이차전지·소재·화학]
+  actor: 국내 경쟁사
+  actor_type: [외부자]
+  impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
+  summary: >-
+    LG화학(현 LG에너지솔루션)은 SK이노베이션이 자사 직원들을 대규모로 채용해 전기차 배터리 영업비밀을 침해했다며 2019-04 소송을 냈고,
+    미국 국제무역위원회(ITC)는 2021-02 SK이노베이션 패소를 확정해 미국 내 수입 금지 효력이 생겼다. 양사는 2021-04 현금·로열티 합계 2조 원
+    지급과 국내외 쟁송 취하에 합의했다.
+  pht: [PHT-HU-02, PHT-IM-05]
+  sources:
+    - 데일리안(2021) LG-SK 배터리 분쟁 2조원에 합의…10년간 추가 쟁송 없어 | https://www.dailian.co.kr/news/view/981043/
+    - 이투데이(2021) D-1 전운 감도는 배터리 업계…ITC, LG·SK 누구 손 들어줄까 | https://www.etoday.co.kr/news/view/1954115
+
+- id: PHI-021
+  title: 해외 인재 유치 프로그램 참여 교수의 자율주행 라이다 연구자료 중국 누설
+  date: "2023-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [대학·연구기관, 자동차·조선·기계]
+  actor: 국내 대학 교수(중국 인재 유치 프로그램 참여)
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    2016-05 중국 대학 교수의 제안으로 중국 '천인계획'에 지원해 이듬해 그 대학과 고용계약을 맺은 국내 대학 교수가 2020-02까지 자율주행차 라이다
+    연구자료 등 72개 파일을 중국 대학 연구원 등에게 누설한 혐의를 국가정보원이 적발했다. 중국 정부로부터 5년간 33억 원을 지원받기로 했으며,
+    2024-05 징역 2년이 확정됐다(date는 확인된 최초 보도 기준).
+  pht: [PHT-HU-03, PHT-IN-02.1, PHT-IM-01]
+  sources:
+    - 서울신문(2023) 교수는 자동차·회사원은 반도체 기술 중국에 넘겨 | https://m.seoul.co.kr/news/2023/04/07/20230407500145
+    - SBS Biz(2024) 자율주행차 기술 中에 유출한 KAIST 교수 30일 대법 선고 | https://biz.sbs.co.kr/amp/article/20000171595
+
+- id: PHI-022
+  title: 하버드 교수의 중국 인재 유치 프로그램 참여 은폐(허위 진술 유죄)
+  date: "2020-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [대학·연구기관]
+  actor: 미국 대학 교수(중국 인재 유치 프로그램 참여)
+  actor_type: [내부자(악의)]
+  impact: [법적 제재·배상]
+  summary: >-
+    미 국방부·국립보건원에서 1,500만 달러 연구비를 받은 하버드대 화학과장이 2011년 중국 우한이공대 '전략 과학자'로 천인계획에 참여한 사실을
+    정부 조사에 거짓 진술했다. 2020-01 체포돼 2021-12 허위 진술·허위 세금 신고·해외 계좌 미신고로 유죄 평결을 받았다.
+  pht: [PHT-HU-03]
+  sources:
+    - Boston.com(2023) Ex-Harvard professor Charles Lieber sentenced, fined for lying about China ties | https://www.boston.com/news/local-news/2023/04/26/ex-harvard-professor-charles-lieber-sentenced-fined-for-lying-about-china-ties/
+    - Times Higher Education(2021) Harvard's Lieber convicted in anti-China crackdown | https://www.timeshighereducation.com/node/719657
+
+- id: PHI-023
+  title: 무전기 업체가 경쟁사 엔지니어를 영입해 문서 수천 건 반출(배상 평결·형사 기소)
+  date: "2020-02"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 민사 판결·합의
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 중국 통신장비 업체
+  actor_type: [외부자, 내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
+  summary: >-
+    중국 업체가 높은 연봉을 제시해 모토로라 솔루션스 말레이시아 직원들을 영입했고, 이들은 이직 전 모토로라 문서 7,000건 이상에 접근해 소스코드·기술
+    문서를 몰래 내려받았다. 2020-02 시카고 연방 배심원단이 7억 6,460만 달러 배상을 평결했고, 미 법무부는 2022-02 이 업체를 영업비밀 절도 공모
+    등 21개 혐의로 기소했다.
+  pht: [PHT-HU-02, PHT-IN-03.1, PHT-IM-05]
+  sources:
+    - World IP Review(2022) DoJ indicts Hytera over conspiracy to steal Motorola secrets | https://www.worldipreview.com/doj-indicts-hytera-over-conspiracy-to-steal-motorola-secrets-22091
+    - BNN Bloomberg(2020) Motorola wins $765 million verdict against Chinese company | https://www.bnnbloomberg.ca/motorola-wins-765-million-verdict-against-chinese-company-1.1390586
+
+- id: PHI-024
+  title: 메모리 기업 대만 법인 전 임원·엔지니어의 D램 기술 이전(대만 파운드리·중국 국영 업체 기소)
+  date: "2018-11"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 대만
+  sector: [반도체·디스플레이]
+  actor: 대만 파운드리·중국 국영 D램 업체
+  actor_type: [외부자, 내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
+  summary: >-
+    마이크론 대만 법인 회장을 지낸 인물이 2015년 퇴사해 대만 UMC로 옮긴 뒤 UMC와 중국 국영 푸젠진화 간 D램 기술 협력 계약을 주선했고, 함께 옮긴
+    엔지니어들과 함께 미 연방 대배심에 기소됐다(2018-11 공개). UMC는 2020-10 도난 영업비밀 취득·보유 1개 혐의를 인정하고 벌금 6천만 달러를 냈다.
+  pht: [PHT-IN-03.1, PHT-IN-03.2, PHT-HU-05.2, PHT-IM-05]
+  sources:
+    - Caixin Global(2018) US-China Microchip Feud Moves Into Federal Court | https://www.caixinglobal.com/2018-11-02/us-china-microchip-feud-moves-into-federal-court-101342204.html
+    - Caixin Global(2020) Taiwan's UMC pleads guilty in US trade secret theft case | https://caixinglobal.com/2020-10-30/taiwans-umc-pleads-guilty-in-us-trade-secret-theft-case-101620342.html
+
+# ---------------------------------------------------------------------------
+# 재직·퇴직 내부자의 물리 반출(IN-02·03, EX)
+# ---------------------------------------------------------------------------
+- id: PHI-025
+  title: 반도체 기업 직원의 퇴사 전 공정 문서 4천여 쪽 출력·태블릿 촬영 반출(경쟁사 이직)
+  date: "2024-05"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 직원(중국 경쟁사 이직)
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    2013년 SK하이닉스에 입사해 중국 자회사에서 B2B 고객 담당 팀장을 지낸 중국 국적 직원이 2022-06 퇴사 직후 화웨이로 옮겼다. 퇴사 전 반도체
+    제조 공정 문제 해결 방안 문서 약 4,000쪽과 CIS 기술 영업비밀을 여러 차례 출력하고, 자료 170개(5,900장)를 태블릿으로 촬영해 반출했다.
+    2심에서 징역 1년 6개월을 선고받았다.
+  pht: [PHT-IN-03.1, PHT-EX-02, PHT-EX-03, PHT-IM-01]
+  sources:
+    - 머니투데이(2024) 중국인 SK하이닉스 직원, 화웨이에 반도체 기술 빼돌렸다 | https://www.mt.co.kr/society/2024/05/28/2024052714332760497
+    - 다음·연합뉴스(2026) SK하이닉스 영업비밀 中회사에 유출…前직원 2심도 징역1년6개월 | https://v.daum.net/v/20260809090332171
+
+- id: PHI-026
+  title: 10나노급 D램 공정 자료를 손으로 옮겨 적어 중국 업체로 유출
+  date: "2025-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 임직원(중국 D램 업체 이직)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    중국 지방정부·설계회사 출자로 2016년 세워진 중국 D램 업체가 삼성전자 부장 출신을 개발실장으로 영입했고, 삼성 연구원 출신은 D램 공정 핵심 자료인
+    공정 레시피 정보를 자필로 옮겨 적은 뒤 이 업체로 이직했다. 서울중앙지검은 2025-12 10명을 기소(5명 구속)했고 피해액을 최소 수십조 원으로 추산했다.
+    전직 연구원 1명은 2026-04 1심에서 징역 7년을 받았다.
+  pht: [PHT-HU-02, PHT-IN-03.1, PHT-EX-02, PHT-IM-01]
+  sources:
+    - 뉴시스(2025) 삼성 최초 반도체 기술 中 빼돌린 10명 기소…피해 수십조 | https://www.newsis.com/view/NISX20251223_0003452474
+    - 헤럴드경제(2026) 삼성전자 반도체 기술 넘긴 전직 연구원 징역 7년 | https://www.heraldk.com/article/2026042302160053418
+
+- id: PHI-027
+  title: 디스플레이 기업 직원들의 명절 연휴 OLED 공장 설계도면 촬영 유출(중국 업체 이직)
+  date: "2024-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 전 직원(중국 업체 이직)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    LG디스플레이에 1996·2000년 입사한 직원 2명이 2020-10 다른 직원이 출근하지 않는 추석 연휴에 광저우 공장 설계도면 등 국가핵심기술을 열람하고
+    스마트폰으로 촬영해 유출한 뒤 2021년 중국 업체로 옮겼고, 이직 후 패널 수율 정보도 전 동료를 통해 받았다. 2026-07 1심에서 각각 징역 5년·2년을
+    선고받았다.
+  pht: [PHT-IN-03.1, PHT-EX-03, PHT-IM-01]
+  sources:
+    - 머니투데이(2024) 시진핑 방문한 LG디스플레이 광저우 공장 기술, 中경쟁사에 넘어갔다 | https://www.mt.co.kr/society/2024/08/20/2024081913001441811
+    - 뉴시스(2026) 중국에 OLED 기술 유출한 前LG디스플레이 직원…법원 판단은 | https://www.newsis.com/view/NISX20260724_0003722791
+
+- id: PHI-028
+  title: 승진 탈락 연구원의 웨이퍼 연마 공정 자료 휴대폰 촬영 유출(중국 업체와 동업)
+  date: "2023-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이, 이차전지·소재·화학]
+  actor: 전 연구원(중국 업체와 동업 약정)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    2018년 임원 승진에서 탈락한 연구원이 2019-06 중국 업체와 웨이퍼 연마제 제조 동업을 약정하고, 2019~2020년 업무용 PC·휴대전화로 회사 내부망의
+    웨이퍼 연마 공정도 등을 휴대전화로 촬영해 넘겼다. 특허청·대전지검이 기소했고 항소심에서 징역 2년 6개월이 선고됐다.
+  pht: [PHT-IN-02.1, PHT-EX-03, PHT-HU-05.2, PHT-IM-01]
+  sources:
+    - 디지털타임스(2023) 특허청·대전지검, 반도체 웨이퍼 연마 기술 유출 3명 구속·3명 불구속 기소 | https://www.dt.co.kr/article/11491551
+    - TWIG24(2026) 승진 탈락하자 반도체 핵심기술 중국에 넘긴 연구원 항소심서 실형 | https://www.twig24.com/news/accident/2026/06/19/20260619500222
+
+- id: PHI-029
+  title: 조선사 전 직원들의 잠수함 설계도면 반출과 대만 유출
+  date: "2024-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [방산·항공우주, 자동차·조선·기계]
+  actor: 전 직원(잠수함 컨설팅 업체 이직)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    대우조선해양(현 한화오션) 전 직원 2명이 재직 중 독자 개발 잠수함 설계도면(약 2,000쪽)을 빼돌려 잠수함 개발 컨설팅 업체로 이직한 뒤 대만에
+    넘긴 혐의로 경남경찰청에 입건됐고, 대만은 이 도면을 첫 자체 잠수함 개발에 쓴 것으로 알려졌다. 방산업체 대표는 1심에서 징역 2년 6개월과
+    법인 추징 약 950억 원을 선고받았다.
+  pht: [PHT-IN-03.1, PHT-IN-03.2, PHT-IM-01]
+  sources:
+    - 세계일보(2024) 대우조선 잠수함 설계도, 대만에 넘겨져…경찰 수사 | https://www.segye.com/newsView/20240104517487
+    - 비즈한국(2024) 대우조선해양 잠수함 도면 대만 유출 | https://www.bizhankook.com/bk/article/26992
+
+- id: PHI-030
+  title: 반도체 장비 자회사 퇴직 연구원들의 초임계 세정장비 기술 중국 연구소 제공
+  date: "2022-05"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 퇴직 연구원·기술유출 브로커·협력사 대표
+  actor_type: [내부자(악의), 공모, 제3자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    삼성전자 자회사 세메스의 퇴직 연구원 2명이 2018년 개발된 초임계 세정장비 제조 기술을 빼내 중국 연구소와 접촉해 여러 차례 총 800억 원을 받고
+    장비를 만들어 넘겼다. 수원지검이 퇴직 연구원과 협력사 직원을 구속 기소했고, 1심에서 전 연구원은 징역 5년, 브로커·협력사 대표 등 4명은
+    징역 2~4년을 선고받았다.
+  pht: [PHT-IN-03.2, PHT-IN-04, PHT-IM-01]
+  sources:
+    - 보안뉴스(2022) 삼성전자 자회사 세메스의 반도체 국가핵심기술, 중국으로 통째 유출됐다 | https://m.boannews.com/html/detail.html?idx=106787
+    - 뉴시스(2023) 법원 연구개발 위해 투자한 막대한 시간 비용 헛되이 해...중대 범죄 | https://mobile.newsis.com/view/NISX20230711_0002372226
+
+- id: PHI-031
+  title: 반도체 협력사 임직원의 세정 레시피·HKMG 기술 중국 경쟁사 유출
+  date: "2021-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 협력사 부사장·연구소장 등
+  actor_type: [제3자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    SK하이닉스 협력업체 임직원들이 협업하며 알게 된 반도체 세정 레시피와 하이케이메탈게이트(HKMG) 제조 기술 등을 2018년께 중국 경쟁업체로 유출하고,
+    세메스 전직 직원들을 통해 몰래 얻은 초임계 세정장비 도면으로 중국 수출용 장비를 개발했다. 2025-06 대법원에서 부사장 징역 1년 6개월 등
+    실형과 협력사 법인 벌금 10억 원이 확정됐다.
+  pht: [PHT-IN-04, PHT-IM-01]
+  sources:
+    - 뉴시스(2021) SK하이닉스서 핵심기술 취득해 유출 | https://mobile.newsis.com/view/NISX20210126_0001318599
+    - 이투데이(2025) SK하이닉스 반도체 기술 중국 유출 협력사 부사장 실형 확정 | https://www.etoday.co.kr/news/view/2478229
+
+- id: PHI-032
+  title: 디스플레이 장비 협력사의 3D 라미네이션 설비 기술 중국 위장 법인 유출
+  date: "2018-11"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [반도체·디스플레이]
+  actor: 장비 협력사 사장·임직원
+  actor_type: [제3자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    수원지검은 삼성디스플레이 장비 협력사가 플렉시블 OLED 패널 3D 라미네이션 설비 사양서·패널 도면 등을 중국 수출을 위해 위장 설립한 회사로
+    넘겨 약 155억 원의 이득을 얻었다며 사장 등 임원 3명을 구속 기소했다(2018-11). 삼성이 6년간 엔지니어 38명·1,500억 원을 들인 기술로,
+    2023-11 1심에서 전 영업부장 징역 3년 등 실형이 선고됐다.
+  pht: [PHT-IN-04, PHT-HU-05.2, PHT-IM-01]
+  sources:
+    - 이투데이(2018) 검찰, 삼성 엣지패널 기술 중국 유출 일당 11명 기소 | https://www.etoday.co.kr/news/view/1693403
+    - 주간경향(2018) 톱텍은 배신자인가 배고픈 자인가 | https://weekly.khan.co.kr/article/201812101538331
+
+- id: PHI-033
+  title: 국방 연구기관 퇴직 연구원들의 기술 자료 대량 반출 의혹 수사(대용량 저장장치)
+  date: "2020-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 한국
+  sector: [방산·항공우주, 대학·연구기관]
+  actor: 퇴직 연구원
+  actor_type: [내부자(악의)]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    국방과학연구소 퇴직 연구원 20여 명이 드론 등 무인체계·미래전·인공지능 관련 설계 기밀과 소스코드를 대용량 이동형 저장장치에 담아 반출한 의혹으로
+    수사가 진행됐고, 한 전직 연구원은 68만 건을 빼냈다는 의혹을 받았다. 대통령이 신속 수사를 지시했으며, 반출자 대부분은 방산기업·대학
+    연구소로 옮긴 것으로 파악됐다.
+  pht: [PHT-IN-03.1, PHT-EX-01]
+  sources:
+    - 서울신문(2020) 정경두 문대통령, 국방과학연 기밀유출 신속수사 지시 | https://m.seoul.co.kr/news/2020/04/29/20200429500121
+    - 보안뉴스(2020) 퇴직 연구원들의 첨단무기 기술유출, 국방과학연구소 뚫렸다 | https://m.boannews.com/html/detail.html?idx=87834
+
+- id: PHI-034
+  title: 전투기 공동개발 파견 외국 기술자의 개발 자료 USB 반출 적발
+  date: "2024-02"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 무죄·불기소
+  region: 한국
+  sector: [방산·항공우주]
+  actor: 공동개발국 파견 기술자
+  actor_type: [제3자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    한국항공우주산업(KAI)에서 근무하던 인도네시아 기술자가 2024-01 KF-21 관련 내부 자료가 담긴 이동식 저장장치(USB)를 반출하려다 적발됐고,
+    방위사업청이 2024-02 경찰에 수사를 의뢰했다. 검찰의 무혐의·기소유예로 수사는 1년 반 만에 종결됐으며, 정부는 인도네시아 분담금과 기술이전
+    규모를 줄였다.
+  pht: [PHT-IN-04, PHT-EX-01]
+  sources:
+    - 뉴데일리(2024) 정부합동조사팀, 경찰청 국가수사본부에 협조 요청 | https://www.newdaily.co.kr/site/data/html/2024/02/22/2024022200350.html
+    - 다음·연합뉴스(2024) Indonesian engineers probed over attempted theft of KF-21 fighter jet data | https://v.daum.net/v/20240202152823114
+
+- id: PHI-035
+  title: 빅테크 엔지니어의 AI 인프라 기밀 반출과 동료의 출입증 대리 태그(중국 업체 겸직)
+  date: "2024-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 재직 엔지니어(중국 업체 겸직)
+  actor_type: [내부자(악의), 공모]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    구글 소프트웨어 엔지니어가 중국 업체 두 곳에서 몰래 일하며 AI 모델 학습·운영용 슈퍼컴퓨팅 데이터센터 인프라 관련 기밀 파일 500건 이상을
+    빼돌린 혐의로 2024-03 기소됐다. 그가 중국에 있던 기간에 다른 직원이 그의 출입증을 대신 태그해 미국 사무실에서 일하는 것처럼 꾸몄고,
+    퇴사 직후 베이징 투자 행사에서 중국 업체 CEO로 소개된 사실이 확인됐다.
+  pht: [PHT-IN-02.1, PHT-PA-01.2, PHT-IM-01]
+  sources:
+    - Fortune(2024) Former Google engineer charged with stealing AI trade secrets for Chinese firms | https://fortune.com/2024/03/06/former-google-engineer-charged-with-stealing-ai-trade-secrets-for-chinese-firms
+    - SF Standard(2024) Google engineer indicted for stealing AI trade secrets | https://sfstandard.com/2024/03/06/google-engineer-indicted-ai-trade-secrets/
+
+- id: PHI-036
+  title: 자율주행 연구 엔지니어의 회로 기판·서버 반출과 출국 직전 체포
+  date: "2018-07"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [자동차·조선·기계, IT·소프트웨어]
+  actor: 퇴사 예정 엔지니어(중국 전기차 업체 이직)
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    애플 자율주행 프로젝트 엔지니어가 육아휴직 중 중국을 다녀온 뒤 중국 전기차 업체로 옮기겠다며 퇴사를 알렸고, 회사 조사에서 접근 권한이 필요한
+    구역의 기밀 파일을 대량 내려받고 프로그램의 회로 기판과 서버를 가져간 사실이 드러났다. 중국행 비행기 탑승 직전 공항에서 체포됐고 이후
+    유죄를 인정했다.
+  pht: [PHT-IN-03.1, PHT-EX-04, PHT-IM-01]
+  sources:
+    - CBS News(2018) Ex-Apple Employee Arrested At San Jose Airport Allegedly Had Trade Secrets | https://www.cbsnews.com/amp/sanfrancisco/news/ex-apple-employee-arrested-smuggling-trade-secrets
+    - Shacknews(2022) Former Apple engineer pleads guilty to trade secret theft from self-driving vehicle division | https://www.shacknews.com/article/131962/apple-aapl-trade-secret-theft-ev-fsd
+
+- id: PHI-037
+  title: 보안 작업 공간 광각 촬영을 동료가 목격해 드러난 자율주행 기밀 반출
+  date: "2019-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [자동차·조선·기계, IT·소프트웨어]
+  actor: 재직 엔지니어(중국 업체 지원)
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    입사 때 엄격한 비밀유지 서약을 한 애플 엔지니어가 6개월 뒤 자율주행 프로젝트 보안 작업 공간에서 광각 렌즈로 사진을 찍는 것을 동료가 목격해 알렸다.
+    조사에서 그는 촬영과 함께 매뉴얼·회로도 등 약 2,000개 파일을 개인 하드디스크로 백업했다고 인정했고, 중국 자율주행 업체에 지원한 사실을
+    숨겼다. 중국행 출국 직전 체포·기소됐다.
+  pht: [PHT-IN-02.1, PHT-EX-03, PHT-EX-01, PHT-IM-01]
+  sources:
+    - CNN(2019) Apple self-driving car secret theft | https://amp.cnn.com/cnn/2019/01/31/tech/apple-self-driving-car-secret-theft
+    - phys.org(2019) Chinese engineer charged in theft of Apple car secrets | https://phys.org/news/2019-01-chinese-theft-apple-car-secrets.html
+
+- id: PHI-038
+  title: 협력사 직원이 시험 로봇 팔을 가방에 넣어 반출·측정(통신사 연구실)
+  date: "2019-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 협력 관계 중국 통신장비 업체 직원
+  actor_type: [제3자]
+  impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
+  summary: >-
+    T-Mobile 본사 연구실의 휴대폰 시험 로봇 기술을 노려, 협력 관계로 연구실에 출입하던 화웨이 직원이 2013-05 로봇 팔을 노트북 가방에 넣어 가져가
+    중국에서 온 엔지니어와 측정·촬영한 뒤 다음 날 가방에서 '찾았다'며 돌려줬다. 2017년 민사 배심이 480만 달러 배상을 평결했고 2019-01 미 법무부가
+    이 업체를 기소했다.
+  pht: [PHT-IN-04, PHT-EX-04, PHT-EX-03]
+  sources:
+    - KUOW(2019) A robot named Tappy — Huawei conspired to steal T-Mobile's trade secrets, says DOJ | https://www.kuow.org/stories/a-robot-named-tappy-huawei-conspired-to-steal-t-mobile-s-trade-secrets-says-doj
+    - GeekWire(2019) U.S. prosecutors accuse Chinese smartphone giant Huawei of stealing trade secrets from T-Mobile | https://www.geekwire.com/2019/u-s-prosecutors-accuse-chinese-smartphone-giant-huawei-stealing-trade-secrets-t-mobile-seek-extradition-cfo/
+
+- id: PHI-039
+  title: 핵잠수함 설계 기밀을 SD 카드에 담아 데드드롭으로 판매 시도(위장 수사로 검거)
+  date: "2021-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [정부·군, 방산·항공우주]
+  actor: 해군 원자력 엔지니어·배우자
+  actor_type: [내부자(악의), 공모]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    해군 원자력 엔지니어와 배우자가 버지니아급 핵잠수함 설계 관련 기밀을 암호화한 SD 카드에 담아 땅콩버터 샌드위치·껌 포장·반창고 포장 속에 숨겨
+    약속 장소에 두는 방식으로 외국에 팔려 했다. 구매자는 FBI 위장 요원이었고 2021-10 체포돼 각각 징역 19년·21년 이상을 선고받았다.
+  pht: [PHT-IN-02.1, PHT-EX-01]
+  sources:
+    - 미 법무부(2022) Maryland Nuclear Engineer and Wife Sentenced on Espionage-Related Offenses | https://www.justice.gov/opa/pr/maryland-nuclear-engineer-and-wife-sentenced-espionage-related-offenses
+    - CBS News(2022) Navy engineer Jonathan Toebbe pleads guilty in spy case | https://www.cbsnews.com/amp/news/jonathan-toebbe-navy-engineer-pleads-guilty-spy-case/
+
+- id: PHI-040
+  title: 주방위군 IT 담당자의 기밀 정보 기억·필사 후 온라인 공유
+  date: "2023-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [정부·군]
+  actor: 주방위군 IT 담당 병사
+  actor_type: [내부자(악의)]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    공군 주방위군 기지의 IT 담당 병사가 특권 접근을 악용해 근무 중 본 기밀을 기억했다가 집에서 옮겨 적어 게임 관련 디스코드 서버에 공유했고,
+    우크라이나 지원 장비 정보 등 수백 건의 기밀이 유출됐다. 2023-04 체포돼 징역 15년을 선고받았다.
+  pht: [PHT-IN-02.1, PHT-EX-02, PHT-IM-01]
+  sources:
+    - GBH(2024) Pentagon secrets leaker Jack Teixeira sentenced to 15 years in prison | https://wgbh.org/news/national/2024-11-12/pentagon-secrets-leaker-jack-teixeira-sentenced-to-15-years-in-prison-by-a-federal-judge
+    - Bitdefender(2024) IT specialist Jack Teixeira jailed for 15 years after leaking classified military documents on Discord | https://bitdefender.com/en-us/blog/hotforsecurity/it-specialist-jack-teixeira-jailed-for-15-years-after-leaking-classified-military-documents-on-discord
+
+- id: PHI-041
+  title: 연구원의 암 연구 시료 21병 양말 속 은닉 반출 시도(공항 적발)
+  date: "2019-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [대학·연구기관, 바이오·농업]
+  actor: 방문 연구원
+  actor_type: [내부자(악의)]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    하버드 계열 병원 연구실에서 일하던 중국인 연구원이 연구실 암세포 시료 21병을 여행가방 속 양말에 숨겨 중국으로 가져가려다 2019-12 보스턴
+    로건 공항에서 적발됐다. 생물 시료 소지 여부를 묻는 세관 질문에 거짓으로 답했고, 중국 자기 연구실에서 연구해 자기 이름으로 발표하려 했다고
+    진술했다. 허위 진술을 인정하고 추방됐다.
+  pht: [PHT-EX-04]
+  sources:
+    - ABC News 4(2020) Chinese researcher pleads to lying in cancer-smuggling case | https://abcnews4.com/news/nation-world/chinese-researcher-pleads-to-lying-in-cancer-smuggling-case
+
+- id: PHI-042
+  title: 종자 기업 시험 재배지에서 비공개 옥수수 종자 반출(중국 기업 임원)
+  date: "2013-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [바이오·농업]
+  actor: 중국 종자 기업 임원
+  actor_type: [외부자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    중국 농업 대기업의 국제사업 책임자가 듀폰 파이오니어·몬산토의 자식계 옥수수 종자를 아이오와 등의 재배지에서 몰래 수집해 중국으로 보내려는 장기
+    공모에 가담했다. 듀폰 파이오니어 보안 인력이 의심 행동을 발견해 FBI에 알리면서 수사가 시작됐고, 2016-10 징역 36개월과 범행에 쓴 농장
+    두 곳 몰수가 선고됐다.
+  pht: [PHT-EX-04, PHT-PA-01.1, PHT-IM-01]
+  sources:
+    - 미 법무부(2016) Chinese National Sentenced to Prison for Conspiracy to Steal Trade Secrets | https://www.justice.gov/opa/pr/chinese-national-sentenced-prison-conspiracy-steal-trade-secrets
+    - Agri-Pulse(2016) Chinese man gets three years in prison for stealing corn seeds | https://agri-pulse.com/articles/7574-chinese-man-gets-three-years-in-prison-for-stealing-corn-seeds
+
+- id: PHI-043
+  title: 원전 터빈 윤활유 배출 밸브 고의 개방으로 원자로 정지(내부자 사보타주 결론)
+  date: "2014-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [에너지·원자력]
+  actor: 미상(직원 또는 협력사 인력으로 추정)
+  actor_type: [내부자(악의)]
+  impact: [설비 손상·사보타주, 운영 중단]
+  summary: >-
+    벨기에 도얼 원전 4호기가 2014-08-05 자동 정지했고, 비원자력 구역의 터빈 윤활유 6만 5천 리터를 비상 저장조로 빼는 밸브를 누군가 지시 없이
+    수동으로 연 것이 확인됐다. 운영사는 사보타주로 고발했고, 7년간의 수사는 정당한 출입 사유가 있던 직원이나 협력사 인력의 소행으로 결론지었지만
+    밸브 주변에 CCTV가 없어 범인을 특정하지 못했다.
+  pht: [PHT-IN-02.2, PHT-IM-02, PHT-IM-03]
+  sources:
+    - The Brussels Times(2021) Enquiry into nuclear plant sabotage comes to no conclusion | https://brusselstimes.com/181163/enquiry-into-nuclear-plant-sabotage-comes-to-no-conclusion
+    - VRT NWS(2019) Le sabotage de Doel 4 reste un mystère 5 ans après les faits | https://www.vrt.be/vrtnws/fr/2019/08/05/le-sabotage-de-doel-4-reste-un-mystere-5-ans-apres-les-faits/
+
+# ---------------------------------------------------------------------------
+# 물리 침입·위장 출입·장치 반입(PA)
+# ---------------------------------------------------------------------------
+- id: PHI-044
+  title: 대통령 휴양 클럽에 행사 참석을 사칭해 출입(휴대폰·저장장치 다수 소지)
+  date: "2019-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [정부·군]
+  actor: 중국인 방문자
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    중국인 방문자가 마러라고 클럽 검문소에서 처음에는 회원이라며 수영장에 간다고 했다가 존재하지 않는 미중 친선 행사에 참석한다고 말을 바꿔
+    들어갔고, 비밀경호국은 휴대폰 4대·노트북·외장 하드·USB를 압수했다(USB의 악성코드 판정은 이후 오탐 가능성이 제기됨).
+    무단 침입과 허위 진술로 유죄 평결을 받고 징역 8개월 뒤 추방됐다.
+  pht: [PHT-PA-02]
+  sources:
+    - Al Jazeera(2019) Chinese businesswoman convicted in Mar-a-Lago trespass case | https://www.aljazeera.com/amp/news/2019/9/11/chinese-businesswoman-convicted-in-mar-a-lago-trespass-case
+    - NBC News(2019) Chinese woman to be deported for trespassing at Mar-a-Lago | https://www.nbcnews.com/news/crime-courts/chinese-woman-be-deported-trespassing-mar-lago-n1091161
+
+- id: PHI-045
+  title: 택배원·구직자로 위장 출입해 은행 내부망에 원격 접속 장치 설치(동유럽 은행 8곳 이상)
+  date: "2018-12"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 유럽
+  sector: [금융·서비스]
+  actor: DarkVishnya
+  actor_type: [외부자]
+  impact: [내부 접근 확보, 금전 피해]
+  summary: >-
+    공격자들이 택배원·구직자 등으로 위장해 은행 건물에 들어가 회의실이나 네트워크 단자가 있는 책상에 노트북·Raspberry Pi·Bash Bunny 같은 장치를
+    몰래 연결했고, 장치에 달린 이동통신 모뎀으로 내부망에 원격 접속해 자금·자료를 빼냈다. 2017~2018년 동유럽 은행 최소 8곳이 피해를 입었고
+    손실은 수천만 달러로 추정됐다.
+  pht: [PHT-PA-02, PHT-PA-03.1, PHT-IM-05]
+  attack_ref: [G0105]
+  sources:
+    - Kaspersky(2018) DarkVishnya — new series of unprecedented cyber robberies in Eastern Europe | https://www.kaspersky.com/about/press-releases/2018_darkvishnya-new-series-of-unprecedented-cyber-robberies-in-eastern-europe
+    - Dark Reading(2018) Criminals use locally connected devices to attack, loot banks | https://www.darkreading.com/attacks-breaches/criminals-use-locally-connected-devices-to-attack-loot-banks
+
+- id: PHI-046
+  title: 감사 편지·가짜 기프트카드와 함께 악성 USB 장치를 우편 발송(운송·보험·방산 기업)
+  date: "2022-01"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [교통·공항·물류, 금융·서비스, 방산·항공우주]
+  actor: FIN7
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    FBI는 FIN7이 2021-08부터 운송·보험 기업, 2021-11부터 방산 기업에 아마존·미 보건복지부를 사칭한 우편물과 함께 시판 'BadUSB' 장치를 보냈다고
+    경보했다. 장치를 꽂으면 키 입력을 자동으로 흉내 내 악성코드를 내려받아 실행하며, 미국 우체국·UPS로 배송됐다.
+  pht: [PHT-PA-03.2]
+  attack_ref: [G0046]
+  sources:
+    - WaterISAC(2022) FBI FLASH — FIN7 cyber actors target US businesses through USB keystroke injection attacks | https://www.waterisac.org/fbi-flash-fin7-cyber-actors-target-us-businesses-through-usb-keystroke-injection-attacks
+    - Security Affairs(2022) FIN7 group continues to target US companies with BadUSB devices | https://securityaffairs.com/126439/breaking-news/fin7-badusb-attacks.html
+
+- id: PHI-047
+  title: 입국 거부된 외국인 2명의 공항 활주로 외곽 울타리 월담 도주
+  date: "2023-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [교통·공항·물류]
+  actor: 입국 거부 외국인
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    입국 목적 불분명으로 입국이 거부된 카자흐스탄인 2명이 2023-03-26 새벽 인천공항 제2여객터미널 제4활주로 외곽 울타리를 넘어 공항 밖으로 달아났다.
+    한 명은 17시간 만에 대전에서 검거됐고, 둘은 출입국관리법·공항시설법 위반으로 징역 1년에 집행유예 2년을 선고받았다.
+  pht: [PHT-PA-01.1]
+  sources:
+    - 보안뉴스(2023) 인천국제공항, 활주로 지역 외곽울타리 넘는 월담 사고 발생 | https://m.boannews.com/html/detail.html?idx=115503
+    - 뉴시스(2023) 인천공항 담 넘어 도주한 카자흐스탄인 구속 | https://www.newsis.com/view/NISX20230329_0002246058
+
+- id: PHI-048
+  title: 외국인 청년들의 공군기지·공항 반복 촬영과 관제 무전 감청 시도
+  date: "2025-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [정부·군, 교통·공항·물류]
+  actor: 중국 국적 청년 2명
+  actor_type: [외부자]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    중국 국적 고교생 등 2명이 2025-03 수원 공군기지 부근에서 이착륙 전투기를 카메라·휴대전화로 촬영하다 적발됐고, 오산·평택·청주 등 한미
+    군사시설 4곳과 인천·김포·제주공항에서 수천 장을 찍은 것으로 드러났다. 중국산 무전기로 관제사·조종사 교신 감청을 두 차례 시도했으나 주파수를
+    맞추지 못했고, 일부 사진을 SNS에 올렸다. 1심에서 외국인에게 일반이적죄를 처음 적용해 실형이 선고됐다.
+  pht: [PHT-RC-02, PHT-SV-03.1]
+  sources:
+    - 세계일보(2025) 지난달 입국 땐 한미군사시설 4곳·국제공항 3곳서 수천장 촬영 | https://www.segye.com/newsView/20250409519308
+    - TWIG24(2026) 군기지·전투기 무단촬영 중국인 2명 실형…외국인 일반이적죄 첫 적용 | https://twig24.com/news/world/crime-law/2026/05/14/20260514500059
+
+# ---------------------------------------------------------------------------
+# 드론 무단 촬영·무단 비행과 운영 방해(SV-01, IM-03·04)
+# ---------------------------------------------------------------------------
+- id: PHI-049
+  title: 유학생들의 해군기지·정박 항공모함 드론 반복 촬영
+  date: "2024-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 한국
+  sector: [정부·군]
+  actor: 중국인 유학생 3명
+  actor_type: [외부자]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    중국인 유학생 3명이 2023-03부터 2024-06까지 부산 해군작전사령부 일대에서 드론을 띄워 해군기지 내부와 한미일 훈련차 정박한 미 핵추진
+    항공모함을 촬영해 사진 약 170장·영상 22개(12GB)를 남겼고, 2024-06-25 적발됐다. 검찰은 주범에게 외국인 최초로 일반이적 혐의를 적용했고
+    2026-06 1심에서 징역 1년 6개월이 선고됐다.
+  pht: [PHT-SV-01.1]
+  sources:
+    - 데일리안(2025) 美 해군 항공모함 드론 불법촬영 중국 유학생들…구속기소 | https://www.dailian.co.kr/news/view/1528023/
+    - TWIG24(2026) 부산 해군기지, 미 항모 촬영한 중국인 유학생 1심서 징역형 | https://www.twig24.com/news/local_bs/2026/06/10/20260610500074
+
+- id: PHI-050
+  title: 관광객의 국가정보원 청사 드론 촬영(비행금지구역 적발)
+  date: "2024-11"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 한국
+  sector: [정부·군]
+  actor: 중국인 관광객
+  actor_type: [외부자]
+  impact: [시설 정보 노출]
+  summary: >-
+    40대 중국인이 2024-11-09 서울 내곡동에서 헌인릉을 드론으로 찍다 인근 국정원 건물을 촬영해 항공안전법 위반으로 체포됐다. 그는 세계문화유산에
+    관심이 있었다고 진술했고, 경찰은 대공 혐의점이 없다고 보고 석방한 뒤 출국정지 상태에서 보완 수사를 이어갔다.
+  pht: [PHT-SV-01.1]
+  sources:
+    - 시대일보(2024) 국정원 건물을 드론 촬영한 중국인 경찰조사 진술 | https://www.sidae.com/article/2024111113285546461
+    - 코리아헤럴드(2024) 국정원 청사 드론 촬영 중국인 체포 보도 | https://www.koreaherald.com/article/10880119
+
+- id: PHI-051
+  title: 유학생의 군함 건조 조선소 드론 촬영(나무에 걸린 드론으로 발각)
+  date: "2024-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [방산·항공우주, 자동차·조선·기계]
+  actor: 중국인 대학원생
+  actor_type: [외부자]
+  impact: [시설 정보 노출]
+  summary: >-
+    중국인 대학원생이 2024-01-06 새로 산 드론으로 항공모함·잠수함을 건조하는 버지니아주 뉴포트뉴스 조선소 상공에서 건조 중인 해군 함정을 촬영했다.
+    드론이 나무에 걸리며 경찰이 출동했지만 그는 현장을 떠나 출국하려다 1-18 체포됐고, 지정 시설 무단 촬영 2건을 인정해 징역 6개월을 받았다.
+  pht: [PHT-SV-01.1]
+  sources:
+    - DroneXL(2024) Chinese Grad Student Jailed for Drone Photography of US Naval Shipyard | https://dronexl.co/2024/10/15/chinese-student-jailed-drone-photography-us-naval-shipyard
+    - Virginia Mercury(2025) FOIA Friday — Espionage case in Virginia ends with prosecution | https://virginiamercury.com/2025/01/03/foia-friday-espionage-case-in-virginia-ends-with-prosecution/
+
+- id: PHI-052
+  title: 해군기지 정박 호위함 드론 촬영 영상의 중국 동영상 사이트 게시(국방성 '진짜일 가능성 높음')
+  date: "2024-05"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 일본
+  sector: [정부·군]
+  actor: 미상(중국 동영상 사이트 이용자)
+  actor_type: [외부자]
+  impact: [시설 정보 노출]
+  summary: >-
+    2024-03 중국 동영상 사이트 빌리빌리에 요코스카 해상자위대 기지에 정박한 호위함 이즈모를 드론으로 찍었다는 19초 영상과 사진이 올라왔다.
+    일본 방위성은 2024-05 영상 속 함정·건물·파도·그림자를 분석해 조작 가능성이 매우 낮다고 밝혔고, 방위상은 대드론 대응 강화를 지시했다.
+  pht: [PHT-SV-01.1]
+  sources:
+    - nippon.com(2024) Online Video of Japanese Destroyer Likely Real — Defense Ministry | https://www.nippon.com/en/news/yjj2024050901150/online-video-of-japanese-destroyer-likely-real-defense-ministry.html
+    - Defense News(2024) Japan's defense chief calls for more counter-drone tech | https://www.defensenews.com/unmanned/2024/05/10/japans-defense-chief-calls-for-more-counter-drone-tech/
+
+- id: PHI-053
+  title: 공항 활주로 인근 드론 반복 출현으로 약 36시간 운항 중단(항공편 1천 편·승객 14만 명)
+  date: "2018-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [운영 중단]
+  summary: >-
+    2018-12-19~21 영국 개트윅 공항 활주로 인근에 드론이 반복 목격돼 유일한 활주로를 약 36시간 폐쇄했고, 항공편 1,000편·승객 14만 명이
+    영향을 받았다. 서식스 경찰은 목격 신고 67건을 확인했으며 교통부 장관은 의도적으로 운용된 상업용 크기 드론이라고 말했다. 조종자는 특정되지 않았다.
+  pht: [PHT-SV-01.2, PHT-IM-03]
+  sources:
+    - NPR(2018) London's Gatwick Airport Reopens After Drone Sightings Derail Holiday Travel | https://www.npr.org/2018/12/20/678579115/gatwick-airport-shuts-down-due-to-drones-flying-near-runway
+    - Arab News(2019) Police say Gatwick drones probe ongoing | https://www.arabnews.com/node/1425341/world
+
+- id: PHI-054
+  title: 대형 드론 출현으로 수도 공항 운항 중단(같은 날 인접국 공항도 폐쇄)
+  date: "2025-09"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 미상(숙련된 조종자로 추정)
+  actor_type: [외부자]
+  impact: [운영 중단]
+  summary: >-
+    2025-09-22 저녁 코펜하겐 공항 인근에 대형 드론 2~3대가 나타나 운항이 중단되고 약 35편이 회항했으며, 같은 시각 오슬로 공항도 약 3시간 폐쇄됐다.
+    덴마크 경찰은 의도와 장비를 갖춘 숙련된 조종자의 비행으로 봤으나 기체를 회수하지 못했고, 덴마크 총리는 덴마크 기반시설에 대한 지금까지 가장
+    심각한 공격이라고 밝혔다.
+  pht: [PHT-SV-01.2, PHT-IM-03]
+  sources:
+    - CBS News(2025) Copenhagen Airport shut down for hours by large, unidentified drones flying nearby | https://www.cbsnews.com/amp/news/copenhagen-airport-drones-interference-amid-russia-nato-incursions
+    - Malay Mail(2025) Copenhagen airport shut due to unidentified drones in airspace | https://www.malaymail.com/amp/news/world/2025/09/23/copenhagen-airport-shut-due-to-unidentified-drones-in-airspace/192052
+
+- id: PHI-055
+  title: 이틀 연속 드론 목격으로 국제공항 활주로 폐쇄(승객 약 1만 명 영향)
+  date: "2025-10"
+  kind: 사고
+  verification: 피해기관 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [운영 중단]
+  summary: >-
+    2025-10-02 밤 뮌헨 공항 인근에서 드론이 잇따라 목격돼 약 7시간 운항이 중단되고 17편 결항·15편 회항으로 승객 약 3,000명이 발이 묶였다.
+    다음 날 밤에도 드론이 다시 목격돼 두 활주로가 폐쇄되며 승객 약 6,500명이 영향을 받았다. 야간이라 기체 종류·크기와 출처를 확인하지 못했다.
+  pht: [PHT-SV-01.2, PHT-IM-03]
+  sources:
+    - Kyiv Independent·NV(2025) Drones shut Germany's Munich airport overnight | https://english.nv.ua/nation/mysterious-drones-force-munich-airport-to-suspend-operations-50549749.html
+    - News Tribune(2025) Munich airport reopens after second closure | https://www.newstribune.com/news/2025/oct/05/munich-airport-reopens-after-second-closure-in/
+
+- id: PHI-056
+  title: 미 공군이 쓰는 영국 기지 상공 소형 드론 연속 침입
+  date: "2024-11"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [정부·군]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    미 공군은 2024-11-20~26 레이컨히스·밀든홀·펠트웰 기지(이후 페어퍼드 포함) 주변과 상공에 크기·형태가 다른 소형 드론이 침입했다고 확인했다.
+    기지 시설·자산 피해는 없었다고 밝혔고 영국 국방부는 대드론 체계를 투입하며 조사를 이어갔으나 배후는 특정되지 않았다.
+  pht: [PHT-SV-01.2]
+  sources:
+    - Military Times(2024) Drones spotted near 3 bases used by US Air Force in England | https://www.militarytimes.com/news/your-air-force/2024/11/25/drones-spotted-near-3-bases-used-by-us-air-force-in-england/
+    - UK Defence Journal(2024) Investigation continues into drone activity over RAF bases | https://ukdefencejournal.org.uk/investigation-continues-into-drone-activity-over-raf-bases/
+
+- id: PHI-057
+  title: 원전 13곳 이상 상공에 소형 드론 연쇄 출현
+  date: "2014-10"
+  kind: 사고
+  verification: 피해기관 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [에너지·원자력]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    2014-10-05부터 11-02 사이 프랑스 원전 13곳의 경비원이 소형 민간 드론의 비행을 목격했다. 정부 관계자는 드론이 원전 사진·영상을 찍는 것을 우려했고,
+    운영사 EDF는 사건마다 원전 상공 불법 진입으로 신원 미상자를 고발했다. 환경단체는 관여를 부인했다.
+  pht: [PHT-SV-01.2]
+  sources:
+    - The Tech(2014) Drones flew over French nuclear power plants | https://thetech.com/2014/11/04/long2-v134-n52
+    - Global Voices(2014) Drones flying over nuclear power stations in France raise concerns | https://globalvoices.org/2014/12/09/drones-flying-over-nuclear-power-stations-in-france-raise-concerns/
+
+- id: PHI-058
+  title: 원전 3곳 상공 드론 출현으로 국가 보안기관 수사 착수
+  date: "2022-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [에너지·원자력]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    2022-01-14 저녁 스웨덴 포르스마르크·오스카르스함 원전 상공에 드론이 목격됐고 링할스 원전에서도 신고가 들어왔다. 경찰이 추적에 실패했고
+    국내보안국(SÄPO)이 1-17 수사를 넘겨받았다. 강풍을 견딜 만큼 큰 기체였다는 보도가 있었으며 용의자는 특정되지 않았다.
+  pht: [PHT-SV-01.2]
+  sources:
+    - Bloomberg(2022) Drone Flights Over Nuclear Plants Prompt Swedish Investigation | https://www.bloomberg.com/news/articles/2022-01-17/sweden-probes-suspect-drone-flights-over-nuclear-plants
+    - The War Zone(2022) Mysterious drone incursions confirmed over Sweden's nuclear facilities | https://www.twz.com/43901/mysterious-drone-incursions-confirmed-over-swedens-nuclear-facilities-this-weekend.md
+
+- id: PHI-059
+  title: 원전 상공에 이틀 밤 연속 드론 편대 출현(규제기관 내부 문서 공개)
+  date: "2020-07"
+  kind: 사고
+  verification: 언론 보도
+  region: 미국
+  sector: [에너지·원자력]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    2019-09-29 저녁 미국 최대 원전인 팔로버디 원전 무장 경비원들이 조명을 켠 드론 5~6대를 목격했고, 드론은 조명을 끈 채 3호기 건물 주변을 약 2시간
+    선회했다. 다음 날 밤에도 4대가 나타났다. 원자력규제위원회(NRC) 내부 문서가 정보공개청구로 공개되며 2020-07 보도됐다.
+  pht: [PHT-SV-01.2]
+  sources:
+    - The War Zone(2020) The Night A Mysterious Drone Swarm Descended On Palo Verde Nuclear Power Plant | https://www.twz.com/34800/the-night-a-drone-swarm-descended-on-palo-verde-nuclear-power-plant
+    - DroneXL(2020) Mysterious drone swarm flew over Palo Verde Nuclear Power Plant | https://dronexl.co/2020/07/30/mysterious-drone-swarm-palo-verde-nuclear-power-plant
+
+- id: PHI-060
+  title: 해상 가스전 인근 드론 출현과 드론·촬영물 소지 외국인 연이은 체포
+  date: "2022-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [에너지·원자력]
+  actor: 러시아 국적자 등
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    노르트스트림 가스관 손상 뒤 노르웨이 석유·가스 시설 인근에 드론 목격이 잇따르자 경계를 높였고, 2022-10 러시아인이 드론 2대와 사진·영상을
+    지닌 채 국경에서 체포되는 등 러시아 국적자들이 드론 비행으로 연이어 붙잡혔다. 한 명은 취미용 드론 비행이 제재 규정 대상이 아니라는 이유로
+    무죄를 받아 법적 대응의 한계도 드러났다.
+  pht: [PHT-SV-01.1, PHT-SV-01.2]
+  sources:
+    - CBS News(2022) Norway detains Russian at border with drones after reports of mystery drones near oil and gas facilities | https://www.cbsnews.com/news/norway-detains-russia-national-mysterious-drones-oil-gas-facilities
+    - Arctic Today(2022) Norwegian police loses case against Russian charged with flying drone in Svalbard | https://www.arctictoday.com/?p=56248
+
+- id: PHI-061
+  title: 산불 진화 비행 제한 구역의 취미 드론이 소방 항공기와 충돌
+  date: "2025-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [교통·공항·물류]
+  actor: 개인(취미 비행)
+  actor_type: [외부자]
+  impact: [안전 위협, 운영 중단]
+  summary: >-
+    로스앤젤레스 퍼시픽 팰리세이즈 산불 현장의 비행 제한 구역에서 민간 드론이 물을 뿌리던 소방 항공기와 충돌해 날개에 축구공 크기 구멍을 냈다.
+    항공기는 안전하게 착륙했지만 산불이 이어지는 동안 며칠간 운용하지 못했다. FBI는 고의 증거는 없다고 밝혔고 조종자는 무인기 불안전 운항 혐의를
+    인정하기로 했다.
+  pht: [PHT-SV-01.2, PHT-IM-04]
+  sources:
+    - ABC7(2025) Man agrees to plead guilty to crashing drone into Super Scooper during Palisades Fire | https://abc7news.com/post/palisades-fire-peter-tripp-akemann-agrees-plead-guilty-crashing-drone-super-scooper/15851641/
+    - Fox News(2025) California man pleads guilty after his drone collides with aircraft fighting Palisades Fire | https://www.foxnews.com/us/california-man-pleads-guilty-after-his-drone-collides-aircraft-fighting-palisades-fire.amp
+
+# ---------------------------------------------------------------------------
+# 근접 무선·은닉 장비(SV-02·03)
+# ---------------------------------------------------------------------------
+- id: PHI-062
+  title: 국제기구 본부 옆 호텔 주차 차량의 Wi-Fi 해킹 장비로 근접 침투 시도(군 정보기관 차단)
+  date: "2018-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 유럽
+  sector: [정부·군]
+  actor: 러시아 군 정보기관(GRU)
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    외교관 여권으로 입국한 러시아 GRU 요원 4명이 2018-04-13 헤이그 화학무기금지기구(OPCW) 본부 옆 호텔에 자리 잡고 사진을 찍었으며, 트렁크가
+    본부를 향하게 세운 렌터카에 Wi-Fi 통신을 가로채거나 조작할 수 있는 장비를 실었다. 네덜란드 군 정보보안국(MIVD)이 현장에서 차단했고
+    2018-10 영국과 함께 공개했다.
+  pht: [PHT-SV-03.1, PHT-RC-02]
+  attack_ref: [G0007]
+  sources:
+    - 네덜란드 국방부(2018) Russian cyber operation disrupted | https://english.defensie.nl/topics/cyber-security/russian-cyber-operation
+    - Forces News(2018) Russia's GRU accused of targeting chemical weapons watchdog and Porton Down | https://www.forcesnews.com/news/russias-gru-accused-targeting-chemical-weapons-watchdog-and-porton-down
+
+- id: PHI-063
+  title: 인근 조직을 먼저 침해해 그 Wi-Fi 장치로 표적 조직 무선망 접속('최근접 이웃' 공격)
+  date: "2024-11"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 미국
+  sector: [기타]
+  actor: APT28(러시아 GRU)
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    2022-02 워싱턴의 우크라이나 관련 업무 조직에서 탐지된 침해를 분석한 결과, 공격자는 표적 근처 조직들을 차례로 침해해 유선·무선 연결을 함께 가진
+    시스템을 찾은 뒤 그 무선 어댑터로 표적 조직 Wi-Fi에 인증해 들어간 것으로 드러났다. 인터넷 노출 자원은 MFA가 필요했지만 Wi-Fi는 근접성과 유효한
+    자격증명만 있으면 접속됐다. 2024-11 공개됐다.
+  pht: [PHT-SV-03.1]
+  attack_ref: [C0051, G0007]
+  sources:
+    - Dark Reading(2024) Fancy Bear Nearest Neighbor Attack Uses Nearby Wi-Fi Network | https://www.darkreading.com/cyberattacks-data-breaches/fancy-bear-nearest-neighbor-attack-wi-fi
+    - Field Effect(2024) Fear thy neighbors — they could be APT28 | https://fieldeffect.com/blog/fear-thy-neighbors-they-could-be-apt-28
+
+- id: PHI-064
+  title: 수도권 정부 시설 주변 가짜 기지국(IMSI 캐처) 의심 활동 정부 확인
+  date: "2018-04"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [정부·군]
+  actor: 미상(외국 정보기관 추정 보도)
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    미 국토안보부는 상원의원 질의에 대한 2018-03 답변서에서 워싱턴 수도권에서 IMSI 캐처(가짜 기지국)와 일치하는 이상 활동을 관측했다고 처음 공식
+    인정했다. 다른 연방기관에 알렸지만 특정 장치나 주체로 확인·귀속하지는 못했다고 밝혔다.
+  pht: [PHT-SV-03.1]
+  sources:
+    - EFF(2018) DHS confirms presence of cell-site simulators in US capitol | https://www.eff.org/deeplinks/2018/04/dhs-confirms-presence-cell-site-simulators-us-capitol
+    - WLRN·AP(2018) Feds say they've detected apparent rogue spy devices in D.C. | https://www.wlrn.org/2018-04-04/feds-say-theyve-detected-apparent-rogue-spy-devices-in-d-c
+
+- id: PHI-065
+  title: 공항·기내에 가짜 무료 Wi-Fi를 띄워 이용자 자격증명·개인 자료 탈취
+  date: "2024-07"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 기타
+  sector: [교통·공항·물류]
+  actor: 개인
+  actor_type: [외부자]
+  impact: [개인정보 유출]
+  summary: >-
+    호주 연방경찰은 항공사 직원이 국내선 기내에서 수상한 Wi-Fi를 발견해 신고한 뒤 2024-04 퍼스 공항에서 휴대용 무선 접속 장치·노트북·휴대폰을 압수했다.
+    피의자는 퍼스·멜버른·애들레이드 공항과 여러 국내선에 무료 공용 Wi-Fi를 흉내 낸 가짜 접속망을 띄워 다른 사람의 자격증명과 개인 자료를
+    수년간 수집했고, 2025년 징역 7년 4개월을 선고받았다.
+  pht: [PHT-SV-03.1]
+  sources:
+    - Malwarebytes(2024) Personal data stolen from airport visitors and plane passengers in evil twin attacks, man charged | https://www.malwarebytes.com/blog/news/2024/07/personal-data-stolen-from-unsuspecting-airport-visitors-and-plane-passengers-in-evil-twin-attacks-man-charged
+    - Security Affairs(2025) Australian man jailed for 7+ years over airport and in-flight Wi-Fi attacks | https://securityaffairs.com/?p=185205
+
+# ---------------------------------------------------------------------------
+# 기반시설 사보타주(IM-02·03)
+# ---------------------------------------------------------------------------
+- id: PHI-066
+  title: 이중화된 철도 무선통신 광케이블 2곳 동시 절단으로 북부 철도 운행 마비
+  date: "2022-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 미상(철도 통신 지식 보유 추정)
+  actor_type: [외부자]
+  impact: [설비 손상·사보타주, 운영 중단]
+  summary: >-
+    2022-10-08 독일 철도 무선통신(GSM-R)용으로 이중화된 광케이블 두 곳(헤르네·베를린 카로)이 잘려 니더작센·브레멘·함부르크·슐레스비히홀슈타인
+    철도 운행이 약 3시간 멈췄다. 교통부 장관은 공격으로 규정했고, 수사 당국은 데이터 케이블과 철도 무선통신에 대한 상당한 기술 지식을 가진
+    범인이 조직적으로 절단한 것으로 봤다.
+  pht: [PHT-IM-02, PHT-IM-03]
+  sources:
+    - RTHK·AFP(2022) Sabotage blamed for major German rail disruption | https://news.rthk.hk/rthk/en/component/k2/1670178-20221008.htm
+    - Trains(2022) Sabotage blamed for disruption to German rail operations | https://www.trains.com/trn/news-reviews/news-wire/sabotage-blamed-for-disruption-to-german-rail-operations/feed
+
+- id: PHI-067
+  title: 올림픽 개막 당일 고속철 신호 설비 동시다발 방화(승객 80만 명 영향)
+  date: "2024-07"
+  kind: 사고
+  verification: 피해기관 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [설비 손상·사보타주, 운영 중단]
+  summary: >-
+    파리 올림픽 개막 당일인 2024-07-26 새벽 프랑스 고속철(TGV) 대서양·북부·동부 노선의 신호 박스·전기 설비 5곳이 동시다발로 훼손되거나 훼손 시도를
+    당했다. 국영철도공사는 TGV망을 마비시키려는 대규모 공격이라고 밝혔고 승객 80만 명이 영향을 받았으며 복구는 주말까지 이어졌다.
+  pht: [PHT-IM-02, PHT-IM-03]
+  sources:
+    - Gulf News·AFP(2024) France's high-speed railway hit by sabotage ahead of Paris Olympics opening | https://gulfnews.com/sport/olympics/frances-high-speed-railway-hit-by-sabotage-ahead-of-paris-olympics-opening-1.1721981430787
+    - Channels TV(2024) Olympics under heavy security after France's high-speed railway hit | https://www.channelstv.com/2024/07/26/olympics-under-heavy-security-after-frances-high-speed-railway-hit/
+
+# ---------------------------------------------------------------------------
+# 위장 접촉 경보(RC-03)
+# ---------------------------------------------------------------------------
+- id: PHI-068
+  title: 업무용 SNS 위장 프로필 접근 1만 건 이상 경고와 점검 앱 공개
+  date: "2021-04"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 유럽
+  sector: [정부·군, 대학·연구기관, IT·소프트웨어]
+  actor: 외국 정보기관
+  actor_type: [외부자]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    영국 MI5는 외국 정보기관이 LinkedIn 등 업무용 SNS에서 위장 프로필로 접근한 사례를 1만 건 이상 확인했다고 경고했다. 위장 프로필은 정부·첨단기술
+    기업·학계 인력에게 채용·강연·사업 기회를 미끼로 관계를 맺어 국가안보 관련 정보를 끌어내는 데 쓰였고, CPNI는 접속 전 상대를 점검하도록
+    돕는 앱을 내놨다.
+  pht: [PHT-RC-03.1]
+  sources:
+    - BBC(2021) MI5 warns of spies using LinkedIn to trick staff into spilling secrets | https://bbc.in/3argIDF
+    - Dark Reading(2021) Foreign Spies Target British Nationals With Fake Social Media Profiles | https://www.darkreading.com/cyberattacks-data-breaches/foreign-spies-target-british-nationals-with-fake-social-media-profiles
