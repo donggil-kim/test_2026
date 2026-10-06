@@ -70,9 +70,8 @@
 ## 6. 빌드·검증 (scripts/)
 
 - `taxonomy_rules.py`: 집계·판정 규칙(씨앗 제공, 그대로 확장).
-- `validate.py`, `build_physical_threat_matrix.py`: **최소 동작 스텁**이 들어 있습니다.
-  `../supplychain/scripts/{validate.py,build_supplychain_threat_matrix.py}`를 참고해 열·시트·검증 항목을
-  이식·확장하세요(도메인/프레임워크/필드명만 물리용으로 교체).
+- `validate.py`, `build_physical_threat_matrix.py`: **3단계 완료(2026-10-06)** — 아이덴티티·공급망 기준으로 이식했습니다.
+  빌드는 워크북 15개 시트·CSV를 만들고, 빌드 전에 검증기를 자동 실행합니다(`--data-only`: 문구·시나리오 검사 생략, v1용).
 
 ## 7. 산출물·버전
 
@@ -107,7 +106,7 @@
 - [x] 도메인·Lv2·Lv3 확정(ID 대장) — taxonomy.yaml (1단계, 45행)
 - [x] 프레임워크·참고 문헌 카탈로그 — frameworks.yaml, reference/ 추출본(ATT&CK·ITKB·NIST·연계 ID) (1단계)
 - [x] 공개 출처로 사고 DB 구축(출처 URL 필수) — incidents.yaml (2단계, 100건·국내 25건)
-- [ ] build/validate 를 supplychain 기준으로 이식
+- [x] build/validate 를 supplychain·아이덴티티 기준으로 이식 — 워크북 15개 시트·CSV (3단계, v1 검증 오류·경고 0)
 - [ ] 도메인별 관점 문구 작성 + 검증 통과
 - [ ] 시나리오·방법론·README·변경이력
 - [ ] 커밋·푸시(지정 브랜치), 필요 시에만 PR
