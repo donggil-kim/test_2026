@@ -1,0 +1,1457 @@
+# 통합 소프트웨어 공급망 보안위협 매트릭스 — 분류 체계(원천)
+#
+# 구조: Lv1 도메인(공급망 단계·공격면) → Lv2 위협분류(SCT-<도메인>-NN) → Lv3 세부위협(SCT-<도메인>-NN.m)
+#       하위 세부위협이 하나뿐인 위협분류는 Lv2 = Lv3 (ID에 '.m' 없음)
+# ID는 고정 — 항목을 없애도 번호를 다시 매기거나 재사용하지 않음(폐지 시 retired 표시)
+#
+# Lv3 필드
+#   name / en       세부위협명(국문) / 영문명
+#   stage           주 공격 단계 — ATT&CK v19.2 전술 국문명(통합 매트릭스 '공격 단계'와 같은 용어)
+#   assets          대상 자산(아래 assets 어휘)
+#   profiles        적용 프로파일 — 오픈소스 · 상용 SW · CI/CD · AI · 서드파티
+#   attack          ATT&CK v19.2 기법 ID
+#   slsa            SLSA v1.2 위협(frameworks.yaml slsa 키)
+#   cicd / oss      OWASP Top 10 CI/CD Security Risks / OWASP Top 10 OSS Risks
+#   sap             SAP Risk Explorer 공격 벡터(AV) — 세부 AV만(최상위 AV-000·AV-001은 쓰지 않음)
+#   cncf            CNCF 침해 유형
+#   s2c2f / ssdf / scorecard / nist   대응 기준(소비자 요구사항 / 생산자 실천과제 / 점검 항목 / NIST 800-53)
+#   cloud / ai / ot 다른 매트릭스 연계 — 통합 AI·클라우드 매트릭스 v1(CL-·AI-), 통합 OT 매트릭스(OTC-)
+#   severity        심각도(상·중·하) — 기준은 assessment.severity_rule
+#   severity_why    심각도 근거(대표 사례 포함, 사례는 사고 DB에 있어야 함)
+
+assessment:
+  severity_rule:
+    상: 공격이 성공하면 그 자체로 다수 다운스트림에 악성 코드가 정상 신뢰 경로(게시·서명·업데이트·빌드)로 전달되거나, 공급망 인프라(소스·빌드·서명·배포·CI/CD·비밀)를 장악하거나, 대규모 금전·파괴 피해가 나는 위협
+    중: 성공에 사용자의 선택·실수가 필요하거나 피해가 개별 개발자·조직 범위에 머무는 위협, 또는 단독으로는 피해가 없고 다른 위협의 피해를 키우는 조건·은닉 기법
+    하: 영향이 제한적·일시적이고 복구가 쉬운 위협
+  likelihood_rule: 상 = 실제 사고 2건 이상(AI 매트릭스 v3.2·클라우드 v5·OT와 같은 수식), 중 = 실제 사고 1건 또는 ATT&CK 사례·KEV(공급망)·실증·공격 분류 문헌 중 하나 이상, 하 = 근거 없음
+
+assets:
+  - 개발자 단말
+  - IDE·확장
+  - AI 코딩 도구·에이전트
+  - 소스 저장소
+  - 패키지 레지스트리
+  - 확장 마켓플레이스
+  - AI 모델 허브
+  - CI/CD 파이프라인
+  - 빌드 시스템·러너
+  - 비밀·토큰
+  - 서명 키·인증서
+  - 배포·업데이트 서버
+  - CDN·웹 스크립트
+  - MSP·원격 관리 도구
+  - SaaS 연동
+  - 운영 환경
+
+profiles:
+  오픈소스: 오픈소스 패키지·레지스트리·확장 생태계(npm·PyPI·RubyGems·crates.io·Go·Maven·NuGet·VS Code·Open VSX 등)
+  상용 SW: 상용 소프트웨어 공급자의 빌드·서명·배포·업데이트
+  CI/CD: 파이프라인·저장소·러너·비밀 등 DevOps 기반
+  AI: AI 라이브러리·모델 허브·MCP 서버·에이전트 스킬·AI 코딩 도구
+  서드파티: SaaS 연동·MSP·원격 관리·CDN 스크립트 등 외부 서비스 신뢰 경로
+
+domains:
+  - code: DE
+    ko: 개발 환경
+    en: Developer Environment
+    desc: 개발자 단말·IDE 확장·개발 도구 체인·AI 코딩 도구처럼 코드가 만들어지는 자리를 노리는 위협. 개발자 권한이 소스·빌드·게시로 이어지는 출발점
+    lv2:
+      - id: SCT-DE-01
+        name: 개발자 단말·계정 침해
+        lv3:
+          - id: SCT-DE-01.1
+            name: 개발자 단말 침해와 세션·자격증명 탈취
+            en: Developer workstation compromise and session/credential theft
+            stage: [자격증명 접근, 초기 침투]
+            assets: [개발자 단말, 소스 저장소, 비밀·토큰]
+            profiles: [오픈소스, 상용 SW, CI/CD]
+            attack: [T1539, T1555, T1552.001, T1552.004]
+            slsa: [E]
+            cicd: [CICD-SEC-2, CICD-SEC-6]
+            oss: [OSS-RISK-2]
+            sap: [AV-600, AV-700, AV-703]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5]
+            scorecard: []
+            nist: [SC-23, IA-2(1), SI-4, AC-6(5)]
+            cloud: [CL-CA-05, CL-IA-07]
+            ai: [AI-07-01]
+            ot: []
+            severity: 상
+            severity_why: 개발자 권한(SSO 세션·SSH 키·게시 토큰)이 소스·빌드·게시로 이어져 피해가 조직 전체와 고객으로 확대됨 — CircleCI 2023(고객 비밀 전량 교체 권고), GitHub 2026(직원 단말 경유 내부 저장소 유출)
+          - id: SCT-DE-01.2
+            name: 개발자 대상 사회공학(가짜 채용·코딩 과제·협업 제안)
+            en: Developer-targeted social engineering (fake jobs, coding tests, collaboration lures)
+            stage: [초기 침투, 실행]
+            assets: [개발자 단말]
+            profiles: [오픈소스, 상용 SW, AI]
+            attack: [T1566.003, T1204.002, T1204.005]
+            slsa: []
+            cicd: []
+            oss: []
+            sap: [AV-606, AV-703]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5]
+            scorecard: []
+            nist: [AT-2(3), SI-3, SC-44]
+            cloud: [CL-IA-03]
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 개별 개발자 감염에서 시작해 후속 침투(SCT-DE-01.1)를 거쳐야 조직·고객 피해로 이어짐 — 다만 Bybit 2025처럼 감염 단말이 고가치 시스템 접근권을 가지면 피해가 급격히 커짐
+      - id: SCT-DE-02
+        name: 개발 도구·확장 오염
+        lv3:
+          - id: SCT-DE-02.1
+            name: IDE·에디터 확장 악용(악성·탈취 확장)
+            en: Malicious or hijacked IDE/editor extensions
+            stage: [지속성, 초기 침투]
+            assets: [IDE·확장, 확장 마켓플레이스, 개발자 단말]
+            profiles: [오픈소스, CI/CD, AI]
+            attack: [T1176.002, T1195.001]
+            slsa: [DEP]
+            cicd: [CICD-SEC-8]
+            oss: [OSS-RISK-2, OSS-RISK-3]
+            sap: [AV-703]
+            cncf: [Dev Tooling]
+            s2c2f: [ENF-2, SCA-4]
+            ssdf: [PO.3, PO.5]
+            scorecard: []
+            nist: [CM-11, CM-7(5), SI-3]
+            cloud: []
+            ai: [AI-09-05]
+            ot: []
+            severity: 상
+            severity_why: 확장은 개발자 권한으로 작업공간·비밀에 접근하고 자동 업데이트로 설치 기반 전체에 동시 전달됨 — Nx Console 2026(설치 220만 회 이상, 수십 분 노출로 GitHub 내부 저장소 유출까지 이어짐)
+          - id: SCT-DE-02.2
+            name: 변조 개발 도구·툴체인 사용(컴파일러·SDK)
+            en: Tampered development toolchain (compiler, SDK, build tool)
+            stage: [초기 침투]
+            assets: [개발자 단말, 빌드 시스템·러너]
+            profiles: [상용 SW, 오픈소스]
+            attack: [T1195.001]
+            slsa: [DEP]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-2]
+            sap: [AV-703]
+            cncf: [Dev Tooling]
+            s2c2f: [AUD-3, REB-1]
+            ssdf: [PO.3, PW.6]
+            scorecard: []
+            nist: [SA-15, SI-7, SR-4]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 변조된 컴파일러·SDK로 만든 모든 산출물이 정상 서명·스토어 심사를 거쳐 최종 사용자에게 전달됨 — XcodeGhost 2015(수천 개 iOS 앱 감염)
+          - id: SCT-DE-02.3
+            name: 프로젝트 파일 감염형 악성코드(빌드 시 전파)
+            en: Project-infecting malware that spreads through build files
+            stage: [실행, 지속성]
+            assets: [개발자 단말, 소스 저장소]
+            profiles: [오픈소스, 상용 SW]
+            attack: [T1195.001, T1554]
+            slsa: []
+            cicd: []
+            oss: [OSS-RISK-2]
+            sap: [AV-703, AV-401]
+            cncf: [Dev Tooling]
+            s2c2f: [SCA-4]
+            ssdf: [PO.5, PS.1]
+            scorecard: [Binary-Artifacts]
+            nist: [SI-3, SI-7]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 감염된 프로젝트를 빌드하는 개발자에게 퍼지지만 확산이 느리고 공개 저장소 감시로 드러나는 경향 — Octopus Scanner 2020(NetBeans 프로젝트 감염 저장소 26개)
+      - id: SCT-DE-03
+        name: AI 코딩 도구·에이전트 생태계 오염
+        lv3:
+          - id: SCT-DE-03.1
+            name: AI 코딩 도구·규칙 파일 변조(숨은 지시 주입)
+            en: Tampered AI coding assistants and rule/config files (hidden instructions)
+            stage: [실행, 은닉]
+            assets: [AI 코딩 도구·에이전트, IDE·확장, 소스 저장소]
+            profiles: [AI, 오픈소스, CI/CD]
+            attack: [T1176.002, T1195.001]
+            slsa: [B3]
+            cicd: [CICD-SEC-8]
+            oss: [OSS-RISK-2]
+            sap: [AV-305, AV-703]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.3, PW.7]
+            scorecard: []
+            nist: [CM-7(5), SI-7, AC-6]
+            cloud: []
+            ai: [AI-06-09, AI-02-03, AI-06-02]
+            ot: []
+            severity: 상
+            severity_why: AI 코딩 도구는 개발자 권한으로 명령 실행·코드 생성·클라우드 CLI 호출을 자율 수행해, 숨은 지시 하나로 로컬·클라우드 자원 삭제나 백도어 코드 생성이 가능함 — Amazon Q 확장 2025(삭제 지시 주입, 형식 오류로 미작동)
+          - id: SCT-DE-03.2
+            name: MCP 서버·에이전트 스킬 오염·사칭
+            en: Malicious or impersonated MCP servers and agent skills
+            stage: [초기 침투, 수집]
+            assets: [AI 코딩 도구·에이전트, 패키지 레지스트리]
+            profiles: [AI, 오픈소스, 서드파티]
+            attack: [T1195.001, T1204.005]
+            slsa: [H]
+            cicd: [CICD-SEC-8]
+            oss: [OSS-RISK-3, OSS-RISK-2]
+            sap: [AV-100, AV-206]
+            cncf: [Negligence]
+            s2c2f: [ENF-2, SCA-4, AUD-1]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [CM-7(5), SA-9, SR-6]
+            cloud: []
+            ai: [AI-08-05, AI-08-02]
+            ot: []
+            severity: 상
+            severity_why: 에이전트 도구는 메일·파일·자격증명에 위임 권한으로 접근해, 악성 서버·스킬 하나가 연결된 데이터를 통째로 반출함 — postmark-mcp 2025(발송 메일 전량 숨은 참조), ClawHub 2026(스킬 수백 개로 정보탈취 악성코드 유포)
+
+  - code: SR
+    ko: 소스 저장소
+    en: Source
+    desc: 코드 기여·리뷰·저장소 플랫폼을 노려 정상 소스에 악성 변경을 넣는 위협(SLSA 소스 위협 A~C). 반영된 변경은 이후 모든 빌드·릴리스에 실림
+    lv2:
+      - id: SCT-SR-01
+        name: 악의적 코드 기여·메인테이너 악용
+        lv3:
+          - id: SCT-SR-01.1
+            name: 위장 기여로 취약점·백도어 삽입
+            en: Hypocrite contributions introducing vulnerabilities or backdoors
+            stage: [초기 침투]
+            assets: [소스 저장소]
+            profiles: [오픈소스, AI]
+            attack: [T1195.001]
+            slsa: [B3]
+            cicd: [CICD-SEC-1]
+            oss: [OSS-RISK-2]
+            sap: [AV-301, AV-304]
+            cncf: [Source Code]
+            s2c2f: [SCA-5]
+            ssdf: [PW.7, PS.1]
+            scorecard: [Code-Review, Branch-Protection, SAST]
+            nist: [SA-11, CM-3]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 리뷰를 통과해 반영되면 정상 릴리스로 모든 다운스트림에 전달됨 — Amazon Q 2025(외부 기여로 악성 지시 반영 후 정식 배포)
+          - id: SCT-SR-01.2
+            name: 리뷰 무력화 은닉 기법(보이지 않는 문자·호모글리프·생성 코드·테스트 파일)
+            en: Review-evasion concealment (invisible Unicode, homoglyphs, generated or test files)
+            stage: [은닉]
+            assets: [소스 저장소]
+            profiles: [오픈소스, AI]
+            attack: [T1027, T1036]
+            slsa: [B2, B3]
+            cicd: []
+            oss: [OSS-RISK-2]
+            sap: [AV-305, AV-306, AV-307, AV-308, AV-309]
+            cncf: [Source Code]
+            s2c2f: [SCA-5]
+            ssdf: [PW.7]
+            scorecard: [Binary-Artifacts, Code-Review]
+            nist: [SA-11, SI-7]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고 악성 변경이 리뷰를 통과하게 만드는 은닉 기법 — 성공하면 SCT-SR-01.1·SCT-SR-01.3의 피해를 키움(xz 2024 테스트 파일 은닉, GlassWorm 2025 보이지 않는 문자)
+          - id: SCT-SR-01.3
+            name: 메인테이너 권한 획득(장기 신뢰 구축·인계·매수)
+            en: Gaining maintainer rights via long-con trust building, handover, or bribery
+            stage: [초기 침투, 지속성]
+            assets: [소스 저장소, 패키지 레지스트리]
+            profiles: [오픈소스]
+            attack: [T1195.001, T1684]
+            slsa: [A]
+            cicd: []
+            oss: [OSS-RISK-2, OSS-RISK-4]
+            sap: [AV-800, AV-601]
+            cncf: [Malicious Maintainer]
+            s2c2f: [SCA-5, REB-1, ING-4]
+            ssdf: [PW.4, PS.1]
+            scorecard: [Contributors, Maintained, Code-Review]
+            nist: [SR-6, PS-7, SA-11]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 메인테이너 권한으로 반영·릴리스한 변경은 정상 기여로 신뢰되어 배포판·다운스트림 전체로 퍼짐 — xz 2024(SSH 인증 백도어가 배포판 개발 버전까지 유입), event-stream 2018
+          - id: SCT-SR-01.4
+            name: 메인테이너의 의도적 악성화(프로테스트웨어·사보타주)
+            en: Maintainer turning malicious (protestware, sabotage)
+            stage: [영향]
+            assets: [소스 저장소, 패키지 레지스트리]
+            profiles: [오픈소스]
+            attack: [T1195.001, T1485]
+            slsa: [A]
+            cicd: []
+            oss: [OSS-RISK-2]
+            sap: [AV-801]
+            cncf: [Malicious Maintainer]
+            s2c2f: [ING-3, SCA-4, ENF-1]
+            ssdf: [PW.4]
+            scorecard: [Pinned-Dependencies]
+            nist: [SR-6, CM-3]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 동기가 항의·과시라 공개적으로 드러나 수 시간~수일 안에 철회되는 경향이며, 피해는 주로 가용성(무한 루프)·특정 지역 파일 훼손에 머묾 — colors·faker·node-ipc 2022
+      - id: SCT-SR-02
+        name: 변경 통제 우회
+        lv3:
+          - id: SCT-SR-02.1
+            name: 리뷰·브랜치 보호 우회와 직접 반영
+            en: Bypassing review and branch protection to land changes directly
+            stage: [초기 침투, 방어 무력화]
+            assets: [소스 저장소, CI/CD 파이프라인]
+            profiles: [오픈소스, CI/CD, 상용 SW]
+            attack: [T1195.001, T1078]
+            slsa: [B1]
+            cicd: [CICD-SEC-1, CICD-SEC-2]
+            oss: [OSS-RISK-9]
+            sap: [AV-302, AV-303]
+            cncf: [Source Code]
+            s2c2f: []
+            ssdf: [PS.1, PO.5]
+            scorecard: [Branch-Protection, Code-Review]
+            nist: [CM-5, CM-3, AC-6]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 보호 브랜치에 리뷰 없이 반영된 변경은 다음 빌드·릴리스에 그대로 실려 다운스트림에 전달됨 — GhostAction 2025·Megalodon 2026(탈취 계정으로 워크플로 직접 커밋)
+          - id: SCT-SR-02.2
+            name: 태그 재지정·커밋 이력 조작·메타데이터 위조
+            en: Retagging, history rewriting, and forged commit metadata
+            stage: [방어 무력화, 은닉]
+            assets: [소스 저장소]
+            profiles: [오픈소스, CI/CD]
+            attack: [T1195.001, T1036]
+            slsa: [B2, B4]
+            cicd: [CICD-SEC-1, CICD-SEC-9]
+            oss: [OSS-RISK-9]
+            sap: [AV-303]
+            cncf: [Source Code]
+            s2c2f: [ENF-1, AUD-3]
+            ssdf: [PS.1, PS.3]
+            scorecard: [Pinned-Dependencies, Branch-Protection]
+            nist: [CM-3, SI-7, SR-4]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 버전 태그를 악성 커밋으로 옮기면 태그를 참조하는 모든 소비자가 다음 실행에서 곧바로 악성 코드를 받음 — tj-actions 2025(약 2만 3천 개 저장소), Trivy 2026(태그 77개 중 76개 교체)
+      - id: SCT-SR-03
+        name: 소스 관리(SCM) 서버·플랫폼 침해
+        lv3:
+          - id: SCT-SR-03
+            name: 소스 관리(SCM) 서버·플랫폼 침해
+            en: Source code management server/platform compromise
+            stage: [초기 침투, 지속성]
+            assets: [소스 저장소]
+            profiles: [오픈소스, 상용 SW, CI/CD]
+            attack: [T1190, T1195.002, T1213.003]
+            slsa: [C]
+            cicd: [CICD-SEC-7, CICD-SEC-2]
+            oss: [OSS-RISK-2]
+            sap: [AV-303, AV-700, AV-701, AV-702]
+            cncf: [Source Code, Dev Tooling]
+            s2c2f: [ING-4]
+            ssdf: [PO.5, PS.1]
+            scorecard: [Webhooks]
+            nist: [SI-2, RA-5, AU-6, AC-6(5)]
+            cloud: [CL-IA-01, CL-CO-03]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 플랫폼을 장악하면 그 위의 모든 저장소·브랜치 보호·리뷰 기록을 조작할 수 있음 — PHP git 서버 2021(개발자 명의 위조 커밋), 자체 호스팅 GitLab·Bitbucket·Gogs 취약점 KEV 등재
+
+  - code: DP
+    ko: 의존성
+    en: Dependencies
+    desc: 서드파티 패키지·모델을 고르고 해석·설치하는 과정을 노리는 위협(SLSA H·의존성 위협). 이름 혼동·해석 경로·설치 시점 실행·취약 구성요소·가변 참조
+    lv2:
+      - id: SCT-DP-01
+        name: 이름 혼동 패키지
+        lv3:
+          - id: SCT-DP-01.1
+            name: 타이포스쿼팅·콤보스쿼팅
+            en: Typosquatting and combosquatting
+            stage: [초기 침투]
+            assets: [패키지 레지스트리, 개발자 단말, CI/CD 파이프라인]
+            profiles: [오픈소스, AI]
+            attack: [T1195.001, T1036.005, T1204.005]
+            slsa: [H]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-3]
+            sap: [AV-201, AV-202, AV-203, AV-204, AV-205, AV-207]
+            cncf: [Negligence]
+            s2c2f: [ENF-2, SCA-4, ING-3, ING-1]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [CM-7(5), SI-3, SR-11]
+            cloud: [CL-IA-05]
+            ai: [AI-08-02]
+            ot: []
+            severity: 중
+            severity_why: 사용자가 이름을 잘못 입력·선택해야 설치되며 피해가 설치한 개발자·빌드 환경 단위에 머묾
+          - id: SCT-DP-01.2
+            name: 브랜드·공식 프로젝트 사칭과 저장소 위장
+            en: Brandjacking, official-project impersonation, and repository confusion
+            stage: [초기 침투]
+            assets: [패키지 레지스트리, 소스 저장소, 확장 마켓플레이스]
+            profiles: [오픈소스, AI]
+            attack: [T1195.001, T1036.005, T1204.005]
+            slsa: [H]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-3]
+            sap: [AV-206, AV-208]
+            cncf: [Negligence]
+            s2c2f: [ENF-2, SCA-4, AUD-1]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [SR-11, SR-4, CM-7(5)]
+            cloud: []
+            ai: [AI-08-05, AI-08-02]
+            ot: []
+            severity: 중
+            severity_why: 공식 조직·SDK·도구를 흉내 내 신뢰를 얻지만 설치는 여전히 사용자 선택에 의존함 — 고권한 도구(MCP 서버 등)를 사칭하면 SCT-DE-03.2처럼 피해가 커짐
+          - id: SCT-DP-01.3
+            name: AI 패키지 환각 악용(슬롭스쿼팅)
+            en: AI package hallucination abuse (slopsquatting)
+            stage: [초기 침투, 자원 개발]
+            assets: [AI 코딩 도구·에이전트, 패키지 레지스트리]
+            profiles: [AI, 오픈소스]
+            attack: [T1195.001, T1204.005]
+            slsa: [H]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-3]
+            sap: [AV-209]
+            cncf: [Negligence]
+            s2c2f: [ENF-2, SCA-4]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [CM-7(5), SR-11]
+            cloud: []
+            ai: [AI-08-02]
+            ot: []
+            severity: 중
+            severity_why: AI가 존재하지 않는 패키지명을 반복 제안하면 공격자가 그 이름을 선점해 기다림 — 에이전트가 자동 설치하면 사람 확인 없이 실행되지만, 공개 근거는 연구·실험 위주
+      - id: SCT-DP-02
+        name: 의존성 해석·이름 재점유 악용
+        lv3:
+          - id: SCT-DP-02.1
+            name: 의존성 혼동(내부 패키지명 선점)
+            en: Dependency confusion (public squatting of internal package names)
+            stage: [초기 침투]
+            assets: [패키지 레지스트리, CI/CD 파이프라인, 빌드 시스템·러너]
+            profiles: [오픈소스, 상용 SW, CI/CD]
+            attack: [T1195.001]
+            slsa: [H]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-3]
+            sap: [AV-502, AV-509]
+            cncf: [Negligence]
+            s2c2f: [ENF-1, ENF-2, ING-2]
+            ssdf: [PO.5, PW.4]
+            scorecard: []
+            nist: [CM-7(5), SR-11, SC-7]
+            cloud: [CL-IA-05]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 패키지 관리자가 공개 레지스트리의 같은 이름을 우선 해석하면 사람의 실수 없이 내부 빌드·개발 환경에서 자동 실행됨 — 2021 연구(35개 이상 기업 내부에서 실행 확인), PyTorch 2022(야간 빌드 의존성 오염)
+          - id: SCT-DP-02.2
+            name: 버려진 이름·만료 도메인·저장소 재점유(리포재킹·끊어진 참조)
+            en: Re-registering abandoned names, expired domains, repositories, or buckets
+            stage: [자원 개발, 초기 침투]
+            assets: [패키지 레지스트리, 소스 저장소, 배포·업데이트 서버]
+            profiles: [오픈소스]
+            attack: [T1584.001, T1195.001]
+            slsa: [H, AVL]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-4, OSS-RISK-9]
+            sap: [AV-501, AV-608]
+            cncf: [Negligence]
+            s2c2f: [ING-2, ENF-1, SCA-3]
+            ssdf: [PW.4]
+            scorecard: [Maintained, Pinned-Dependencies]
+            nist: [SA-22, SR-4, CM-8]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 삭제·이름 변경·만료된 이름이나 버킷을 다시 등록해 기존 참조를 가로채는 방식으로, 주로 방치·저사용 구성요소에서 성립해 피해 범위가 제한적 — bignum 2023(방치된 S3 버킷)
+      - id: SCT-DP-03
+        name: 악성 패키지 유입
+        lv3:
+          - id: SCT-DP-03.1
+            name: 독자 악성 패키지 게시·유인(가짜 유틸리티·SDK)
+            en: Standalone malicious packages lured to developers
+            stage: [초기 침투, 실행]
+            assets: [패키지 레지스트리, 개발자 단말]
+            profiles: [오픈소스, AI]
+            attack: [T1195.001, T1608.001, T1204.005]
+            slsa: [DEP]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-3]
+            sap: [AV-100]
+            cncf: [Negligence]
+            s2c2f: [SCA-4, ING-3, ENF-2, ING-1]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [SI-3, CM-7(5), SC-44]
+            cloud: []
+            ai: [AI-08-02]
+            ot: []
+            severity: 중
+            severity_why: 기존 신뢰 없이 새 이름으로 유인하므로 설치 규모가 작고 레지스트리 감시로 수일 안에 제거되는 경우가 많음 — OSV 악성 패키지 보고(약 23.9만 건)의 대부분이 이 유형
+          - id: SCT-DP-03.2
+            name: 설치·로드 시점 자동 실행(설치 스크립트·.pth·빌드 훅)
+            en: Install/load-time code execution (lifecycle scripts, .pth files, build hooks)
+            stage: [실행]
+            assets: [개발자 단말, CI/CD 파이프라인, 빌드 시스템·러너]
+            profiles: [오픈소스, CI/CD, AI]
+            attack: [T1546.016, T1059.007, T1059.006, T1204.005]
+            slsa: [DEP]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-2]
+            sap: [AV-100, AV-504]
+            cncf: []
+            s2c2f: [ENF-1, SCA-4]
+            ssdf: [PO.5, PW.4]
+            scorecard: []
+            nist: [CM-7(5), SC-39, SC-44]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고, 악성·침해 패키지를 설치하는 순간 사용·검토 전에 개발자·CI 권한으로 실행되게 만드는 조건 — Shai-Hulud 2025·LiteLLM 2026처럼 확산 속도를 결정함
+      - id: SCT-DP-04
+        name: 알려진 취약점이 있는 구성요소 사용(구버전·미추적 의존성 포함)
+        lv3:
+          - id: SCT-DP-04
+            name: 알려진 취약점이 있는 구성요소 사용(구버전·미추적 의존성 포함)
+            en: Using components with known vulnerabilities (outdated or untracked)
+            stage: [초기 침투]
+            assets: [운영 환경, 패키지 레지스트리]
+            profiles: [오픈소스, 상용 SW]
+            attack: [T1190, T1195.001]
+            slsa: [DEP]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-1, OSS-RISK-5, OSS-RISK-6, OSS-RISK-4]
+            sap: []
+            cncf: [Negligence]
+            s2c2f: [SCA-1, SCA-3, INV-1, INV-2, UPD-1, UPD-2, UPD-3, REB-3, FIX-1]
+            ssdf: [RV.1, RV.2, PW.4]
+            scorecard: [Vulnerabilities, Dependency-Update-Tool, SBOM]
+            nist: [RA-5, SI-2, CM-8, SA-22]
+            cloud: [CL-IA-01]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 널리 내장된 라이브러리 취약점은 그 구성요소를 쓰는 모든 제품·서비스를 동시에 공격 대상으로 만듦 — Log4Shell 2021, 구버전 xmlsec을 내장한 ManageEngine 2023(KEV)
+      - id: SCT-DP-05
+        name: 가변 참조·버전 미고정으로 악성 변경 자동 수용
+        lv3:
+          - id: SCT-DP-05
+            name: 가변 참조·버전 미고정으로 악성 변경 자동 수용
+            en: Mutable references and unpinned versions auto-ingesting malicious changes
+            stage: [초기 침투]
+            assets: [CI/CD 파이프라인, 패키지 레지스트리, CDN·웹 스크립트]
+            profiles: [오픈소스, CI/CD, 서드파티]
+            attack: [T1195.001]
+            slsa: [H, I]
+            cicd: [CICD-SEC-3, CICD-SEC-8]
+            oss: [OSS-RISK-9]
+            sap: []
+            cncf: [Negligence]
+            s2c2f: [ENF-1, AUD-3]
+            ssdf: [PO.3, PW.4]
+            scorecard: [Pinned-Dependencies, Dependency-Update-Tool]
+            nist: [CM-3, SI-7, SR-4]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고, 상류 침해가 일어났을 때 버전 범위·변경 가능한 태그·최신 CDN 경로를 쓰는 소비자에게 악성 버전을 즉시 자동 배포하는 조건 — tj-actions 2025·Lottie Player 2024의 확산 경로
+      - id: SCT-DP-06
+        name: AI 모델·데이터셋 저장소의 악성 모델 유입
+        lv3:
+          - id: SCT-DP-06
+            name: AI 모델·데이터셋 저장소의 악성 모델 유입
+            en: Malicious models and datasets from AI model hubs
+            stage: [실행, 초기 침투]
+            assets: [AI 모델 허브, 개발자 단말, 운영 환경]
+            profiles: [AI, 오픈소스]
+            attack: [T1195.001, T1204.005]
+            slsa: [DEP]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-2, OSS-RISK-3]
+            sap: [AV-100]
+            cncf: []
+            s2c2f: [SCA-4, AUD-1, ENF-2]
+            ssdf: [PW.4]
+            scorecard: []
+            nist: [SI-3, SC-39, SR-4]
+            cloud: []
+            ai: [AI-08-01, AI-06-05]
+            ot: []
+            severity: 중
+            severity_why: 직렬화(pickle) 모델은 불러오는 순간 코드가 실행되지만 사용자가 해당 모델을 골라야 하며, 공개 사례는 실증·개념 증명 위주(악성 패키지 SCT-DP-03.1과 같은 수준) — AI 매트릭스 AI-08-01과 등급 기준이 다름에 유의
+
+  - code: BD
+    ko: 빌드·CI/CD
+    en: Build & CI/CD
+    desc: 파이프라인 정의·실행·러너·캐시·CI/CD 서버와 서드파티 액션을 노리는 위협(SLSA D·E, OWASP CI/CD). 깨끗한 소스에서 오염된 산출물이 나오게 만듦
+    lv2:
+      - id: SCT-BD-01
+        name: 오염된 파이프라인 실행(PPE)
+        lv3:
+          - id: SCT-BD-01.1
+            name: 외부 기여(PR)로 파이프라인 코드 실행(pull_request_target·스크립트 주입)
+            en: Pipeline code execution via external contributions (pwn requests, script injection)
+            stage: [실행]
+            assets: [CI/CD 파이프라인, 비밀·토큰]
+            profiles: [오픈소스, CI/CD, AI]
+            attack: [T1677]
+            slsa: [D, E]
+            cicd: [CICD-SEC-4, CICD-SEC-5]
+            oss: [OSS-RISK-2]
+            sap: [AV-401]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5, PS.1]
+            scorecard: [Dangerous-Workflow, Token-Permissions]
+            nist: [AC-6, CM-7(5), SC-39]
+            cloud: [CL-EX-04]
+            ai: [AI-08-03]
+            ot: []
+            severity: 상
+            severity_why: 외부인이 PR 하나로 신뢰된 파이프라인에서 코드를 실행해 게시 토큰·OIDC 자격을 빼내고 정상 게시 주체로 악성 버전을 배포할 수 있음 — Ultralytics 2024, Nx s1ngularity 2025, TanStack 2026
+          - id: SCT-BD-01.2
+            name: 저장소 쓰기 권한으로 워크플로·빌드 스크립트 변조
+            en: Modifying workflows and build scripts with repository write access
+            stage: [실행, 지속성]
+            assets: [CI/CD 파이프라인, 소스 저장소, 비밀·토큰]
+            profiles: [오픈소스, CI/CD]
+            attack: [T1677]
+            slsa: [D]
+            cicd: [CICD-SEC-4, CICD-SEC-1]
+            oss: [OSS-RISK-2]
+            sap: [AV-402]
+            cncf: [Source Code]
+            s2c2f: []
+            ssdf: [PS.1, PO.5]
+            scorecard: [Branch-Protection, Dangerous-Workflow, Token-Permissions]
+            nist: [CM-5, CM-3, AC-6]
+            cloud: [CL-EX-04]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 워크플로를 바꾸면 저장소에 연결된 모든 비밀과 배포 권한을 그대로 쓸 수 있고, 자동화 계정 커밋으로 위장해 대량 저장소에 동시 적용됨 — GhostAction 2025(비밀 3,325건), Megalodon 2026(저장소 5,561개)
+      - id: SCT-BD-02
+        name: 빌드 시스템·환경 침해
+        lv3:
+          - id: SCT-BD-02.1
+            name: 빌드 서버 침해로 산출물 변조(빌드 주입)
+            en: Build server compromise and build-time injection
+            stage: [초기 침투, 지속성]
+            assets: [빌드 시스템·러너, 서명 키·인증서]
+            profiles: [상용 SW, 오픈소스]
+            attack: [T1195.002, T1554]
+            slsa: [E]
+            cicd: [CICD-SEC-7]
+            oss: [OSS-RISK-2]
+            sap: [AV-403, AV-700, AV-701, AV-702]
+            cncf: [Publishing Infrastructure, Attack Chaining]
+            s2c2f: [REB-1, AUD-1]
+            ssdf: [PO.5, PS.1, PW.6]
+            scorecard: []
+            nist: [SA-10(1), SI-7, SR-4, SR-9]
+            cloud: []
+            ai: []
+            ot: [OTC-IA-07]
+            severity: 상
+            severity_why: 소스는 깨끗한데 빌드 단계에서 주입되어 정상 서명·업데이트로 전 고객에 전달되고 소스 리뷰로는 발견되지 않음 — SolarWinds 2020(고객 약 1만 8천 곳이 악성 업데이트 설치), 3CX 2023
+          - id: SCT-BD-02.2
+            name: 빌드 캐시·공유 자원 오염
+            en: Build cache and shared resource poisoning
+            stage: [지속성, 실행]
+            assets: [빌드 시스템·러너, CI/CD 파이프라인]
+            profiles: [오픈소스, CI/CD]
+            attack: [T1677]
+            slsa: [E]
+            cicd: [CICD-SEC-4, CICD-SEC-5]
+            oss: [OSS-RISK-2]
+            sap: [AV-401]
+            cncf: [Dev Tooling]
+            s2c2f: [REB-1]
+            ssdf: [PO.5, PW.6]
+            scorecard: [Dangerous-Workflow]
+            nist: [SC-39, SI-7, CM-7(5)]
+            cloud: []
+            ai: [AI-08-03]
+            ot: []
+            severity: 상
+            severity_why: 권한이 낮은 작업이 오염시킨 캐시를 권한이 높은 릴리스 작업이 복원해 게시 산출물에 악성 코드가 실림 — Ultralytics 2024, TanStack 2026
+          - id: SCT-BD-02.3
+            name: 자체 호스팅 러너·빌드 이미지 장악
+            en: Self-hosted runner and build image takeover
+            stage: [지속성, 권한 상승]
+            assets: [빌드 시스템·러너]
+            profiles: [CI/CD, 오픈소스, AI]
+            attack: [T1677, T1525]
+            slsa: [E]
+            cicd: [CICD-SEC-5, CICD-SEC-7]
+            oss: []
+            sap: [AV-401, AV-403]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5]
+            scorecard: [Dangerous-Workflow]
+            nist: [SC-39, CM-7(5), SI-4]
+            cloud: [CL-EX-05]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 계속 살아 있는 러너를 장악하면 이후 모든 빌드·릴리스 작업과 그 비밀에 접근함 — PyTorch 2024 연구(포크 PR로 릴리스 파이프라인 장악 가능성 시연), Shai-Hulud 2차 2025(감염 단말을 러너로 등록해 백도어로 사용)
+      - id: SCT-BD-03
+        name: CI/CD 시스템·서비스 침해
+        lv3:
+          - id: SCT-BD-03.1
+            name: CI/CD 서버 취약점·설정 미흡 악용
+            en: Exploiting CI/CD server vulnerabilities and misconfigurations
+            stage: [초기 침투]
+            assets: [CI/CD 파이프라인, 빌드 시스템·러너]
+            profiles: [CI/CD, 상용 SW]
+            attack: [T1190]
+            slsa: [E]
+            cicd: [CICD-SEC-7, CICD-SEC-10]
+            oss: []
+            sap: [AV-403, AV-700, AV-701, AV-702]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5, RV.2]
+            scorecard: []
+            nist: [SI-2, RA-5, SC-7, AU-12]
+            cloud: [CL-IA-01]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: CI/CD 서버는 소스·비밀·배포 권한이 모이는 곳이라 장악 시 모든 빌드와 고객 배포 경로에 접근 — TeamCity 2023(러시아 SVR 대규모 악용), Jenkins 2024(인도 결제망 랜섬웨어 경로)
+          - id: SCT-BD-03.2
+            name: CI/CD·개발 SaaS 공급자 침해(고객 비밀 대량 노출)
+            en: CI/CD and developer SaaS provider compromise
+            stage: [초기 침투, 자격증명 접근]
+            assets: [CI/CD 파이프라인, 비밀·토큰, SaaS 연동]
+            profiles: [CI/CD, 서드파티]
+            attack: [T1199, T1552.001]
+            slsa: [E]
+            cicd: [CICD-SEC-8, CICD-SEC-6]
+            oss: []
+            sap: [AV-700]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5, PO.1]
+            scorecard: []
+            nist: [SA-9, SR-6, IA-5]
+            cloud: [CL-IA-06]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 서비스형 CI/CD에 맡긴 모든 고객의 비밀·토큰이 한 번에 노출돼 전 고객이 교체해야 함 — CircleCI 2023, Travis CI 2021
+      - id: SCT-BD-04
+        name: 서드파티 액션·플러그인·빌드 도구 오염
+        lv3:
+          - id: SCT-BD-04
+            name: 서드파티 액션·플러그인·빌드 도구 오염
+            en: Compromised third-party CI actions, plugins, and build tools
+            stage: [초기 침투, 실행]
+            assets: [CI/CD 파이프라인, 비밀·토큰]
+            profiles: [CI/CD, 오픈소스]
+            attack: [T1195.001, T1677]
+            slsa: [DEP]
+            cicd: [CICD-SEC-8, CICD-SEC-3]
+            oss: [OSS-RISK-2, OSS-RISK-9]
+            sap: [AV-504]
+            cncf: [Dev Tooling]
+            s2c2f: [ENF-1, ENF-2, AUD-3]
+            ssdf: [PO.3]
+            scorecard: [Pinned-Dependencies, Token-Permissions]
+            nist: [SA-9, CM-7(5), SR-4]
+            cloud: [CL-IA-05, CL-EX-04]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 파이프라인이 실행하는 서드파티 액션은 그 작업의 비밀 전체에 접근해, 액션 하나의 침해가 이를 쓰는 수만 개 저장소의 비밀 유출로 번짐 — tj-actions 2025, Trivy·KICS 2026(보안 스캐너 액션)
+
+  - code: SC
+    ko: 비밀·자격증명
+    en: Secrets & Credentials
+    desc: 코드·파이프라인의 비밀과 게시 토큰, 개발자·메인테이너 계정을 노리는 위협(OWASP CICD-SEC-2·6). 공급망 침해 대부분의 출발점이자 확산 수단
+    lv2:
+      - id: SCT-SC-01
+        name: 비밀 노출
+        lv3:
+          - id: SCT-SC-01.1
+            name: 코드·이미지·패키지 내 하드코딩 비밀 노출
+            en: Hardcoded secrets exposed in code, images, or packages
+            stage: [자격증명 접근, 정찰]
+            assets: [소스 저장소, 비밀·토큰, 패키지 레지스트리]
+            profiles: [오픈소스, 상용 SW, CI/CD, AI]
+            attack: [T1552.001, T1593.003]
+            slsa: []
+            cicd: [CICD-SEC-6]
+            oss: []
+            sap: [AV-605]
+            cncf: [Negligence]
+            s2c2f: []
+            ssdf: [PS.1, PW.5]
+            scorecard: []
+            nist: [IA-5(7), IA-5, SC-12]
+            cloud: [CL-CA-05]
+            ai: [AI-07-01]
+            ot: []
+            severity: 중
+            severity_why: 피해 규모가 노출된 비밀의 권한에 좌우되고 탐지·폐기로 막을 시간이 있음 — 다만 게시·클라우드 관리자 키가 노출되면 공급망 전체 침해로 이어짐(Toyota 2022, Microsoft 2023)
+          - id: SCT-SC-01.2
+            name: CI/CD 로그·산출물로 비밀 유출
+            en: Secrets leaked via CI/CD logs and build artifacts
+            stage: [자격증명 접근]
+            assets: [CI/CD 파이프라인, 비밀·토큰]
+            profiles: [CI/CD, 오픈소스]
+            attack: [T1552.001]
+            slsa: [E]
+            cicd: [CICD-SEC-6, CICD-SEC-10]
+            oss: []
+            sap: [AV-605]
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PS.1, PO.5]
+            scorecard: [Token-Permissions]
+            nist: [IA-5, SI-4]
+            cloud: [CL-CA-05]
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 공개 저장소의 빌드 로그·아티팩트는 누구나 내려받아 노출 즉시 악용될 수 있으나 피해는 노출된 비밀 범위에 한정됨 — tj-actions 2025(공개 로그에 비밀 출력), ArtiPACKED 2024(아티팩트 속 토큰)
+      - id: SCT-SC-02
+        name: 파이프라인 자격증명 탈취·남용
+        lv3:
+          - id: SCT-SC-02.1
+            name: 러너·빌드 환경의 비밀 수집(환경변수·메모리·메타데이터)
+            en: Harvesting secrets from runners (environment, memory, metadata service)
+            stage: [자격증명 접근]
+            assets: [빌드 시스템·러너, 비밀·토큰, CI/CD 파이프라인]
+            profiles: [CI/CD, 오픈소스, AI]
+            attack: [T1552.001, T1552.005, T1528]
+            slsa: [E]
+            cicd: [CICD-SEC-6, CICD-SEC-5]
+            oss: []
+            sap: []
+            cncf: [Dev Tooling]
+            s2c2f: []
+            ssdf: [PO.5, PS.1]
+            scorecard: [Token-Permissions]
+            nist: [IA-5, AC-6, SC-12]
+            cloud: [CL-CA-05]
+            ai: [AI-07-01]
+            ot: []
+            severity: 상
+            severity_why: 러너에는 클라우드 배포 키·게시 토큰·서명 자격이 모여 있어 한 번 수집으로 운영 환경과 배포 경로를 함께 장악 — Codecov 2021(고객 CI 환경변수 반출), TeamPCP 2026(러너 메모리 덤프)
+          - id: SCT-SC-02.2
+            name: 게시 토큰·OIDC 신뢰 게시 자격 탈취
+            en: Stealing publishing tokens and OIDC trusted-publishing credentials
+            stage: [자격증명 접근]
+            assets: [비밀·토큰, 패키지 레지스트리, CI/CD 파이프라인]
+            profiles: [오픈소스, CI/CD, AI]
+            attack: [T1528, T1550.001]
+            slsa: [E, F]
+            cicd: [CICD-SEC-6, CICD-SEC-2]
+            oss: [OSS-RISK-2]
+            sap: [AV-605]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [AUD-1]
+            ssdf: [PS.2, PO.5]
+            scorecard: [Token-Permissions, Packaging]
+            nist: [IA-5, SC-12, IA-9]
+            cloud: []
+            ai: [AI-08-03]
+            ot: []
+            severity: 상
+            severity_why: 게시 자격을 쥐면 정상 게시 주체로 악성 버전을 올려 다운스트림 전체에 배포하고, 신뢰 게시(OIDC)·출처 증명까지 정상으로 보이게 만듦 — LiteLLM 2026(탈취한 PyPI 토큰), TanStack 2026(러너 메모리의 OIDC 토큰)
+          - id: SCT-SC-02.3
+            name: 과다 권한·장기 토큰과 불완전한 교체
+            en: Over-privileged, long-lived tokens and incomplete rotation
+            stage: [권한 상승, 지속성]
+            assets: [비밀·토큰, CI/CD 파이프라인]
+            profiles: [CI/CD, 오픈소스]
+            attack: [T1078.004, T1528]
+            slsa: []
+            cicd: [CICD-SEC-2, CICD-SEC-5, CICD-SEC-6]
+            oss: []
+            sap: []
+            cncf: []
+            s2c2f: []
+            ssdf: [PO.5]
+            scorecard: [Token-Permissions]
+            nist: [AC-6, AC-2, IA-5]
+            cloud: [CL-IA-07]
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고 다른 탈취·실행 위협의 피해 범위와 지속 기간을 키우는 조건 — Trivy 2026(침해 공개 후 교체에서 빠진 토큰으로 재침해)
+      - id: SCT-SC-03
+        name: 개발자·메인테이너 계정 탈취
+        lv3:
+          - id: SCT-SC-03.1
+            name: 피싱·가짜 보안 공지로 메인테이너 계정 탈취
+            en: Phishing maintainers with fake registry or security notices
+            stage: [자격증명 접근, 초기 침투]
+            assets: [패키지 레지스트리, 확장 마켓플레이스, 소스 저장소]
+            profiles: [오픈소스, AI]
+            attack: [T1566.002, T1586]
+            slsa: []
+            cicd: [CICD-SEC-2]
+            oss: [OSS-RISK-2]
+            sap: [AV-602, AV-606]
+            cncf: [Publishing Infrastructure]
+            s2c2f: []
+            ssdf: [PS.1]
+            scorecard: []
+            nist: [IA-2(1), AT-2(3), IA-5]
+            cloud: [CL-IA-03]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 인기 패키지 메인테이너 계정 하나로 주간 수십억 회 내려받는 패키지에 악성 버전을 올릴 수 있음 — chalk·debug 2025(가짜 2FA 재설정 메일), eslint-config-prettier 2025
+          - id: SCT-SC-03.2
+            name: 자격증명 재사용·무차별 대입·세션 탈취
+            en: Credential reuse, brute force, and session hijacking
+            stage: [자격증명 접근]
+            assets: [패키지 레지스트리, 소스 저장소, 개발자 단말]
+            profiles: [오픈소스, CI/CD]
+            attack: [T1110.004, T1110, T1539]
+            slsa: []
+            cicd: [CICD-SEC-2]
+            oss: [OSS-RISK-2]
+            sap: [AV-603, AV-604, AV-607]
+            cncf: [Source Code]
+            s2c2f: []
+            ssdf: [PS.1]
+            scorecard: []
+            nist: [IA-2(1), IA-5, SC-23]
+            cloud: [CL-IA-07]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: MFA가 없는 메인테이너·관리자 계정은 재사용 비밀번호·탈취 쿠키만으로 장악되어 곧바로 게시·저장소 변조로 이어짐 — ESLint 2018, Gentoo 2018, top.gg 2024(쿠키 재사용)
+          - id: SCT-SC-03.3
+            name: 만료 도메인·계정 복구 경로 탈취
+            en: Account takeover via expired email domains and recovery paths
+            stage: [자원 개발, 자격증명 접근]
+            assets: [패키지 레지스트리]
+            profiles: [오픈소스]
+            attack: [T1584.001, T1586.002]
+            slsa: []
+            cicd: [CICD-SEC-2]
+            oss: [OSS-RISK-4]
+            sap: [AV-608]
+            cncf: [Negligence]
+            s2c2f: [SCA-3]
+            ssdf: [PS.1]
+            scorecard: [Maintained]
+            nist: [IA-5, AC-2]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 메인테이너 메일 도메인이 만료된 방치 계정에서 주로 성립해 대상이 제한적이지만, 장악하면 정상 계정으로 게시할 수 있음 — ctx 2022
+
+  - code: PB
+    ko: 게시·배포
+    en: Publish & Distribution
+    desc: 레지스트리 게시·다운로드 사이트·업데이트 채널·서명을 노리는 위협(SLSA F·G·검증 위협). 사용자가 정상 경로로 받는 산출물 자체를 바꿈
+    lv2:
+      - id: SCT-PB-01
+        name: 정상 패키지·확장에 악성 버전 게시
+        lv3:
+          - id: SCT-PB-01
+            name: 정상 패키지·확장에 악성 버전 게시
+            en: Publishing malicious versions of legitimate packages or extensions
+            stage: [초기 침투]
+            assets: [패키지 레지스트리, 확장 마켓플레이스]
+            profiles: [오픈소스, AI, CI/CD]
+            attack: [T1195.001, T1195.002]
+            slsa: [F, G]
+            cicd: [CICD-SEC-3]
+            oss: [OSS-RISK-2]
+            sap: [AV-504, AV-602]
+            cncf: [Publishing Infrastructure, Malicious Maintainer]
+            s2c2f: [AUD-1, ENF-2, SCA-4, ING-3]
+            ssdf: [PS.2, PS.1]
+            scorecard: [Signed-Releases, Packaging]
+            nist: [SR-4, SI-7, CM-14]
+            cloud: [CL-IA-05]
+            ai: [AI-08-02]
+            ot: []
+            severity: 상
+            severity_why: 기존 사용자가 정상 업데이트로 받아 수 시간 안에 수백만 개 설치 환경에 퍼짐 — chalk·debug 2025(주간 20억 회 이상), axios 2026(주간 8천만 회 이상)
+      - id: SCT-PB-02
+        name: 배포 인프라·업데이트 경로 침해
+        lv3:
+          - id: SCT-PB-02.1
+            name: 공식 다운로드 사이트·미러의 설치 파일 교체
+            en: Replacing installers on official download sites or mirrors
+            stage: [초기 침투]
+            assets: [배포·업데이트 서버]
+            profiles: [상용 SW, 오픈소스]
+            attack: [T1195.002, T1189]
+            slsa: [G]
+            cicd: [CICD-SEC-9]
+            oss: [OSS-RISK-9]
+            sap: [AV-505]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [AUD-3]
+            ssdf: [PS.2, PS.3]
+            scorecard: [Signed-Releases]
+            nist: [SI-7, SR-11, CM-14]
+            cloud: []
+            ai: []
+            ot: [OTC-IA-07]
+            severity: 상
+            severity_why: 공식 경로에서 내려받은 설치 파일이라 사용자가 의심하지 않고, 서명까지 유효하면 보안 제품도 통과함 — Linux Mint 2016, JAVS 2024, Daemon Tools 2026
+          - id: SCT-PB-02.2
+            name: 업데이트 서버·자동 업데이트 채널 장악
+            en: Hijacking update servers and auto-update channels
+            stage: [초기 침투, 실행]
+            assets: [배포·업데이트 서버, 운영 환경]
+            profiles: [상용 SW]
+            attack: [T1195.002]
+            slsa: [G]
+            cicd: [CICD-SEC-9]
+            oss: []
+            sap: [AV-505]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [AUD-3]
+            ssdf: [PS.2]
+            scorecard: [Signed-Releases]
+            nist: [SI-7, SI-7(15), SR-11]
+            cloud: []
+            ai: []
+            ot: [OTC-IA-07]
+            severity: 상
+            severity_why: 자동 업데이트는 사용자 개입 없이 높은 권한으로 설치되어 전체 설치 기반에서 동시에 실행됨 — NotPetya 2017(M.E.Doc), ASUS 2019, 국내 ERP 업데이트 2024
+          - id: SCT-PB-02.3
+            name: 전송 경로 가로채기(DNS·중간자·도메인·CDN 장악)
+            en: Intercepting delivery paths (DNS, MITM, domain/registrar, CDN takeover)
+            stage: [초기 침투]
+            assets: [배포·업데이트 서버, CDN·웹 스크립트]
+            profiles: [상용 SW, 서드파티]
+            attack: [T1557, T1584.001, T1584.002, T1195.002]
+            slsa: [G]
+            cicd: [CICD-SEC-9]
+            oss: [OSS-RISK-9]
+            sap: [AV-502, AV-503, AV-506, AV-507, AV-508]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [AUD-3]
+            ssdf: [PS.2]
+            scorecard: []
+            nist: [SC-8, SI-7, SR-11]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 서명·무결성 검증이 없는 업데이트·스크립트는 경로만 가로채도 그대로 실행되며, 도메인·CDN을 쥐면 이를 참조하는 모든 사이트·앱에 동시에 적용됨 — Notepad++ 2025, AppsFlyer 2026(10만 개 이상 웹·앱)
+      - id: SCT-PB-03
+        name: 코드 서명·출처 증명 악용
+        lv3:
+          - id: SCT-PB-03.1
+            name: 서명 키·인증서 탈취와 악성코드 서명
+            en: Theft and abuse of code-signing keys and certificates
+            stage: [자원 개발, 방어 무력화]
+            assets: [서명 키·인증서]
+            profiles: [상용 SW, 오픈소스]
+            attack: [T1588.003, T1587.002, T1553.002]
+            slsa: [E]
+            cicd: [CICD-SEC-6]
+            oss: []
+            sap: [AV-403]
+            cncf: [Trust and Signing]
+            s2c2f: [REB-2]
+            ssdf: [PS.2, PO.5]
+            scorecard: [Signed-Releases]
+            nist: [SC-12, CM-14, SI-7(15)]
+            cloud: [CL-CA-04]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 정상 공급자의 서명이 붙은 악성코드는 서명 기반 허용·평판 검사를 통과해 탐지가 크게 늦어짐 — ShadowHammer 2019(ASUS 정식 인증서), MSI 2023(BootGuard 키 유출)
+          - id: SCT-PB-03.2
+            name: 서명·출처 검증 우회(위조 출처·검증 미적용)
+            en: Bypassing signature or provenance verification
+            stage: [방어 무력화]
+            assets: [서명 키·인증서, 배포·업데이트 서버, 운영 환경]
+            profiles: [상용 SW, 오픈소스, CI/CD]
+            attack: [T1553.002, T1553.003]
+            slsa: [E, F, VER]
+            cicd: [CICD-SEC-9]
+            oss: [OSS-RISK-9]
+            sap: []
+            cncf: [Trust and Signing]
+            s2c2f: [AUD-1, AUD-3, AUD-4, REB-4]
+            ssdf: [PS.2]
+            scorecard: [Signed-Releases]
+            nist: [SI-7, SR-4(3), CM-14]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고, 서명·출처 검증의 허점(위조 인증서·검증 생략·출처 위조)으로 변조 산출물을 정상으로 통과시키는 조건 — Flame 2012(위조 인증서로 Windows Update 위장)
+      - id: SCT-PB-04
+        name: 패키지 레지스트리·아티팩트 저장소 침해·결함
+        lv3:
+          - id: SCT-PB-04
+            name: 패키지 레지스트리·아티팩트 저장소 침해·결함
+            en: Package registry and artifact repository compromise or flaws
+            stage: [초기 침투, 지속성]
+            assets: [패키지 레지스트리, 배포·업데이트 서버]
+            profiles: [오픈소스, CI/CD]
+            attack: [T1195.002, T1190]
+            slsa: [G]
+            cicd: [CICD-SEC-7]
+            oss: [OSS-RISK-2]
+            sap: [AV-505, AV-700, AV-701, AV-702]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [ING-2, AUD-3]
+            ssdf: [PS.3]
+            scorecard: []
+            nist: [SI-2, RA-5, SR-4]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 레지스트리 자체가 뚫리면 그 생태계의 패키지를 덮어쓰거나 바꿀 수 있음 — PEAR 2019(설치 파일 교체), RubyGems 2022(타인 패키지 덮어쓰기 결함), 내부 아티팩트 저장소(Artifactory·Nexus) KEV 등재
+
+  - code: CS
+    ko: 소비·서드파티 연계
+    en: Consumption & Third-party Trust
+    desc: 받은 산출물을 검증·배포·운영하는 단계와 MSP·SaaS 연동·웹 스크립트 같은 외부 신뢰 경로를 노리는 위협(SLSA I, OWASP CICD-SEC-8·9). 공급자 침해가 고객 환경으로 넘어오는 관문
+    lv2:
+      - id: SCT-CS-01
+        name: 무결성·출처 검증 없는 산출물·업데이트 수용
+        lv3:
+          - id: SCT-CS-01
+            name: 무결성·출처 검증 없는 산출물·업데이트 수용
+            en: Consuming artifacts and updates without integrity or provenance checks
+            stage: [실행]
+            assets: [운영 환경, CI/CD 파이프라인, 배포·업데이트 서버]
+            profiles: [상용 SW, 오픈소스, CI/CD]
+            attack: [T1195.002]
+            slsa: [I, VER]
+            cicd: [CICD-SEC-9]
+            oss: [OSS-RISK-9, OSS-RISK-6]
+            sap: [AV-503, AV-508]
+            cncf: [Negligence]
+            s2c2f: [AUD-1, AUD-2, AUD-3, AUD-4, INV-1]
+            ssdf: [PS.2, PW.4]
+            scorecard: [Pinned-Dependencies, Signed-Releases]
+            nist: [SI-7, SR-4(3), SR-10, SR-11]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 중
+            severity_why: 단독으로는 피해가 없고, 상류 변조를 소비 단계에서 걸러낼 마지막 기회를 놓치게 하는 조건 — Codecov 2021(해시를 대조한 고객 한 곳이 변조 발견), 업데이트 무결성 결함 KEV(Notepad++·TrueConf)
+      - id: SCT-CS-02
+        name: 신뢰 관계·배포 도구 악용
+        lv3:
+          - id: SCT-CS-02.1
+            name: MSP·원격 관리(RMM) 도구 경유 다운스트림 배포
+            en: Downstream deployment via MSP and RMM tools
+            stage: [초기 침투, 실행]
+            assets: [MSP·원격 관리 도구, 운영 환경]
+            profiles: [서드파티, 상용 SW]
+            attack: [T1199, T1072, T1219]
+            slsa: []
+            cicd: [CICD-SEC-8]
+            oss: []
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: []
+            ssdf: []
+            scorecard: []
+            nist: [SA-9, AC-17, SR-6, PS-7]
+            cloud: [CL-IA-06]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: MSP 관리 도구는 고객사 전 단말에 관리자 권한으로 배포할 수 있어 공급자 한 곳 침해가 다수 고객사의 동시 랜섬웨어로 이어짐 — Kaseya 2021(하위 기업 약 1,500곳), SimpleHelp 2025
+          - id: SCT-CS-02.2
+            name: 내부 소프트웨어 배포·패치 관리 시스템 악용
+            en: Abusing internal software deployment and patch management systems
+            stage: [실행, 횡적 이동]
+            assets: [운영 환경, MSP·원격 관리 도구]
+            profiles: [상용 SW]
+            attack: [T1072]
+            slsa: []
+            cicd: []
+            oss: []
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: []
+            ssdf: []
+            scorecard: []
+            nist: [AC-6(5), CM-5, SI-7, AU-6]
+            cloud: [CL-EX-01]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 중앙 배포 서버는 조직 전체 단말에서 코드를 실행할 수 있어 한 번 장악으로 전사 동시 파괴·감염이 가능 — 3·20 전산망 대란 2013(방송·금융사 전산장비 약 4만 8천 대 피해)
+          - id: SCT-CS-02.3
+            name: 공급업체 계정·원격 지원 접근 경유 침입
+            en: Intrusion via supplier accounts and remote support access
+            stage: [초기 침투]
+            assets: [SaaS 연동, MSP·원격 관리 도구]
+            profiles: [서드파티]
+            attack: [T1199, T1078]
+            slsa: []
+            cicd: [CICD-SEC-8]
+            oss: []
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: []
+            ssdf: [PO.1]
+            scorecard: []
+            nist: [AC-20, PS-7, SA-9, AC-17]
+            cloud: [CL-IA-06]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 공급업체가 가진 고객 관리 권한·지원 계정으로 정상 접근처럼 들어와 탐지가 어렵고 여러 고객사에 동시에 닿음 — JumpCloud 2023(고객 명령 프레임워크 악용), Retool 2023
+      - id: SCT-CS-03
+        name: 서드파티 서비스·스크립트 연동 침해
+        lv3:
+          - id: SCT-CS-03.1
+            name: SaaS 연동 앱·OAuth 토큰 탈취와 연쇄 접근
+            en: Stolen OAuth and integration tokens of connected SaaS apps
+            stage: [자격증명 접근, 수집]
+            assets: [SaaS 연동, 소스 저장소]
+            profiles: [서드파티, CI/CD]
+            attack: [T1528, T1550.001, T1199]
+            slsa: []
+            cicd: [CICD-SEC-8, CICD-SEC-2]
+            oss: []
+            sap: [AV-605]
+            cncf: [Attack Chaining]
+            s2c2f: []
+            ssdf: [PO.1]
+            scorecard: []
+            nist: [SA-9, AC-6, IA-9]
+            cloud: [CL-PE-03, CL-IA-06]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 연동 공급자 한 곳의 토큰 저장소가 뚫리면 그 앱을 승인한 모든 고객의 데이터에 MFA 없이 접근 — Heroku·Travis CI 2022(npm 비공개 저장소 반출), Salesloft Drift 2025(700곳 이상)
+          - id: SCT-CS-03.2
+            name: 서드파티 웹 스크립트·SDK 변조(CDN·태그)
+            en: Tampered third-party web scripts and SDKs (CDN, tags)
+            stage: [초기 침투]
+            assets: [CDN·웹 스크립트, 운영 환경]
+            profiles: [서드파티, 오픈소스]
+            attack: [T1195.002, T1189]
+            slsa: [G]
+            cicd: [CICD-SEC-8]
+            oss: [OSS-RISK-9]
+            sap: [AV-505, AV-508]
+            cncf: [Publishing Infrastructure]
+            s2c2f: [AUD-3, ENF-1]
+            ssdf: [PW.4]
+            scorecard: [Pinned-Dependencies]
+            nist: [SC-18, SI-7, SA-9]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 외부 도메인에서 매번 불러오는 스크립트가 바뀌면 이를 삽입한 모든 웹·앱 이용자에게 즉시 실행됨 — Polyfill.io 2024(10만 개 이상 사이트), AppsFlyer 2026, Bybit 2025(지갑 UI 스크립트 변조)
+      - id: SCT-CS-04
+        name: 널리 설치된 서드파티 소프트웨어 취약점의 연쇄 악용
+        lv3:
+          - id: SCT-CS-04
+            name: 널리 설치된 서드파티 소프트웨어 취약점의 연쇄 악용
+            en: Chained exploitation of widely installed third-party software
+            stage: [초기 침투, 횡적 이동]
+            assets: [운영 환경]
+            profiles: [상용 SW, 서드파티]
+            attack: [T1190, T1203, T1189]
+            slsa: [DEP]
+            cicd: []
+            oss: [OSS-RISK-1]
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: [SCA-1, INV-1]
+            ssdf: [RV.1, RV.2]
+            scorecard: []
+            nist: [RA-5, SI-2, CM-8, SA-22]
+            cloud: [CL-IA-01]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 기관·금융권에 필수 설치되거나 위탁사가 공통으로 쓰는 소프트웨어 하나의 취약점이 수십~수백 조직의 동시 침해로 번짐 — MagicLine4NX 2023(약 50개 기관), MOVEit 2023(급여 위탁사 경유 고객사 피해)
+
+  - code: IM
+    ko: 영향·확산
+    en: Impact & Propagation
+    desc: 공급망 침해가 만들어 내는 결과와 확산 형태 — 다운스트림 대량 침해·연쇄 침해·자가 전파 웜·비밀·소스 반출·금전 탈취·파괴
+    lv2:
+      - id: SCT-IM-01
+        name: 다운스트림 확산
+        lv3:
+          - id: SCT-IM-01.1
+            name: 다운스트림 고객·사용자 대량 침해
+            en: Mass compromise of downstream customers and users
+            stage: [영향, 초기 침투]
+            assets: [운영 환경]
+            profiles: [상용 SW, 오픈소스, 서드파티]
+            attack: [T1195.002, T1199]
+            slsa: []
+            cicd: []
+            oss: [OSS-RISK-2]
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: [INV-1, INV-2]
+            ssdf: [RV.2]
+            scorecard: []
+            nist: [IR-4, CM-8, SR-3]
+            cloud: [CL-IA-05]
+            ai: []
+            ot: [OTC-IA-07]
+            severity: 상
+            severity_why: 정상 소프트웨어를 통해 수천~수만 조직에 백도어가 동시에 설치되고 공격자는 그중 고가치 대상을 골라 후속 침투함 — SolarWinds 2020, NotPetya 2017, 3CX 2023
+          - id: SCT-IM-01.2
+            name: 연쇄 공급망 침해(한 침해가 다음 공급망 침해로)
+            en: Cascading supply chain compromise
+            stage: [영향, 횡적 이동]
+            assets: [CI/CD 파이프라인, 비밀·토큰, 패키지 레지스트리]
+            profiles: [오픈소스, CI/CD, 상용 SW, AI]
+            attack: [T1195.001, T1195.002]
+            slsa: []
+            cicd: [CICD-SEC-3, CICD-SEC-8]
+            oss: [OSS-RISK-2]
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: [INV-2]
+            ssdf: [RV.2, RV.3]
+            scorecard: []
+            nist: [IR-4, SR-3, SR-6]
+            cloud: []
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 앞 단계에서 빼낸 비밀로 다른 프로젝트·공급자를 침해해 피해 범위가 기하급수로 늘고 원점 추적이 어려워짐 — 3CX 2023(X_TRADER 경유), TeamPCP 2026(Trivy에서 LiteLLM·TanStack·GitHub까지)
+      - id: SCT-IM-02
+        name: 자가 전파형 공급망 웜
+        lv3:
+          - id: SCT-IM-02
+            name: 자가 전파형 공급망 웜
+            en: Self-propagating supply chain worms
+            stage: [횡적 이동, 영향]
+            assets: [패키지 레지스트리, 확장 마켓플레이스, CI/CD 파이프라인, 개발자 단말]
+            profiles: [오픈소스, CI/CD, AI]
+            attack: [T1195.001, T1528, T1677]
+            slsa: []
+            cicd: [CICD-SEC-6, CICD-SEC-3]
+            oss: [OSS-RISK-2]
+            sap: []
+            cncf: [Attack Chaining]
+            s2c2f: [ING-3, SCA-4, INV-2]
+            ssdf: [PO.5, RV.2]
+            scorecard: [Token-Permissions]
+            nist: [IR-4, IA-5, SI-3]
+            cloud: []
+            ai: [AI-06-07]
+            ot: []
+            severity: 상
+            severity_why: 감염 환경의 게시 토큰으로 다른 패키지에 자기 자신을 재게시해 사람 개입 없이 수백 개 패키지·수만 개 저장소로 번짐 — Shai-Hulud 2025, ChainDrop 2026
+      - id: SCT-IM-03
+        name: 개발 비밀·소스 코드 대량 반출
+        lv3:
+          - id: SCT-IM-03
+            name: 개발 비밀·소스 코드 대량 반출
+            en: Mass exfiltration of development secrets and source code
+            stage: [수집, 반출]
+            assets: [소스 저장소, 비밀·토큰]
+            profiles: [오픈소스, 상용 SW, CI/CD]
+            attack: [T1213.003, T1567.001, T1552.001]
+            slsa: []
+            cicd: [CICD-SEC-6, CICD-SEC-10]
+            oss: []
+            sap: []
+            cncf: [Source Code]
+            s2c2f: []
+            ssdf: [PS.1]
+            scorecard: []
+            nist: [AU-6, SI-4, AC-6]
+            cloud: [CL-CO-03, CL-CA-05]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 반출된 소스·비밀은 후속 침해·취약점 발굴·연쇄 공급망 공격의 재료가 되어 피해가 장기화됨 — GitHub 2026(공격자 주장 내부 저장소 약 3,800개), s1ngularity 2025(비공개 저장소 5,500개 이상 공개 전환)
+      - id: SCT-IM-04
+        name: 금전 탈취(암호자산 가로채기·크립토재킹)
+        lv3:
+          - id: SCT-IM-04
+            name: 금전 탈취(암호자산 가로채기·크립토재킹)
+            en: Financial theft (crypto draining and cryptojacking)
+            stage: [영향]
+            assets: [운영 환경, 개발자 단말, CDN·웹 스크립트]
+            profiles: [오픈소스, 서드파티]
+            attack: [T1657, T1496.001]
+            slsa: []
+            cicd: []
+            oss: []
+            sap: []
+            cncf: []
+            s2c2f: []
+            ssdf: []
+            scorecard: []
+            nist: [SI-4, SI-7]
+            cloud: [CL-IM-05, CL-IM-06]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 지갑 주소 바꿔치기·서명 조작은 거래 즉시 되돌릴 수 없는 손실을 내며 단일 사고 피해가 막대함 — Bybit 2025(약 15억 달러)
+      - id: SCT-IM-05
+        name: 파괴·사보타주·가용성 훼손
+        lv3:
+          - id: SCT-IM-05
+            name: 파괴·사보타주·가용성 훼손
+            en: Destruction, sabotage, and availability loss
+            stage: [영향]
+            assets: [운영 환경, 개발자 단말, 패키지 레지스트리]
+            profiles: [상용 SW, 오픈소스]
+            attack: [T1485, T1489, T1499]
+            slsa: [AVL]
+            cicd: []
+            oss: []
+            sap: []
+            cncf: []
+            s2c2f: [ING-2, ING-4]
+            ssdf: [PS.3]
+            scorecard: []
+            nist: [IR-4, SI-7]
+            cloud: [CL-IM-01]
+            ai: []
+            ot: []
+            severity: 상
+            severity_why: 공급망으로 동시에 퍼진 와이퍼·파괴 코드는 복구에 수주가 걸리는 전사 중단을 낳음 — NotPetya 2017(세계적 피해), 3·20 전산망 대란 2013

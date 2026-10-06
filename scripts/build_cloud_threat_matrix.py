@@ -15,11 +15,11 @@ from openpyxl.utils import get_column_letter
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, AI_UT_MAP, SEVERITY,
-                            TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE)
+from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, CSA_NOTE, AI_UT_MAP, SEVERITY,
+                            TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE, KEYWORD_RULES)
 import csv
 
-VERSION = "v3"
+VERSION = "v5"
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_MATRIX = os.path.join(HERE, "data", "Cloud_ATTACK_Matrix_Integrated_v19.2.xlsx")
 SRC_INC = os.path.join(HERE, "data", "Cloud_IncidentDB_v2_LITE.xlsx")
@@ -28,7 +28,7 @@ SRC_ATTACK = os.path.join(HERE, "data", "enterprise-attack-v19.2-techniques.xlsx
 OVERRIDE = os.path.join(HERE, "data", "threat_text_override.csv")
 TEMPLATE = os.path.join(HERE, "output", "threat_text_template.csv")
 OV_COLS = ["ATT&CK ID", "ATT&CK 기법명", "Cloud 범위", "현재 요약설명(참고용)",
-           "세부위협명(입력)", "요약설명(입력)", "참조(입력)"]
+           "세부위협명(입력)", "요약설명(입력)", "참조(입력)", "탐지·대응(입력)"]
 
 RISK_MATRIX = {
     ("상", "상"): "매우 높음", ("상", "중"): "높음", ("상", "하"): "보통",
@@ -112,7 +112,10 @@ def load_incidents(valid_tids):
                  src=r[4] or "", org=r[5] or "", actor=r[6] or "", date=str(r[7] or ""),
                  rel=r[8] or "", layer=r[9] or "", root=r[11] or r[10] or "",
                  impact=r[13] or r[12] or "", draft=r[21] or "",
-                 text=" ".join(str(x) for x in (r[1], r[2], r[9], r[11], r[13], *r[15:21]) if x).lower())
+                 # 키워드 매핑용: 제목·요약·원문 필드(초기침투·확산·영향·사용 기법·공격 대상·도구) / 구조 필드(전체값)
+                 free=" ".join(str(x) for x in (r[1], r[2], *r[15:21]) if x),
+                 cond=dict(root=f"{r[10] or ''} {r[11] or ''}", layer=r[9] or "",
+                           impact=f"{r[12] or ''} {r[13] or ''}", kind=r[3] or ""))
         incs.append(e)
 
     for e in incs:
@@ -127,7 +130,7 @@ def load_incidents(valid_tids):
                 clean[t] = why
             elif parent_tid(t) in valid_tids:
                 clean.setdefault(parent_tid(t), why)
-        e["links"] = clean
+        e["links"] = keyword_links(e, clean, valid_tids)
         e["counted"] = e["rel"] != "비클라우드 의심"
         e["real"] = e["kind"] in REAL_KINDS
         e["recent"] = e["date"][:4] >= RECENT_FROM
@@ -135,9 +138,50 @@ def load_incidents(valid_tids):
     return incs
 
 
+def _kw_match(rule, e):
+    tid, kw, cond = rule
+    c = e["cond"]
+    for k in ("root", "layer", "impact"):
+        if k in cond and not any(v in c[k] for v in cond[k]):
+            return False
+    if c["kind"] in cond.get("skip_kind", ()):
+        return False
+    if cond.get("neg") and re.search(cond["neg"], e["free"], re.I):
+        return False
+    return re.search(kw, e["free"], re.I) is not None
+
+
+def keyword_links(e, links, valid_tids):
+    """초안 ID 매핑에 키워드 매핑(KEYWORD_RULES)을 더한다.
+    - 같은 기법이나 그 하위기법이 이미 있으면 추가하지 않음
+    - 상위기법 태그만 있고 키워드가 하위기법을 가리키면 상위 태그를 하위기법으로 세분"""
+    links = dict(links)
+    refined = set()
+    for rule in KEYWORD_RULES:
+        t = rule[0]
+        if t not in valid_tids or t in links or any(parent_tid(x) == t and x != t for x in links):
+            continue
+        if not _kw_match(rule, e):
+            continue
+        p = parent_tid(t)
+        if p != t and (p in links or p in refined):
+            if p in links:
+                refined.add(p)
+                del links[p]
+            links[t] = "초안ID→키워드 세분"
+        else:
+            links[t] = "키워드"
+    return links
+
+
 # ---------------------------------------------------------------------------
-# 3) 평가 로직 (AI 매트릭스 v3.2와 동일 원칙)
+# 3) 평가 로직 (AI 매트릭스 v3.2 수식과 통일)
+#   AI v3.2 : 상 = 실제 사고(ATLAS Incident + OWASP 인용) ≥ 2
+#             중 = 실제 사고 1 또는 실증 사례·Realized 기법·공개 취약점 존재
+#   대응    : 실제 사고 ↔ 사고 DB 실제 사고 / Realized 기법 ↔ ATT&CK 클라우드 사례
+#             실증·공개 취약점 ↔ 사고 DB 연구·노출 + 벤더 매트릭스 문서화
 # ---------------------------------------------------------------------------
+LIKELY_HIGH_REAL = 2
 def evidence_level(real, research, atk, vendor_n):
     if real >= 1:
         return "실제 사고 확인"
@@ -149,7 +193,7 @@ def evidence_level(real, research, atk, vendor_n):
 
 
 def likelihood(real, research, atk, vendor_n):
-    if real >= 3 or atk >= 10:
+    if real >= LIKELY_HIGH_REAL:
         return "상"
     if real >= 1 or atk >= 1 or research >= 1 or vendor_n >= 1:
         return "중"
@@ -260,6 +304,7 @@ def build():
         if summary.rstrip().endswith(":"):
             restored = lists.get(tid, [])
             summary = summary.rstrip().rstrip(":").rstrip() + " (세부 항목은 참조 열 참조)"
+        base_summary = summary  # override 적용 전의 기존 번역 요약(템플릿 참고용)
 
         # 참조 : 원문 보충 · 실제 사고 · ATT&CK 사례 · 통합 기법 (기존 데이터 재배치)
         ref = []
@@ -291,10 +336,11 @@ def build():
         lv3 = (ov.get("세부위협명(입력)") or "").strip() or lv3
         summary = (ov.get("요약설명(입력)") or "").strip() or summary
         reference = (ov.get("참조(입력)") or "").strip() or "\n\n".join(ref)
+        detect = (ov.get("탐지·대응(입력)") or "").strip()
 
         rows.append(dict(
             l, lv3=lv3, aws=a["aws"], azure=a["azure"], k8s=a["k8s"], vendor_n=vendor_n,
-            summary=summary, reference=reference,
+            summary=summary, reference=reference, detect=detect, base_summary=base_summary,
             text_src="사용자 입력" if (ov.get("요약설명(입력)") or "").strip() else "기존 번역",
             merged=", ".join(m.split(" ")[0] for m in a["merged"]),
             csa=" · ".join(f"SI-{i:02d} {CSA_NAMES[i]}" for i in csa_ids), csa_ids=csa_ids,
@@ -349,7 +395,8 @@ def write_template(out):
             continue
         seen.add(o["tid"])
         rows.append({OV_COLS[0]: o["tid"], OV_COLS[1]: o["lv3"], OV_COLS[2]: o["scope"],
-                     OV_COLS[3]: o["summary"], OV_COLS[4]: "", OV_COLS[5]: "", OV_COLS[6]: ""})
+                     OV_COLS[3]: o.get("base_summary", o["summary"]),
+                     OV_COLS[4]: "", OV_COLS[5]: "", OV_COLS[6]: "", OV_COLS[7]: ""})
     with open(TEMPLATE, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=OV_COLS)
         w.writeheader()
@@ -406,12 +453,15 @@ def write_xlsx(domains, out, incs, stats):
     today = datetime.date.today().isoformat()
     counted = [e for e in incs if e["counted"]]
     mapped = [e for e in counted if e["links"]]
+    kw_only = [e for e in mapped if all(w == "키워드" for w in e["links"].values())]
 
     # ---------------- 개요 ----------------
     ws = wb.active
     ws.title = "개요"
     rc = collections.Counter(o["risk"] for o in out)
     lc = collections.Counter(o["level"] for o in out)
+    unique_tids = len({o["tid"] for o in out})
+    rewritten = len({o["tid"] for o in out if o["text_src"] == "사용자 입력"})
     meta = [
         (f"통합 클라우드 보안위협 매트릭스 {VERSION}", ""),
         ("기준", "MITRE ATT&CK Cloud 킬체인(전술→기법→하위기법) 뼈대 · 통합 AI 보안위협 매트릭스 v3.2의 위험평가·근거 로직 이식"),
@@ -419,30 +469,31 @@ def write_xlsx(domains, out, incs, stats):
         ("■ 기준 데이터", ""),
         ("MITRE ATT&CK", "Enterprise v19.2 Cloud(IaaS·SaaS·Office Suite·Identity Provider) — 전술 14 · 기법/하위기법 및 클라우드 실제 사례"),
         ("벤더 매트릭스", "AWS Threat Technique Catalog · Azure Threat Research Matrix · Threat Matrix for Kubernetes"),
-        ("CSA Top Threats 2026", "11대 위협 연계(기법 단위) — 원문 미수록, 연계 ID만"),
-        ("클라우드 보안사고 DB", f"{len(incs)}건(2010~2026, Wiz·ramimac·SEC·GTI·MS) — 집계 대상 {len(counted)}건(비클라우드 의심 제외), 기법 매핑 {len(mapped)}건"),
+        ("CSA Top Threats 2026", "11대 위협 연계(기법 단위, 하위기법 지정 시 우선) — 원문 미수록, 연계 ID만"),
+        ("클라우드 보안사고 DB", f"{len(incs)}건(2010~2026, Wiz·ramimac·SEC·GTI·MS) — 집계 대상 {len(counted)}건(비클라우드 의심 제외), 기법 매핑 {len(mapped)}건(키워드 규칙으로만 매핑 {len(kw_only)}건 포함)"),
         ("통합 AI 매트릭스 v3.2", "AI 관련 클라우드 기법에 UT-ID 교차 표시"), ("", ""),
         ("■ 시트 구성", ""),
         ("매트릭스 뷰", "전술(열)별 세부위협을 위험도 색으로 배치한 한눈 보기"),
-        ("통합 매트릭스", "분류체계 · 교차매핑 · 위험평가 · 실제근거 전체 열"),
-        ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용)"),
+        ("통합 매트릭스", "분류체계 · 교차매핑 · 위험평가 · 실제근거 · 탐지·대응 전체 열"),
+        ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용) + 탐지·대응 포인트"),
         ("도메인 요약", "전술별 위협 수 · 위험도/근거수준 분포 · 매핑 사고 수 · 최고위험 항목"),
-        ("CSA 2026 연계", "11대 위협별 연계 세부위협 수·사고 수와 보고서 사례 목록"),
+        ("CSA 2026 연계", "11대 위협별 연계 세부위협·사고 수와 연계 기준(SI-02·SI-08 교차 위협, SI-06은 AI 매트릭스 UT 연계)"),
         ("역매핑_사고사례", "사고 680건과 매핑된 기법·매핑 근거(근거 추적용)"),
         ("평가 기준", "발생가능성·심각도·위험도·근거수준 산정 규칙"), ("", ""),
         ("■ 분류 체계", ""),
         ("Lv1 도메인", "ATT&CK 전술. 예: [IA] 초기 침투, [IM] 영향"),
         ("Lv2 위협분류", "ATT&CK 기법. 예: CTC-IA-02 = T1190"),
-        ("Lv3 세부위협", "하위기법/벤더 항목 — 요약설명 · 참조(ATT&CK 원문 보충 · 실제 사례 · ATT&CK 사례 · 통합된 기법). '.0 (일반·상위기법)'은 하위기법으로 특정되지 않은 상위기법 근거를 보존한 행"),
-        ("클라우드 특화 검토(v3)", f"일반 엔터프라이즈 기법 {len(stats['dropped'])}개 삭제({', '.join(stats['dropped'])}), {len(stats['merged'])}개 통합(근거·벤더 항목은 대상 행에 합산, '통합된 기법' 열)"),
-        ("설명 문구", "기본값은 기존 번역 설명(요약설명)과 기존 사례 데이터 재배치(참조). data/threat_text_override.csv에 입력한 문구가 있으면 그 문구를 사용('설명 출처' 열)"),
+        ("Lv3 세부위협", "하위기법/벤더 항목 — 요약설명 · 참조(클라우드 관점 · 실제 사례 등) · 탐지·대응 포인트. '.0 (일반·상위기법)'은 하위기법으로 특정되지 않은 상위기법 근거를 보존한 행"),
+        ("클라우드 특화 검토", f"일반 엔터프라이즈 기법 {len(stats['dropped'])}개 삭제({', '.join(stats['dropped'])}), {len(stats['merged'])}개 통합(근거·벤더 항목은 대상 행에 합산, '통합된 기법' 열)"),
+        ("설명 문구(v4)", "요약설명·참조·탐지·대응은 클라우드 관점으로 재작성한 문구(data/threat_text_override.csv)를 우선 적용하며, 미작성 기법은 기존 번역 설명과 사례 데이터 재배치를 사용('설명 출처' 열). 요약설명은 2줄 개조식, 참조는 '클라우드 관점·공격 시나리오·실제 사례' 구성"),
         ("", ""), ("■ 결과 요약", ""),
         ("세부위협(Lv3)", f"{len(out)}건 / 도메인 {len(domains)}개"),
         ("위험도", " · ".join(f"{k} {rc.get(k, 0)}" for k in RISK_COLOR)),
         ("근거 수준", " · ".join(f"{k} {lc.get(k, 0)}" for k in LEVEL_COLOR)),
+        ("클라우드 관점 재작성", f"고유 기법 {rewritten}/{unique_tids}개 적용(요약설명·참조·탐지·대응). " + ("전 기법 완료" if rewritten >= unique_tids else "나머지는 기존 번역 설명 유지 — 후속 작성 예정")),
         ("", ""), ("■ 주의", ""),
-        ("사고 매핑", "사고 DB의 ATT&CK 초안 ID 기준(폐기 ID는 v19.2로 변환). 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 초안 ID 없는 사고는 '역매핑_사고사례'에 전수 보존"),
-        ("위험평가", "발생가능성은 근거에서 자동 산정, 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
+        ("사고 매핑", f"사고 DB의 ATT&CK 초안 ID(폐기 ID는 v19.2로 변환) + 키워드 규칙 {len(KEYWORD_RULES)}개(v5, 근거 '키워드'·'초안ID→키워드 세분'). 세분되지 않은 상위기법 태그는 '.0 (일반·상위기법)' 행에 보존. 매핑 근거는 '역매핑_사고사례'에서 사고별로 확인"),
+        ("위험평가", f"발생가능성은 근거에서 자동 산정(AI 매트릭스 v3.2와 동일: 상=실제 사고 {LIKELY_HIGH_REAL}건 이상), 심각도는 기법별 기준값 → 조직 맥락에 맞게 검토 권장"),
         ("중복 표시", "한 기법이 여러 전술에 속하면 전술마다 반복 표시(ATT&CK 원칙). 근거 수는 동일 기법 기준"),
         ("출처 표기", "MITRE ATT&CK © The MITRE Corporation / CSA·AWS·Microsoft 각 원저작권자. 배포 전 각 출처 이용약관 확인"),
     ]
@@ -479,13 +530,13 @@ def write_xlsx(domains, out, incs, stats):
     # ---------------- 통합 매트릭스 ----------------
     ws = wb.create_sheet("통합 매트릭스")
     groups = [("분류 체계", 13, "2E5496"), ("교차 매핑", 5, "1F7A8C"),
-              ("위험 평가", 5, "A04000"), ("실제 근거", 8, "1E8449")]
+              ("위험 평가", 5, "A04000"), ("실제 근거", 8, "1E8449"), ("탐지·대응", 1, "6C3483")]
     cols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "참조",
             "ATT&CK ID", "통합된 기법", "구분", "Cloud 범위", "Cloud 플랫폼", "기타 플랫폼", "설명 출처",
             "CSA Top Threats 2026", "AI 매트릭스 연계(UT)", "AWS (TTC)", "Azure (ATRM)", "Kubernetes",
             "발생가능성", "심각도", "위험도", "발생가능성 근거 (자동 산정)", "심각도 근거",
             "실제 사고 수", "최근 사고(2025~)", "실증·연구 수", "ATT&CK 사례 수", "근거 수준",
-            "사고 매핑 근거", "관련 사례 ID", "ATT&CK 링크"]
+            "사고 매핑 근거", "관련 사례 ID", "ATT&CK 링크", "탐지·대응 포인트"]
     t = ws.cell(1, 1, f"통합 클라우드 보안위협 매트릭스 {VERSION} — 분류체계 · 위험평가 · 실제근거")
     t.font = Font(size=13, bold=True, color="FFFFFF"); t.fill = PatternFill("solid", fgColor="1F3864")
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(cols))
@@ -504,7 +555,7 @@ def write_xlsx(domains, out, incs, stats):
                      o["csa"], o["ut"], "\n".join(o["aws"]), "\n".join(o["azure"]), "\n".join(o["k8s"]),
                      o["likelihood"], o["severity"], o["risk"], o["lk_why"], o["sev_why"],
                      o["real"], o["recent"], o["research"], o["atk"], o["level"],
-                     o["basis"], o["inc_ids"], o["link"]])
+                     o["basis"], o["inc_ids"], o["link"], o.get("detect", "")])
         ws.cell(r, 10).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
         _risk(ws.cell(r, 21), o["risk"])
         ws.cell(r, 28).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
@@ -513,18 +564,18 @@ def write_xlsx(domains, out, incs, stats):
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(out) + 4}"
     _w(ws, [15, 13, 22, 26, 48, 60, 11, 14, 13, 12, 15, 15, 10,
-            26, 16, 22, 22, 18, 8, 7, 9, 30, 28, 7, 8, 7, 7, 12, 16, 22, 28])
+            26, 16, 22, 22, 18, 8, 7, 9, 30, 28, 7, 8, 7, 7, 12, 16, 22, 28, 52])
 
     # ---------------- LITE ----------------
     ws = wb.create_sheet("통합매트릭스_LITE")
     lcols = ["도메인(Lv1)", "CTC-ID", "위협분류(Lv2)", "세부위협(Lv3)", "요약설명", "ATT&CK ID", "Cloud 범위",
              "CSA Top Threats 2026", "발생가능성", "심각도", "위험도", "근거 수준",
-             "실제 사고 수", "ATT&CK 사례 수"]
+             "실제 사고 수", "ATT&CK 사례 수", "탐지·대응 포인트"]
     ws.cell(1, 1, f"통합 클라우드 보안위협 매트릭스 {VERSION} — LITE").font = Font(size=12, bold=True, color="1F3864")
     _hdr(ws, 2, lcols)
     for r, o in enumerate(out, 3):
         _row(ws, r, [o["domain"], o["ctc"], o["lv2"], o["lv3"], o["summary"], o["tid"], o["scope"], o["csa"],
-                     o["likelihood"], o["severity"], o["risk"], o["level"], o["real"], o["atk"]])
+                     o["likelihood"], o["severity"], o["risk"], o["level"], o["real"], o["atk"], o.get("detect", "")])
         ws.cell(r, 7).fill = PatternFill("solid", fgColor=SCOPE_COLOR.get(o["scope"], "FFFFFF"))
         _risk(ws.cell(r, 11), o["risk"])
         ws.cell(r, 12).font = Font(bold=True, color=LEVEL_COLOR[o["level"]])
@@ -532,7 +583,7 @@ def write_xlsx(domains, out, incs, stats):
             ws.cell(r, cc).alignment = CENTER
     ws.freeze_panes = "E3"
     ws.auto_filter.ref = f"A2:{get_column_letter(len(lcols))}{len(out) + 2}"
-    _w(ws, [15, 13, 22, 26, 48, 11, 12, 28, 8, 7, 9, 13, 8, 8])
+    _w(ws, [15, 13, 22, 26, 48, 11, 12, 28, 8, 7, 9, 13, 8, 8, 52])
 
     # ---------------- 도메인 요약 ----------------
     ws = wb.create_sheet("도메인 요약")
@@ -559,7 +610,9 @@ def write_xlsx(domains, out, incs, stats):
 
     # ---------------- CSA 2026 연계 ----------------
     ws = wb.create_sheet("CSA 2026 연계")
-    _hdr(ws, 1, ["CSA 이슈", "위협명", "연계 세부위협 수", "그중 위험 높음 이상", "연계 실제 사고 수", "연계 세부위협(위험 높음 이상)"])
+    _hdr(ws, 1, ["CSA 이슈", "위협명", "연계 세부위협 수", "그중 위험 높음 이상", "연계 사고 수",
+                 "그중 실제 사고", "연계 기준", "연계 세부위협(위험 높음 이상, 없으면 전체)"])
+    real_ids = {e["id"] for e in incs if e["counted"] and e["real"]}
     r = 2
     for i in range(1, 12):
         rel = [o for o in out if i in o["csa_ids"]]
@@ -567,11 +620,14 @@ def write_xlsx(domains, out, incs, stats):
         ids = set()
         for o in rel:
             ids |= {x for x in o["inc_ids"].split(", ") if x}
-        note = "교차 위협(특정 기법 비종속) — 보고서 사례로만 연계" if not rel else ""
-        _row(ws, r, [f"SI-{i:02d}", CSA_NAMES[i], len(rel), len(hi), len(ids),
-                     note or ", ".join(sorted({f"{o['ctc']} {o['lv3']}" for o in hi}))[:1500]])
+        note = CSA_NOTE.get(i, "기법 주제 기준 1차 매핑(scripts/taxonomy_rules.py의 CSA_MAP)")
+        _row(ws, r, [f"SI-{i:02d}", CSA_NAMES[i], len(rel), len(hi), len(ids), len(ids & real_ids), note,
+                     "\n".join(sorted({f"{o['ctc']} {o['lv3']} ({o['risk']})" for o in (hi or rel)}))[:3000]])
+        for cc in range(3, 7):
+            ws.cell(r, cc).alignment = CENTER
         r += 1
-    _w(ws, [16, 26, 12, 32, 70, 34])
+    ws.freeze_panes = "C2"
+    _w(ws, [9, 24, 10, 11, 9, 9, 44, 70])
 
     # ---------------- 역매핑_사고사례 ----------------
     ws = wb.create_sheet("역매핑_사고사례")
@@ -589,10 +645,12 @@ def write_xlsx(domains, out, incs, stats):
     # ---------------- 평가 기준 ----------------
     ws = wb.create_sheet("평가 기준")
     txt = [
-        ("■ 발생가능성 (근거에서 자동 산정)", ""),
-        ("상", "실제 사고 ≥3건 또는 ATT&CK 클라우드 사례 ≥10건"),
-        ("중", "실제 사고 1~2건, 또는 ATT&CK 사례·실증 연구·벤더 특화기법 중 하나 이상 존재"),
-        ("하", "근거 없음(이론·시나리오)"), ("", ""),
+        ("■ 발생가능성 (근거에서 자동 산정, AI 매트릭스 v3.2 수식과 동일)", ""),
+        ("상", f"실제 사고 ≥{LIKELY_HIGH_REAL}건"),
+        ("중", "실제 사고 1건, 또는 ATT&CK 클라우드 사례·실증 연구·벤더 특화기법 중 하나 이상 존재"),
+        ("하", "근거 없음(이론·시나리오)"),
+        ("근거 대응", "AI 매트릭스 '실제 사고(ATLAS Incident+OWASP 인용)' ↔ 사고 DB 실제 사고 / 'Realized 기법' ↔ ATT&CK 클라우드 사례 / "
+                      "'실증 사례·공개 취약점' ↔ 사고 DB 연구·노출 + 벤더 매트릭스 문서화. ATT&CK 사례는 건수와 무관하게 '중'까지만 반영"), ("", ""),
         ("■ 심각도 (기법별 기준값, 근거 열 참조)", ""),
         ("상", "클라우드 계정·테넌트 장악, 대규모 데이터 유출·파괴·암호화, 핵심 자격증명·서명키 탈취, 과금·자원 대량 손실"),
         ("중", "단일 워크로드·서비스 범위 침해, 지속성·은닉 확보 등 후속 공격 기반"),
@@ -608,7 +666,9 @@ def write_xlsx(domains, out, incs, stats):
         ("이론·시나리오", "매트릭스상 가능 기법이나 사례·문서 근거 없음"), ("", ""),
         ("■ 사고 → 기법 매핑", ""),
         ("초안ID", "사고 DB의 ATT&CK 초안 ID 그대로(폐기 ID는 v19.2로 변환: T1562→T1685 등)"),
-        ("상위기법 태그", "하위기법 없이 상위기법 ID만 붙은 사고는 해당 기법의 '.0 (일반·상위기법)' 행으로 집계"),
+        ("키워드", f"초안 ID를 보완하는 2차 매핑(v5): 사고 제목·요약·원문 필드의 키워드와 근본원인·서비스 계층·영향유형 조건으로 기법 연결 — scripts/taxonomy_rules.py KEYWORD_RULES({len(KEYWORD_RULES)}개)"),
+        ("초안ID→키워드 세분", "초안에 상위기법만 있고 키워드가 하위기법을 가리키면 하위기법으로 옮김(예: T1496 → T1496.001 컴퓨트 채굴, T1566 → T1566.004 비싱)"),
+        ("상위기법 태그", "하위기법으로 세분되지 않은 상위기법 태그는 해당 기법의 '.0 (일반·상위기법)' 행으로 집계"),
         ("집계 제외", "클라우드 관련도 '비클라우드 의심' 사고"),
         ("최근 사고", f"기준일 {RECENT_FROM}년 이후 실제 사고"),
     ]

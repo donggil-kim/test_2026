@@ -1,0 +1,180 @@
+- ut: UT-01
+  domain: D01. 공격 준비 및 AI 무기화
+  name: AI 대상 정찰 및 접근 확보
+  prev_name: null
+  control: 공개 정보·모델 아티팩트 공개 최소화, 노출 자산 관리, AI 허니팟, 비정상 탐색·질의 탐지
+- ut: UT-02
+  domain: D01. 공격 준비 및 AI 무기화
+  name: 공격 준비 및 일반 침투
+  prev_name: 공격 준비 및 일반 침투 기법
+  control: 기존 엔터프라이즈 보안통제(패치·EDR·네트워크 분리·ATT&CK 기반 탐지)를 AI 인프라까지 확장
+- ut: UT-03
+  domain: D01. 공격 준비 및 AI 무기화
+  name: AI 기반 자율 공격
+  prev_name: null
+  control: AI 속도 공격을 전제한 탐지·대응 자동화, AI 제공자 오남용 탐지 연계, 위협 인텔리전스
+- ut: UT-04
+  domain: D01. 공격 준비 및 AI 무기화
+  name: AI 생성 콘텐츠를 이용한 사기
+  prev_name: null
+  control: 딥페이크 탐지·라이브니스 검증, 고위험 요청 다중 채널 확인, 사용자 교육
+- ut: UT-05
+  domain: D01. 공격 준비 및 AI 무기화
+  name: AI 서비스를 이용한 C2 통신
+  prev_name: null
+  control: AI API 키 보호·사용량 이상 탐지, AI 서비스 egress 가시성, 비인가 AI 트래픽 차단
+- ut: UT-06
+  domain: D02. 프롬프트 인젝션 및 컨텍스트 노출
+  name: 직접 프롬프트 인젝션
+  prev_name: null
+  control: 다층 입·출력 가드레일, 모달리티별 정규화·비가시 문자 제거, 권한 분리로 폭발반경 제한, 적대적 테스트 상시화
+- ut: UT-07
+  domain: D02. 프롬프트 인젝션 및 컨텍스트 노출
+  name: 간접 프롬프트 인젝션
+  prev_name: null
+  control: 비신뢰 콘텐츠 구획·출처 표시, 비신뢰 데이터 처리 중 도구 호출 제한, 목표 변경 시 인간 승인, '치명적 삼요소' 동시 성립 차단
+- ut: UT-08
+  domain: D02. 프롬프트 인젝션 및 컨텍스트 노출
+  name: 숨겨진 컨텍스트 노출
+  prev_name: null
+  control: 은닉 컨텍스트 노출 가정 설계, 비밀·보안 로직을 프롬프트에 두지 않음, 권한은 외부 정책엔진에서 강제
+- ut: UT-09
+  domain: D03. AI 데이터 오염 및 유출
+  name: 학습 데이터 오염
+  prev_name: null
+  control: 데이터셋 출처·계보 관리(DBOM/ML-BOM), 학습데이터 정제·이상치 탐지, 재학습 입력 검증
+- ut: UT-10
+  domain: D03. AI 데이터 오염 및 유출
+  name: 지식원(RAG) 오염
+  prev_name: null
+  control: 수집원 신뢰등급·서명, 색인 전 검증, 검색 결과 출처 표시, 임베딩 모델 자체 검증
+- ut: UT-11
+  domain: D03. AI 데이터 오염 및 유출
+  name: 에이전트 메모리 오염
+  prev_name: null
+  control: 메모리 쓰기 검증·출처 점수, 사용자·작업별 메모리 분리, 스냅샷·롤백, 에이전트 출력의 자동 재수집 금지
+- ut: UT-12
+  domain: D03. AI 데이터 오염 및 유출
+  name: 민감정보 노출
+  prev_name: null
+  control: 학습·색인 전 비식별화, 문서별 ACL 기반 검색, 입·출력 DLP(멀티모달 포함), 필요 최소 컨텍스트
+- ut: UT-13
+  domain: D03. AI 데이터 오염 및 유출
+  name: 사용자 간 데이터 격리 실패
+  prev_name: null
+  control: 검색 전 테넌트 필터, 테넌트별 인덱스·캐시 분리, 벡터 DB 인증·암호화·내보내기 제한
+- ut: UT-14
+  domain: D04. 모델 조작 및 탈취
+  name: 모델 변조(백도어 삽입)
+  prev_name: null
+  control: 아티팩트 서명·해시 검증, 안전 포맷 사용 및 로딩 격리, 배포 전 모델 검증·백도어 스캔
+- ut: UT-15
+  domain: D04. 모델 조작 및 탈취
+  name: 모델 기반 데이터 추론
+  prev_name: 모델을 이용한 데이터 추론 공격
+  control: 차등프라이버시 학습·학습 데이터 중복 제거, 출력 확률·점수 비공개, 쿼리량 제한, 추출·멤버십 추론 감사
+- ut: UT-16
+  domain: D04. 모델 조작 및 탈취
+  name: 모델 탈취
+  prev_name: null
+  control: 쿼리량·패턴 제한, 증류 캠페인 탐지, 워터마킹, 모델 아티팩트 암호화·접근통제
+- ut: UT-17
+  domain: D04. 모델 조작 및 탈취
+  name: 예측 AI 회피 공격
+  prev_name: null
+  control: 적대적 학습·모델 강건화, 입력 복원, 앙상블·다중센서 융합, 적대적 입력 탐지
+- ut: UT-18
+  domain: D05. 출력 처리 결함 및 신뢰성 훼손
+  name: 부적절한 출력 처리
+  prev_name: null
+  control: 출력 대상 시스템별 인코딩과 이스케이프, 쿼리 파라미터화·읽기전용 계정, 외부 리소스 자동 로딩 차단, 모델 독립적 출력 보안 계층
+- ut: UT-19
+  domain: D05. 출력 처리 결함 및 신뢰성 훼손
+  name: AI를 통한 데이터 반출
+  prev_name: null
+  control: 외부 URL 렌더링 차단·egress 허용목록, 도구 콜백 대상 검증, 유출 패턴 탐지
+- ut: UT-20
+  domain: D05. 출력 처리 결함 및 신뢰성 훼손
+  name: AI 출력 신뢰성 훼손
+  prev_name: null
+  control: 근거 인용·출처 검증(그라운딩), 신뢰도 표시, 고위험 결정의 독립 검증, 추천 출처 편향 모니터링
+- ut: UT-21
+  domain: D06. 에이전트 오남용 및 통제 상실
+  name: 과도한 에이전시
+  prev_name: null
+  control: 최소 에이전시·최소권한, 도구별 범위·호출량 제한, 인자 의미 검증, 파괴적 작업 인간 승인
+- ut: UT-22
+  domain: D06. 에이전트 오남용 및 통제 상실
+  name: 비의도적 코드 실행
+  prev_name: null
+  control: 코드 생성과 실행 분리·승인 게이트, 도구 인자 검증·파라미터화(셸·eval 직접 전달 금지), 비루트 격리 샌드박스, 실행 전 정적검사, 명령 허용목록
+- ut: UT-23
+  domain: D06. 에이전트 오남용 및 통제 상실
+  name: 에이전트 간 연쇄 장애
+  prev_name: null
+  control: 결함 격리·블라스트 반경 상한, 계획/실행 분리, 서킷브레이커, 디지털 트윈 재현 시험
+- ut: UT-24
+  domain: D06. 에이전트 오남용 및 통제 상실
+  name: 통제를 벗어난 에이전트
+  prev_name: null
+  control: 행동 기준선·감시 에이전트, 범위 이탈 탐지, 킬스위치·자격증명 즉시 폐기, 서명된 행동 매니페스트
+- ut: UT-25
+  domain: D07. AI 신원 및 권한 악용
+  name: 에이전트 자격증명 탈취 및 악용
+  prev_name: null
+  control: 단명·작업범위 토큰, 비밀정보의 프롬프트·설정 내 저장 금지, 비밀 스캐닝, 에이전트별 고유 신원, 퇴역 시 즉시 폐기
+- ut: UT-26
+  domain: D07. AI 신원 및 권한 악용
+  name: 권한 위임 결함
+  prev_name: null
+  control: 상호 인증·위임 범위 전파, 권한 상승 시 재인가, 세션 격리, 신원 수명주기 관리
+- ut: UT-27
+  domain: D07. AI 신원 및 권한 악용
+  name: 에이전트 간 통신 조작
+  prev_name: null
+  control: mTLS·메시지 서명·nonce/타임스탬프, 스키마 검증·버전관리, 인증된 디렉터리
+- ut: UT-28
+  domain: D08. AI 공급망 침해
+  name: AI 개발 공급망 침해
+  prev_name: 모델 및 데이터 공급망 침해
+  control: AIBOM/SBOM 인벤토리, 버전 고정·출처 검증, AI 권고 패키지 실존·평판 확인, 공급자 약관·라이선스 검토, 레지스트리 허용목록
+- ut: UT-29
+  domain: D08. AI 공급망 침해
+  name: 에이전트 도구 공급망 오염
+  prev_name: null
+  control: 도구 서술자·매니페스트 서명 및 고정, 도구 설명 변경 감지, 샌드박스·egress 통제, 킬스위치
+- ut: UT-30
+  domain: D09. AI 인프라 노출 및 자원 고갈
+  name: AI 자원 고갈 공격
+  prev_name: null
+  control: 요청당 비용 기반 한도, 에이전트 반복·팬아웃 상한, 서킷브레이커, 예산 경보
+- ut: UT-31
+  domain: D09. AI 인프라 노출 및 자원 고갈
+  name: AI 서비스 노출 및 섀도 AI
+  prev_name: null
+  control: AI 자산 인벤토리·AI-DSPM, 승인 도구 카탈로그, 외부 노출 스캔, 네트워크 egress 통제
+- ut: UT-32
+  domain: D09. AI 인프라 노출 및 자원 고갈
+  name: 단말 AI 어시스턴트 악용
+  prev_name: 단말 AI 어시스턴트 과권한
+  control: 확장·에이전트 권한 최소화, 로컬 설정 파일 무결성 보호, 엔드포인트 DLP·EDR 연계
+- ut: UT-33
+  domain: D09. AI 인프라 노출 및 자원 고갈
+  name: 로그 및 라벨링 경로 노출
+  prev_name: null
+  control: 로그 마스킹·보존기간 최소화, 관측성 도구 접근통제, 라벨러용 비식별화·최소노출
+- ut: UT-34
+  domain: D10. 사용자 기만 및 AI 거버넌스 미흡
+  name: 인간-에이전트 신뢰 악용
+  prev_name: null
+  control: 다단계 승인·위험 배지, 제안·근거 불변 로그, 인용 출처 검증 UI, 사용자 교육
+- ut: UT-35
+  domain: D10. 사용자 기만 및 AI 거버넌스 미흡
+  name: AI 활동 감사 부재
+  prev_name: null
+  control: AI 텔레메트리 로깅(민감정보 마스킹 병행), 변조방지 감사로그, 계보·결정 근거 기록
+- ut: UT-36
+  domain: D10. 사용자 기만 및 AI 거버넌스 미흡
+  name: 데이터 수명주기 관리 실패
+  prev_name: null
+  control: 데이터→모델 계보, 파생물까지 분류·보존·삭제 정책 전파, 폐기 증적, DPIA, 재식별 위험 평가

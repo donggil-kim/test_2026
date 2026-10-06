@@ -1,0 +1,50 @@
+- name: D01. 공격 준비 및 AI 무기화
+  en: Attack Preparation & AI Weaponization
+  definition: 위협 행위자가 AI 자산을 정찰하고 공격 역량을 확보하거나, AI를 공격 수단으로 활용하여 자율 공격, 기만, 은닉 통신을 수행하는 리스크
+  targets: 공개 정보, 공격 도구와 인프라, 공격자 AI 에이전트, 딥페이크, 제3자 AI 서비스
+  boundary: 위협 행위자 소유 자산 또는 조직 외부 활동이면 D01. 조직 자산이 직접 훼손되면 해당 영역 도메인으로 분류
+- name: D02. 프롬프트 인젝션 및 컨텍스트 노출
+  en: Prompt Injection & Context Exposure
+  definition: 사용자 입력이나 외부 콘텐츠에 삽입된 조작 지시로 모델 동작이 탈취되거나, 시스템 프롬프트 등 비공개 컨텍스트가 노출되는 리스크
+  targets: 사용자 입력, 외부 콘텐츠와 도구 응답(지시 전달 경로), 시스템 프롬프트, 에이전트 구성 정보
+  boundary: 지시가 모델에 도달하는 경로가 핵심이면 D02. 지시가 저장소에 지속 기록되면 D03
+- name: D03. AI 데이터 오염 및 유출
+  en: AI Data Poisoning & Leakage
+  definition: 학습 데이터, RAG 지식원, 에이전트 메모리가 오염되거나, 민감정보가 응답과 입력 경로 또는 사용자 간 격리 결함을 통해 유출되는 리스크
+  targets: 학습 및 파인튜닝 데이터, RAG 코퍼스와 임베딩, 벡터 DB, 에이전트 메모리와 대화 이력
+  boundary: 데이터가 저장되거나 색인되는 지점의 리스크면 D03. 모델 가중치 자체의 변조는 D04
+- name: D04. 모델 조작 및 탈취
+  en: Model Manipulation & Theft
+  definition: 모델 가중치와 구조가 변조되거나 적대적 입력에 의해 판단이 조작되고, 모델 자산 또는 학습 데이터가 질의와 파일 탈취로 유출되는 리스크
+  targets: 모델 가중치와 아키텍처, 추론 템플릿, 추론 API, 예측 모델
+  boundary: 모델 파일, 가중치, 추론 동작이 공격 대상이면 D04
+- name: D05. 출력 처리 결함 및 신뢰성 훼손
+  en: Output Handling Flaws & Integrity Loss
+  definition: 모델 출력이 검증 없이 후속 시스템에서 해석되거나 반출 경로로 악용되고, 허위 또는 편향된 출력이 업무 판단에 채택되는 리스크
+  targets: 출력 렌더링 환경(브라우저, 터미널, IDE), 출력 기반 DB 질의, 출력 채널
+  boundary: 출력의 검증, 신뢰성, 반출 채널 문제면 D05. 출력이 도구 호출이나 코드 실행으로 이어지면 D06
+- name: D06. 에이전트 오남용 및 통제 상실
+  en: Agent Misuse & Loss of Control
+  definition: 과도한 권한을 가진 에이전트가 도구와 코드를 위험하게 실행하거나, 다중 에이전트 간 오류 전파와 이상 행동으로 조직의 통제를 상실하는 리스크
+  targets: 에이전트 도구 권한, 계획 및 실행 루프, 코드 실행 환경, 다중 에이전트 워크플로
+  boundary: 에이전트가 무엇을 잘못 실행하는가의 문제면 D06. 누구의 신원과 권한이 악용되는가의 문제면 D07
+- name: D07. AI 신원 및 권한 악용
+  en: AI Identity & Privilege Abuse
+  definition: 에이전트와 비인간 계정의 자격증명이 탈취되거나, 권한 위임 결함과 에이전트 간 통신 위조로 권한이 악용되는 리스크
+  targets: API 키와 토큰, OAuth 위임, 에이전트 신원, 에이전트 간(A2A, MCP) 메시지
+  boundary: 누구의 신원과 권한으로 행위가 이루어지는가의 문제면 D07
+- name: D08. AI 공급망 침해
+  en: AI Supply Chain Compromise
+  definition: 외부에서 도입하는 모델, 데이터셋, 패키지, 에이전트 도구가 오염되거나 위장되어 조직 환경에 악성 요소가 유입되는 리스크
+  targets: 모델 허브, 패키지 레지스트리, MCP 서버, 플러그인 및 스킬 레지스트리
+  boundary: 제3자 구성요소가 유입 경로면 D08. 조직 내부 데이터 소스의 오염은 D03
+- name: D09. AI 인프라 노출 및 자원 고갈
+  en: AI Infrastructure Exposure & Resource Exhaustion
+  definition: AI 서비스와 인프라가 통제 밖에서 외부에 노출되거나 운영 데이터 경로로 정보가 새어 나가고, 자원 고갈로 가용성과 비용 피해가 발생하는 리스크
+  targets: 서빙 인프라, 외부 노출 서비스, 사용자 단말의 AI 어시스턴트, 관측성 도구와 라벨링 경로
+  boundary: 인프라 구성과 운영 방식이 원인이면 D09
+- name: D10. 사용자 기만 및 AI 거버넌스 미흡
+  en: User Deception & AI Governance Gaps
+  definition: AI 출력을 신뢰하는 사용자가 기만되어 위험한 판단을 내리거나, 감사 체계와 데이터 수명주기 관리가 미흡하여 책임 추적과 규제 준수가 어려워지는 리스크
+  targets: 사용자와 승인자, 감사 로그, 데이터 분류와 보존 및 폐기 체계
+  boundary: 사람의 판단 또는 관리체계의 미흡이 원인이면 D10
