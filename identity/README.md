@@ -13,7 +13,8 @@
   - 위협인텔
   - SAT 시연
 - **대응 기준**: CSA CCM v4.1 · CIS Controls v8.1 · NIST SP 800-53 Rev.5 · ISMS-P
-- **신원 관점 문구(v2)**: 65개 중 38개 작성(AU·SE·CR·TS·DI). 검증기로 사고 DB와 대조했고, 나머지 27개는 '문구 미작성'으로 표시합니다.
+- **신원 관점 문구(v2)**: 65개 전부 작성(10개 도메인, 인용 사례 252건). 검증기로 사고 DB와 대조해 오류·경고 0건입니다.
+- **공격 체인 시나리오(v2)**: 실제 사고 29건을 신원 공격 흐름 8개로 재구성하고, 단계마다 세부위협·탐지 포인트, 흐름마다 초크 포인트를 표시했습니다.
 - **다른 매트릭스 연계**: 통합 AI·클라우드·OT 매트릭스 v2(AI-·CL-·OT-), 공급망 매트릭스 v2(SCT-)
 
 > 위치: 공급망 매트릭스와 같이 이 저장소의 `identity/` 폴더에 두었습니다. 모든 경로가 이 폴더 기준이라 폴더째 옮겨도 빌드됩니다.
@@ -23,10 +24,10 @@
 
 | 경로 | 설명 |
 |---|---|
-| `output/통합_신원보안위협_매트릭스_v2.xlsx` | **최신** — 15개 시트(아래), 신원 관점 문구 38/65 |
+| `output/통합_신원보안위협_매트릭스_v2.xlsx` | **최신** — 15개 시트(아래), 신원 관점 문구 65/65, 공격 체인 시나리오 8개 |
 | `output/통합_신원보안위협_매트릭스_v2.csv` | 세부위협 65행 요약(핵심 요약·요약설명 포함, 검토·diff용, UTF-8 BOM) |
 | `output/통합_신원보안위협_매트릭스_v1.*` | v1 — 분류 체계·교차 매핑·근거 집계·위험평가(문구 없음) |
-| `docs/methodology.md` | 방법론 — 설계 원칙·입력 데이터·사고 DB·근거 집계·평가 로직·경계·문구 규칙·검증기·한계·로드맵 |
+| `docs/methodology.md` | 방법론 — 설계 원칙·입력 데이터·사고 DB·근거 집계·평가 로직·경계·문구 규칙·검증기·공격 체인 시나리오·한계·로드맵 |
 | `docs/작업방향.md` | 작업 방향·결정 사항(D1~D9)과 진행 현황 |
 | `reference/README.md` | 참조 자료와 이용 조건 |
 
@@ -40,7 +41,7 @@
 | 통합 매트릭스 | 분류 체계 · 교차 매핑 · 위험 평가 · 실제 근거 · 대응 기준 전체 열(문구 포함) |
 | 통합매트릭스_LITE | 핵심 열 발췌(필터·보고용) |
 | 도메인 요약 · 신원 유형·ID 환경 요약 | 도메인·신원 유형(인력·특권·NHI·고객)·ID 환경별 위험도·근거 분포, 실제 사고, 대표 위협 |
-| 공격 체인 시나리오 | 양식만 수록 — 시나리오는 다음 단계에서 작성 |
+| 공격 체인 시나리오 | 실제 사고 기반 흐름 8개 — 단계별 세부위협(위험도 색)·행위·탐지 포인트와 초크 포인트(아래 표) |
 | 역매핑_사고사례 · KEV 근거 | 사고 DB 126건·KEV 판정 81건과 매핑 세부위협 |
 | 프레임워크 연계 · 대응 기준 연계 | 프레임워크·대응 기준 항목별 연계 위협(커버리지·통제 우선순위) |
 | 다른 매트릭스 연계 | AI·클라우드·OT·공급망 매트릭스 항목별로 연결된 신원 세부위협 |
@@ -104,19 +105,42 @@ IDT-DI-02:
   - 사례는 그 행에 매핑된 사고만 인용하고, 수치·경위는 사고 DB 요약에 있는 것만 씁니다.
   - 라벨은 `[실제 사고]`·`[실증]`·`[위협인텔]`·`[공개 취약점]`·`[시연]`입니다.
 - **작성 수준**: 방어 측 보고서용입니다. DI 도메인부터는 침해 지점·실제 사례·탐지·대응 위주로 쓰고, 공격 수법 설명은 줄였습니다.
+  - IM(영향·확산) 행은 결과 유형이라 '■ 신원 관점'에 그 결과로 이어지는 앞 단계 세부위협(IDT-ID)을 적었습니다.
+  - 사고가 많이 매핑된 행(예: IM-03 47건)은 최근·국내·대형 사고 중심으로 대표 사례만 골랐습니다. 전체 목록은 '역매핑_사고사례' 시트에 있습니다.
+- **현황**: 65개 전부 작성(AU 9 · SE 7 · CR 5 · TS 9 · DI 8 · PE 6 · NH 7 · LC 5 · CI 4 · IM 5).
+  - 인용 사례 252건: [실제 사고] 209 · [공개 취약점] 16 · [시연] 14 · [실증] 9 · [위협인텔] 4
 - **검증**
   - 문구를 고치면 `python3 scripts/validate.py`로 대조합니다. 빌드 때도 자동 실행됩니다.
   - 규칙 전체는 `docs/methodology.md` §9~10에 있습니다.
+
+## 공격 체인 시나리오(`data/scenarios.yaml`)
+
+실제 사고를 신원 공격 흐름으로 재구성했습니다. 단계마다 세부위협(IDT-ID)·ATT&CK 전술 국문명·사고 DB 요약에 있는 행위·탐지 포인트를 적고,
+흐름을 가장 싸게 끊는 통제를 초크 포인트로 표시했습니다. 여러 사고를 이은 흐름은 단계마다 근거 사례를 괄호로 밝혔습니다.
+
+| ID | 시나리오 | 근거 사고 | 주요 초크 포인트 |
+|---|---|---|---|
+| SCN-01 | 헬프데스크 사칭 → IdP 관리 권한 → 하이퍼바이저 암호화 | MGM·Clorox·M&S·Scattered Spider 권고·Okta 고객(5건) | SE-02.1 재설정 전 강한 신원 확인 · PE-02.2 MFA 재등록 확인 · DI-03.2 IdP 설정 변경 다중 승인 |
+| SCN-02 | 토큰 서명 키 탈취·위조 → 비밀번호·MFA 없는 클라우드 메일 접근 | FoggyWeb·SolarWinds 이후 클라우드 장악·MagicWeb·Storm-0558(4건) | DI-04 인증 서버 최상위 계층 관리 · TS-03.2 서명 키 HSM 보관·발급 대조 |
+| SCN-03 | 인포스틸러 → MFA 없는 SaaS·VPN → 대량 반출·갈취 | Snowflake·HELLCAT·Medibank(3건) | AU-03.3 MFA·접속 허용 목록 · NH-01.2 유출 자격증명 일괄 교체 |
+| SCN-04 | SaaS 연동 토큰·연결 앱 → 여러 조직 데이터 → 다음 자격증명 | Salesloft Drift·Heroku/Travis CI·Salesforce 음성 피싱(3건) | NH-03.1 토큰 범위·수명 최소화 · NH-03.2 연결 앱 관리자 승인 |
+| SCN-05 | AD 장악 → 도메인 전체 랜섬웨어·하이브리드 클라우드 파괴 | Ascension·Ryuk·NotPetya·Prestige·Storm-0501·MERCURY(6건) | TS-02.2 RC4 비활성화 · DI-01.4 도메인 컨트롤러 긴급 패치 · DI-02 동기화 서버 보호 |
+| SCN-06 | IdP 공급업체 침해 → 고객 세션 토큰 → 교체 누락 재침투 | Okta 지원 시스템·Cloudflare(2건) | NH-02.1 서비스 계정 대화형 로그인 차단 · NH-01.2 사용 여부와 무관한 전수 교체 |
+| SCN-07 | 국내 고객 계정 크리덴셜 스터핑 → 개인정보 노출·과징금 | GS리테일·SK스토아·기프티쇼(3건) | CI-01 대량 로그인 탐지·차단 · IM-03 로그인 뒤 개인정보 마스킹 |
+| SCN-08 | 국내 통신 가입자 인증 체계 → 유심 정보 유출·무단 결제 | SK텔레콤·KT 펨토셀·KT 심스와핑 의심(3건) | NH-01.2 관리망 계정 관리 · CI-02 인증키 보호·펨토셀 인증서 수명 단축 |
+
+- 8개 시나리오는 42개 단계로 세부위협 33개를 지나고, 근거 사고는 29건(국내 6건)입니다.
 
 ## 재생성
 
 ```bash
 pip install openpyxl pyyaml
-python3 scripts/validate.py --allow-missing-text      # 데이터·문구 검증(미작성 행은 목록만; 옵션 없이 실행하면 미작성 행도 오류)
-python3 scripts/build_identity_threat_matrix.py --allow-missing-text   # 검증 후 output/ 에 v2 워크북·CSV 생성
+python3 scripts/validate.py                           # 데이터·문구·시나리오 검증(--strict는 경고도 실패로 처리)
+python3 scripts/build_identity_threat_matrix.py       # 검증 후 output/ 에 v2 워크북·CSV 생성
 
 # (선택) 문구 작성용 근거 정리본(도메인별 .md — 행별 매핑 사고·KEV·ATT&CK 주체)
-python3 scripts/build_identity_threat_matrix.py --allow-missing-text --worksheet /tmp/idt_worksheet
+python3 scripts/build_identity_threat_matrix.py --worksheet /tmp/idt_worksheet
+# (참고) --allow-missing-text: 문구를 새로 쓰는 중에 미작성 행을 오류 대신 목록으로만 두고 검증·빌드(중간 산출물용)
 # (선택) 참조 자료 재생성
 python3 scripts/prepare_attack.py                     # 저장소 루트 enterprise-attack-v19.2.xlsx → reference/attack/
 git clone https://github.com/pushsecurity/saas-attacks.git /tmp/bia && python3 scripts/prepare_push.py --repo /tmp/bia
@@ -129,7 +153,8 @@ python3 scripts/prepare_refs.py --nist <NIST_SP-800-53_rev5_catalog.json>   # �
 |---|---|
 | `data/taxonomy.yaml` | 분류 체계(도메인·위협분류·세부위협), 교차 매핑·대응 기준·다른 매트릭스 연계·심각도 근거 |
 | `data/incidents.yaml` | 신원 보안사고 DB 126건(사례별 매핑 세부위협·ATT&CK·KEV·origin·출처) |
-| `data/text/*.yaml` | 신원 관점 문구(작성된 도메인별 파일: AU·SE·CR·TS·DI) |
+| `data/text/*.yaml` | 신원 관점 문구(도메인별 파일 10개: AU·SE·CR·TS·DI·PE·NH·LC·CI·IM) |
+| `data/scenarios.yaml` | 공격 체인 시나리오 8개(단계별 세부위협·행위·탐지·초크 포인트, 근거 사고 ID) |
 | `data/frameworks.yaml` | 프레임워크·대응 기준 ID·명칭 카탈로그와 버전·이용 조건 |
 | `data/changelog.yaml` | 변경이력(워크북 '변경이력' 시트) |
 | `scripts/build_identity_threat_matrix.py` | 워크북·CSV 빌드 |
@@ -139,6 +164,10 @@ python3 scripts/prepare_refs.py --nist <NIST_SP-800-53_rev5_catalog.json>   # �
 
 ## 로드맵
 
-- **v2 마무리**: 남은 27개 행(PE·NH·LC·CI·IM) 문구와 공격 체인 시나리오 6~8개를 작성하고, `--allow-missing-text` 없이 검증을 통과시킵니다.
-- **v3 후보**: 국내 사례 확충(개인정보보호위원회 처분·정부 조사 결과), CIAM·본인확인 보강, NH 도메인과 AI 매트릭스 AI-07의 등급·사례 정합 점검.
+- **v2 완료(2026-10-06)**: 65개 행 문구와 공격 체인 시나리오 8개를 작성했고, `--allow-missing-text` 없이 검증(오류·경고 0건, `--strict` 통과)을 통과했습니다.
+- **v3 후보**
+  - 국내 사례 확충: 개인정보보호위원회 처분, 정부 조사 결과
+  - CIAM·본인확인 보강: eKYC·합성 신원 사고, 국내 비대면 본인확인 사례
+  - 근거가 얇은 행 보강: PE-03 신원 통제 무력화(공개 사고 미확인), NH-04 AI 에이전트 신원(실제 사고 1건)
+  - NH 도메인과 AI 매트릭스 AI-07의 등급·사례 정합 점검
 - **통합본**: 통합 AI·클라우드·OT 매트릭스 v2와 공급망 v2에 신원 매트릭스를 Lv0로 묶습니다(별도 작업).
