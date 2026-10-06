@@ -1,0 +1,1716 @@
+# MITRE EMB3D™ 최소 추출본 — scripts/prepare_emb3d.py로 생성(직접 수정하지 말 것)
+#
+# ©2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation.
+#
+# LICENSE (EMB3D Terms of Use, https://emb3d.mitre.org/subtabs/terms-of-use.html)
+# The MITRE Corporation (MITRE) hereby grants you a non-exclusive, royalty-free license to use, copy, and create
+# derivative works of EMB3D™ for internal business purposes or commercial use. Any copy you make for such purposes is
+# authorized provided that you reproduce MITRE's copyright designation and this license in any such copy and provide
+# MITRE notice of such use at EMB3D@mitre.org. For all other uses of EMB3D™, contact MITRE at techtransfer@mitre.org.
+# All rights not expressly granted are hereby reserved.
+#
+source:
+  file: emb3d-stix-2.0.1.json
+  repo: https://github.com/mitre/emb3d
+  site: https://emb3d.mitre.org/
+threats:
+- id: TID-101
+  name: Power Consumption Analysis Side Channel
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1255
+  - CWE-1300
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-027
+  - MID-059
+  - MID-060
+- id: TID-102
+  name: Electromagnetic Analysis Side Channel
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1300
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-027
+  - MID-059
+  - MID-060
+- id: TID-103
+  name: Microarchitectural Side Channels
+  category: hardware
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-1037
+  - CWE-1264
+  cves:
+  - CVE-2017-5753
+  - CVE-2017-5754
+  - CVE-2018-3615
+  - CVE-2018-3639
+  - CVE-2018-3640
+  - CVE-2018-3693
+  - CVE-2022-23823
+  - CVE-2022-24436
+  - CVE-2022-35888
+  atk_cited: []
+  mids:
+  - MID-014
+  - MID-050
+  - MID-051
+  - MID-061
+- id: TID-105
+  name: Hardware Fault Injection – Control Flow Modification
+  category: hardware
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-1247
+  - CWE-1319
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-062
+  - MID-063
+  - MID-066
+- id: TID-106
+  name: Data Bus Interception
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-311
+  - CWE-319
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-052
+  - MID-054
+  - MID-055
+  - MID-064
+  - MID-065
+- id: TID-107
+  name: Unauthorized Direct Memory Access (DMA)
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-119
+  - CWE-284
+  - CWE-1260
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-053
+  - MID-065
+  - MID-070
+- id: TID-108
+  name: ROM/NVRAM Data Extraction or Modification
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-311
+  - CWE-312
+  - CWE-1282
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-052
+  - MID-054
+  - MID-055
+  - MID-064
+- id: TID-109
+  name: RAM Chip Contents Readout
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-311
+  - CWE-1384
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-052
+  - MID-055
+  - MID-065
+- id: TID-110
+  name: Hardware Fault Injection – Data Manipulation
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1256
+  cves:
+  - CVE-2021-42114
+  - CVE-2021-42144
+  atk_cited: []
+  mids:
+  - MID-014
+  - MID-051
+  - MID-065
+  - MID-066
+  - MID-067
+- id: TID-111
+  name: Untrusted External Storage
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1299
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-056
+- id: TID-113
+  name: Unverified Peripheral Firmware Loaded
+  category: hardware
+  maturity: 관찰
+  cwes:
+  - CWE-1299
+  - CWE-1316
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-011
+  - MID-070
+- id: TID-114
+  name: Peripheral Data Bus Interception
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-311
+  - CWE-319
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-052
+  - MID-055
+  - MID-068
+- id: TID-115
+  name: Firmware/Data Extraction via Hardware Interface
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1191
+  - CWE-1299
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-057
+  - MID-058
+- id: TID-116
+  name: Latent Privileged Access Port
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1191
+  - CWE-1299
+  cves:
+  - CVE-2022-29402
+  atk_cited: []
+  mids:
+  - MID-057
+- id: TID-118
+  name: Weak Peripheral Port Electrical Damage Protection
+  category: hardware
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-1384
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-069
+- id: TID-119
+  name: Latent Hardware Debug Port Allows Memory/Code Manipulation
+  category: hardware
+  maturity: 개념 증명
+  cwes:
+  - CWE-1191
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-057
+  - MID-058
+- id: TID-201
+  name: Inadequate Bootloader Protection and Verification
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-284
+  - CWE-693
+  cves: []
+  atk_cited:
+  - T1542
+  - T1542.003
+  mids:
+  - MID-001
+  - MID-002
+  - MID-003
+  - MID-029
+- id: TID-202
+  name: Exploitable System Network Stack Component
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-20
+  - CWE-121
+  cves:
+  - CVE-2013-0662
+  - CVE-2013-2811
+  - CVE-2019-6529
+  atk_cited: []
+  mids:
+  - MID-004
+  - MID-005
+  - MID-006
+  - MID-007
+  - MID-008
+  - MID-014
+  - MID-086
+  - MID-088
+  - MID-089
+- id: TID-203
+  name: Malicious OS Kernel Driver/Module Installable
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-306
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-001
+  - MID-002
+  - MID-003
+  - MID-009
+  - MID-010
+  - MID-011
+- id: TID-204
+  name: Untrusted Programs Can Access Privileged OS Functions
+  category: system software
+  maturity: 개념 증명
+  cwes:
+  - CWE-693
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-012
+  - MID-013
+  - MID-014
+  - MID-015
+  - MID-087
+- id: TID-205
+  name: Existing OS Tools Maliciously Used for Device Manipulation
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-693
+  cves: []
+  atk_cited:
+  - T0823
+  mids:
+  - MID-012
+  - MID-014
+  - MID-015
+  - MID-016
+  - MID-017
+  - MID-018
+- id: TID-206
+  name: Memory Management Protections Subverted
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-284
+  cves:
+  - CVE-2024-28115
+  atk_cited:
+  - T1055
+  mids:
+  - MID-004
+  - MID-005
+  - MID-007
+  - MID-019
+  - MID-020
+  - MID-086
+- id: TID-207
+  name: Container Escape
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-693
+  cves:
+  - CVE-2019-5736
+  - CVE-2022-0185
+  atk_cited:
+  - T1611
+  mids:
+  - MID-022
+- id: TID-208
+  name: Virtual Machine Escape
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-693
+  cves:
+  - CVE-2018-12126
+  - CVE-2018-12127
+  - CVE-2018-12130
+  - CVE-2019-11091
+  - CVE-2024-22252
+  - CVE-2024-22253
+  - CVE-2024-22254
+  - CVE-2024-22255
+  atk_cited: []
+  mids:
+  - MID-021
+  - MID-023
+  - MID-087
+- id: TID-209
+  name: Host Can Manipulate Guest Virtual Machines
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-306
+  cves:
+  - CVE-2023-20867
+  atk_cited: []
+  mids:
+  - MID-023
+  - MID-024
+- id: TID-210
+  name: Device Vulnerabilities Unpatchable
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-1277
+  - CWE-1329
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-025
+  - MID-026
+- id: TID-211
+  name: Device Allows Unauthenticated Firmware Installation
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-306
+  cves:
+  - CVE-2015-6492
+  atk_cited:
+  - T0857
+  mids:
+  - MID-001
+  - MID-002
+  - MID-026
+- id: TID-212
+  name: FW/SW Update Integrity Shared Secrets Extraction
+  category: system software
+  maturity: 개념 증명
+  cwes:
+  - CWE-12326
+  cves:
+  - CVE-2022-38773
+  atk_cited: []
+  mids:
+  - MID-026
+  - MID-033
+- id: TID-213
+  name: Faulty FW/SW Update Integrity Verification
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-347
+  cves:
+  - CVE-2020-3209
+  - CVE-2021-43393
+  - CVE-2021-43394
+  - CVE-2023-33768
+  - CVE-2023-41991
+  atk_cited: []
+  mids:
+  - MID-001
+  - MID-002
+  - MID-003
+  - MID-026
+  - MID-027
+- id: TID-214
+  name: Secrets Extracted from Device Root of Trust
+  category: system software
+  maturity: 개념 증명
+  cwes:
+  - CWE-1326
+  cves:
+  - CVE-2022-38773
+  atk_cited: []
+  mids:
+  - MID-028
+  - MID-060
+- id: TID-215
+  name: Unencrypted SW/FW Updates
+  category: system software
+  maturity: 개념 증명
+  cwes:
+  - CWE-311
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-026
+- id: TID-216
+  name: Firmware Update Rollbacks Allowed
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-1328
+  cves:
+  - CVE-2018-9099
+  atk_cited: []
+  mids:
+  - MID-030
+- id: TID-217
+  name: Remotely Initiated Updates Can Cause DoS
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-400
+  cves:
+  - CVE-2015-5374
+  atk_cited:
+  - T0800
+  mids:
+  - MID-026
+  - MID-031
+  - MID-032
+- id: TID-218
+  name: Operating System Susceptible to Rootkit
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-693
+  cves: []
+  atk_cited:
+  - T0851
+  mids:
+  - MID-001
+  - MID-002
+  - MID-003
+  - MID-009
+- id: TID-219
+  name: OS/Kernel Privilege Escalation
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-250
+  cves: []
+  atk_cited:
+  - T0890
+  mids:
+  - MID-004
+  - MID-005
+  - MID-012
+  - MID-086
+  - MID-087
+- id: TID-220
+  name: Unpatchable Hardware Root of Trust
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-1329
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-033
+- id: TID-221
+  name: Authentication Bypass By Message Replay
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-294
+  cves: []
+  atk_cited:
+  - T1212
+  mids:
+  - MID-036
+  - MID-037
+- id: TID-222
+  name: Critical System Service May Be Disabled
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-15
+  - CWE-306
+  cves: []
+  atk_cited:
+  - T0881
+  mids:
+  - MID-031
+  - MID-032
+  - MID-038
+- id: TID-223
+  name: System Susceptible to RAM Scraping
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-284
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-065
+- id: TID-224
+  name: Excessive Access via Software Diagnostic Features
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-1295
+  cves: []
+  atk_cited:
+  - T1623
+  mids:
+  - MID-018
+  - MID-039
+- id: TID-225
+  name: Logs can be manipulated on the device
+  category: system software
+  maturity: 관찰
+  cwes:
+  - CWE-284
+  cves:
+  - CVE-2024-9026
+  atk_cited:
+  - T1630
+  mids:
+  - MID-038
+  - MID-085
+- id: TID-226
+  name: Device leaks security information in logs
+  category: system software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-200
+  - CWE-532
+  cves:
+  - CVE-2023-51390
+  - CVE-2025-0895
+  - CVE-2025-26495
+  atk_cited: []
+  mids:
+  - MID-084
+- id: TID-301
+  name: Applications Binaries Modified
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-862
+  cves: []
+  atk_cited:
+  - T0821
+  mids:
+  - MID-001
+  - MID-002
+  - MID-003
+  - MID-009
+- id: TID-302
+  name: Install Untrusted Application
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-494
+  cves: []
+  atk_cited:
+  - T0843
+  mids:
+  - MID-003
+  - MID-009
+  - MID-031
+  - MID-038
+  - MID-040
+  - MID-041
+  - MID-051
+- id: TID-303
+  name: Excessive Trust in Offboard Management/IDE Software
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-114
+  cves:
+  - CVE-2022-1159
+  atk_cited:
+  - T0851
+  mids:
+  - MID-041
+- id: TID-304
+  name: Manipulate Runtime Environment
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-119
+  cves:
+  - CVE-2022-4046
+  - CVE-2023-28355
+  atk_cited: []
+  mids:
+  - MID-009
+  - MID-012
+  - MID-013
+  - MID-014
+  - MID-015
+  - MID-089
+- id: TID-305
+  name: Program Executes Dangerous System Calls
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-250
+  cves:
+  - CVE-2018-8872
+  atk_cited:
+  - T0834
+  - T0890
+  mids:
+  - MID-012
+  - MID-014
+  - MID-015
+- id: TID-306
+  name: Sandboxed Environments Escaped
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-693
+  cves:
+  - CVE-2020-15782
+  atk_cited: []
+  mids:
+  - MID-012
+  - MID-022
+  - MID-089
+- id: TID-307
+  name: Device Code Representations Inconsistent
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-829
+  cves:
+  - CVE-2022-1161
+  atk_cited: []
+  mids:
+  - MID-042
+- id: TID-308
+  name: Code Overwritten to Avoid Detection
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-223
+  - CWE-778
+  cves: []
+  atk_cited:
+  - T0872
+  mids:
+  - MID-017
+- id: TID-309
+  name: Device Exploits Engineering Workstation
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-20
+  cves:
+  - CVE-2021-22289
+  atk_cited: []
+  mids:
+  - MID-008
+  - MID-088
+- id: TID-310
+  name: Remotely Accessible Unauthenticated Services
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-285
+  cves: []
+  atk_cited:
+  - T0855
+  mids:
+  - MID-034
+- id: TID-311
+  name: Default Credentials
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-1392
+  - CWE-1393
+  cves:
+  - CVE-2021-22681
+  - CVE-2022-29962
+  atk_cited: []
+  mids:
+  - MID-043
+- id: TID-312
+  name: Credential Change Mechanism Can Be Abused
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-645
+  cves:
+  - CVE-2019-6527
+  atk_cited:
+  - T0892
+  - T1531
+  mids:
+  - MID-038
+- id: TID-313
+  name: Unauthenticated Session Changes Credential
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-287
+  cves:
+  - CVE-2019-6527
+  atk_cited:
+  - T1136
+  - T1136.001
+  mids:
+  - MID-038
+- id: TID-314
+  name: Passwords Can Be Guessed Using Brute-Force Attempts
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-307
+  - CWE-334
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-045
+  - MID-046
+- id: TID-315
+  name: Password Retrieval Mechanism Abused
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-319
+  cves:
+  - CVE-2022-2003
+  - CVE-2022-31205
+  atk_cited: []
+  mids:
+  - MID-017
+- id: TID-316
+  name: Incorrect Certificate Verification Allows Authentication Bypass
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-295
+  cves:
+  - CVE-2014-0092
+  - CVE-2020-0601
+  - CVE-2023-41991
+  atk_cited: []
+  mids:
+  - MID-027
+- id: TID-317
+  name: Predictable Cryptographic Key
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-331
+  - CWE-338
+  cves:
+  - CVE-2012-4898
+  - CVE-2022-43485
+  atk_cited: []
+  mids:
+  - MID-033
+  - MID-047
+  - MID-048
+  - MID-060
+- id: TID-318
+  name: Insecure Cryptographic Implementation
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-1240
+  cves:
+  - CVE-2014-0092
+  - CVE-2014-0160
+  atk_cited: []
+  mids:
+  - MID-027
+  - MID-060
+- id: TID-319
+  name: Cross Site Scripting (XSS)
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-79
+  cves:
+  - CVE-2014-2246
+  - CVE-2018-14784
+  atk_cited:
+  - T1189
+  mids:
+  - MID-071
+- id: TID-320
+  name: SQL Injection
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-89
+  cves:
+  - CVE-2014-2351
+  - CVE-2016-5817
+  atk_cited:
+  - T1190
+  - T1505
+  - T1505.001
+  mids:
+  - MID-072
+- id: TID-321
+  name: HTTP Application Session Hijacking
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-384
+  cves:
+  - CVE-2020-25198
+  - CVE-2022-43398
+  atk_cited:
+  - T1539
+  mids:
+  - MID-035
+  - MID-073
+- id: TID-322
+  name: Cross Site Request Forgery (CSRF)
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-352
+  cves:
+  - CVE-2014-2358
+  - CVE-2015-3950
+  - CVE-2015-5698
+  - CVE-2016-5809
+  - CVE-2018-14783
+  atk_cited: []
+  mids:
+  - MID-074
+- id: TID-323
+  name: Path Traversal
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-22
+  cves:
+  - CVE-2015-0984
+  - CVE-2015-3939
+  - CVE-2018-13379
+  - CVE-2023-39810
+  atk_cited: []
+  mids:
+  - MID-075
+- id: TID-324
+  name: HTTP Direct Object Reference
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-639
+  cves:
+  - CVE-2017-11357
+  - CVE-2023-38257
+  atk_cited: []
+  mids:
+  - MID-076
+- id: TID-325
+  name: HTTP Injection/Response Splitting
+  category: application software
+  maturity: 개념 증명
+  cwes:
+  - CWE-113
+  cves:
+  - CVE-2012-0310
+  atk_cited: []
+  mids:
+  - MID-078
+- id: TID-326
+  name: Insecure Deserialization
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-502
+  cves:
+  - CVE-2019-10068
+  - CVE-2021-4104
+  - CVE-2021-44228
+  - CVE-2022-1118
+  - CVE-2023-31222
+  atk_cited: []
+  mids:
+  - MID-077
+  - MID-088
+  - MID-089
+- id: TID-327
+  name: Out of Bounds Memory Access
+  category: application software
+  maturity: 알려진 취약점
+  cwes: []
+  cves:
+  - CVE-2015-1449
+  - CVE-2020-5735
+  - CVE-2021-31755
+  atk_cited: []
+  mids:
+  - MID-004
+  - MID-005
+  - MID-006
+  - MID-013
+  - MID-086
+- id: TID-328
+  name: Hardcoded Credentials
+  category: application software
+  maturity: 관찰
+  cwes:
+  - CWE-798
+  cves:
+  - CVE-2020-29583
+  - CVE-2022-34151
+  - CVE-2024-28747
+  - CVE-2024-57811
+  atk_cited:
+  - T0891
+  mids:
+  - MID-043
+- id: TID-329
+  name: Improper Password Storage
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-257
+  cves:
+  - CVE-2011-4723
+  - CVE-2012-3037
+  atk_cited: []
+  mids:
+  - MID-049
+- id: TID-330
+  name: Cryptographic Timing Side-Channel
+  category: application software
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-208
+  - CWE-1254
+  cves:
+  - CVE-2024-13176
+  atk_cited: []
+  mids:
+  - MID-027
+  - MID-044
+- id: TID-401
+  name: Undocumented Protocol Features
+  category: networking
+  maturity: 개념 증명
+  cwes:
+  - CWE-912
+  - CWE-1059
+  - CWE-1371
+  cves:
+  - CVE-2013-2802
+  - CVE-2021-22779
+  atk_cited: []
+  mids:
+  - MID-079
+- id: TID-404
+  name: Remotely Triggerable Deadlock/DoS
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-833
+  cves:
+  - CVE-2015-5374
+  atk_cited:
+  - T0814
+  mids:
+  - MID-008
+  - MID-032
+  - MID-088
+  - MID-089
+- id: TID-405
+  name: Network Stack Resource Exhaustion
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-400
+  - CWE-410
+  cves:
+  - CVE-2020-3566
+  atk_cited:
+  - T0881
+  mids:
+  - MID-008
+  - MID-032
+  - MID-080
+  - MID-088
+  - MID-089
+- id: TID-406
+  name: Unauthorized Messages or Connections
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-287
+  - CWE-306
+  cves:
+  - CVE-2019-18250
+  - CVE-2019-6533
+  - CVE-2022-30266
+  - CVE-2022-33139
+  atk_cited:
+  - T0855
+  - T0860
+  mids:
+  - MID-034
+  - MID-081
+- id: TID-407
+  name: Missing Message Replay Protection
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-294
+  cves:
+  - CVE-2013-2820
+  - CVE-2017-6034
+  atk_cited:
+  - T0887
+  mids:
+  - MID-036
+  - MID-037
+- id: TID-408
+  name: Unencrypted Sensitive Data Communication
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-319
+  cves:
+  - CVE-2013-2819
+  - CVE-2022-29519
+  - CVE-2022-29954
+  - CVE-2022-30261
+  - CVE-2022-30266
+  - CVE-2022-30312
+  - CVE-2022-31204
+  atk_cited:
+  - T0842
+  - T0887
+  mids:
+  - MID-035
+  - MID-081
+- id: TID-410
+  name: Cryptographic Protocol Side Channel
+  category: networking
+  maturity: 개념 증명
+  cwes:
+  - CWE-1230
+  cves: []
+  atk_cited: []
+  mids:
+  - MID-044
+- id: TID-411
+  name: Weak/Insecure Cryptographic Protocol
+  category: networking
+  maturity: 알려진 취약점
+  cwes:
+  - CWE-327
+  cves:
+  - CVE-2022-29955
+  - CVE-2022-29960
+  - CVE-2022-30273
+  atk_cited: []
+  mids:
+  - MID-044
+  - MID-082
+- id: TID-412
+  name: Network Routing Capability Abuse
+  category: networking
+  maturity: 관찰
+  cwes:
+  - CWE-15
+  - CWE-306
+  cves: []
+  atk_cited:
+  - T0884
+  mids:
+  - MID-017
+  - MID-018
+  - MID-031
+  - MID-038
+  - MID-083
+mitigations:
+- id: MID-001
+  name: Software Only Bootloader Authentication
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.14
+    - Integrity of the boot process
+- id: MID-002
+  name: Hardware-backed Bootloader Authentication
+  maturity: intermediate
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.14
+    - Integrity of the boot process
+- id: MID-003
+  name: Periodic/Continuous Integrity Measurement and Remote Attestation
+  maturity: leading
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-004
+  name: Memory Hardening Against Code Injection
+  maturity: foundational
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-005
+  name: Memory Safe Programming Languages
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-006
+  name: Driver Memory Isolation
+  maturity: leading
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-007
+  name: Control Flow Manipulation Protections
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-008
+  name: Decidable Protocols and Parsers
+  maturity: intermediate
+  iec62443_4_2: []
+- id: MID-009
+  name: Runtime System Integrity Checking
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-010
+  name: No Runtime OS Driver Loading
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+- id: MID-011
+  name: OS Driver/Peripheral Authentication
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-012
+  name: OS-based Access Control Mechanisms
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 2.1
+    - Authorization Enforcement
+- id: MID-013
+  name: Process and Thread Memory Segmentation
+  maturity: foundational
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-014
+  name: Sandboxing
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-015
+  name: Containerization
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-016
+  name: Least Functionality
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+- id: MID-017
+  name: Security-relevant Auditing and Logging
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 2.8
+    - Auditable events
+  - - CR 3.7
+    - Error handling
+- id: MID-018
+  name: Require Authentication for Privileged Functions
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.1
+    - Human user interaction and authentication
+- id: MID-019
+  name: ROP Gadget Minimization
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection for malicious code
+- id: MID-020
+  name: Pointer Authentication
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection for malicious code
+- id: MID-021
+  name: VM Hardening
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+- id: MID-022
+  name: Segmentation Through Hardware-assisted VMs
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 2.1 RE(1)
+    - Authorization enforcement
+- id: MID-023
+  name: Hypervisor Hardening
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+  - - CR 2.1 RE(1)
+    - Authorization enforcement
+- id: MID-024
+  name: Encrypted VM Isolation
+  maturity: leading
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+  - - CR 2.1 RE(1)
+    - Authorization enforcement
+- id: MID-025
+  name: End-of-Life Management Features
+  maturity: leading
+  iec62443_4_2: []
+- id: MID-026
+  name: Secure Firmware Update
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.10 RE(1)
+    - Support for updates
+- id: MID-027
+  name: Validated Cryptographic Libraries
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+- id: MID-028
+  name: Hardware-backed Key Storage
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 1.9 RE(1)
+    - Strength of public key-based authentication
+  - - CR 1.14 RE(1)
+    - Strength of symmetric key-based Authentication
+  - - CR 1.5 RE(1)
+    - Authenticator management
+- id: MID-029
+  name: Hardware Root of Trust
+  maturity: intermediate
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.12
+    - Provisioning product supplier roots of trust
+- id: MID-030
+  name: Firmware Rollback Protections
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.10
+    - Support for updates
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection for malicious code
+- id: MID-031
+  name: Physical Presence Validation
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 2.1
+    - Authorization enforcement
+- id: MID-032
+  name: System Service Availability Manager
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.1
+    - Denial of service protection
+  - - CR 7.2
+    - Resource management
+- id: MID-033
+  name: Unique and Unpredictable Factory Preinstalled Secret Keys
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 1.2
+    - Software process and device identification and authentication - (1) Unique identification and authentication
+- id: MID-034
+  name: Authenticate Network Messages
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.1
+    - Communication integrity (1) Communication authentication
+- id: MID-035
+  name: Encrypt Network Traffic
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+- id: MID-036
+  name: Cryptographic Nonces
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+  - - CR 3.1
+    - Communication integrity (1) Communication authentication
+- id: MID-037
+  name: Network Timestamps
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.1
+    - Communication integrity (1) Communication authentication
+- id: MID-038
+  name: Authenticate for Administrative Actions
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.1
+    - Human user interaction and authentication
+  - - CR 2.1
+    - Authorization Enforcement
+- id: MID-039
+  name: Restrict Software Diagnostic Functions
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.1
+    - Human user interaction and authentication
+  - - CR 2.1
+    - Authorization Enforcement
+  - - CR 6.1
+    - Audit log accessibility
+  - - CR 3.7
+    - Error handling
+  - - CR 3.9
+    - Protection of audit information
+- id: MID-040
+  name: Cryptographically Signed Custom Programs
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-041
+  name: Cryptographically Signed Vendor-supplied Programs
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-042
+  name: Device Checks Consistency Between Binary/Running Code and Textual Code
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-043
+  name: Manage Default Login Credentials
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.1 RE(1)
+    - Human user identification and authentication
+  - - CR 1.5
+    - Authenticator management
+- id: MID-044
+  name: Strong Cryptographic Algorithms and Protocols
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+  - - CR 1.14
+    - Strength of symmetric key-based authentication
+  - - CR 1.9
+    - Strength of public key-based authentication
+- id: MID-045
+  name: Multi-factor Authentication
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 1.1 RE(2)
+    - Human user interaction and authentication
+- id: MID-046
+  name: Authentication Attempts Timeouts and Lockouts
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.11
+    - Unsuccessful login attempts
+  - - CR 2.5
+    - Session lock
+- id: MID-047
+  name: Sufficient Entropy for Keys
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+- id: MID-048
+  name: Hardware Random Number Generator
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+- id: MID-049
+  name: Secure Password Storage
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 1.5
+    - Authenticator management
+- id: MID-050
+  name: Operating System Defenses Against Microarchitecture Feature Side Channels
+  maturity: foundational
+  iec62443_4_2: []
+- id: MID-051
+  name: Disallow User-Provided Code
+  maturity: foundational
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection for malicious code
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-052
+  name: Physically Protect Circuit Board Traces and Chip Pins
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-053
+  name: Use IOMMU to Implement DMA Access Controls
+  maturity: intermediate
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection for malicious code
+  - - CR 2.1
+    - Authorization enforcement
+- id: MID-054
+  name: Encrypt and Authenticate Non-volatile Storage Contents
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+  - - CR 4.2
+    - Information persistence
+- id: MID-055
+  name: Use Highly Integrated Processors to Avoid Physical Attacks
+  maturity: intermediate
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-056
+  name: Allow Device Administrators to Disable Removable Storage Support
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+- id: MID-057
+  name: Disable Physical Development and Debugging Ports
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 2.13
+    - Use of physical diagnostic and test interfaces
+- id: MID-058
+  name: Engage Hardware Readout Protection Mechanisms
+  maturity: foundational
+  iec62443_4_2:
+  - - EDR/HDR/NDR 2.13
+    - Use of physical diagnostic and test interfaces
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-059
+  name: Software Patterns for Side Channel Resistance
+  maturity: intermediate
+  iec62443_4_2: []
+- id: MID-060
+  name: Dedicated Hardware Cryptographic Modules
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+  - - CR 1.9 RE(1)
+    - Strength of public key-based authentication
+  - - CR 1.14 RE(1)
+    - Strength of symmetric key-based Authentication
+  - - CR 1.5 RE(1)
+    - Authenticator management
+- id: MID-061
+  name: Use Separate Processors for Isolation
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 2.1
+    - Authorization enforcement (1) Authorization enforcement for all users (humans, software processes and devices)
+- id: MID-062
+  name: Hardware Mitigations for Fault Injection
+  maturity: leading
+  iec62443_4_2: []
+- id: MID-063
+  name: Software Mitigations for Fault Injection
+  maturity: intermediate
+  iec62443_4_2: []
+- id: MID-064
+  name: Store Critical Code and Data in On-Chip Memory
+  maturity: intermediate
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-065
+  name: RAM Encryption
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+- id: MID-066
+  name: Implement Redundant Processing and Memory
+  maturity: intermediate
+  iec62443_4_2: []
+- id: MID-067
+  name: Implement DRAM RowHammer-resistant DRAM and Memory Controllers
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 3.4
+    - Software and information integrity
+- id: MID-068
+  name: Data Bus Encryption and Message Authentication
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 3.1 RE(1)
+    - Communication integrity
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-069
+  name: Electrical Fault Protection
+  maturity: intermediate
+  iec62443_4_2:
+  - - EDR/HDR/NDR 3.11
+    - Physical tamper resistance and detection
+- id: MID-070
+  name: Peripheral Component Authentication
+  maturity: leading
+  iec62443_4_2:
+  - - CR 1.2
+    - Software process and device identification and authentication
+- id: MID-071
+  name: Sanitized and Escaped User Data for Web Applications
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.5
+    - Input validation
+- id: MID-072
+  name: Parameterized SQL Queries
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.5
+    - Input validation
+- id: MID-073
+  name: Secure HTTP Session Management
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.8
+    - Session integrity
+- id: MID-074
+  name: Cross Site Request Forgery Mitigations
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.8
+    - Session integrity
+- id: MID-075
+  name: Path Traversal Protections
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.5
+    - Input validation
+- id: MID-076
+  name: Web Direct Object Reference Authentication
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 2.1 RE(1)
+    - Authorization enforcement
+- id: MID-077
+  name: Secure Deserialization
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.5
+    - Input validation
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-078
+  name: HTTP Request/Response Validation
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 3.5
+    - Input validation
+- id: MID-079
+  name: Remove Undocumented Network Functionality
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.7
+    - Least functionality
+- id: MID-080
+  name: Network Request Processing Limits
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 7.1
+    - Denial of service protection
+  - - CR 7.2
+    - Resource management
+- id: MID-081
+  name: Secure Network Tunnels
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+  - - CR 3.1 RE(1)
+    - Communication integrity
+- id: MID-082
+  name: Post-quantum Cryptography
+  maturity: intermediate
+  iec62443_4_2:
+  - - CR 4.3
+    - Use of cryptography
+- id: MID-083
+  name: Network Firewall/Access Control List
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 5.1
+    - Network segmentation
+- id: MID-084
+  name: Restrict Sensitive Data from Logs
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 4.1
+    - Information confidentiality
+- id: MID-085
+  name: Export Logs Over the Network Off of Device
+  maturity: foundational
+  iec62443_4_2:
+  - - CR 6.1
+    - Audit log accessibility
+  - - CR 3.9
+    - Protection of audit information
+- id: MID-086
+  name: Hardware Enforcement of Memory Access
+  maturity: leading
+  iec62443_4_2:
+  - - SAR/EDR/HDR/NDR 3.2
+    - Protection from malicious code
+- id: MID-087
+  name: Utilization of Formally Verified OS (Micro-)Kernels
+  maturity: leading
+  iec62443_4_2: []
+- id: MID-088
+  name: Formally Verified Parsers
+  maturity: leading
+  iec62443_4_2:
+  - - CR 3.5
+    - Input Validation
+- id: MID-089
+  name: Formal Methods Verification of Critical Functionality Implementation
+  maturity: leading
+  iec62443_4_2: []

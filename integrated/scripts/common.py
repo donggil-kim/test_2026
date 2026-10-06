@@ -3,7 +3,8 @@
 원본
   - AI: sources/ai_v3.2 (통합 AI 보안위협 매트릭스 v3.2, Lv3 124개)
   - 클라우드: output/통합_클라우드보안위협_매트릭스_v5.xlsx (Lv3 154행, 고유 기법 126개)
-요약(재구성 Lv3) 문안: integrated/data/ai/D*.yaml, integrated/data/cloud/<전술>.yaml
+  - OT: ot/output/통합_OT보안위협_매트릭스_v5.xlsx (Lv3 141행, 고유 기법·항목 118개)
+요약(재구성 Lv3) 문안: integrated/data/ai/D*.yaml, integrated/data/cloud/<전술>.yaml, integrated/data/ot/<전술>.yaml
 """
 import collections
 import glob
@@ -17,6 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 AI_DIR = os.path.join(ROOT, "sources", "ai_v3.2")
 AI_XLSX = os.path.join(AI_DIR, "output", "통합_AI보안위협_매트릭스_v3.2_LITE.xlsx")
 CLOUD_XLSX = os.path.join(ROOT, "output", "통합_클라우드보안위협_매트릭스_v5.xlsx")
+OT_XLSX = os.path.join(ROOT, "ot", "output", "통합_OT보안위협_매트릭스_v5.xlsx")
 DATA_DIR = os.path.join(ROOT, "integrated", "data")
 
 LEVEL = {"상": 3, "중": 2, "하": 1}
@@ -26,10 +28,45 @@ RISK = {("상", "상"): "매우 높음", ("상", "중"): "높음", ("중", "상"
 RISK_ORDER = ["매우 높음", "높음", "보통", "낮음"]
 EVIDENCE_ORDER = ["실제 사고 확인", "실사용 기법 포함", "실증·공개 취약점", "이론·시나리오"]
 CLOUD_REAL_KINDS = {"사고", "캠페인", "사례연구(익명)", "규제공시(8-K)", "위협인텔 보고서"}
+OT_REAL_STATUS = "실제 사고"  # OT '역매핑_사고사례' 시트 '집계' 열에서 실제 사고로 세는 값
+# OT 근거 편중 표기용 — ATT&CK 공식 절차가 촘촘해 원본 36~46행에 매핑된 대형 사고 5건(OT 방법론 §12)
+OT_MAJOR_INCIDENTS = {"INC-002", "INC-003", "INC-004", "INC-008", "INC-009"}
 
 AI_DOMAINS = ["D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10"]
 TACTICS = ["RD", "IA", "EX", "PE", "PV", "ST", "DI", "CA", "DS", "LM", "CO", "C2", "EF", "IM"]
+OT_TACTICS = ["RD", "IA", "EX", "PE", "PV", "EV", "DS", "LM", "CO", "C2", "IR", "IP", "IM"]
+KINDS = ["ai", "cloud", "ot"]  # Lv0 순서
+LABEL = {"ai": "AI", "cloud": "클라우드", "ot": "OT"}
+DOMAINS = {"ai": AI_DOMAINS, "cloud": TACTICS, "ot": OT_TACTICS}
 CASE_TAGS = ["실제 사고", "공개 취약점", "실증", "ATT&CK 사례", "시나리오"]
+# Lv0별 허용 사례 유형 — OT는 [위협인텔](배포 전에 발견된 공격 도구)·[EMB3D](EMB3D 장치 위협 인용)를 더 씀
+CASE_TAGS_BY_KIND = {"ai": CASE_TAGS, "cloud": CASE_TAGS, "ot": CASE_TAGS + ["위협인텔", "EMB3D"]}
+# 같은 Lv0 안 대표 사례 반복 사용 경고 — 대형 사고 5건에 근거가 몰린 OT에 적용(AI·클라우드는 v1에서 수동 검토)
+# 사례는 원본 참조 줄의 사고 ID(INC-…)로 묶어, 같은 사고의 다른 표기('2016 우크라이나'·'2016 우크라이나 송전 변전소')도 반복으로 셈
+CASE_REUSE_CHECK = {"ot"}
+# 반복이 불가피한 사례 — {(Lv0, 사고 ID 또는 '사례명(시점)'): (허용 항목, 사유)}. 허용 항목 밖에서 또 쓰면 다시 경고
+# OT: 대형 5건은 가장 특징적인 항목(IR-01 2025 폴란드 · IP-02 2016 우크라이나 · IM-05 Triton · PE-01 Stuxnet ·
+#     EX-03 2015 우크라이나)에 두고, 구성 원본의 실제 사고가 다른 항목에 이미 배치된 사고뿐인 항목에서만 함께 씀
+CASE_REUSE_ALLOWED = {
+    ("ot", "INC-009"): ({"OT-PE-01", "OT-EX-02", "OT-EV-02"},
+                        "OT-EX-02·EV-02는 구성 원본의 실제 사고가 대형 5건뿐 — 주기 실행 블록 감염·PLC 루트킷은 Stuxnet의 다른 단계"),
+    ("ot", "INC-004"): ({"OT-IM-05", "OT-PV-01", "OT-LM-01"},
+                        "OT-PV-01·LM-01은 구성 원본의 실제 사고가 Triton·Stuxnet뿐 — 펌웨어 0-day 권한 상승·SIS 프로그램 추가는 Triton의 다른 단계"),
+    ("ot", "INC-008"): ({"OT-IR-01", "OT-RD-02"},
+                        "OT-RD-02는 구성 원본의 실제 사고가 Triton·2025 폴란드뿐 — LLM 생성 스크립트·페이로드 재작성은 준비 단계"),
+    ("ot", "INC-002"): ({"OT-EX-03", "OT-IR-05"},
+                        "OT-IR-05의 실제 사고 줄이 모두 다른 항목에 배치된 사고 — 직렬-이더넷 변환기 펌웨어 덮어쓰기는 펌웨어 변조의 대표 사례"),
+    ("ot", "INC-003"): ({"OT-IP-02", "OT-EV-01"},
+                        "OT-EV-01의 대형 5건 밖 사례(2022 우크라이나·NotPetya)는 OT-EX-01·PV-02·PE-02에 배치 — 전력 프로토콜 이름 위장은 OT 특화 사례"),
+    ("ot", "INC-006"): ({"OT-EX-01", "OT-PV-02"},
+                        "OT-EX-01·PV-02 모두 대형 5건 밖 실제 사고가 2022 우크라이나뿐 — SCADA 명령 도구 실행·GPO 와이퍼 배포는 다른 단계"),
+    ("ot", "INC-007"): ({"OT-IP-01", "OT-PE-03"},
+                        "OT-PE-03의 대형 5건 밖 사례는 2022 우크라이나·리비우뿐 — 웹셸 지속성·Modbus 파라미터 변조는 다른 단계"),
+    ("ot", "INC-013"): ({"OT-IA-06", "OT-EX-04"},
+                        "OT-EX-04의 대형 5건 밖 사례는 Dragonfly·2022 우크라이나뿐 — 벤더 설치 파일 변조·메일 첨부 실행은 캠페인의 다른 경로"),
+    ("ot", "INC-018"): ({"OT-DS-02", "OT-CO-03"},
+                        "OT-DS-02·CO-03 모두 대형 5건 밖 실제 사고가 VPNFilter뿐 — 패킷 스니퍼·ssler 중간자 모듈은 다른 기능"),
+}
 SOURCE_TAG_ALIAS = {"실증·연구": "실증"}
 RECENT_FROM = "2025"  # 최근 사고 기준 연도(이 해 1월 1일 이후)
 
@@ -115,31 +152,96 @@ def load_cloud():
         if sum(inc_dates[i][:4] >= RECENT_FROM for i in r["real_incidents"]) != (r["최근 사고(2025~)"] or 0):
             raise ValueError(f"클라우드 최근 사고 수 재현 불일치: {r['CTC-ID']}")
         if t not in tech:
-            tech[t] = {"row": r, "ctc": [], "tactics": []}
+            tech[t] = {"row": r, "rows": [], "ctc": [], "tactics": []}
+        tech[t]["rows"].append(r)
         tech[t]["ctc"].append(r["CTC-ID"])
         tech[t]["tactics"].append(r["tactic"])
     tactics = collections.OrderedDict()
     for r in rows:
         tactics.setdefault(r["tactic"], r["도메인(Lv1)"])
+    for x in tech.values():
+        x["ids"] = x["ctc"]
     return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": CLOUD_XLSX, "inc_dates": inc_dates}
+
+
+def load_ot():
+    """OT v5 원본: 행(141), 키(ATT&CK·EMB3D ID)별 행 목록·전술·실제 사고 ID 집합."""
+    wb = openpyxl.load_workbook(OT_XLSX, read_only=True, data_only=True)
+    m = list(wb["통합 매트릭스"].iter_rows(values_only=True))
+    header = m[3]
+    rows = [dict(zip(header, r)) for r in m[4:] if r[1]]
+    inc = list(wb["역매핑_사고사례"].iter_rows(values_only=True))
+    ih = {k: i for i, k in enumerate(inc[0])}
+    real = {x[ih["사건ID"]] for x in inc[1:] if x[ih["집계"]] == OT_REAL_STATUS}
+    inc_dates = {x[ih["사건ID"]]: str(x[ih["기준일"]] or "") for x in inc[1:]}
+    tech = collections.OrderedDict()
+    for r in rows:
+        k = str(r["ATT&CK·EMB3D ID"])
+        r["tactic"] = r["도메인(Lv1)"][1:3]
+        ids = {i.strip() for i in re.split(r"[,\n]", str(r["관련 사례 ID"] or "")) if i.strip()}
+        r["real_incidents"] = sorted(ids & real)
+        if len(r["real_incidents"]) != r["실제 사고 수"]:
+            raise ValueError(f"OT 실제 사고 수 재현 불일치: {r['OTC-ID']}")
+        if sum(inc_dates[i][:4] >= RECENT_FROM for i in r["real_incidents"]) != (r["최근 사고(2025~)"] or 0):
+            raise ValueError(f"OT 최근 사고 수 재현 불일치: {r['OTC-ID']}")
+        if k not in tech:
+            tech[k] = {"row": r, "rows": [], "otc": [], "tactics": []}
+        tech[k]["rows"].append(r)
+        tech[k]["otc"].append(r["OTC-ID"])
+        tech[k]["tactics"].append(r["tactic"])
+    tactics = collections.OrderedDict()
+    for r in rows:
+        tactics.setdefault(r["tactic"], r["도메인(Lv1)"])
+    for x in tech.values():
+        x["ids"] = x["otc"]
+    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": OT_XLSX, "inc_dates": inc_dates,
+            "n_incidents": len(inc) - 1, "n_real": len(real)}
+
+
+def load_sources():
+    return {"ai": load_ai(), "cloud": load_cloud(), "ot": load_ot()}
+
+
+def source_keys(kind, src):
+    """Lv0별 구성 원본 키 → 원본 (AI: UT Lv3 ID, 클라우드: ATT&CK ID, OT: ATT&CK·EMB3D ID)."""
+    return src["lv3"] if kind == "ai" else src["tech"]
+
+
+def domains_of(kind, src):
+    """Lv0별 Lv1 도메인 {코드: 표시명} (원본 순서)."""
+    return src["domains"] if kind == "ai" else src["tactics"]
+
+
+def source_refs(kind, src, key):
+    """구성 원본의 참조 문자열 (전술 반복 행은 모든 행의 참조를 합침)."""
+    if kind == "ai":
+        return src["lv3"][key]["참조"] or ""
+    return "\n".join(r["참조"] or "" for r in src["tech"][key]["rows"])
+
+
+def member_row(src, key, domain):
+    """구성 원본 키의 대표 행 — 요약 항목의 주 전술에 행이 있으면 그 행, 없으면(전술 이동) 원본 첫 행.
+    전술마다 심각도가 다른 반복 기법(예: OT T0851 회피 '중'·대응 기능 억제 '상')을 주 전술 기준으로 평가한다."""
+    t = src["tech"][key]
+    for r in t["rows"]:
+        if r["tactic"] == domain:
+            return r
+    return t["row"]
 
 
 # ---------------------------------------------------------------- 요약 문안 로더
 def load_summary():
-    ai, cloud = [], []
-    for dom in AI_DOMAINS:
-        p = os.path.join(DATA_DIR, "ai", f"{dom}.yaml")
-        if os.path.exists(p):
-            for e in yaml.safe_load(open(p)) or []:
-                e["domain"] = dom
-                ai.append(e)
-    for tac in TACTICS:
-        p = os.path.join(DATA_DIR, "cloud", f"{tac}.yaml")
-        if os.path.exists(p):
-            for e in yaml.safe_load(open(p)) or []:
-                e["domain"] = tac
-                cloud.append(e)
-    return ai, cloud
+    """요약 문안 {Lv0: [항목]} — data/<Lv0>/<도메인>.yaml을 도메인 순서로 읽고 항목에 domain 키를 붙인다."""
+    out = {}
+    for kind in KINDS:
+        out[kind] = []
+        for dom in DOMAINS[kind]:
+            p = os.path.join(DATA_DIR, kind, f"{dom}.yaml")
+            if os.path.exists(p):
+                for e in yaml.safe_load(open(p, encoding="utf-8")) or []:
+                    e["domain"] = dom
+                    out[kind].append(e)
+    return out
 
 
 # ---------------------------------------------------------------- 근거 재산정
@@ -184,14 +286,19 @@ def evaluate_ai(entry, src):
     return _result(entry, rep, lik, sev, evidence, n, recent, incident_ids=atlas, owasp_incidents=owasp)
 
 
-def evaluate_cloud(entry, src):
-    mem = [(t, src["tech"][t]["row"]) for t in entry["members"]]
+def evaluate_attack(entry, src):
+    """ATT&CK 기반 원본(클라우드·OT) 공용 재산정."""
+    mem = [(t, member_row(src, t, entry["domain"])) for t in entry["members"]]
     ids = sorted(set().union(*[set(r["real_incidents"]) for _, r in mem]))
     recent = sum(src["inc_dates"].get(i, "")[:4] >= RECENT_FROM for i in ids)
     members = [dict(id=t, lik=r["발생가능성"], sev=r["심각도"], own=len(r["real_incidents"])) for t, r in mem]
     rep, lik, sev = _representative(members, len(ids))
     evidence = min((r["근거 수준"] for _, r in mem), key=EVIDENCE_ORDER.index)
     return _result(entry, rep, lik, sev, evidence, len(ids), recent, incident_ids=ids)
+
+
+evaluate_cloud = evaluate_ot = evaluate_attack
+EVALUATE = {"ai": evaluate_ai, "cloud": evaluate_attack, "ot": evaluate_attack}
 
 
 # ---------------------------------------------------------------- 문안 검증
@@ -248,7 +355,7 @@ def check_entry(entry, refs, kind):
                 errs.append(f"{eid}: 원본에 '공개 사고 미확인' 근거 없음")
             continue
         m = CASE_RE.match(c)
-        if not m or m.group("tag") not in CASE_TAGS:
+        if not m or m.group("tag") not in CASE_TAGS_BY_KIND[kind]:
             errs.append(f"{eid}: 사례 형식 오류: {c[:40]}")
             continue
         tag, body = m.group("tag"), m.group("body")
@@ -276,57 +383,98 @@ def check_entry(entry, refs, kind):
     return errs, warns
 
 
-def check_all(ai_src, cl_src, ai_sum, cl_sum):
+def entry_prefix(kind, domain):
+    """요약 항목 ID 접두사 — AI-<도메인번호>- / CL-<전술>- / OT-<전술>-."""
+    return {"ai": f"AI-{domain[1:]}-", "cloud": f"CL-{domain}-", "ot": f"OT-{domain}-"}[kind]
+
+
+def case_incidents(cases, refs):
+    """대표 사례 줄 → [('사례명(시점)', 사고 ID 목록)] ([시나리오]·'공개 사고 미확인'은 제외).
+    사고 ID는 사례명(시점)이 실린 원본 참조 줄의 'INC-…'에서 가져오며, 없으면(공개 취약점·EMB3D 등) 빈 목록."""
+    out = []
+    for line in _lines(cases):
+        m = CASE_RE.match(line.strip())
+        if not m or m.group("tag") == "시나리오":
+            continue
+        n = NAMED_RE.match(m.group("body"))
+        if not n:
+            continue
+        name = n.group("name").strip()
+        label = f"{name}({n.group('date')})" if n.group("date") else name
+        key = label if n.group("date") else f"] {name}:"  # check_entry의 출처 대조 키와 같음
+        hit = next((l for l in (refs or "").split("\n") if key in l), "")
+        out.append((label, list(dict.fromkeys(re.findall(r"INC-\d+", hit)))))
+    return out
+
+
+def check_all(src, summ):
+    """src·summ: {Lv0: 원본} · {Lv0: [요약 항목]}."""
     errs, warns = [], []
     # 1) 원본 전수 배정 (누락·중복 0)
-    used = collections.Counter(m for e in ai_sum for m in e["members"])
-    missing = [k for k in ai_src["lv3"] if k not in used]
-    dup = [k for k, v in used.items() if v > 1]
-    unknown = [k for k in used if k not in ai_src["lv3"]]
-    used_c = collections.Counter(m for e in cl_sum for m in e["members"])
-    missing_c = [k for k in cl_src["tech"] if k not in used_c]
-    dup_c = [k for k, v in used_c.items() if v > 1]
-    unknown_c = [k for k in used_c if k not in cl_src["tech"]]
-    for label, lst in [("AI 미배정", missing), ("AI 중복", dup), ("AI 없는 ID", unknown),
-                       ("클라우드 미배정", missing_c), ("클라우드 중복", dup_c), ("클라우드 없는 ID", unknown_c)]:
-        if lst:
-            (warns if "미배정" in label else errs).append(f"{label}: {lst}")
-    ids = [e["id"] for e in ai_sum + cl_sum]
+    for kind in KINDS:
+        keys = source_keys(kind, src[kind])
+        used = collections.Counter(m for e in summ[kind] for m in e["members"])
+        missing = [k for k in keys if k not in used]
+        dup = [k for k, v in used.items() if v > 1]
+        unknown = [k for k in used if k not in keys]
+        for label, lst in [(f"{LABEL[kind]} 미배정", missing), (f"{LABEL[kind]} 중복", dup),
+                           (f"{LABEL[kind]} 없는 ID", unknown)]:
+            if lst:
+                (warns if "미배정" in label else errs).append(f"{label}: {lst}")
+    ids = [e["id"] for kind in KINDS for e in summ[kind]]
     for k, v in collections.Counter(ids).items():
         if v > 1:
             errs.append(f"위협 ID 중복: {k}")
     # 2) 항목별 문안·사례 검증
-    for e in ai_sum:
-        if any(m not in ai_src["lv3"] for m in e.get("members", [])):
+    valid = {kind: [e for e in summ[kind] if all(m in source_keys(kind, src[kind]) for m in e.get("members", []))]
+             for kind in KINDS}
+    for kind in KINDS:
+        for e in valid[kind]:
+            refs = [source_refs(kind, src[kind], m) for m in e["members"]]
+            a, b = check_entry(e, refs, kind)
+            errs += a
+            warns += b
+            if not e["id"].startswith(entry_prefix(kind, e["domain"])):
+                errs.append(f"{e['id']}: ID와 {'도메인' if kind == 'ai' else '전술'}({e['domain']}) 불일치")
+    # 3) 근거 수준과 사례 유형 정합성: '실제 사고 확인'이면 [실제 사고] 1건 이상,
+    #    [EMB3D]는 구성 원본에 실제 사고·실증 사례가 없을 때만 (OT 결정 D7)
+    for kind in KINDS:
+        for e in valid[kind]:
+            if not e.get("members"):
+                continue
+            cases = e.get("cases") or ""
+            if EVALUATE[kind](e, src[kind])["evidence"] == "실제 사고 확인" and "[실제 사고]" not in cases:
+                warns.append(f"{e['id']}: 근거 수준 '실제 사고 확인'이나 대표 사례에 [실제 사고] 없음")
+            if "[EMB3D]" in cases:
+                refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+                if re.search(r"^\s*- \[(실제 사고|실증|실증·연구)\]", refs, re.M):
+                    warns.append(f"{e['id']}: [EMB3D] 사례는 구성 원본에 실제 사고·실증 사례가 없을 때만 사용")
+    # 4) 대표 사례 분산: 같은 Lv0 안에서 같은 사고를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
+    #    사고 ID가 없는 사례(공개 취약점·EMB3D 등)는 '사례명(시점)'으로 셈. 허용 목록의 항목 안에서만 반복을 허용
+    for kind in KINDS:
+        if kind not in CASE_REUSE_CHECK:
             continue
-        refs = [ai_src["lv3"][m]["참조"] or "" for m in e["members"]]
-        a, b = check_entry(e, refs, "ai")
-        errs += a
-        warns += b
-        if not e["id"].startswith(f"AI-{e['domain'][1:]}-"):
-            errs.append(f"{e['id']}: ID와 도메인({e['domain']}) 불일치")
-    for e in cl_sum:
-        if any(m not in cl_src["tech"] for m in e.get("members", [])):
-            continue
-        refs = [cl_src["tech"][m]["row"]["참조"] or "" for m in e["members"]]
-        a, b = check_entry(e, refs, "cloud")
-        errs += a
-        warns += b
-        if not e["id"].startswith(f"CL-{e['domain']}-"):
-            errs.append(f"{e['id']}: ID와 전술({e['domain']}) 불일치")
-    # 3) 근거 수준과 사례 유형 정합성: '실제 사고 확인'이면 [실제 사고] 1건 이상
-    for e, ev in [(e, evaluate_ai(e, ai_src)) for e in ai_sum if all(m in ai_src["lv3"] for m in e["members"])] + \
-                 [(e, evaluate_cloud(e, cl_src)) for e in cl_sum if all(m in cl_src["tech"] for m in e["members"])]:
-        if ev["evidence"] == "실제 사고 확인" and "[실제 사고]" not in (e.get("cases") or ""):
-            warns.append(f"{e['id']}: 근거 수준 '실제 사고 확인'이나 대표 사례에 [실제 사고] 없음")
+        seen, labels = collections.defaultdict(list), collections.defaultdict(list)
+        for e in valid[kind]:
+            refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+            for label, incs in case_incidents(e.get("cases"), refs):
+                for key in incs or [label]:
+                    if e["id"] not in seen[key]:
+                        seen[key].append(e["id"])
+                    if label not in labels[key]:
+                        labels[key].append(label)
+        for key, where in seen.items():
+            allowed = CASE_REUSE_ALLOWED.get((kind, key), (set(), ""))[0]
+            if len(where) > 1 and not set(where) <= allowed:
+                name = key if labels[key] == [key] else f"{key} {'·'.join(labels[key])}"
+                warns.append(f"대표 사례 '{name}' 반복 사용: {', '.join(where)}")
     return errs, warns
 
 
 if __name__ == "__main__":
-    ai_src, cl_src = load_ai(), load_cloud()
-    ai_sum, cl_sum = load_summary()
-    errs, warns = check_all(ai_src, cl_src, ai_sum, cl_sum)
-    print(f"AI 요약 {len(ai_sum)}개 / 클라우드 요약 {len(cl_sum)}개")
+    src, summ = load_sources(), load_summary()
+    errs, warns = check_all(src, summ)
+    print(" / ".join(f"{LABEL[k]} 요약 {len(summ[k])}개" for k in KINDS))
     for w in warns:
         print("  [경고]", w)
     for e in errs:
