@@ -1375,3 +1375,635 @@
   sources:
     - BBC(2021) MI5 warns of spies using LinkedIn to trick staff into spilling secrets | https://bbc.in/3argIDF
     - Dark Reading(2021) Foreign Spies Target British Nationals With Fake Social Media Profiles | https://www.darkreading.com/cyberattacks-data-breaches/foreign-spies-target-british-nationals-with-fake-social-media-profiles
+
+# ---------------------------------------------------------------------------
+# 감시망·은닉 장비·적대적 정찰(RC-02, SV-02·03, HU-01.3)
+# ---------------------------------------------------------------------------
+- id: PHI-069
+  title: 외국 정보기관 의뢰 감시조의 언론인·미군 기지 감시(은닉 카메라·IMSI 캐처·카메라 안경)
+  date: "2025-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 유럽
+  sector: [정부·군, 기타]
+  actor: 러시아 정보기관 대리 감시조(불가리아 국적자)
+  actor_type: [외부자]
+  impact: [개인정보 유출, 국가기밀·군사정보 유출]
+  summary: >-
+    영국에 사는 불가리아 국적자들이 러시아를 위해 탐사 언론인 등 표적 인물과 장소를 감시하다 2025-03 공무상 비밀법 위반으로 유죄 판결을 받았다.
+    압수품에는 녹화 장치 55개·드론 11대·IMSI 캐처 3대·Wi-Fi 도청 장치 4대 등이 있었고, 병·가짜 돌·새집으로 위장한 은닉 카메라를 만들었으며,
+    한 명은 카메라가 숨겨진 선글라스로 기내 옆자리 표적의 휴대폰 PIN을 녹화했다. 독일 슈투트가르트 미군 기지 주변을 돌며 촬영하고 IMSI 캐처로
+    기지 안 휴대폰 신호를 가로채기도 했다.
+  pht: [PHT-RC-02, PHT-SV-02.1, PHT-SV-02.2, PHT-SV-03.1]
+  sources:
+    - Euronews(2025) UK court convicts three Bulgarians of spying for Russia | https://www.euronews.com/2025/03/07/uk-court-convicts-three-bulgarians-of-spying-for-russia
+    - 영국 검찰청 CPS(2025) How prosecutors brought a Russian spy ring operating in the UK to justice | https://www.cps.gov.uk/node/26051
+
+- id: PHI-070
+  title: 러시아 정보기관과 연계한 거주자의 군 시설·지원 물자 수송로 정찰과 사보타주 준비
+  date: "2024-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 유럽
+  sector: [정부·군, 교통·공항·물류]
+  actor: 러시아 정보기관 연계 거주자
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    독일 바이로이트에서 러시아·독일 이중국적 남성 2명이 체포됐다. 한 명은 2023년부터 러시아 정보요원과 접촉하며 사보타주할 군 시설을 제안하고,
+    우크라이나 지원 물자 수송로와 미군이 우크라이나군을 훈련시키는 그라펜뵈어 훈련장을 감시해 사진·영상을 넘긴 혐의를 받았다. 방화·폭발물로 군 시설과
+    산업 단지를 공격할 의사도 밝힌 것으로 조사됐다.
+  pht: [PHT-RC-02, PHT-HU-01.3]
+  sources:
+    - Stars and Stripes(2024) Two men arrested in Germany over alleged Russian sabotage plot | https://www.stripes.com/theaters/europe/2024-04-18/spies-terrorism-russia-ukraine-13586970.html
+    - Novaya Gazeta Europe(2024) Two men strongly suspected of working for Russian intelligence arrested in Germany | https://novayagazeta.eu/en/articles/2024/04/18/two-men-strongly-suspected-of-working-for-russian-intelligence-arrested-in-germany-en-news
+
+- id: PHI-071
+  title: 군 최고 지휘관 사용 예정 사무실에서 정기 점검 중 도청 장비 발견
+  date: "2023-12"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 기타
+  sector: [정부·군]
+  actor: 미상
+  actor_type: [외부자]
+  impact: [영향 미상]
+  summary: >-
+    우크라이나 총참모부는 2023-12-17 정기 점검에서 총사령관과 참모가 쓸 예정이던 사무실에서 정보 수집 장비 부품을 발견했다고 확인했다.
+    보안국(SBU)은 특수 기술 수단 불법 사용 혐의로 수사에 착수했고, 장비는 작동 상태가 아니었으며 원격 전송 수단도 발견되지 않았다.
+  pht: [PHT-SV-02.1]
+  sources:
+    - Ukrinform(2023) General Staff confirms bugs planted in offices of CinC Zaluzhnyi, staff members | https://ukrinform.net/rubric-ato/3801593-general-staff-confirms-bugs-planted-in-offices-of-cinc-zaluzhnyi-staff-members.html
+    - PBS NewsHour(2023) Ukraine's military chief says routine sweep discovered bugged office | https://www.pbs.org/newshour/world/ukraines-military-chief-says-routine-sweep-discovered-bugged-office
+
+- id: PHI-072
+  title: 미국 정부 시설 인근 군사훈련 촬영 뒤 휴대폰 사진 삭제·허위 진술(유학생 5명)
+  date: "2024-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [정부·군]
+  actor: 중국 국적 유학생 5명
+  actor_type: [외부자]
+  impact: [시설 정보 노출]
+  summary: >-
+    2023-08 대만군도 참가한 미 주방위군 연례 실사격 훈련 기간에 미시간 캠프 그레일링 인근 호숫가에서 자정 넘어 중국 국적 유학생 5명이 발견됐고,
+    이들은 유성우를 찍는 언론인이라고 둘러댔다. 이후 세관 검사에서 훈련 기간 촬영된 군 차량·장비 사진이 나왔고, 2024-10 수사관 기만·사진 삭제 공모와
+    허위 진술 혐의로 기소됐다.
+  pht: [PHT-RC-02]
+  sources:
+    - CBS News(2024) Five Chinese nationals charged with covering up visit to northern Michigan military site | https://www.cbsnews.com/amp/detroit/news/chinese-nationals-charged-covering-up-visit-michigan-military-site
+    - Fox News(2024) Chinese University of Michigan students charged after allegedly spying on military base | https://www.foxnews.com/us/chinese-university-michigan-students-charged-after-allegedly-spying-military-base.amp
+
+# ---------------------------------------------------------------------------
+# 비의도 내부자·노출(IN-05, SV-04)
+# ---------------------------------------------------------------------------
+- id: PHI-073
+  title: 공항 직원이 잃어버린 USB에 경비 순찰·요인 경호 경로 정보(감독기관 과태료)
+  date: "2017-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 행정 처분
+  region: 유럽
+  sector: [교통·공항·물류]
+  actor: 공항 직원(분실)
+  actor_type: [내부자(비의도)]
+  impact: [개인정보 유출, 시설 정보 노출, 법적 제재·배상]
+  summary: >-
+    히스로 공항 직원이 잃어버린 USB를 시민이 2017-10 런던 거리에서 주워 도서관 컴퓨터로 열어 봤고, 그 안에는 공항 경비 순찰 일정과 각료·외빈
+    경호 경로, 보안 인력 정보 등이 암호화·비밀번호 없이 들어 있었다. 정보위원회(ICO)는 2018-10 과태료 12만 파운드를 부과했고, 직원 6,500명 중
+    개인정보 보호 교육을 받은 사람은 2%뿐이었다고 지적했다.
+  pht: [PHT-IN-05.1, PHT-EX-01, PHT-IM-05]
+  sources:
+    - Computer Weekly(2018) ICO hits Heathrow Airport with £120,000 data breach fine over lost USB stick | https://computerweekly.com/news/252450178/ICO-hits-Heathrow-Airport-with-120000-data-breach-fine-over-lost-USB-stick
+    - Silicon UK(2018) Heathrow Fined £120,000 Over Lost USB Stick | https://silicon.co.uk/workspace/heathrow-fined-120000-usb-stick-237689
+
+- id: PHI-074
+  title: 국방부 기밀 문서 50쪽이 버스 정류장 뒤에서 발견(직원 분실 신고)
+  date: "2021-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 유럽
+  sector: [정부·군]
+  actor: 국방부 직원(분실)
+  actor_type: [내부자(비의도)]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    2021-06 영국 켄트주 버스 정류장 뒤에서 시민이 젖은 채 뭉쳐 있는 국방부 기밀 문서 50쪽을 발견해 언론에 전달했다. 문서에는 구축함의 크림반도 인근
+    통항에 대한 러시아 반응 예측과 아프가니스탄 주둔 계획 등이 담겼고, 국방부는 직원이 지난주 문서 분실을 신고했다며 조사에 착수했다.
+  pht: [PHT-IN-05.1, PHT-EX-02]
+  sources:
+    - Al Jazeera(2021) Classified UK defence ministry documents found at bus stop | https://www.aljazeera.com/news/2021/6/27/classified-uk-defence-ministry-documents-found-at-bus-stop
+    - Bloomberg(2021) Classified U.K. Defense Ministry Papers Found at Bus Stop | https://www.bloomberg.com/news/articles/2021-06-27/classified-u-k-defense-ministry-papers-discovered-at-bus-stop
+
+- id: PHI-075
+  title: 시 위탁업체 직원이 전 주민 46만 명 정보 USB를 회식 뒤 분실
+  date: "2022-06"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 일본
+  sector: [정부·군]
+  actor: 지자체 위탁업체 직원(분실)
+  actor_type: [내부자(비의도), 제3자]
+  impact: [개인정보 유출]
+  summary: >-
+    아마가사키시 코로나 지원금 업무를 맡은 위탁업체 직원이 콜센터로 옮기려고 주민 46만 명 전원의 이름·주소·생년월일과 일부 세금·계좌 정보를 USB에
+    복사해 들고 다니다 2022-06-21 술자리 뒤 가방째 잃어버렸다. USB는 암호화·비밀번호가 걸려 있었고 열람 증거는 확인되지 않았으며, 시는 기자회견을
+    열어 사과했다.
+  pht: [PHT-IN-05.1, PHT-IN-04, PHT-EX-01]
+  sources:
+    - CBS News(2022) Japanese city worker loses USB containing data of all 460,000 residents | https://www.cbsnews.com/news/amagasaki-japan-lost-usb-data-460000-residents/
+    - The Jakarta Post(2022) The hangover — Japan city admits data lost after night out | https://www.thejakartapost.com/culture/2022/06/23/the-hangover-japan-city-admits-data-lost-after-night-out-
+
+- id: PHI-076
+  title: 대테러 작전 문서가 사진기자 망원렌즈에 찍혀 체포 작전 앞당김(책임자 사임)
+  date: "2009-04"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 유럽
+  sector: [정부·군]
+  actor: 대테러 책임자(부주의 노출)
+  actor_type: [내부자(비의도)]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    런던경찰청 대테러 책임자가 총리 관저에 들어가며 '비밀' 표시가 된 작전 브리핑 문서를 보이게 들고 있었고, 사진기자들의 망원렌즈에 임박한 대테러
+    작전의 고위 경찰 명단·급습 계획이 읽혔다. 사진이 퍼지자 한밤으로 계획했던 체포를 낮에 앞당겨 12명을 체포했고, 책임자는 다음 날 사임했다.
+  pht: [PHT-SV-04.1, PHT-IN-05.2]
+  sources:
+    - NPR(2009) U.K.'s top anti-terror officer steps down | https://www.npr.org/transcripts/102929260
+    - Deseret News(2009) U.K.'s top anti-terror officer steps down | https://www.deseret.com/2009/4/10/20311816/u-k-s-top-anti-terror-officer-steps-down/
+
+- id: PHI-077
+  title: 운동 기록 앱 전 세계 히트맵으로 해외 군 기지 위치·활동 노출
+  date: "2018-01"
+  kind: 사고
+  verification: 언론 보도
+  region: 글로벌
+  sector: [정부·군]
+  actor: 장병 다수(비의도 공개)
+  actor_type: [내부자(비의도)]
+  impact: [시설 정보 노출]
+  summary: >-
+    운동 기록 서비스가 2015~2017년 활동 기록을 모아 공개한 전 세계 히트맵에서 시리아·예멘·니제르·아프가니스탄·지부티 등의 군 기지 위치와 장병 이동
+    경로가 드러난다는 사실을 2018-01 한 대학생이 지적했다. 회사는 비공개로 설정한 활동은 제외했다고 밝혔고, 각국 군은 장병의 위치 기록 공개 설정을
+    점검했다.
+  pht: [PHT-RC-01, PHT-IN-05.2]
+  sources:
+    - Hackread(2018) Strava's global heat map reveals locations of US military bases | https://www.hackread.com/stravas-global-heat-map-reveals-locations-of-us-military-bases/
+    - iPhone in Canada(2018) Fitness Tracking App Strava Reveals Sensitive U.S. Military Information | https://www.iphoneincanada.ca/2018/01/29/strava-military/
+
+- id: PHI-078
+  title: 폐기 위탁한 서버·하드디스크가 고객 정보가 남은 채 재판매(감독기관 벌금 3,500만 달러)
+  date: "2022-09"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 행정 처분
+  region: 미국
+  sector: [금융·서비스]
+  actor: 데이터 파기 전문성이 없는 이사·보관 업체
+  actor_type: [제3자, 내부자(비의도)]
+  impact: [개인정보 유출, 법적 제재·배상]
+  summary: >-
+    미 증권거래위원회는 모건스탠리 자산관리 부문이 2015년부터 데이터 파기 경험이 없는 이사·보관 업체에 고객 약 1,500만 명의 개인정보가 담긴 서버·
+    하드디스크 수천 대의 폐기를 맡겼고, 업체가 이를 제3자에게 팔아 온라인에서 재판매됐다며 2022-09 벌금 3,500만 달러를 부과했다. 개인정보가 남은
+    IT 자산 약 4,900대가 팔렸고 일부만 회수됐다.
+  pht: [PHT-SV-04.2, PHT-IM-05]
+  sources:
+    - Hunton(2022) SEC fines Morgan Stanley $35 million for alleged failure to protect customer data | https://www.hunton.com/privacy-and-cybersecurity-law-blog/sec-fines-morgan-stanley-35-million-for-alleged-failure-to-protect-customer-data
+    - Sophos(2022) Morgan Stanley fined millions for selling off devices full of customer PII | https://www.sophos.com/en-gb/blog/morgan-stanley-fined-millions-for-selling-off-devices-full-of-customer-pii
+
+# ---------------------------------------------------------------------------
+# 해외 기술 유출·인력 영입(대만·일본·유럽)
+# ---------------------------------------------------------------------------
+- id: PHI-079
+  title: 파운드리 2나노 공정 기밀을 현직 엔지니어가 촬영해 장비 협력사 이직자에게 전달
+  date: "2025-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 대만
+  sector: [반도체·디스플레이]
+  actor: 전직 엔지니어(장비 협력사 이직)·현직 엔지니어
+  actor_type: [내부자(악의), 공모, 제3자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    대만 검찰은 TSMC 출신으로 장비 협력사에 옮긴 전 엔지니어가 2023년 하반기~2024년 상반기 현직 엔지니어들에게 2나노 공정 관련 민감 기술 정보를
+    요청했고 자료가 촬영·복제돼 넘어갔다며 2025-08 국가안전법·영업비밀법 위반으로 기소했다. 전 엔지니어는 징역 10년, 현직자들은 징역 2~6년을
+    선고받았고 장비 협력사 법인에는 벌금 1억 5천만 대만달러가 선고됐다.
+  pht: [PHT-IN-02.1, PHT-IN-04, PHT-EX-03, PHT-IM-01]
+  sources:
+    - Tribune India(2025) Taiwan court orders detention of three in TSMC trade secret theft | https://www.tribuneindia.com/news/chip/taiwan-court-orders-detention-of-three-in-tsmc-trade-secret-theft
+    - GIGAZINE(2025) Taiwan prosecutors indict Tokyo Electron subsidiary for stealing TSMC trade secrets | https://gigazine.net/gsc_news/en/20251203-tsmc-data-theft-tokyo-electron-charged
+
+- id: PHI-080
+  title: 중국 반도체 기업이 제3국 법인으로 위장한 지사로 기술 인력 불법 채용(11개 사 동시 수사)
+  date: "2025-03"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 대만
+  sector: [반도체·디스플레이, IT·소프트웨어]
+  actor: 중국 기술 기업 11곳
+  actor_type: [외부자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    대만 법무부 조사국은 2025-03-28 중국 최대 파운드리 SMIC 등 중국 기업 11곳이 대만 인력을 불법으로 빼간 혐의로 34곳을 동시 압수수색하고 90명을
+    조사했다. SMIC는 사모아 법인으로 위장한 대만 지사를 세워 현지 인력을 채용하려 한 것으로 조사됐으며, 대만은 승인 없는 중국 기업의 현지 채용을
+    금지한다.
+  pht: [PHT-HU-02]
+  sources:
+    - GIGAZINE(2025) Taiwan investigates China's largest semiconductor maker for illegal poaching of tech talent | https://www.gigazine.net/gsc_news/en/20250401-taiwan-china-smic-staff-poaching
+    - TechRepublic(2025) Taiwan Investigates Chinese Firms for Poaching Tech Talent | https://www.techrepublic.com/article/news-apac-taiwan-china-tech-talent-poaching/
+
+- id: PHI-081
+  title: 중국 자본 기업 17곳의 위장 사무소·현지 법인을 통한 반도체·AI·방산 인력 불법 채용 수사
+  date: "2026-08"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 대만
+  sector: [반도체·디스플레이, IT·소프트웨어, 이차전지·소재·화학, 방산·항공우주]
+  actor: 중국 자본 기업 17곳
+  actor_type: [외부자]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    대만 당국은 2026-07-13부터 8-04까지 반도체·AI·배터리·방산 분야 엔지니어를 불법 채용한 혐의가 있는 중국 자본 기업 17곳을 수사해 64곳을 수색하고
+    114명을 조사했다. 숨은 중국 지분, 미승인 사무소, 채용용 현지 위장 법인이 수사 대상이며, 조사국은 2020년 전담반 구성 이후 이런 사건 100건 이상을
+    수사했다.
+  pht: [PHT-HU-02]
+  sources:
+    - The Next Web(2026) Taiwan is investigating 17 Chinese firms for poaching its chip talent | https://thenextweb.com/news/taiwan-probe-17-chinese-firms-chip-talent-poaching
+    - SBS Biz(2026) 中기업 첨단기술 인재 빼가기…대만, 64곳 압수수색 | https://biz.sbs.co.kr/amp/article/20000326864
+
+- id: PHI-082
+  title: 국립 연구소 선임연구원의 연구 데이터 중국 기업 송부(해외 인재 프로그램 참여 의혹)
+  date: "2023-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 일본
+  sector: [대학·연구기관, 이차전지·소재·화학]
+  actor: 국립 연구소 선임연구원(중국 대학 겸직)
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    일본 산업기술종합연구소(AIST)에서 20년 넘게 일하며 중국 대학 교수를 겸한 중국 국적 선임연구원이 2018-04 연구소 메일 계정으로 고절연 불소 화합물
+    합성 기술 정보를 중국 화학 기업에 보낸 혐의로 2023-06 체포·기소됐다. 중국 천인계획 참여 의혹이 제기됐고, 본인은 혐의를 부인했으며 연구소는
+    그를 해고했다.
+  pht: [PHT-IN-02.1, PHT-HU-03, PHT-IM-01]
+  sources:
+    - Chemistry World(2023) Chinese researcher in Japan arrested for leaking secrets to company in China | https://chemistryworld.com/news/chinese-researcher-in-japan-arrested-for-leaking-secrets-to-company-in-china/4017644.article
+    - Greek City Times·AFP(2023) Japan — 59-year-old Chinese researcher indicted over alleged data leak | https://greekcitytimes.com/2023/07/07/japan-59-year-old-chinese-researcher-indicted-over-alleged-data-leak/
+
+- id: PHI-083
+  title: 노광장비 기업의 중국 현지 (전)직원 독자 기술 자료 무단 유용 공시
+  date: "2023-02"
+  kind: 공시
+  verification: 피해기관 확인
+  region: 유럽
+  sector: [반도체·디스플레이]
+  actor: 중국 현지 (전)직원
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출]
+  summary: >-
+    ASML은 2022년 연차보고서(2023-02-15 공개)에서 중국의 (현재는 퇴사한) 직원이 독자 기술 관련 자료를 무단 유용했다고 공시했다. 회사는 사업상
+    중대한 사안은 아니라고 봤지만 수출통제 규정 위반 가능성이 있어 관계 당국에 신고했다.
+  pht: [PHT-IN-02.1, PHT-IM-01]
+  sources:
+    - CNBC(2023) Critical chip firm ASML says former China employee misappropriated data | https://www.cnbc.com/2023/02/15/critical-chip-firm-asml-says-former-china-employee-misappropriated-data.html
+    - The Register(2023) ASML says ex-employee in China stole chip data | https://www.theregister.com/2023/02/27/asml_china_data_spying/
+
+# ---------------------------------------------------------------------------
+# 출장지·배송·정비 경로(PA-04·05)
+# ---------------------------------------------------------------------------
+- id: PHI-084
+  title: 국경 검문에서 여행자 휴대폰에 감시 앱 설치·자료 수집(언론 공동 탐사)
+  date: "2019-07"
+  kind: 사고
+  verification: 언론 보도
+  region: 기타
+  sector: [기타]
+  actor: 중국 국경 당국(보도 기준)
+  actor_type: [외부자]
+  impact: [개인정보 유출]
+  summary: >-
+    뉴욕타임스·가디언·마더보드 등의 공동 탐사로 신장 지역 육로 국경에서 국경 요원이 외국인 여행자의 안드로이드 휴대폰에 감시 앱을 설치해 일정·문자·연락처·
+    통화 기록을 원격 서버로 보내고 7만 3천여 개 파일을 대조한 사실이 드러났다. 중국 외교부는 앱을 들어 본 적이 없다고 답했다.
+  pht: [PHT-PA-04]
+  sources:
+    - MIT Technology Review(2019) Chinese border guards are putting a surveillance app on tourists' phones | https://www.technologyreview.com/2019/07/02/134307/chinese-border-guards-are-putting-a-surveillance-app-on-tourists-phones/amp/
+    - The Hacker News(2019) Xinjiang Fengcai spyware | https://thehackernews.com/2019/07/xinjiang-fengcai-spyware.html
+
+- id: PHI-085
+  title: 출장 중 고급 호텔 Wi-Fi로 투숙 경영진을 골라 감염(아태 지역 수십 곳)
+  date: "2014-11"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [금융·서비스, 반도체·디스플레이, 방산·항공우주]
+  actor: Darkhotel
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    카스퍼스키는 최소 4년간 아시아태평양 호텔 수십 곳의 네트워크에 침투해, 투숙한 기업 경영진이 방 번호와 성으로 호텔 Wi-Fi에 접속하면 정상 소프트웨어
+    업데이트로 위장한 백도어를 설치하게 한 'Darkhotel' 활동을 공개했다. 피해 조직의 90% 이상이 일본·대만·중국·러시아·홍콩이었고 독일·미국 등
+    출장 경영진도 피해를 입었다.
+  pht: [PHT-PA-04]
+  attack_ref: [G0012]
+  sources:
+    - Kaspersky(2014) Kaspersky Lab sheds light on Darkhotel, where business executives fall prey to an elite spying crew | https://usa.kaspersky.com/about/press-releases/2014_kaspersky-lab-sheds-light-on--darkhotel--where-business-executives-fall-prey-to-an-elite-spying-crew
+    - Dark Reading(2014) Korean-speaking cyberspies targeting corporate execs via hotel networks | https://www.darkreading.com/advanced-threats/korean-speaking-cyberspies-targeting-corporate-execs-via-hotel-networks
+
+- id: PHI-086
+  title: 항만 크레인 부품·서버실에서 주문하지 않은 원격 접속 셀룰러 모뎀 발견(의회 조사)
+  date: "2024-02"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [교통·공항·물류]
+  actor: 미상(장비 제조사 공급 경로)
+  actor_type: [제3자]
+  impact: [영향 미상]
+  summary: >-
+    미 하원 국토안보위원회는 중국 제조사의 안벽 크레인 부품과 크레인 방화벽·네트워크 장비가 있는 항만 서버실에서 원격 접속이 가능한 셀룰러 모뎀이
+    발견됐다며 2024-02 제조사에 질의서를 보냈다. 일부 항만은 모뎀 설치를 요청한 적이 없다고 밝혔고 모뎀은 크레인 운전에 쓰이지 않는 것으로 보였다.
+    제조사는 보안 위협을 부인했다.
+  pht: [PHT-PA-05]
+  sources:
+    - World Cargo News(2024) ZPMC denies cybersecurity threats to U.S. ports | https://www.worldcargonews.com/news/2024/03/shanghai-zpmc-denies-cybersecurity-threats-to-u-s-ports/
+    - Axios(2024) Why China hawks care so much about cranes | https://www.axios.com/2024/09/17/chinese-cargo-cranes-secruity-risks
+
+- id: PHI-087
+  title: 전력망 연결 인버터·배터리에서 문서에 없는 통신 장치 발견(전문가 분해 점검 보도)
+  date: "2025-05"
+  kind: 위협인텔
+  verification: 언론 보도
+  region: 미국
+  sector: [에너지·원자력]
+  actor: 미상(장비 공급 경로)
+  actor_type: [제3자]
+  impact: [영향 미상]
+  summary: >-
+    전력망에 연결되는 장비를 분해해 보안을 점검하는 미국 전문가들이 일부 중국산 태양광 인버터에서 제품 문서에 없는 통신 장치를, 여러 중국 공급사의
+    배터리에서 셀룰러 무선 장치를 발견했다고 로이터가 보도했다. 이 장치들은 원격으로 방화벽을 우회하는 추가 통신 경로가 될 수 있다는 평가가 나왔고,
+    조사 대상 장비 수는 확인되지 않았다.
+  pht: [PHT-PA-05]
+  sources:
+    - Hawaii Tribune-Herald·Reuters(2025) Rogue communication devices found in Chinese solar power inverters | https://www.hawaiitribune-herald.com/2025/05/15/nation-world-news/rogue-communication-devices-found-in-chinese-solar-power-inverters/
+    - Schneier on Security(2025) Communications Backdoor in Chinese Power Inverters | https://www.schneier.com/blog/archives/2025/05/communications-backdoor-in-chinese-power-inverters.html
+
+- id: PHI-088
+  title: 서버 메인보드 '스파이 칩' 보도(관련 기업·정부 부인, 외부 감사에서 미발견)
+  date: "2018-10"
+  kind: 사고
+  verification: 논란·원인 번복
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 미상(보도는 중국 군 관여 주장)
+  actor_type: [제3자]
+  impact: [영향 미상]
+  summary: >-
+    블룸버그 비즈니스위크는 서버 제조사 메인보드에 쌀알보다 작은 악성 칩이 제조 과정에서 심어져 미국 기업 30곳에 설치됐다고 보도했다. 애플·AWS·제조사는
+    강하게 부인했고 국토안보부는 부인을 의심할 이유가 없다고 밝혔으며, 제조사 의뢰 외부 감사에서도 악성 하드웨어는 발견되지 않았다. 확인되지 않은
+    공급 경로 변조 주장의 사례로 집계에서 제외한다.
+  pht: [PHT-PA-05]
+  sources:
+    - iMore(2018) Did China hardware-hack Supermicro servers used by Apple and Amazon | https://www.imore.com/did-china-hardware-hack-supermicro-servers-used-apple-and-amazon
+    - ETCentric(2018) Government Backs Apple and Amazon Denials of Spy Chips | https://www.etcentric.org/?p=132813
+
+# ---------------------------------------------------------------------------
+# 경계 침입·위장 접촉·연구 실증(PA-01, RC-03, HU-04, SV-03.2)
+# ---------------------------------------------------------------------------
+- id: PHI-089
+  title: 대통령 관저 울타리를 넘어 현관을 지나 내부 행사장까지 침입
+  date: "2014-09"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 미국
+  sector: [정부·군]
+  actor: 개인
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    2014-09-19 저녁 한 남성이 백악관 울타리를 넘어 잔디밭을 가로질러 북쪽 현관으로 들어간 뒤 경호요원을 지나쳐 이스트룸까지 진입해 체포됐다.
+    경호실은 처음에 현관에서 제지했다고 발표했으나 이후 조사에서 침입 범위가 드러났고, 남성은 접이식 칼을 지니고 있었으며 차량에서 탄약 800발 이상이
+    발견됐다. 경호실은 대응 절차를 검토했다.
+  pht: [PHT-PA-01.1]
+  sources:
+    - NBC News(2014) Fence-Jumper Breaches White House Door, Sparks Evacuation | https://www.nbcnews.com/news/us-news/fence-jumper-breaches-white-house-door-sparks-evacuation-n207821
+    - The Washington Times(2014) White House fence jumper reached East Room | https://www.washingtontimes.com/news/2014/sep/29/white-house-fence-jumper-reached-east-room-report/
+
+- id: PHI-090
+  title: 국내 정보기관 경고 — 위장 헤드헌터·싱크탱크 프로필로 자국민 1만 명 이상 접촉
+  date: "2017-12"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 유럽
+  sector: [정부·군]
+  actor: 중국 정보기관(독일 당국 귀속)
+  actor_type: [외부자]
+  impact: [국가기밀·군사정보 유출]
+  summary: >-
+    독일 연방헌법보호청(BfV)은 9개월 조사 결과 헤드헌터·컨설턴트·싱크탱크 연구원·학자로 위장한 가짜 프로필이 LinkedIn에서 독일인 1만 명 이상에게
+    접근했다며 프로필 사례를 공개했다. 이들은 매력적인 제안으로 관계를 맺은 뒤 중국 방문을 권유해 정보 수집을 시작했으며, 중국 외교부는 근거 없는
+    주장이라고 부인했다.
+  pht: [PHT-RC-03.1]
+  sources:
+    - CNBC(2017) Germany's BfV says Chinese spies used LinkedIn to snoop on politicians | https://www.cnbc.com/2017/12/11/germanys-bfv-chinese-spies-used-linkedin-to-snoop-on-politicians.html
+    - Fortune(2017) China used LinkedIn to target Germans, intelligence agency says | https://fortune.com/2017/12/11/china-germany-linkedin-spies
+
+- id: PHI-091
+  title: 대학 캠퍼스에 USB 297개를 떨어뜨린 실험(최초 연결 6분, 성공률 45~98%)
+  date: "2016-05"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 미국
+  sector: [대학·연구기관]
+  actor: 연구진(통제 실험)
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    연구진이 대형 대학 캠퍼스에 USB 297개를 떨어뜨린 통제 실험에서 공격 성공률은 45~98%로 추정됐고 첫 연결까지 6분이 걸리지 않았다. 외형은 성공률을
+    높이지 않았고, 연결한 사람 다수는 주인을 찾아 주려는 선의였으며 기술적으로 미숙한 사람도 아니었다(IEEE S&P 2016).
+  pht: [PHT-PA-03.2]
+  sources:
+    - Google Research(2016) Users Really Do Plug in USB Drives They Find | https://research.google/pubs/users-really-do-plug-in-usb-drives-they-find/
+    - Georgia Tech(2016) Users Really Do Plug in USB Drives They Find (논문 PDF) | https://faculty.cc.gatech.edu/~mbailey/publications/oakland16_usb.pdf
+
+- id: PHI-092
+  title: 망분리 PC의 메모리 버스 전파로 자료 유출 실증(저가 SDR 수신)
+  date: "2024-09"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 기타
+  sector: [대학·연구기관]
+  actor: 대학 연구진
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    벤구리온대 연구진은 망분리 환경에서 이미 감염된 컴퓨터의 악성코드가 메모리 동작을 조작해 전자파를 내고, 근처의 저가 소프트웨어 정의 라디오(SDR)와
+    단순한 안테나로 이를 받아 파일·키 입력·암호 키 등을 초당 최대 1,000비트로 빼낼 수 있음을 실증했다. 최초 감염은 악성 USB나 내부자 협조를 전제로 한다.
+  pht: [PHT-SV-03.2]
+  sources:
+    - arXiv(2024) RAMBO — Leaking Secrets from Air-Gap Computers by Spelling Covert Radio Signals from Computer RAM | https://arxiv.org/abs/2409.02292v1
+    - GovInfoSecurity(2024) RAM signals expose air-gapped networks to attacks | https://www.govinfosecurity.com/ram-signals-expose-air-gapped-networks-to-attacks-a-26258
+
+- id: PHI-093
+  title: 투자자로 위장한 공작원들의 호텔 면담으로 연구자 정보 유도(비밀 녹음 추정)
+  date: "2019-01"
+  kind: 사고
+  verification: 언론 보도
+  region: 기타
+  sector: [대학·연구기관]
+  actor: 미상(민간 정보 공작원)
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    스파이웨어 악용 실태를 공개해 온 캐나다 시민연구소(Citizen Lab) 연구원들에게 사회적 책임 투자자를 사칭한 남성들이 두 달 새 두 차례 접근해 고급
+    호텔 면담에서 몇 시간씩 연구 내용을 캐물었고, 연구원들은 비밀리에 녹음된 것으로 봤다. 연구소는 AP와 함께 두 번째 접근을 역으로 추적해 공개했다.
+  pht: [PHT-HU-04, PHT-RC-03.2]
+  sources:
+    - NBC News·AP(2019) Spy vs. spy — How undercover agents targeted a cybersecurity watchdog | https://www.nbcnews.com/news/world/spy-vs-spy-how-undercover-agents-targeted-cybersecurity-watchdog-n963151
+    - SecurityWeek(2019) Undercover agents target cybersecurity watchdog | https://www.securityweek.com/undercover-agents-target-cybersecurity-watchdog/amp/
+
+- id: PHI-094
+  title: 재외공관 영사들과 부적절한 관계를 맺은 여성이 공관 자료·주요 인사 연락처를 USB로 확보
+  date: "2011-03"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 행정 처분
+  region: 한국
+  sector: [정부·군]
+  actor: 영사들과 관계를 맺은 외국 여성
+  actor_type: [외부자, 내부자(비의도)]
+  impact: [개인정보 유출]
+  summary: >-
+    주상하이 총영사관 영사들이 30대 중국 여성과 부적절한 관계를 맺고 비자 발급 권한까지 내준 사이, 이 여성은 공관의 비자 발급 현황·통계·신청 정보와
+    정부 내부망 인사 기록, 공관 비상연락망, 여권 핵심 인사 등 정·관계 인사 약 200명의 연락처를 자신의 USB에 담았다. 국무총리실 조사는 간첩 사건은
+    아니라고 결론지었고 관련 공관 인력 다수가 징계·교체됐다.
+  pht: [PHT-HU-01.2, PHT-EX-01]
+  sources:
+    - 경향신문(2011) 상하이 총영사관 스캔들 | https://www.khan.co.kr/article/201103082214115/amp
+    - 이투데이(2011) 상하이영사, 中 내연녀에 국가기밀 유출 의혹 제기 | https://www.etoday.co.kr/news/view/413451
+
+- id: PHI-095
+  title: 정부가 외국 자본 반도체 기업 경영에 개입(기술·역량 유출 우려, 첫 물자 확보법 발동)
+  date: "2025-10"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  legal: 행정 처분
+  region: 유럽
+  sector: [반도체·디스플레이]
+  actor: 대주주 측 경영진
+  actor_type: [외부자]
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    네덜란드 경제부는 2025-10-12 중국 기업이 소유한 반도체 업체 넥스페리아에 대해, 네덜란드·유럽의 핵심 기술 지식과 역량 상실 우려와 심각한 경영상
+    결함 신호를 이유로 1952년 제정 후 처음으로 물자확보법을 발동했다. 기업법원은 중국인 CEO의 직무를 정지하고 지주 지분의 의결권을 독립 수탁자에게
+    맡겼다.
+  pht: [PHT-HU-05.1]
+  sources:
+    - Bloomberg Law(2025) Dutch Seize Chinese-Owned Chipmaker in First Use of 1952 Law | https://news.bloomberglaw.com/tech-and-telecom-law/dutch-seize-chinese-owned-chipmaker-in-first-use-of-1952-law
+    - S&P Global Mobility(2025) Dutch takeover of Chinese-owned Nexperia | https://www.spglobal.com/automotive-insights/en/blogs/2025/10/dutch-takeover-of-chinese-owned-nexperia
+
+- id: PHI-096
+  title: 공항 환승객들의 면세구역 보안문 강제 개방 밀입국(같은 달 2건)
+  date: "2016-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 한국
+  sector: [교통·공항·물류]
+  actor: 환승객(브로커 개입)
+  actor_type: [외부자]
+  impact: [내부 접근 확보]
+  summary: >-
+    2016-01-21 브로커에게 1인당 6만 위안을 준 중국인 환승객 부부가 직원이 퇴근해 비어 있던 인천공항 면세구역·출국심사장 연결문의 잠금장치를 뜯고 밀입국했고,
+    1-29에는 베트남인 환승객이 자동입국심사대 문을 강제로 열고 나갔다. 이후 출국심사장에 보안셔터, 보안검색장에 감지 센서를 설치해 업무 종료 뒤
+    접근을 차단했다.
+  pht: [PHT-PA-01.1]
+  sources:
+    - 보안뉴스(2016) 두 번의 밀입국 시도로 바뀐 대한민국 항공보안 | https://m.boannews.com/html/detail.html?idx=64426
+    - 서울신문(2016) 뻥 뚫린 인천공항 — 자동심사대 밀입국 통로로 전락 | https://seoul.co.kr/news/society/2016/02/01/20160201008005
+
+- id: PHI-097
+  title: 위장 컨설팅 회사 채용 공고로 보안 인가자 이력서 400건 수집(외국 정보기관 전달)
+  date: "2020-07"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 유죄 판결
+  region: 미국
+  sector: [정부·군, 방산·항공우주]
+  actor: 중국 정보기관 대리인
+  actor_type: [외부자]
+  impact: [개인정보 유출]
+  summary: >-
+    싱가포르인이 2018년 유명 미국 컨설팅 회사와 같은 이름의 위장 회사를 만들어 온라인 채용 공고를 내고 이력서 400건(90%가 미 정부·군 보안 인가자)을 받아
+    일부를 중국 정보기관에 넘겼다. LinkedIn으로 재정난을 겪던 F-35B 사업 민간인 등을 물색하기도 했으며, 2020-07 외국 대리인 미등록 혐의를 인정했다.
+  pht: [PHT-RC-03.1, PHT-RC-01]
+  sources:
+    - ClearanceJobs(2020) Chinese intel addicted to LinkedIn | https://news.clearancejobs.com/2020/07/27/chinese-intel-addicted-to-linkedin/
+    - The Quint(2020) How a Chinese agent Dickson Yeo weaponised LinkedIn to steal United States information | https://fithindi.thequint.com/amp/story/tech-and-auto/how-chinese-agent-dickson-yeo-weaponised-linkedin-to-steal-united-states-information
+
+- id: PHI-098
+  title: 공항 접근 중인 여객기와 드론 충돌(국가 최초, 기체 경미 손상)
+  date: "2017-10"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 수사·조사
+  region: 기타
+  sector: [교통·공항·물류]
+  actor: 미상(규정 위반 드론 조종자)
+  actor_type: [외부자]
+  impact: [안전 위협]
+  summary: >-
+    2017-10-12 캐나다 퀘벡시 공항으로 접근하던 승무원 2명·승객 6명 탑승 소형 여객기가 고도 1,500피트에서 드론과 충돌해 비상을 선언했다. 왼쪽 날개에
+    긁힘이 생기는 데 그쳤지만 교통부 장관은 조종석이나 엔진에 부딪혔다면 참사가 될 수 있었다며 공항 반경 비행 금지 규정 위반이라고 밝혔다.
+  pht: [PHT-SV-01.2, PHT-IM-04]
+  sources:
+    - 캐나다 교통안전위원회(2017) Air transportation safety investigation A17Q0162 | https://tsb.gc.ca/eng/enquetes-investigations/aviation/2017/a17q0162/a17q0162.html
+    - PetaPixel(2017) Drone Hits Passenger Plane in Canada | https://petapixel.com/2017/10/16/drone-hits-passenger-plane-canada/
+
+- id: PHI-099
+  title: 해고 통보를 받은 직원이 지게차·망치로 공장 설비 파손(약 50만 달러)
+  date: "2019-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 기타
+  sector: [기타]
+  actor: 해고 통보 직원
+  actor_type: [내부자(악의)]
+  impact: [설비 손상·사보타주]
+  summary: >-
+    호주 시드니 킹스그로브의 공장에서 38세 직원이 해고 통보를 받은 직후 지게차로 생산 설비를 부수고 망치로 컴퓨터 장비를 파손해 50만 달러 이상의 피해를
+    냈다. 경찰 도착 전 현장을 떠나 퍼스로 갔다가 송환돼 재물손괴 혐의로 기소됐다.
+  pht: [PHT-IN-02.2, PHT-IM-02]
+  sources:
+    - St George & Sutherland Shire Leader(2019) Man extradited after allegedly damaging $500,000 worth of machinery at Kingsgrove | https://www.theleader.com.au/story/6480640/man-charged-with-damaging-machinery-worth-500000-at-kingsgrove/
+
+- id: PHI-100
+  title: 승진 탈락 직원의 생산 운영 시스템 코드 무단 변경·내부 자료 외부 전송(회사 소송)
+  date: "2018-06"
+  kind: 사고
+  verification: 피해기관 확인
+  legal: 민사 판결·합의
+  region: 미국
+  sector: [자동차·조선·기계]
+  actor: 재직 직원
+  actor_type: [내부자(악의)]
+  impact: [국가핵심기술·영업비밀 유출, 운영 중단]
+  summary: >-
+    테슬라 CEO는 2018-06 사내 메일로 프리몬트 공장 직원이 가짜 사용자 이름으로 제조 운영 시스템 코드를 직접 바꾸고 민감 자료를 외부로 대량 전송하는
+    사보타주를 했다고 알렸고, 회사는 사흘 뒤 전 직원을 상대로 소송을 냈다. 회사에 따르면 그는 수 기가바이트의 자료(사진·영상 포함)를 외부로 보내는
+    프로그램을 짰다고 인정했으며 동기는 승진 탈락이었다. 당사자는 내부 고발이라고 주장했다.
+  pht: [PHT-IN-02.2, PHT-IN-02.1]
+  sources:
+    - The Washington Times·AP(2018) Tesla sues ex-employee alleging data theft, leaks | https://www.washingtontimes.com/news/2018/jun/20/tesla-sues-ex-employee-alleging-data-theft-leaks-t/
+    - CleanTechnica(2018) Elon Musk claims Tesla's manufacturing operating system has been sabotaged by employee | https://cleantechnica.com/2018/06/19/elon-musk-claims-teslas-manufacturing-operating-system-has-been-sabotaged-by-employee

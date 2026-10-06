@@ -106,7 +106,7 @@
 ## 할 일 체크리스트
 - [x] 도메인·Lv2·Lv3 확정(ID 대장) — taxonomy.yaml (1단계, 45행)
 - [x] 프레임워크·참고 문헌 카탈로그 — frameworks.yaml, reference/ 추출본(ATT&CK·ITKB·NIST·연계 ID) (1단계)
-- [ ] 공개 출처로 사고 DB 구축(출처 URL 필수) — incidents.yaml
+- [x] 공개 출처로 사고 DB 구축(출처 URL 필수) — incidents.yaml (2단계, 100건·국내 25건)
 - [ ] build/validate 를 supplychain 기준으로 이식
 - [ ] 도메인별 관점 문구 작성 + 검증 통과
 - [ ] 시나리오·방법론·README·변경이력
