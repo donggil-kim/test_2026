@@ -16,7 +16,7 @@
   · 용어        : 인증정보·크리덴셜 대신 자격증명
   · 시나리오    : data/scenarios.yaml의 단계별 IDT·사고 ID
 
-실행 : python3 scripts/validate.py [--strict]
+실행 : python3 scripts/validate.py [--strict] [--allow-missing-text]
        오류가 있으면 종료 코드 1(--strict는 경고도 실패로 처리)
 """
 import argparse
@@ -36,6 +36,7 @@ DATA = ROOT / "data"
 REF = ROOT / "reference"
 
 ERR, WARN = [], []
+ALLOW_MISSING_TEXT = False
 
 
 def err(where, msg):
@@ -467,8 +468,11 @@ def check_texts(ev):
                     if not ln.startswith("- "):
                         err(where, f"detect '{sec}' 줄은 '- '로 시작: {ln[:30]}")
             check_refs(where, rid, "\n".join(str(t.get(k) or "") for k in ("oneline", "summary", "reference", "detect")))
-    for rid in ROWS:
-        if rid not in seen:
+    missing = [rid for rid in ROWS if rid not in seen]
+    if missing and ALLOW_MISSING_TEXT:
+        print(f"참고 data/text: 문구 미작성 {len(missing)}개 — " + ", ".join(missing))
+    else:
+        for rid in missing:
             err("data/text", f"{rid} 문구 없음")
     for ol, rids in onelines.items():
         if ol and len(rids) > 1:
@@ -524,7 +528,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--strict", action="store_true", help="경고도 실패로 처리")
     ap.add_argument("--data-only", action="store_true", help="문구 검사 없이 원천 데이터·시나리오만 점검(v1 단계)")
+    ap.add_argument("--allow-missing-text", action="store_true",
+                    help="문구가 없는 세부위협은 오류 대신 미작성 목록으로만 표시(작성된 문구는 그대로 검사)")
     args = ap.parse_args()
+    global ALLOW_MISSING_TEXT
+    ALLOW_MISSING_TEXT = args.allow_missing_text
     check_incidents()
     check_taxonomy()
     check_kev()

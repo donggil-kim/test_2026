@@ -11,7 +11,7 @@
 문구 : data/text/*.yaml(핵심 요약·요약설명·참조·탐지·대응) — 빌드 전에 scripts/validate.py로 사례·참조 ID를 대조
 시나리오 : data/scenarios.yaml(실제 사고 기반 공격 체인)
 
-실행 : python3 scripts/build_identity_threat_matrix.py [--skip-validate] [--worksheet <폴더>]
+실행 : python3 scripts/build_identity_threat_matrix.py [--allow-missing-text] [--skip-validate] [--worksheet <폴더>]
        → output/통합_신원보안위협_매트릭스_<버전>.xlsx · .csv
 """
 import collections
@@ -159,7 +159,7 @@ for o in ROWS:
     txt = TEXT.get(o["id"]) or {}
     o["oneline"], o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in ("oneline", "summary", "reference",
                                                                                          "detect"))
-    o["text_src"] = "분석가 작성" if txt else "작성 예정"
+    o["text_src"] = "분석가 작성" if txt else "문구 미작성"
 
 rank_key = {r: i for i, r in enumerate(R.RISK_ORDER)}
 for i, o in enumerate(sorted(ROWS, key=lambda o: (rank_key[o["risk"]], -o["n_real"], -o["n_recent"], o["id"])), 1):
@@ -209,7 +209,11 @@ def _bullets(block, section):
 
 
 def first_case(o):
-    """대표 사례 = '■ 실제 사례' 첫 줄 → '[라벨] 사례명(시점) (사고 ID)' (보고서용 간략 표기)"""
+    """대표 사례 = '■ 실제 사례' 첫 줄 → '[라벨] 사례명(시점) (사고 ID)' (보고서용 간략 표기)
+    문구 미작성 행은 매핑된 실제 사고 중 최신 1건(사고 DB 제목·시점)"""
+    if not o["reference"]:
+        real = sorted(EV[o["id"]]["real"], key=lambda i: (INC[i]["date"], i), reverse=True)
+        return f"[실제 사고] {INC[real[0]]['title']}({INC[real[0]]['date']}) ({real[0]})" if real else "공개 사고 미확인"
     for b in _bullets(o["reference"], "실제 사례"):
         if b.startswith("공개 사고 미확인"):
             return "공개 사고 미확인"
@@ -221,14 +225,22 @@ def first_case(o):
 
 
 def first_control(o):
-    """핵심 대응 = '■ 대응' 첫 줄"""
+    """핵심 대응 = '■ 대응' 첫 줄, 문구 미작성 행은 매핑된 대응 기준 ID"""
     b = _bullets(o["detect"], "대응")
-    return b[0] if b else ""
+    if b:
+        return b[0]
+    ids = [f"CIS {'·'.join(str(k) for k in o['cis'])}" if o["cis"] else "",
+           f"NIST {'·'.join(o['nist'])}" if o["nist"] else "",
+           f"ISMS-P {'·'.join(str(k) for k in o['ismsp'])}" if o["ismsp"] else ""]
+    return "대응 기준: " + ", ".join(i for i in ids if i) if any(ids) else ""
 
 
-def run_validate():
+def run_validate(allow_missing_text=False):
     """scripts/validate.py 실행 — 오류가 있으면 빌드 중단, 결과 줄을 개요 시트에 기록"""
-    r = subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "validate.py")],
+    cmd = [sys.executable, str(Path(__file__).resolve().parent / "validate.py")]
+    if allow_missing_text:
+        cmd.append("--allow-missing-text")
+    r = subprocess.run(cmd,
                        capture_output=True, text=True, encoding="utf-8")
     lines = [ln for ln in r.stdout.splitlines() if ln.strip()]
     if r.returncode != 0:
@@ -298,7 +310,7 @@ def _section(ws, r, text):
 
 
 def summary_cell(o):
-    return o["summary"] or f"(작성 예정) {o['en']}"
+    return o["summary"] or f"(문구 미작성) {o['en']}"
 
 
 def write_xlsx(path):
@@ -349,7 +361,8 @@ def write_xlsx(path):
         ("통합매트릭스_LITE", "핵심 열 발췌(필터·보고용)"),
         ("도메인 요약", "도메인별 위협 수 · 위험도/근거수준 분포 · 매핑 사고 수 · 최고위험 항목"),
         ("신원 유형·ID 환경 요약", "신원 유형(인력·특권·NHI·고객)과 ID 환경(온프레미스 AD·클라우드 IdP·SaaS 등)별 실제 사고·영향·대표 세부위협"),
-        ("공격 체인 시나리오", f"실제 사고 기반 공격 흐름 {len(SCENARIOS.get('scenarios', []))}개 — 단계별 세부위협(IDT-ID)·행위·탐지 포인트·초크 포인트"),
+        ("공격 체인 시나리오", (f"실제 사고 기반 공격 흐름 {len(SCENARIOS['scenarios'])}개 — 단계별 세부위협(IDT-ID)·행위·탐지 포인트·초크 포인트"
+                             if SCENARIOS.get("scenarios") else "시트 양식만 수록 — 시나리오(data/scenarios.yaml)는 다음 단계에서 작성")),
         ("역매핑_사고사례", f"사고 DB {len(INCIDENTS)}건과 매핑 세부위협·출처(근거 추적용)"),
         ("KEV 근거", "CISA KEV 신원 판정 내역(구분·매핑 세부위협·비고)"),
         ("프레임워크 연계", "SAT · OWASP NHI · NIST SP 800-63-4 · ASVS · OAT 항목별 연계 세부위협(커버리지)"),
@@ -371,7 +384,9 @@ def write_xlsx(path):
         ("심각도", " · ".join(f"{k} {sc.get(k, 0)}" for k in ("상", "중", "하"))
          + " — '상'은 신원 체계 장악·다수 계정 동시 장악·정상 권한 대량 피해일 때만(평가 기준 시트)"),
         ("신원 관점 문구", f"{written}/{len(ROWS)}개 작성(핵심 요약·요약설명·참조·탐지·대응)"
-                       + (" — 전 항목 완료" if written == len(ROWS) else " — 나머지는 영문명만 표시(회색, '작성 예정')")
+                       + (" — 전 항목 완료" if written == len(ROWS) else
+                          f" — 나머지 {len(ROWS) - written}개는 '문구 미작성'(요약설명 자리에 영문명 회색 표시, 대표 사례는 사고 DB 최신 "
+                          "실제 사고, 핵심 대응은 매핑된 대응 기준 ID)")
                        + f" | scripts/validate.py {VALIDATION}"),
         ("우선 위협 Top 10", "\n".join(f"{o['priority']}. {o['id']} {o['name']} — {o['risk']}, 실제 사고 {o['n_real']}건"
                                     f"(최근 {o['n_recent']})" for o in top)),
@@ -586,6 +601,8 @@ def write_xlsx(path):
                   "흐름을 가장 싸게 끊는 통제를 초크 포인트로 표시").font = Font(bold=True, color=NAVY)
     ws.cell(2, 1, "행위는 사고 DB 요약에 있는 사실만 적음(data/scenarios.yaml, scripts/validate.py가 ID 대조)").font = Font(size=9, color="595959")
     r = 4
+    if not SCENARIOS.get("scenarios"):
+        ws.cell(r, 1, "작성 예정 — data/scenarios.yaml이 아직 없음").font = Font(color=GRAY)
     for scn in SCENARIOS.get("scenarios", []):
         c = ws.cell(r, 1, f"{scn['id']}. {scn['title']}")
         c.font = Font(size=12, bold=True, color="FFFFFF")
@@ -844,13 +861,15 @@ if __name__ == "__main__":
     ap.add_argument("--worksheet", help="문구 작성용 근거 정리본(도메인별 .md)을 만들 폴더")
     ap.add_argument("--skip-validate", action="store_true", help="scripts/validate.py 검증을 건너뜀")
     ap.add_argument("--version", help="출력 파일 버전 표기(기본 v2)")
+    ap.add_argument("--allow-missing-text", action="store_true",
+                    help="문구가 없는 세부위협을 오류 대신 '문구 미작성'으로 두고 빌드(작성 중간 산출물용)")
     args = ap.parse_args()
     if args.version:
         VERSION = args.version
         OUT = ROOT / "output" / f"통합_신원보안위협_매트릭스_{VERSION}.xlsx"
         CSV_OUT = ROOT / "output" / f"통합_신원보안위협_매트릭스_{VERSION}.csv"
     if not args.skip_validate:
-        VALIDATION = run_validate()
+        VALIDATION = run_validate(args.allow_missing_text)
         print(VALIDATION)
     if args.worksheet:
         write_worksheet(args.worksheet)

@@ -12,6 +12,8 @@ Threats to Cloud Computing 2026, 클라우드 보안사고 사례 DB(680건)를 
 | 루트 (`output/` · `scripts/` · `data/` · `docs/`) | 통합 클라우드 보안위협 매트릭스 v5 — 이 문서의 아래 내용 |
 | [`ot/`](ot/README.md) | 통합 OT/ICS/IoT 보안위협 매트릭스 v5 — ATT&CK for ICS 기반 141행 |
 | [`integrated/`](integrated/README.md) | 통합 AI·클라우드·OT 보안위협 매트릭스 v2 — 세 매트릭스를 보고서용 요약 163개로 통합 |
+| [`supplychain/`](supplychain/README.md) | 통합 소프트웨어 공급망 보안위협 매트릭스 v2 — 8개 도메인 · 세부위협 60개 |
+| [`identity/`](identity/README.md) | 통합 신원(아이덴티티)·계정 보안위협 매트릭스 v2 — 10개 도메인 · 세부위협 65개 |
 | `sources/ai_v3.2/` | 통합본에 쓰는 AI 매트릭스 v3.2 원본 반입본 |
 
 ## 통합 AI·클라우드·OT 보안위협 매트릭스 v2 (`integrated/`)
@@ -58,6 +60,21 @@ AI v3.2·클라우드 v5·OT 매트릭스와 같은 틀(분류 → 위험평가 
 | `supplychain/output/통합_공급망보안위협_매트릭스_v2.xlsx` | 최종 워크북 — 보고서용 간략 매트릭스 · 통합 매트릭스 · 공격 체인 시나리오 9개 · 사고 DB · KEV 근거 · 대응 기준 연계 등 15개 시트 |
 | `supplychain/README.md` | 구조 · 결과 요약 · 문구 작성 · 빌드·검증 방법 |
 | `supplychain/docs/methodology.md` | 방법론 — 근거 집계 · 평가 로직 · 문구 규칙 · 검증기 · 한계 |
+
+## 통합 신원(아이덴티티)·계정 보안위협 매트릭스 v2 (`identity/`)
+
+AI v3.2·클라우드 v5·OT·공급망 v2와 같은 틀(분류 → 위험평가 → 실제근거 → 대응 기준 → 관점 문구)을 신원·계정 영역에 적용했습니다.
+신원 공격면 10개 도메인(인증 공격·사회공학·계정 복구 경로·자격증명 탈취·유출·토큰·세션·티켓·디렉터리·IdP·페더레이션·특권·지속성·
+비인간 신원·수명주기·내부자·고객 계정·영향·확산) → 위협분류 36개 → 세부위협 65개에 ATT&CK v19.2·Browser & Identity Attacks Matrix·
+OWASP NHI Top 10·NIST SP 800-63-4·OWASP ASVS 5.0을 교차 매핑하고, 신원 보안사고 DB 126건(국내 10건)·CISA KEV 신원 판정 81건으로
+위험을 산정했습니다. 통합 AI·클라우드·OT 매트릭스 v2와 공급망 v2의 항목과 연계 ID로 오갑니다.
+
+| 경로 | 설명 |
+|---|---|
+| `identity/output/통합_신원보안위협_매트릭스_v2.xlsx` | 최신 워크북 — 보고서용 간략 매트릭스 · 통합 매트릭스 · 사고 DB · KEV 근거 · 대응 기준 연계 · 다른 매트릭스 연계 등 15개 시트(신원 관점 문구 38/65, 공격 체인 시나리오는 다음 단계) |
+| `identity/README.md` | 구조 · 결과 요약 · 문구 작성 · 빌드·검증 방법 |
+| `identity/docs/methodology.md` | 방법론 — 근거 집계 · 평가 로직 · 경계 · 문구 규칙 · 검증기 · 한계 |
+| `identity/docs/작업방향.md` | 작업 방향 · 결정 사항 · 진행 현황 |
 
 ## 산출물 (클라우드 v5)
 
