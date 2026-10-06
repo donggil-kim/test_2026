@@ -1,0 +1,2328 @@
+# 신원(아이덴티티)·계정 보안사고 DB v1 — 공개 출처 기반
+#
+# 필드
+#   date          사고 인지·공개 시점 YYYY-MM (최초 침투가 크게 앞서면 요약에 적음)
+#   kind          사고 · 캠페인 · 정부 경보 · 공시 · 사례연구(익명) · 연구·시연 · 위협인텔
+#   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
+#   id_env        공격이 일어난 ID 환경(scripts/taxonomy_rules.py ID_ENVS)
+#   id_type       공격 대상 신원 유형(인력 · 특권 · NHI · 고객)
+#   region        피해 지역(글로벌·한국·미국 등) — '한국'은 국내 사례 집계에 사용
+#   actor         행위자(공개 귀속)
+#   impact        결과 유형(scripts/taxonomy_rules.py IMPACTS)
+#   summary       경위·결과 요약(분석가 작성, 수치는 출처 기준)
+#   idt           매핑 세부위협(분석 매핑) — data/taxonomy.yaml의 Lv3 ID
+#   attack_ref    ATT&CK v19.2 그룹·소프트웨어·캠페인 ID(대조·표시용, 자동 매핑에 쓰지 않음)
+#   kev           관련 CISA KEV CVE
+#   origin        다른 매트릭스 사고 DB의 같은 사고 ID(SCI- 공급망 · INC- 클라우드) — 재인용 추적용
+#   sources       '출처 | URL'
+#
+# 집계 규칙(scripts/taxonomy_rules.py): 실제 사고 = kind ∈ {사고·캠페인·정부 경보·공시·사례연구(익명)}
+#   이면서 verification ∉ {행위자 주장·논란·원인 번복}. 연구·시연(연구자의 실증·노출 발견 포함)은 실증 근거,
+#   위협인텔은 실사용 근거(중 상한)로만 반영. 여러 조직을 겨냥한 같은 수법의 공격은 캠페인 1건으로 묶음.
+
+# ---------------------------------------------------------------------------
+# 헬프데스크·사회공학 계열(Scattered Spider·LAPSUS$ 등)
+# ---------------------------------------------------------------------------
+- id: IDI-001
+  title: LAPSUS$ 연쇄 침해(SIM 스와핑·MFA 폭탄·내부자 모집)
+  date: 2022-03
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS, 원격 접속]
+  id_type: [인력, 특권]
+  region: 글로벌
+  actor: LAPSUS$(G1004)
+  impact: [계정 탈취, 데이터 반출, 테넌트·도메인 장악]
+  summary: >-
+    Microsoft가 DEV-0537로 추적한 LAPSUS$는 공개 저장소의 자격증명 수집, 다크웹 구매, 직원·협력사 내부자 모집, SIM 스와핑,
+    MFA 승인 요청 반복, 헬프데스크 전화로 비밀번호·MFA 재설정을 유도하는 방식으로 Microsoft·Nvidia·Samsung·Okta 등을 침해했다.
+    탈취한 계정으로 SSO·VPN·협업 도구에 들어가 소스 코드와 데이터를 반출하고, 일부 피해 조직에서는 관리자 계정을 지워 대응을 방해했다.
+  idt: [IDT-AU-03.1, IDT-AU-03.2, IDT-SE-02.1, IDT-LC-02.2, IDT-AU-01.2, IDT-IM-03, IDT-IM-04]
+  attack_ref: [G1004]
+  sources:
+    - Microsoft(2022) DEV-0537 criminal actor targeting organizations for data exfiltration and destruction | https://www.microsoft.com/en-us/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/
+
+- id: IDI-002
+  title: Uber 내부망 침해(협력사 자격증명·MFA 승인 반복·PAM 관리자 자격증명)
+  date: 2022-09
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력, 특권]
+  region: 미국
+  actor: LAPSUS$ 연계(G1004)
+  impact: [계정 탈취, 테넌트·도메인 장악, 데이터 반출]
+  summary: >-
+    협력사 직원의 개인 단말이 악성코드에 감염되어 유출된 Uber 업무 비밀번호를 공격자가 다크웹에서 구매한 것으로 추정되며,
+    로그인 시도를 반복해 2단계 인증 승인 요청을 보내다가 협력사 직원이 결국 승인했다. 내부 네트워크 공유의 PowerShell 스크립트에
+    하드코딩된 특권 접근 관리(PAM) 도구 관리자 자격증명을 얻어 AWS·Google Cloud·Slack·보안 도구 등 여러 내부 시스템에 접근했다.
+  idt: [IDT-CR-01.1, IDT-AU-01.2, IDT-AU-03.1, IDT-CR-02.1, IDT-PE-01.2, IDT-LC-01.2]
+  attack_ref: [G1004]
+  sources:
+    - Help Net Security(2022) Uber says Lapsus$ gang is behind the recent breach | https://www.helpnetsecurity.com/2022/09/20/uber-data-breach-lapsus/
+    - GitGuardian(2022) Uber Breach 2022 | https://blog.gitguardian.com/uber-breach-2022/
+
+- id: IDI-003
+  title: Cisco 사내망 침해(개인 Google 계정 동기화 비밀번호·음성 피싱·MFA 승인)
+  date: 2022-08
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: Yanluowang 연계 초기 접근 브로커
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    직원이 Chrome 비밀번호 동기화로 개인 Google 계정에 저장해 둔 Cisco 자격증명이 개인 계정 탈취로 넘어갔다. 공격자는 여러 날에 걸쳐
+    지원 조직을 사칭한 음성 피싱과 반복된 MFA 푸시로 직원이 승인하게 만들어 VPN에 접속했고, 새 MFA 장치를 등록해 접근을 유지했다.
+    Cisco는 2022-05 침해를 2022-08에 공개했으며 비민감 데이터만 유출됐다고 밝혔다.
+  idt: [IDT-CR-01.1, IDT-SE-02.2, IDT-AU-03.1, IDT-PE-02.2]
+  sources:
+    - The Hacker News(2022) Cisco Confirms It's Been Hacked by Yanluowang Ransomware Gang | https://thehackernews.com/2022/08/cisco-confirms-its-been-hacked-by.html
+    - The Record(2022) Cisco confirms May attack by Yanluowang ransomware group | https://therecord.media/cisco-confirms-may-attack-by-yanluowang-ransomware-group
+
+- id: IDI-004
+  title: Twilio 등 0ktapus SMS 피싱 캠페인
+  date: 2022-08
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: Scattered Spider(0ktapus, G1015)
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    IT 부서를 사칭한 문자로 비밀번호 만료를 알리며 Okta 로그인 화면을 흉내 낸 유사 도메인으로 유도해 SSO 자격증명과 MFA 코드를
+    텔레그램으로 실시간 전달받았다. Group-IB는 130곳 이상이 표적이 되어 자격증명 9,931건이 수집됐다고 분석했다. Twilio에서는 고객
+    209곳과 Signal 사용자 약 1,900명의 정보가 노출됐고, 하드웨어 보안 키를 쓰던 Cloudflare는 침해를 막았다.
+  idt: [IDT-SE-01.3, IDT-SE-01.1, IDT-IM-05]
+  attack_ref: [G1015, C0027]
+  sources:
+    - Help Net Security(2022) 0ktapus — Twilio, Cloudflare phishers targeted 130+ organizations | https://www.helpnetsecurity.com/2022/08/25/0ktapus-twilio-cloudflare-phishers-targets/
+    - TechCrunch(2022) Twilio says breach compromised Authy two-factor app users | https://techcrunch.com/2022/08/26/twilio-breach-authy/
+
+- id: IDI-005
+  title: MGM Resorts 랜섬웨어(헬프데스크 사칭으로 관리자 계정 확보)
+  date: 2023-09
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, 온프레미스 AD]
+  id_type: [특권]
+  region: 미국
+  actor: Scattered Spider(G1015)·ALPHV
+  impact: [테넌트·도메인 장악, 랜섬웨어·파괴, 서비스 중단]
+  summary: >-
+    LinkedIn에서 찾은 직원을 사칭해 IT 헬프데스크에 전화로 계정 접근을 요청하는 방식으로 Okta·Azure 관리 권한을 얻은 뒤 ALPHV
+    랜섬웨어로 약 100대의 ESXi 하이퍼바이저를 암호화했다. 객실 키·예약·슬롯머신 등 운영이 열흘가량 마비됐고, MGM은 약 1억 달러의
+    영업 손실을 공시했다.
+  idt: [IDT-SE-02.1, IDT-DI-03.2, IDT-IM-02]
+  attack_ref: [G1015, S1068]
+  sources:
+    - Netwrix(2025) MGM Cyber Attack — What Happened And What It Cost | https://netwrix.com/en/resources/blog/mgm-cyber-attack/
+    - Microsoft(2023) Octo Tempest crosses boundaries to facilitate extortion, encryption, and destruction | https://www.microsoft.com/en-us/security/blog/2023/10/25/octo-tempest-crosses-boundaries-to-facilitate-extortion-encryption-and-destruction/
+
+- id: IDI-006
+  title: Caesars Entertainment 회원 DB 탈취(외주 IT 지원업체 대상 사회공학)
+  date: 2023-09
+  kind: 공시
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP]
+  id_type: [인력, 특권]
+  region: 미국
+  actor: Scattered Spider(G1015)
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    Caesars는 8-K 공시에서 외주 IT 지원업체에 대한 사회공학 공격으로 시작된 침해로 로열티 프로그램 DB 사본(운전면허·사회보장번호
+    포함)이 탈취됐다고 밝혔다. 회사는 유출 데이터 삭제 보장을 위한 조치를 했다고 공시했으며, 언론은 요구액의 절반가량을 지급했다고 보도했다.
+  idt: [IDT-SE-02.1, IDT-LC-01.2, IDT-IM-03]
+  attack_ref: [G1015]
+  sources:
+    - Caesars Entertainment(2023) Form 8-K | https://www.sec.gov/Archives/edgar/data/1590895/000119312523235015/d537840d8k.htm
+    - TechCrunch(2023) Caesars Entertainment says customer data stolen in cyberattack | https://techcrunch.com/2023/09/14/caesars-entertainment-data-breach-cyberattack/
+
+- id: IDI-007
+  title: Okta 고객 대상 헬프데스크 사칭·교차 테넌트 사칭(인바운드 페더레이션 악용)
+  date: 2023-08
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP]
+  id_type: [특권]
+  region: 미국
+  actor: 미상(Scattered Spider 수법과 유사)
+  impact: [테넌트·도메인 장악, 계정 탈취]
+  summary: >-
+    Okta는 미국 고객 여러 곳에서 서비스 데스크 직원을 속여 최고 관리자(Super Administrator)의 MFA 요소를 모두 초기화하게 한
+    공격을 확인했다. 공격자는 익명 프록시로 관리자 계정에 접속한 뒤 두 번째 IdP를 '사칭 앱'으로 구성해 인바운드 페더레이션으로
+    조직 안 다른 사용자 명의로 애플리케이션에 접근했다.
+  idt: [IDT-SE-02.1, IDT-DI-03.2, IDT-PE-02.2]
+  sources:
+    - Okta(2023) Cross-Tenant Impersonation — Prevention and Detection | https://sec.okta.com/articles/2023/08/cross-tenant-impersonation-prevention-and-detection/
+    - TechTarget(2023) Okta — 4 customers compromised in social engineering attacks | https://www.techtarget.com/searchsecurity/news/366551082/Okta-4-customers-compromised-in-social-engineering-attacks
+
+- id: IDI-008
+  title: Scattered Spider 합동 권고(헬프데스크 사칭·SIM 스와핑·MFA 장치 등록)
+  date: 2023-11
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [클라우드 IdP, SaaS, 온프레미스 AD]
+  id_type: [인력, 특권]
+  region: 글로벌
+  actor: Scattered Spider(G1015)
+  impact: [계정 탈취, 랜섬웨어·파괴, 데이터 반출]
+  summary: >-
+    FBI·CISA는 Scattered Spider가 IT 헬프데스크에 전화해 비밀번호 재설정이나 MFA를 공격자 장치로 옮기게 하고, SIM 스와핑·MFA
+    피로 공격·피싱으로 계정을 얻은 뒤 자체 MFA 장치를 등록해 접근을 유지한다고 경보했다. 2025-07 개정판은 직원 사칭 헬프데스크
+    공격 고도화와 DragonForce 랜섬웨어 사용을 추가했다.
+  idt: [IDT-SE-02.1, IDT-AU-03.2, IDT-AU-03.1, IDT-PE-02.2, IDT-IM-02]
+  attack_ref: [G1015]
+  sources:
+    - CISA(2023, 2025 개정) AA23-320A Scattered Spider | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a
+    - IC3(2025) Product ID AA23-320A July 29, 2025 Scattered Spider | https://www.ic3.gov/CSA/2025/250729.pdf
+
+- id: IDI-009
+  title: Clorox 침해(외주 헬프데스크가 확인 없이 비밀번호·MFA 재설정)
+  date: 2023-08
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP]
+  id_type: [인력]
+  region: 미국
+  actor: Scattered Spider 연계(G1015)
+  impact: [랜섬웨어·파괴, 서비스 중단]
+  summary: >-
+    Clorox가 2025-07 외주 헬프데스크 운영사를 상대로 낸 소송에 따르면, 공격자가 헬프데스크에 여러 차례 전화해 신원 확인 없이
+    Okta 비밀번호와 Microsoft MFA를 재설정받았다. Clorox는 이 침해로 약 3억 8천만 달러 피해가 났다고 주장했고, 운영사는 혐의를 부인했다.
+  idt: [IDT-SE-02.1, IDT-LC-01.2, IDT-IM-02]
+  attack_ref: [G1015]
+  sources:
+    - BleepingComputer(2025) Hackers fooled Cognizant help desk, says Clorox in $380M cyberattack lawsuit | https://www.bleepingcomputer.com/news/security/hackers-fooled-cognizant-help-desk-says-clorox-in-380m-cyberattack-lawsuit/
+    - The Record(2025) Clorox lawsuit says help-desk contractors handed over passwords in 2023 cyberattack | https://therecord.media/clorox-cyberattack-lawsuit-cognizant-it-contractor
+
+- id: IDI-010
+  title: Marks & Spencer 랜섬웨어(협력사 대상 직원 사칭으로 비밀번호 재설정)
+  date: 2025-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [온프레미스 AD, 클라우드 IdP]
+  id_type: [인력]
+  region: 영국
+  actor: Scattered Spider 연계(G1015)·DragonForce
+  impact: [랜섬웨어·파괴, 서비스 중단, 데이터 반출]
+  summary: >-
+    M&S 의장은 영국 의회에서 공격자가 협력사를 상대로 한 정교한 사칭으로 직원 비밀번호를 재설정받아 침투했다고 밝혔다. 온라인 주문이
+    수주간 중단됐고 회사는 영업이익 약 3억 파운드 영향을 추정했다. 영국 국가범죄청(NCA)은 2025-07 M&S·Co-op 공격 관련 4명을 체포했다.
+  idt: [IDT-SE-02.1, IDT-LC-01.2, IDT-IM-02]
+  attack_ref: [G1015]
+  sources:
+    - TechCrunch(2025) Marks & Spencer chair refuses to say if retailer paid hackers after ransomware attack | https://techcrunch.com/2025/07/08/marks-spencer-chair-refuses-to-say-if-retailer-paid-hackers-after-ransomware-attack
+    - Bloomberg(2025) M&S Says April Cyberattack Caused by Third-Party Impersonation | https://www.bloomberg.com/news/articles/2025-07-08/m-s-says-april-cyberattack-caused-by-third-party-impersonation
+
+- id: IDI-011
+  title: Co-op 회원 650만 명 정보 탈취(직원 사칭으로 계정 접근)
+  date: 2025-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [온프레미스 AD, 클라우드 IdP]
+  id_type: [인력]
+  region: 영국
+  actor: Scattered Spider 연계(G1015)·DragonForce
+  impact: [데이터 반출, 서비스 중단]
+  summary: >-
+    공격자가 직원을 사칭해 계정 접근을 얻은 뒤 회원 650만 명 전원의 이름·주소·연락처를 탈취했다. Co-op은 네트워크 일부를 끊어
+    랜섬웨어 실행은 막았으나 물류·회원 서비스가 차질을 빚었고 약 2억 파운드대 매출 손실을 밝혔다.
+  idt: [IDT-SE-02.1, IDT-IM-03]
+  attack_ref: [G1015]
+  sources:
+    - TechRadar(2025) Data of all 6.5 million Co-op members stolen | https://www.techradar.com/pro/security/data-of-all-6-5-million-coop-members-stolen-ceo-is-incredibly-sorry
+
+- id: IDI-012
+  title: Coinbase 고객 데이터 유출(매수된 해외 고객지원 인력)
+  date: 2025-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [인력, 고객]
+  region: 미국
+  actor: 미상(지원 인력 매수)
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    범죄자들이 해외 고객지원 인력과 협력사 직원을 매수해 월간 거래 사용자 1% 미만의 이름·주소·신분증 이미지·잔액 등을 빼냈고,
+    이를 이용해 Coinbase를 사칭한 사회공학으로 고객 자산을 노렸다. 2천만 달러 갈취 요구는 거부했으며 대응 비용을 최대 4억 달러로 추정했다.
+  idt: [IDT-LC-02.2, IDT-IM-03, IDT-IM-01]
+  sources:
+    - Coinbase(2025) Protecting Our Customers — Standing Up to Extortionists | https://www.coinbase.com/blog/protecting-our-customers-standing-up-to-extortionists
+    - CNBC(2025) Coinbase says hackers bribed staff to steal customer data and are demanding $20 million ransom | https://www.cnbc.com/2025/05/15/coinbase-says-hackers-bribed-staff-to-steal-customer-data-and-are-demanding-20-million-ransom.html
+
+- id: IDI-013
+  title: Arup 딥페이크 화상회의 송금 사기
+  date: 2024-01
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 홍콩
+  actor: 미상
+  impact: [금전 탈취]
+  summary: >-
+    홍콩 지사 직원이 CFO와 동료로 보이는 인물들이 참석한 화상회의에서 지시를 받아 5개 계좌로 15차례 총 2억 홍콩달러(약 2,500만
+    달러)를 송금했다. 회의 참석자는 공개 영상으로 만든 딥페이크였으며, Arup은 2024-05 피해 사실을 확인했다.
+  idt: [IDT-SE-04, IDT-IM-01]
+  sources:
+    - SCMP(2024) UK multinational Arup confirmed as victim of HK$200 million deepfake scam | https://www.scmp.com/news/hong-kong/law-and-crime/article/3263151/uk-multinational-arup-confirmed-victim-hk200-million-deepfake-scam-used-digital-version-cfo-dupe
+
+# ---------------------------------------------------------------------------
+# 자격증명 재사용·MFA 미적용·인포스틸러
+# ---------------------------------------------------------------------------
+- id: IDI-014
+  title: Colonial Pipeline 랜섬웨어(미사용 VPN 계정·단일 인증)
+  date: 2021-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: DarkSide
+  impact: [랜섬웨어·파괴, 서비스 중단]
+  summary: >-
+    쓰지 않지만 활성 상태로 남은 레거시 VPN 계정이 비밀번호 하나로만 보호되어(MFA 없음) 침투 경로가 됐다. 해당 비밀번호는 다크웹의
+    유출 비밀번호 묶음에서 발견되어 재사용이 의심됐다. 회사는 송유관 운영을 중단했고 CEO는 상원 청문회에서 경위를 증언했다.
+  idt: [IDT-LC-01.1, IDT-AU-03.3, IDT-AU-01.2, IDT-IM-02]
+  sources:
+    - Dark Reading(2021) Colonial Pipeline CEO — Ransomware Attack Started via Pilfered 'Legacy' VPN Account | https://www.darkreading.com/cyberattacks-data-breaches/colonial-pipeline-ceo-ransomware-attack-started-via-pilfered-legacy-vpn-account
+    - Cybersecurity Dive(2021) Colonial CEO says ransomware hackers exploited legacy VPN | https://www.cybersecuritydive.com/news/colonial-Joseph-Blount-ransomware-legacy-vpn/601523/
+
+- id: IDI-015
+  title: Change Healthcare 랜섬웨어(MFA 없는 Citrix 원격 접속)
+  date: 2024-02
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: ALPHV(BlackCat)
+  impact: [랜섬웨어·파괴, 데이터 반출, 서비스 중단]
+  summary: >-
+    UnitedHealth CEO는 의회 서면 증언에서 공격자가 2024-02-12 탈취한 자격증명으로 MFA가 없던 Citrix 원격 접속 포털에 로그인한 뒤
+    내부에서 이동하며 데이터를 반출하고 9일 뒤 랜섬웨어를 실행했다고 밝혔다. 미국 전역의 청구·자격 확인 업무가 수주간 마비됐고
+    회사는 2,200만 달러를 지급했다.
+  idt: [IDT-AU-03.3, IDT-AU-01.2, IDT-IM-02, IDT-IM-03]
+  attack_ref: [S1068]
+  sources:
+    - Cybersecurity Dive(2024) Change Healthcare, compromised by stolen credentials, did not have MFA turned on | https://www.cybersecuritydive.com/news/change-healthcare-compromised-credentials-no-mfa/714792/
+    - TechTarget(2024) Change Healthcare breached via Citrix portal with no MFA | https://www.techtarget.com/searchsecurity/news/366582824/Change-Healthcare-breached-via-Citrix-portal-with-no-MFA
+
+- id: IDI-016
+  title: Snowflake 고객 인스턴스 대량 데이터 탈취(인포스틸러 자격증명·MFA 미적용)
+  date: 2024-05
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS]
+  id_type: [인력, NHI]
+  region: 글로벌
+  actor: UNC5537
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    Mandiant는 UNC5537이 인포스틸러 감염 단말에서 나온 고객 자격증명으로 MFA와 접속 허용 목록이 없는 Snowflake 고객 인스턴스
+    약 165곳에 로그인해 데이터를 대량 반출하고 갈취했다고 분석했다. 쓰인 자격증명 일부는 2020년 유출 이후 교체되지 않았고, 일부는
+    협력사 단말에서 유출됐다. Snowflake 플랫폼 자체 침해 증거는 없었다.
+  idt: [IDT-CR-01.1, IDT-AU-01.2, IDT-AU-03.3, IDT-NH-01.2, IDT-IM-03]
+  sources:
+    - Google Cloud(2024) UNC5537 Targets Snowflake Customer Instances for Data Theft and Extortion | https://cloud.google.com/blog/topics/threat-intelligence/unc5537-snowflake-data-theft-extortion
+
+- id: IDI-017
+  title: Microsoft 기업 메일 침해(레거시 테스트 테넌트 비밀번호 스프레이·OAuth 앱)
+  date: 2024-01
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력, NHI]
+  region: 미국
+  actor: Midnight Blizzard(APT29, G0016)
+  impact: [데이터 반출, 테넌트·도메인 장악]
+  summary: >-
+    공격자는 MFA가 없는 레거시 비프로덕션 테스트 테넌트 계정을 비밀번호 스프레이로 탈취하고, 그 테넌트의 레거시 테스트 OAuth 앱에
+    붙은 높은 권한을 악용해 악성 OAuth 앱을 추가로 만들고 Exchange Online 전체 메일함 접근 역할(full_access_as_app)을 부여받아
+    고위 경영진·보안팀 메일을 열람했다.
+  idt: [IDT-AU-01.1, IDT-AU-03.3, IDT-NH-03.2, IDT-IM-03]
+  attack_ref: [G0016]
+  sources:
+    - Microsoft(2024) Midnight Blizzard — Guidance for responders on nation-state attack | https://www.microsoft.com/en-us/security/blog/2024/01/25/midnight-blizzard-guidance-for-responders-on-nation-state-attack/
+
+- id: IDI-018
+  title: Medibank 고객 970만 명 정보 유출(협력사 직원 브라우저 동기화 자격증명·MFA 없는 VPN)
+  date: 2022-10
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [원격 접속]
+  id_type: [인력, 특권]
+  region: 호주
+  actor: REvil 연계
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    호주 정보위원회(OAIC) 소송 자료에 따르면 IT 협력사 직원이 업무용 컴퓨터의 브라우저 프로필에 Medibank 자격증명을 저장했고,
+    같은 프로필로 개인 컴퓨터에 로그인하면서 동기화된 자격증명이 개인 컴퓨터의 악성코드로 탈취됐다. 당시 VPN은 기기 인증서나
+    사용자 이름·비밀번호만으로 접속할 수 있어(MFA 없음) 공격자가 침투했고, 고객 약 970만 명의 정보가 탈취되어 다크웹에 공개됐다.
+  idt: [IDT-CR-01.1, IDT-AU-03.3, IDT-LC-01.2, IDT-IM-03]
+  sources:
+    - OAIC(2024) Australian Information Commissioner v Medibank Private Limited — concise statement | https://www.oaic.gov.au/__data/assets/pdf_file/0025/221974/Australian-Information-Commissioner-v-Medibank-Private-Limited-concise-statement.pdf
+    - Cybernews(2024) Australia's privacy watchdog accuses Medibank of not using MFA, leading to breach | https://cybernews.com/privacy/privacy-watchdog-accuses-medibank-of-not-using-mfa/
+
+- id: IDI-019
+  title: Okta 지원 시스템 침해(서비스 계정 자격증명 개인 Google 프로필 저장·HAR 세션 토큰)
+  date: 2023-10
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP]
+  id_type: [NHI, 인력]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    직원이 업무용 노트북의 Chrome에서 개인 Google 계정에 로그인해 지원 시스템 서비스 계정의 사용자 이름·비밀번호를 저장해 두었고,
+    이 개인 계정이나 기기가 침해되며 서비스 계정이 탈취된 것으로 확인됐다. 공격자는 고객이 지원 요청에 첨부한 HAR 파일에서 세션
+    토큰을 추출해 BeyondTrust·Cloudflare·1Password 등 고객 134곳에 영향을 줬다.
+  idt: [IDT-DI-03.1, IDT-NH-02.1, IDT-TS-01.1, IDT-IM-05]
+  sources:
+    - The Hacker News(2023) Okta's Recent Customer Support Data Breach Impacted 134 Customers | https://thehackernews.com/2023/11/oktas-recent-customer-support-data.html
+    - The Record(2023) Okta security breach affected all customer support system users | https://therecord.media/okta-security-breach-all-support-users
+
+- id: IDI-020
+  title: Cloudflare 내부 Atlassian 침해(Okta 침해 때 유출된 토큰 미교체)
+  date: 2023-11
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 미국
+  actor: 국가 배후 추정
+  impact: [데이터 반출, 영향 없음(사전 차단)]
+  summary: >-
+    2023-10 Okta 침해로 유출된 수천 건 가운데 쓰지 않는다고 잘못 판단해 교체하지 않은 서비스 토큰 1개와 서비스 계정 자격증명 3개로
+    공격자가 Cloudflare의 Atlassian(Confluence·Jira·Bitbucket)에 접근했다. 2023-11-23 탐지되어 하루 만에 차단됐고 고객 데이터·
+    시스템 피해는 없었다.
+  idt: [IDT-NH-01.2, IDT-NH-01.1, IDT-IM-05]
+  sources:
+    - BleepingComputer(2024) Cloudflare hacked using auth tokens stolen in Okta attack | https://www.bleepingcomputer.com/news/security/cloudflare-hacked-using-auth-tokens-stolen-in-okta-attack/
+    - The Register(2024) Cloudflare publishes details of Thanksgiving security breach | https://www.theregister.com/2024/02/02/cloudflare_okta_atlassian/
+
+# ---------------------------------------------------------------------------
+# 디렉터리·Kerberos·하이브리드 ID
+# ---------------------------------------------------------------------------
+- id: IDI-021
+  title: Ascension 랜섬웨어(Kerberoasting으로 AD 특권 계정 확보)
+  date: 2024-05
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [온프레미스 AD]
+  id_type: [특권, NHI]
+  region: 미국
+  actor: Black Basta 연계
+  impact: [랜섬웨어·파괴, 데이터 반출, 서비스 중단]
+  summary: >-
+    미 상원 Wyden 의원실 조사에 따르면 협력사 직원이 검색 결과의 악성 링크로 감염된 뒤, 공격자가 RC4 암호화를 허용하던 Active
+    Directory에서 Kerberoasting으로 특권 계정을 얻어 수천 대에 랜섬웨어를 배포하고 환자 560만 명의 데이터를 반출했다.
+  idt: [IDT-TS-02.2, IDT-IM-02, IDT-IM-03]
+  attack_ref: [S1070]
+  sources:
+    - Wyden(2025) Wyden Calls for FTC Investigation of Microsoft for Enabling Ascension Hospital Ransomware Hack | https://www.wyden.senate.gov/news/press-releases/wyden-calls-for-ftc-investigation-of-microsoft-for-enabling-ascension-hospital-ransomware-hack-with-insecure-software
+    - The Record(2025) FTC should investigate Microsoft after Ascension ransomware attack, senator says | https://therecord.media/ascension-ransomware-attack-wyden-seeks-ftc-microsoft-investigation
+
+- id: IDI-022
+  title: Storm-0501 하이브리드 환경 랜섬웨어(Entra Connect 동기화 계정 장악)
+  date: 2024-09
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD, 클라우드 IdP]
+  id_type: [특권, NHI]
+  region: 미국
+  actor: Storm-0501(G1053)
+  impact: [테넌트·도메인 장악, 랜섬웨어·파괴]
+  summary: >-
+    Microsoft는 Storm-0501이 온프레미스를 장악한 뒤 Microsoft Entra Connect 동기화 서버의 계정 자격증명을 탈취해 클라우드 계정
+    비밀번호를 바꾸고 MFA가 없는 클라우드 관리자 계정으로 클라우드에 들어가, 클라우드 자원·백업을 지우거나 랜섬웨어를 실행했다고
+    분석했다. 2025-08 후속 분석에서는 전역 관리자 역할이 붙은 동기화 비인간 계정을 장악하고, 악성 페더레이션 도메인을 추가해
+    거의 모든 사용자로 로그인할 수 있는 백도어를 만들거나, 데이터를 반출·삭제하고 백업을 파괴한 뒤 갈취하는 '클라우드 기반 랜섬웨어'로 발전했다.
+  idt: [IDT-DI-02, IDT-AU-03.3, IDT-NH-02.1, IDT-DI-03.2, IDT-IM-02]
+  attack_ref: [G1053]
+  sources:
+    - Microsoft(2024) Storm-0501 — Ransomware attacks expanding to hybrid cloud environments | https://www.microsoft.com/en-us/security/blog/2024/09/26/storm-0501-ransomware-attacks-expanding-to-hybrid-cloud-environments/
+    - Microsoft(2025) Storm-0501's evolving techniques lead to cloud-based ransomware | https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+
+- id: IDI-023
+  title: MERCURY·DEV-1084 하이브리드 환경 파괴 공격(Azure AD Connect 악용)
+  date: 2023-04
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD, 클라우드 IdP]
+  id_type: [특권]
+  region: 이스라엘
+  actor: MERCURY·DEV-1084(이란 연계)
+  impact: [랜섬웨어·파괴, 테넌트·도메인 장악]
+  summary: >-
+    Microsoft는 공격자가 온프레미스를 장악한 뒤 Azure AD Connect 에이전트의 특권 계정 자격증명을 얻어 클라우드 Azure AD에 접근하고,
+    서버 팜·가상머신·스토리지 등 클라우드 자원과 온프레미스 자원을 대량 삭제한 파괴 공격을 분석했다.
+  idt: [IDT-DI-02, IDT-IM-02, IDT-IM-04]
+  sources:
+    - Microsoft(2023) MERCURY and DEV-1084 — Destructive attack on hybrid environment | https://www.microsoft.com/en-us/security/blog/2023/04/07/mercury-and-dev-1084-destructive-attack-on-hybrid-environment/
+
+- id: IDI-024
+  title: MagicWeb — AD FS 서버 인증 백도어
+  date: 2022-08
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: NOBELIUM(APT29, G0016)
+  impact: [테넌트·도메인 장악]
+  summary: >-
+    Microsoft는 관리자 권한을 확보한 NOBELIUM이 AD FS 서버의 정상 DLL을 MagicWeb으로 바꿔, 특수한 인증서가 들어간 토큰을 제시하면
+    어떤 사용자로든 인증되게 하는 백도어를 실제 고객 환경에서 발견했다. 토큰 서명 인증서 탈취와 달리 AD FS 처리 과정 자체를 조작했다.
+  idt: [IDT-DI-04, IDT-TS-03.2]
+  attack_ref: [G0016]
+  sources:
+    - Microsoft(2022) MagicWeb — NOBELIUM's post-compromise trick to authenticate as anyone | https://www.microsoft.com/en-us/security/blog/2022/08/24/magicweb-nobeliums-post-compromise-trick-to-authenticate-as-anyone/
+
+- id: IDI-025
+  title: FoggyWeb — AD FS 토큰 서명 인증서·구성 탈취 백도어
+  date: 2021-09
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: NOBELIUM(APT29, G0016)
+  impact: [자격증명·토큰 탈취, 테넌트·도메인 장악]
+  summary: >-
+    NOBELIUM이 장악한 AD FS 서버에 상주시킨 FoggyWeb은 AD FS 구성 DB, 토큰 서명·복호화 인증서를 원격으로 빼내고 추가 구성 요소를
+    받아 실행했다. 탈취한 서명 인증서로 임의 사용자의 SAML 토큰을 위조할 수 있다.
+  idt: [IDT-DI-04, IDT-TS-03.2]
+  attack_ref: [G0016, S0661]
+  sources:
+    - Microsoft(2021) FoggyWeb — Targeted NOBELIUM malware leads to persistent backdoor | https://www.microsoft.com/en-us/security/blog/2021/09/27/foggyweb-targeted-nobelium-malware-leads-to-persistent-backdoor/
+
+- id: IDI-026
+  title: Storm-0558 Microsoft 계정 서명 키 탈취와 토큰 위조(정부기관 메일 열람)
+  date: 2023-07
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [특권, 인력]
+  region: 미국
+  actor: Storm-0558(중국 연계)
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자는 Microsoft 소비자 계정(MSA) 서명 키를 손에 넣어 인증 토큰을 위조했고, 토큰 검증 결함으로 이 소비자 키가 기업용 Azure AD
+    토큰 검증에도 통과해 미 국무부 등 약 25개 조직의 Exchange Online·Outlook.com 메일에 접근했다. 미 사이버안전검토위원회(CSRB)는
+    2024-04 보고서에서 막을 수 있었던 보안 실패의 연쇄라고 평가했다.
+  idt: [IDT-TS-03.3, IDT-DI-03.1, IDT-IM-03]
+  sources:
+    - Microsoft(2023) Analysis of Storm-0558 techniques for unauthorized email access | https://www.microsoft.com/en-us/security/blog/2023/07/14/analysis-of-storm-0558-techniques-for-unauthorized-email-access/
+
+- id: IDI-027
+  title: SolarWinds 침해 이후 클라우드 장악(Golden SAML·페더레이션 신뢰·앱 자격증명 추가)
+  date: 2020-12
+  kind: 캠페인
+  verification: 정부·사법 확인
+  id_env: [온프레미스 AD, 클라우드 IdP]
+  id_type: [특권, NHI]
+  region: 미국
+  actor: APT29(G0016)
+  impact: [테넌트·도메인 장악, 데이터 반출]
+  summary: >-
+    공격자는 온프레미스에서 AD FS 토큰 서명 인증서를 탈취해 임의 사용자의 SAML 토큰을 위조(Golden SAML)하고, 신뢰 도메인을 추가하거나
+    기존 애플리케이션·서비스 주체에 자격증명을 추가해 Microsoft 365 메일 등 클라우드 자원에 지속 접근했다. CISA는 클라우드 침해 후
+    활동 탐지 권고를 냈다.
+  idt: [IDT-TS-03.2, IDT-DI-03.2, IDT-PE-02.1, IDT-NH-03.2, IDT-IM-03]
+  attack_ref: [G0016, C0024]
+  sources:
+    - CISA(2021) AA21-008A Detecting Post-Compromise Threat Activity in Microsoft Cloud Environments | https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-008a
+
+- id: IDI-028
+  title: Prestige 랜섬웨어(도메인 기본 그룹 정책으로 배포)
+  date: 2022-10
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 우크라이나·폴란드
+  actor: IRIDIUM(Sandworm, G0034)
+  impact: [랜섬웨어·파괴]
+  summary: >-
+    공격자는 도메인 관리자 수준의 권한을 확보한 뒤 일부 피해 조직에서 Default Domain 그룹 정책 개체를 바꿔 랜섬웨어 실행 작업을
+    전체 도메인에 배포했다. 도메인 권한 장악이 곧 전사 배포 경로가 됨을 보여 줬다.
+  idt: [IDT-DI-01.2, IDT-IM-02]
+  attack_ref: [G0034]
+  sources:
+    - Microsoft(2022) New "Prestige" ransomware impacts organizations in Ukraine and Poland | https://www.microsoft.com/en-us/security/blog/2022/10/14/new-prestige-ransomware-impacts-organizations-in-ukraine-and-poland/
+
+# ---------------------------------------------------------------------------
+# 피싱·토큰 탈취·BEC
+# ---------------------------------------------------------------------------
+- id: IDI-029
+  title: AiTM 피싱으로 세션 쿠키 탈취 후 BEC(1만여 조직 표적)
+  date: 2022-07
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 금전 탈취]
+  summary: >-
+    Microsoft는 2021-09부터 1만 개 이상 조직을 겨냥한 중간자(AiTM) 피싱 캠페인을 분석했다. 프록시 피싱 사이트가 비밀번호와 MFA 이후의
+    세션 쿠키를 함께 가로채 MFA를 우회했고, 공격자는 탈취 세션으로 메일함에 들어가 받은편지함 규칙을 만들고 거래처 메일 스레드에
+    끼어드는 BEC로 송금을 유도했다.
+  idt: [IDT-SE-01.1, IDT-TS-01.1, IDT-PE-02.3, IDT-IM-01]
+  sources:
+    - Microsoft(2022) From cookie theft to BEC — Attackers use AiTM phishing sites as entry point to further financial fraud | https://www.microsoft.com/en-us/security/blog/2022/07/12/from-cookie-theft-to-bec-attackers-use-aitm-phishing-sites-as-entry-point-to-further-financial-fraud/
+
+- id: IDI-030
+  title: Storm-1167 다단계 AiTM 피싱·BEC(신뢰 거래처 계정 경유 확산)
+  date: 2023-06
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: Storm-1167
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    침해한 거래처 계정에서 보낸 피싱으로 은행·금융 조직 직원의 세션을 AiTM으로 가로챈 뒤, 탈취 계정에 새 MFA 방법을 추가하고
+    받은편지함 규칙을 만들어 수백 명에게 2차 피싱을 보내는 BEC로 확산했다.
+  idt: [IDT-SE-01.1, IDT-PE-02.2, IDT-PE-02.3, IDT-IM-01, IDT-IM-05]
+  sources:
+    - Microsoft(2023) Detecting and mitigating a multi-stage AiTM phishing and BEC campaign | https://www.microsoft.com/en-us/security/blog/2023/06/08/detecting-and-mitigating-a-multi-stage-aitm-phishing-and-bec-campaign/
+
+- id: IDI-031
+  title: Storm-2372 디바이스 코드 피싱 캠페인
+  date: 2025-02
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: Storm-2372(러시아 연계 추정)
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    메신저로 접근해 화상회의 초대를 가장한 메시지로 피해자가 정상 Microsoft 로그인 페이지에서 공격자가 발급받은 디바이스 코드를
+    입력하게 만들어 액세스·리프레시 토큰을 얻었다. 정부·NGO·IT·에너지 분야가 표적이 됐고 이후 Microsoft Authentication Broker용
+    디바이스 코드로 기기를 등록해 주 리프레시 토큰을 얻는 방식으로 바뀌었다.
+  idt: [IDT-SE-01.2, IDT-TS-01.2, IDT-PE-02.2]
+  sources:
+    - Microsoft(2025) Storm-2372 conducts device code phishing campaign | https://www.microsoft.com/en-us/security/blog/2025/02/13/storm-2372-conducts-device-code-phishing-campaign/
+
+- id: IDI-032
+  title: Storm-1811 메일 폭탄과 IT 지원 사칭 Teams·전화로 원격 지원 도구 설치 유도
+  date: 2024-05
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: Storm-1811(G1046)
+  impact: [랜섬웨어·파괴]
+  summary: >-
+    대량 구독 메일로 받은편지함을 마비시킨 뒤 IT 지원 인력을 사칭해 전화·Teams로 연락하고, 문제를 해결해 준다며 Quick Assist 원격
+    지원 연결을 허용하게 해 단말을 장악한 다음 Black Basta 랜섬웨어 배포로 이어졌다.
+  idt: [IDT-SE-02.2, IDT-SE-01.3, IDT-IM-02]
+  attack_ref: [G1046, S1070]
+  sources:
+    - Microsoft(2024) Threat actors misusing Quick Assist in social engineering attacks leading to ransomware | https://www.microsoft.com/en-us/security/blog/2024/05/15/threat-actors-misusing-quick-assist-in-social-engineering-attacks-leading-to-ransomware/
+
+- id: IDI-033
+  title: Midnight Blizzard Teams 사회공학(보안팀 사칭으로 MFA 승인 코드 입력 유도)
+  date: 2023-08
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS, 클라우드 IdP]
+  id_type: [인력]
+  region: 글로벌
+  actor: Midnight Blizzard(APT29, G0016)
+  impact: [계정 탈취]
+  summary: >-
+    침해한 소규모 기업 Microsoft 365 테넌트에 보안·제품 팀처럼 보이는 도메인을 만들고 Teams 외부 채팅으로 표적에게 연락해, 휴대폰
+    인증 앱에 표시된 코드를 입력하게 하는 방식으로 비밀번호 없는 인증·MFA를 통과했다. 40개 미만 조직이 영향을 받았다.
+  idt: [IDT-SE-01.3, IDT-AU-03.1]
+  attack_ref: [G0016]
+  sources:
+    - Microsoft(2023) Midnight Blizzard conducts targeted social engineering over Microsoft Teams | https://www.microsoft.com/en-us/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/
+
+- id: IDI-034
+  title: OAuth 앱 악용 금전 공격(MFA 없는 계정으로 앱 생성·암호화폐 채굴·BEC)
+  date: 2023-12
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력, NHI]
+  region: 글로벌
+  actor: Storm-1283 등
+  impact: [금전 탈취, 계정 탈취]
+  summary: >-
+    Microsoft는 MFA가 없는 사용자 계정을 크리덴셜 스터핑·피싱으로 탈취한 공격자들이 OAuth 애플리케이션을 만들거나 권한을 높여,
+    대량 가상머신을 띄워 암호화폐를 채굴하거나 지속 접근·BEC·스팸 발송에 쓰는 사례를 분석했다.
+  idt: [IDT-NH-03.2, IDT-AU-03.3, IDT-AU-01.2, IDT-IM-01]
+  sources:
+    - Microsoft(2023) Threat actors misuse OAuth applications to automate financially driven attacks | https://www.microsoft.com/en-us/security/blog/2023/12/12/threat-actors-misuse-oauth-applications-to-automate-financially-driven-attacks/
+
+- id: IDI-035
+  title: Peach Sandstorm 대규모 비밀번호 스프레이(고가치 조직 정보 수집)
+  date: 2023-09
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP]
+  id_type: [인력]
+  region: 글로벌
+  actor: Peach Sandstorm(APT33, G0064)
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    2023-02부터 위성·국방·제약 분야 수천 개 조직을 대상으로 비밀번호 스프레이를 벌여 일부 계정을 탈취하고, 탈취한 계정으로 Azure
+    AD 정보를 수집하거나 AzureHound·ROADtools로 탐색하며 일부 표적에서 데이터를 반출했다.
+  idt: [IDT-AU-01.1, IDT-AU-05, IDT-IM-03]
+  attack_ref: [G0064]
+  sources:
+    - Microsoft(2023) Peach Sandstorm password spray campaigns enable intelligence collection at high-value targets | https://www.microsoft.com/en-us/security/blog/2023/09/14/peach-sandstorm-password-spray-campaigns-enable-intelligence-collection-at-high-value-targets/
+
+- id: IDI-036
+  title: Salesforce 대상 음성 피싱(악성 Data Loader 연결 앱 승인 유도)
+  date: 2025-06
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS]
+  id_type: [인력, NHI]
+  region: 글로벌
+  actor: UNC6040(ShinyHunters 연계, G1057)
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    IT 지원 인력을 사칭한 전화로 직원이 Salesforce 연결 앱 설정 화면에서 공격자가 변조한 Data Loader 앱을 승인하게 만들어,
+    조직의 Salesforce 데이터를 API로 대량 조회·반출한 뒤 갈취에 썼다. 일부 사례에서는 탈취 자격증명으로 Okta·Microsoft 365 등
+    다른 클라우드로 이동했다.
+  idt: [IDT-SE-02.2, IDT-NH-03.2, IDT-IM-03]
+  attack_ref: [G1057, C0059]
+  sources:
+    - Google Cloud(2025) The Cost of a Call — From Voice Phishing to Data Extortion | https://cloud.google.com/blog/topics/threat-intelligence/voice-phishing-data-extortion
+
+- id: IDI-037
+  title: Salesloft Drift 연동 OAuth 토큰 탈취로 Salesforce 인스턴스 대량 데이터 반출
+  date: 2025-08
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 글로벌
+  actor: UNC6395
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자는 Salesloft Drift 앱과 Salesforce 연동에 쓰이는 OAuth·리프레시 토큰을 탈취해 여러 조직의 Salesforce 인스턴스에서 데이터를
+    조회·반출하고, 그 안에서 AWS 키·Snowflake 토큰·비밀번호 같은 자격증명을 찾아냈다. Salesloft와 Salesforce는 Drift 연동 토큰을
+    모두 폐기했다.
+  idt: [IDT-NH-03.1, IDT-IM-05, IDT-IM-03]
+  origin: [SCI-144]
+  sources:
+    - Google Cloud(2025) Widespread Data Theft Targets Salesforce Instances via Salesloft Drift | https://cloud.google.com/blog/topics/threat-intelligence/data-theft-salesforce-instances-via-salesloft-drift
+    - The Hacker News(2025) Salesloft OAuth breach via Drift AI chat agent exposes Salesforce customer data | https://thehackernews.com/2025/08/salesloft-oauth-breach-via-drift-ai.html
+
+- id: IDI-038
+  title: Dropbox Sign 고객 DB 침해(자동 구성 도구의 서비스 계정 악용)
+  date: 2024-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자가 Dropbox Sign의 자동 시스템 구성 도구에 접근해, 백엔드의 높은 권한을 가진 서비스 계정으로 고객 DB에 들어갔다. 전 사용자의
+    이메일·사용자 이름과 일부의 해시 비밀번호·API 키·OAuth 토큰·MFA 정보가 노출되어 비밀번호 초기화와 키·토큰 교체가 이뤄졌다.
+  idt: [IDT-NH-02.1, IDT-IM-03]
+  sources:
+    - BleepingComputer(2024) Dropbox says hackers stole customer data, auth secrets from eSignature service | https://www.bleepingcomputer.com/news/security/dropbox-says-hackers-stole-customer-data-auth-secrets-from-esignature-service/
+
+- id: IDI-039
+  title: Sisense 침해(고객 데이터 연동 자격증명 노출로 CISA 교체 권고)
+  date: 2024-04
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 미국
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    데이터 분석 SaaS인 Sisense가 침해되어 고객 데이터 원천에 접속하는 데 쓰는 자격증명·토큰·인증서가 노출됐고, CISA는 Sisense
+    고객에게 관련 자격증명을 모두 교체하라고 권고했다. 보도에 따르면 공격자는 Sisense 코드 저장소 속 토큰으로 클라우드 저장소에 접근했다.
+  idt: [IDT-NH-01.1, IDT-CR-02.1, IDT-IM-05]
+  sources:
+    - KrebsOnSecurity(2024) Why CISA is Warning CISOs About a Breach at Sisense | https://krebsonsecurity.com/2024/04/why-cisa-is-warning-cisos-about-a-breach-at-sisense/
+    - The Record(2024) Attack on data analytics company Sisense prompts alert from CISA | https://therecord.media/sisense-cyberattack-cisa-warning
+
+# ---------------------------------------------------------------------------
+# 국내 사고
+# ---------------------------------------------------------------------------
+- id: IDI-040
+  title: SK텔레콤 유심 정보 2,696만 건 유출(HSS 가입자 인증 정보)
+  date: 2025-04
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [통신]
+  id_type: [고객, 특권]
+  region: 한국
+  actor: 미상(BPFDoor 계열 악성코드)
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    과기정통부 민관합동조사단 최종 발표(2025-07)에 따르면 서버 28대에서 악성코드 33종이 발견됐고 유심 정보 25종 2,696만여 건이
+    유출됐으며 최초 침투는 2021-08로 특정됐다. 시스템 관리망 서버 계정 비밀번호를 바꾸지 않고 만료일도 두지 않는 등 계정 관리가
+    부실했고, 2022년 HSS 관리서버의 비정상 로그인 정황을 발견하고도 신고하지 않은 점이 지적됐다.
+  idt: [IDT-CI-02, IDT-NH-01.2, IDT-IM-03]
+  sources:
+    - 뉴시스(2025) 정부, SK텔레콤 해킹 사고 최종 조사결과 발표 | https://www.newsis.com/view/NISX20250704_0003239865
+    - 보안뉴스(2025) 민관조사단, SKT 가입자식별키 유출 확인 | https://m.boannews.com/html/detail.html?idx=137043
+
+- id: IDI-041
+  title: KT 불법 펨토셀 경유 결제 인증 탈취·무단 소액결제
+  date: 2025-09
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [통신, CIAM·고객 서비스]
+  id_type: [고객]
+  region: 한국
+  actor: 미상
+  impact: [금전 탈취, 자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자들이 통신사 인증서를 가진 불법 초소형 기지국(펨토셀)으로 KT 가입자 단말 정보를 얻고 문자(SMS)·ARS 결제 인증 정보를 가로채
+    무단 소액결제를 했다. 조사 결과 결제 피해자 368명·2억 4,300만 원, 개인정보 유출 2만 2,227명으로 집계됐고, 정부는 펨토셀
+    인증서 유효기간을 10년에서 1개월로 줄이도록 했다.
+  idt: [IDT-CI-02, IDT-AU-03.2, IDT-IM-01]
+  sources:
+    - 보안뉴스(2025) KT 무단 소액결제 — 안일한 펨토셀 관리, 해킹 피해 불렀다 | http://m.boannews.com/html/detail.html?idx=140202
+    - 네이트 뉴스(2025) KT "소액결제 피해자 368명" | https://news.nate.com/view/20251017n20101
+
+- id: IDI-042
+  title: 쿠팡 고객 계정 정보 3,367만 건 유출(퇴사 개발자의 토큰 서명키 악용)
+  date: 2025-11
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객, NHI]
+  region: 한국
+  actor: 전 직원
+  impact: [데이터 반출]
+  summary: >-
+    정부 조사단 발표(2026-02)에 따르면 퇴사한 백엔드 개발자가 재직 중 확보한 인증 토큰 서명키로 정상 로그인 없이 약 8개월간 고객
+    정보를 조회했다. 이름·이메일 3,367만 건이 유출되고 배송지 목록 페이지가 1억 4천여 회 조회됐다. 퇴사자가 쓰던 서명키를 갱신하지
+    않았고 키 발급 이력 관리가 없었으며, 재직 개발자 노트북에도 서명키가 저장된 사실이 확인됐다.
+  idt: [IDT-TS-03.3, IDT-LC-01.1, IDT-LC-02.1, IDT-NH-01.2, IDT-IM-03]
+  sources:
+    - ZDNet Korea(2026) 쿠팡, 개인정보 3367만건 유출…배송지 목록 1.4억 회 조회 | https://zdnet.co.kr/view/?no=20260210140029
+    - 머니투데이(2025) 퇴사자가 인증키로 '들락날락'…'3370만 계정' 유출 쿠팡 | https://www.mt.co.kr/tech/2025/12/01/2025120115073232150
+
+- id: IDI-043
+  title: LG유플러스 고객정보 29만여 건 유출(고객인증시스템 관리자 기본 비밀번호)
+  date: 2023-01
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [특권, 고객]
+  region: 한국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    해커가 불법 거래 사이트에 고객정보를 공개해 드러났다. 개인정보위 조사(2023-07 처분)에서 유출 정보와 가장 일치하는
+    고객인증시스템(CAS)의 웹 관리자 계정 비밀번호가 2018-06 이후 기본값 'admin'으로 설정돼 있었고, 2009·2018년 업로드된 웹셸도
+    방치된 것으로 확인됐다. 중복 제거 후 29만 7,117명의 정보가 유출됐고 과징금 68억 원이 부과됐다.
+  idt: [IDT-AU-02, IDT-IM-03]
+  sources:
+    - 한국경제(2023) LG유플러스, 정보 유출 이유는 고작…'초기 비번 안 바꿔서' | https://www.hankyung.com/article/202304278020i
+    - 전자신문(2023) 개인정보위, '30만 개인정보 유출' LG유플러스에 과징금 68억원 | https://www.etnews.com/20230712000204
+
+- id: IDI-044
+  title: GS리테일(GS SHOP·GS25) 크리덴셜 스터핑으로 회원 166만 명 정보 노출
+  date: 2025-01
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 한국
+  actor: 미상
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    공격자가 다른 곳에서 유출된 아이디·비밀번호를 대입해 GS SHOP(2024-06~2025-02)과 GS25(2024-12~2025-01)에 로그인하고 회원정보
+    수정 페이지에서 이름·연락처·주소 등을 빼냈다. 개인정보위는 GS SHOP 158만여 명, GS25 7만 9천여 명의 정보 노출을 확인하고,
+    같은 IP의 단시간 대량 로그인을 탐지·차단하지 못한 점을 들어 과징금 128억 원을 부과했다(2026-08).
+  idt: [IDT-CI-01, IDT-IM-03]
+  sources:
+    - 뉴스핌(2026) 개보위, 개인정보 165만명 유출 GS리테일에 128억 과징금 | https://www.newspim.com/news/view/20260831000859
+    - 보안뉴스(2025) GS리테일, 크리덴셜 스터핑 공격 받아 고객 9만명 개인정보 유출 | https://m.boannews.com/html/detail.html?idx=135478
+
+- id: IDI-045
+  title: SK스토아 크리덴셜 스터핑으로 회원 12만 5천여 명 정보 유출
+  date: 2023-11
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 한국
+  actor: 미상
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    공격자가 국내외 14개 IP로 초당 최대 372회, 총 4,400만 회 이상 로그인을 시도해 12만 5천여 계정에 로그인하고 개인정보가 담긴
+    페이지에 접근했다. 일부 페이지에서 비밀번호가 평문으로 송수신된 사실도 드러나 개인정보위가 과징금 14억 3,200만 원을 부과했다(2025-01).
+  idt: [IDT-CI-01, IDT-IM-03]
+  sources:
+    - 데이터넷(2025) 개인정보委, 개인정보 유출 SK스토아·동행복권에 과징금 부과 | https://www.datanet.co.kr/news/articleView.html?idxno=199399
+    - 보안뉴스(2025) 'SK스토아·동행복권', 과징금 19.4억...고객정보 털려 | https://www.boannews.com/media/view.asp?idx=135759
+
+- id: IDI-046
+  title: 케이티알파 기프티쇼 크리덴셜 스터핑(9만 8천여 계정 로그인)
+  date: 2023-01
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 한국
+  actor: 미상
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    2023-01-28부터 열흘간 4,305개 IP로 540만 회 이상 로그인을 시도해 약 9만 8천 개 회원 계정에 로그인했다. 다수 페이지의 개인정보
+    마스킹 덕분에 실제 유출은 51명에 그쳤으나, 반복 로그인·비정상 접속 탐지·차단을 소홀히 한 점으로 과징금 491만 원이 부과됐다.
+  idt: [IDT-CI-01]
+  sources:
+    - 다음 뉴스(2025) 클래스유 5360만원·KT알파 491만원 과징금…과태료도 부과 | https://v.daum.net/v/20250410120013010
+    - 보안뉴스(2025) 160만 회원정보 유출 '클래스유', 과징금 맞아…개인정보위, KT 계열사도 제재 | https://m.boannews.com/html/detail.html?tab_type=1&idx=136830
+
+- id: IDI-047
+  title: KT 가입자 심스와핑 의심 가상자산 탈취
+  date: 2022-01
+  kind: 사고
+  verification: 언론 보도
+  id_env: [통신]
+  id_type: [고객]
+  region: 한국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    2021-12~2022-01 KT 가입자 여러 명이 휴대폰이 갑자기 먹통이 된 뒤 가상자산 거래소 계정에서 수천만 원에서 수억 원대의 암호화폐를
+    탈취당했다고 신고해 국내 첫 심스와핑 의심 사례로 수사가 이뤄졌다. KT는 유심 기기변경을 한동안 매장 방문으로만 처리하도록 제한했다.
+  idt: [IDT-AU-03.2, IDT-IM-01]
+  sources:
+    - 보안뉴스(2022) 한국 심스와핑 의심 피해자 "유심 복사로 가상자산 털렸다" | http://www.boannews.com/news/articleView.html?idxno=104063
+    - 아시아타임즈(2022) KT, 돌연 '유심기변' 제한…업계선 '심스와핑' 탓 | https://www.asiatime.co.kr/article/20220125500254
+
+- id: IDI-048
+  title: 카드 3사 고객정보 1억여 건 유출(용역 직원의 권한 남용)
+  date: 2014-01
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [인력, 고객]
+  region: 한국
+  actor: 내부자(용역 직원)
+  impact: [데이터 반출]
+  summary: >-
+    카드사 부정사용방지시스템(FDS) 개발 용역을 맡은 신용정보회사 직원이 카드사 사무실 PC에서 고객정보 약 1억 건을 USB에 저장해
+    빼낸 뒤 대출 중개업자에게 팔았다. 직원은 징역 3년이 확정됐고, 법원은 카드사들의 개인정보 관리 책임도 인정했다.
+  idt: [IDT-LC-02.1, IDT-LC-01.2, IDT-IM-03]
+  sources:
+    - 시사저널e(2016) '개인정보 1억건 유출' 카드3사 유죄 | https://www.sisajournal-e.com/news/articleView.html?idxno=155449
+    - 보안뉴스(2016) 카드 3사 1심 판결로 본 개인정보 유출사건의 시사점 | https://m.boannews.com/html/detail.html?idx=51708
+
+- id: IDI-049
+  title: 김수키 정부기관·기자 사칭 피싱으로 이메일 계정 1,468개 탈취
+  date: 2023-11
+  kind: 캠페인
+  verification: 정부·사법 확인
+  id_env: [SaaS]
+  id_type: [인력, 고객]
+  region: 한국
+  actor: Kimsuky(G0094)
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    경찰청 국가수사본부는 북한 해킹조직이 경찰청·국세청·건강보험·기자·연구소를 사칭한 메일과 가짜 로그인 페이지로 전직 장관 등
+    전문가 57명과 일반인 1,411명, 총 1,468명의 이메일 계정을 탈취했다고 발표했다. 탈취 정보로 19명의 가상자산 거래소 계정 접속을
+    시도했으나 추가 인증 절차에 막혀 금전 피해는 없었다.
+  idt: [IDT-SE-01.1, IDT-IM-03]
+  attack_ref: [G0094]
+  sources:
+    - 서울신문(2023) 코인 지갑 노린 北 해킹조직…경찰·국세청·건강보험 사칭해 1000여명 이메일 해킹 | https://www.seoul.co.kr/news/society/2023/11/21/20231121500187
+    - 경향신문(2023) 북한 해킹조직, 1400여명 e메일 탈취···기자 사칭에 가짜 네이버 주소도 활용 | https://www.khan.co.kr/article/202311211237001
+
+# ---------------------------------------------------------------------------
+# 고객 계정(CIAM)·크리덴셜 스터핑
+# ---------------------------------------------------------------------------
+- id: IDI-050
+  title: 23andMe 크리덴셜 스터핑(1만 4천 계정 경유 690만 명 정보 노출)
+  date: 2023-10
+  kind: 공시
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    다른 사이트에서 유출된 비밀번호를 재사용한 약 1만 4천 계정(전체의 0.1%)이 크리덴셜 스터핑으로 탈취됐고, 'DNA 친척 찾기' 기능을
+    통해 이 계정들과 연결된 약 690만 명의 프로필 정보가 노출됐다. 회사는 전 사용자 비밀번호 재설정과 2단계 인증 의무화를 시행했다.
+  idt: [IDT-CI-01, IDT-IM-03]
+  sources:
+    - 23andMe(2023) Form 8-K/A | https://www.sec.gov/Archives/edgar/data/1804591/000119312523287449/d242666d8ka.htm
+    - TechTarget(2024) What the 23andMe Data Breach Reveals About Credential Stuffing | https://www.techtarget.com/healthtechsecurity/feature/What-the-23andMe-Data-Breach-Reveals-About-Credential-Stuffing
+
+- id: IDI-051
+  title: Roku 크리덴셜 스터핑(57만 6천 계정)과 전 계정 2단계 인증 도입
+  date: 2024-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    2024-03 약 1만 5천 계정에 이어 2024-04 약 57만 6천 계정이 크리덴셜 스터핑으로 탈취됐고, 그중 400개 미만 계정에서 무단 구매가
+    일어났다. Roku는 해당 계정 비밀번호를 재설정하고 8천만 계정 전체에 2단계 인증을 적용했다.
+  idt: [IDT-CI-01, IDT-IM-01]
+  sources:
+    - CNN(2024) Roku security breach — 576,000 accounts affected by cyberattack, company says | https://www.cnn.com/2024/04/12/business/roku-security-breach-user-accounts/index.html
+    - TechCrunch(2024) Roku says 576,000 user accounts hacked in second incident | https://techcrunch.com/2024/04/12/roku-second-user-accounts-hacked/
+
+- id: IDI-052
+  title: PayPal 크리덴셜 스터핑(3만 4,942 계정)
+  date: 2022-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    2022-12-06~08 크리덴셜 스터핑으로 3만 4,942개 계정에 무단 로그인해 이름·주소·사회보장번호·거래 내역 등에 접근했다. PayPal은
+    자사 시스템 침해는 아니라고 밝히고 피해자에게 신원 모니터링을 제공했다.
+  idt: [IDT-CI-01, IDT-IM-03]
+  sources:
+    - BleepingComputer(2023) PayPal accounts breached in large-scale credential stuffing attack | https://www.bleepingcomputer.com/news/security/paypal-accounts-breached-in-large-scale-credential-stuffing-attack/
+
+- id: IDI-053
+  title: Chick-fil-A 앱 계정 크리덴셜 스터핑(7만 1,473 계정)
+  date: 2023-03
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    2022-12-18~2023-02-12 외부에서 얻은 자격증명을 자동 대입하는 공격으로 7만 1,473개 회원 계정이 탈취되어 이름·회원번호·결제
+    QR 코드·충전 잔액 등이 노출됐다. 회사는 2023-03 피해자에게 통지했다.
+  idt: [IDT-CI-01, IDT-IM-01]
+  sources:
+    - BleepingComputer(2023) Chick-fil-A confirms accounts hacked in months-long "automated" attack | https://www.bleepingcomputer.com/news/security/chick-fil-a-confirms-accounts-hacked-in-months-long-automated-attack/
+
+- id: IDI-054
+  title: DraftKings 크리덴셜 스터핑(약 6만 8천 계정·30만 달러 미만 피해)
+  date: 2022-11
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    2022-11-18 탐지된 크리덴셜 스터핑으로 약 6만 8천 명의 계정이 탈취되어 개인정보가 노출되고, 30만 달러 미만의 고객 자금이 빠져나가
+    회사가 보상했다. 회사 시스템에서 자격증명이 유출된 증거는 없었다.
+  idt: [IDT-CI-01, IDT-IM-01]
+  sources:
+    - SecurityWeek(2022) DraftKings Warns Users of Credential Stuffing Attacks | https://www.securityweek.com/draftkings-warns-users-of-credential-stuffing-attacks/
+
+- id: IDI-055
+  title: Nintendo Network ID 30만 계정 무단 로그인
+  date: 2020-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 글로벌
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    2020-04부터 다른 곳의 비밀번호를 재사용한 레거시 NNID 계정이 무단 로그인되어 피해가 16만에서 30만 계정으로 늘었다. 연결된 결제
+    수단으로 부정 구매가 발생했고, Nintendo는 NNID 로그인 기능을 중단하고 2단계 인증을 권고했다.
+  idt: [IDT-CI-01, IDT-IM-01]
+  sources:
+    - CNN(2020) Nintendo said that a total of 300,000 accounts have been hacked | https://edition.cnn.com/2020/06/09/tech/nintendo-300000-accounts-hacked/index.html
+
+- id: IDI-056
+  title: Coinbase SMS 계정 복구 결함 악용(고객 6천여 명 자금 탈취)
+  date: 2021-10
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    공격자는 피싱 등으로 고객의 이메일·비밀번호·전화번호와 이메일 계정 접근권을 확보한 뒤, SMS 2단계 인증을 쓰는 고객 계정의 SMS
+    계정 복구 절차 결함을 악용해 인증 토큰을 받아 2021-03~05 고객 6천여 명의 자금을 빼냈다. Coinbase는 결함을 고치고 피해를 보상했다.
+  idt: [IDT-SE-03, IDT-IM-01]
+  sources:
+    - Threatpost(2021) MFA Glitch Leads to 6K+ Coinbase Customers Getting Robbed | https://threatpost.com/mfa-glitch-coinbase-customers-robbery/175290/
+
+- id: IDI-057
+  title: Mat Honan 계정 연쇄 탈취(고객지원 사회공학으로 계정 복구)
+  date: 2012-08
+  kind: 사고
+  verification: 언론 보도
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 랜섬웨어·파괴]
+  summary: >-
+    공격자가 Amazon 고객지원을 속여 신용카드 끝 네 자리를 얻고, 이 정보로 Apple 고객지원에서 iCloud 계정 비밀번호를 재설정받아
+    Gmail·Twitter 계정까지 장악한 뒤 기자의 노트북·휴대폰·태블릿 데이터를 원격 삭제했다. 두 회사는 전화 지원 절차를 바꿨다.
+  idt: [IDT-SE-03, IDT-IM-04]
+  sources:
+    - CNN Money(2012) Hack of Mat Honan exposes gap in Amazon and Apple security | https://money.cnn.com/2012/08/07/technology/mat-honan-hacked/index.htm
+
+- id: IDI-058
+  title: 미 SEC X 계정 장악(SIM 스와핑·2단계 인증 미적용)으로 가짜 비트코인 ETF 승인 게시
+  date: 2024-01
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [SaaS, 통신]
+  id_type: [인력]
+  region: 미국
+  actor: 개인 공범(유죄 확정)
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    공범이 위조 신분증으로 SEC X 계정에 연결된 전화번호의 대체 SIM을 발급받아(심스와핑) 계정을 장악하고, SEC 위원장 명의로 비트코인
+    ETF 승인 가짜 게시물을 올려 비트코인 가격이 일시 급등했다. 당시 계정에는 2단계 인증이 꺼져 있었고, 공범은 징역 14개월을 선고받았다.
+  idt: [IDT-AU-03.2, IDT-AU-03.3, IDT-IM-01]
+  sources:
+    - DOJ(2025) Guilty plea for hacking SEC's X account that caused Bitcoin value spike | https://www.justice.gov/usao-dc/pr/guilty-plea-hacking-secs-x-account-caused-bitcoin-value-spike
+
+- id: IDI-059
+  title: Mandiant X 계정 무차별 대입 탈취(2단계 인증 미적용)
+  date: 2024-01
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 미국
+  actor: 암호화폐 탈취 서비스(Drainer-as-a-Service) 조직
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    Mandiant의 X 계정이 무차별 대입으로 탈취되어 암호화폐 지갑 사칭 사기 홍보에 쓰였다. 팀 이관 과정에서 2단계 인증이 제대로 걸려 있지
+    않았고, 이 캠페인으로 공격자는 최소 90만 달러를 챙겼다.
+  idt: [IDT-AU-01.1, IDT-AU-03.3, IDT-IM-01]
+  sources:
+    - BleepingComputer(2024) Mandiant's X account hacked by crypto Drainer-as-a-Service gang | https://www.bleepingcomputer.com/news/security/mandiants-x-account-hacked-by-crypto-drainer-as-a-service-gang/
+
+- id: IDI-060
+  title: GoldPickaxe 얼굴 인식 정보 탈취 트로이목마(은행 생체 인증 우회)
+  date: 2024-02
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 태국·베트남
+  actor: GoldFactory
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    은행·정부기관 앱을 사칭한 모바일 트로이목마가 피해자의 얼굴 영상·신분증·문자메시지를 수집했고, 공격자는 AI 얼굴 바꾸기로 만든
+    딥페이크로 은행의 생체 본인확인을 통과해 계좌에 접근했다. Group-IB는 얼굴 인식 데이터를 노린 첫 iOS 트로이목마로 분석했다.
+  idt: [IDT-CI-03.2, IDT-AU-03.2, IDT-IM-01]
+  sources:
+    - Group-IB(2024) GoldPickaxe exposed — How Group-IB analyzed the face-stealing iOS Trojan | https://www.group-ib.com/blog/goldpickaxe-ios-trojan/
+
+- id: IDI-061
+  title: 홍콩 딥페이크 얼굴 바꾸기로 대출·계좌 개설 사기 조직 검거
+  date: 2023-08
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 홍콩
+  actor: 사기 조직(6명 체포)
+  impact: [금전 탈취]
+  summary: >-
+    조직이 훔친 신분증 8장으로 은행 계좌 54개를 열고 대출 90건을 신청하면서, 얼굴 인식 절차에서 AI 얼굴 바꾸기 프로그램으로 신분증
+    주인 얼굴로 바꿔 시스템을 속였다. 대출 4건(20만 홍콩달러)이 승인됐고 홍콩 경찰이 처음으로 딥페이크 관련 체포를 했다.
+  idt: [IDT-CI-03.2, IDT-CI-03.1, IDT-IM-01]
+  sources:
+    - Hong Kong Free Press(2023) In first, Hong Kong police arrest 6 over finance scams involving deepfake technology | https://hongkongfp.com/2023/08/25/in-first-hong-kong-police-arrest-6-over-finance-scams-involving-deepfake-technology/
+
+- id: IDI-062
+  title: FinCEN 경보 — 딥페이크 신분증·영상으로 계좌 개설·본인확인 우회
+  date: 2024-11
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 다수
+  impact: [금전 탈취]
+  summary: >-
+    미 재무부 FinCEN은 2023년부터 생성형 AI로 만든 위조 신분증·합성 신원·딥페이크 영상으로 금융기관의 계좌 개설 본인확인과 인증을
+    우회하는 의심거래 보고가 늘었다며 경보(FIN-2024-Alert004)와 적신호 지표를 발표했다.
+  idt: [IDT-CI-03.1, IDT-CI-03.2]
+  sources:
+    - FinCEN(2024) FIN-2024-Alert004 — Fraud Schemes Involving Deepfake Media Targeting Financial Institutions | https://www.fincen.gov/system/files/shared/FinCEN-Alert-DeepFakes-Alert508FINAL.pdf
+
+# ---------------------------------------------------------------------------
+# 사회공학·피싱·인포스틸러·세션
+# ---------------------------------------------------------------------------
+- id: IDI-063
+  title: Twitter 내부 관리 도구 장악(IT 헬프데스크 사칭 전화와 가짜 VPN 로그인)
+  date: 2020-07
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [원격 접속, SaaS]
+  id_type: [인력, 특권, 고객]
+  region: 미국
+  actor: 개인 해커 조직(기소)
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    뉴욕주 금융감독청(NYDFS) 보고서에 따르면 공격자가 IT 헬프데스크를 사칭해 VPN 문제를 해결해 준다며 직원들에게 전화해 가짜 VPN
+    로그인 페이지에 자격증명을 입력하게 했다. 고객 계정을 관리하는 내부 도구에 접근해 유명인 계정 130개를 장악하고 비트코인 사기 게시물을 올렸다.
+  idt: [IDT-SE-02.2, IDT-SE-01.1, IDT-PE-01.1, IDT-IM-01]
+  sources:
+    - NYDFS(2020) Twitter Investigation Report | https://www.dfs.ny.gov/reports-and-publications/other-reports/Twitter_Report
+
+- id: IDI-064
+  title: Electronic Arts 소스 코드 탈취(구매한 Slack 쿠키·IT 지원 사칭으로 MFA 토큰)
+  date: 2021-06
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    공격자는 약 10달러에 산 직원 Slack 세션 쿠키로 사내 Slack에 들어가, 직원을 사칭해 IT 지원팀에 휴대폰을 잃어버렸다며 새 MFA
+    토큰을 요청해 내부망에 접근하고 FIFA 21·Frostbite 엔진 소스 코드 등을 빼냈다.
+  idt: [IDT-TS-01.1, IDT-SE-02.1, IDT-IM-03]
+  sources:
+    - CyberScoop(2021) Hackers reportedly used EA Games' Slack to breach network, access source code | https://cyberscoop.com/ea-games-fifa-hack-hackers-slack/
+
+- id: IDI-065
+  title: Reddit 내부 시스템 침해(인트라넷 게이트웨이 위장 피싱으로 2단계 토큰 탈취)
+  date: 2023-02
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP]
+  id_type: [인력]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    사내 인트라넷 게이트웨이를 흉내 낸 피싱 사이트가 직원의 자격증명과 2단계 인증 토큰을 함께 가로채, 공격자가 내부 문서·코드·대시보드에
+    접근했다. 피해 직원이 곧바로 신고해 계정이 차단됐고 주요 운영 시스템 접근 증거는 없었다.
+  idt: [IDT-SE-01.1, IDT-IM-03]
+  sources:
+    - TechCrunch(2023) Reddit says hackers accessed employee data following phishing attack | https://techcrunch.com/2023/02/10/reddit-says-hackers-accessed-internal-data-following-employee-phishing-attack/
+
+- id: IDI-066
+  title: Tycoon 2FA 피싱 서비스(AiTM으로 Microsoft 365·Gmail 세션 쿠키 탈취)
+  date: 2024-03
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: Tycoon 2FA 운영자
+  impact: [자격증명·토큰 탈취]
+  summary: >-
+    Sekoia는 2023-08부터 활동한 피싱 서비스형(PhaaS) 키트 Tycoon 2FA가 중간자 프록시로 MFA 완료 후 세션 쿠키를 가로채 Microsoft 365·Gmail
+    계정을 탈취한다고 분석했다. 관련 도메인이 1,100개를 넘었고 탐지 회피 기능이 계속 개선됐다.
+  idt: [IDT-SE-01.1, IDT-TS-01.1]
+  sources:
+    - Sekoia(2024) Tycoon 2FA — an in-depth analysis of the latest version of the AiTM phishing kit | https://blog.sekoia.io/tycoon-2fa-an-in-depth-analysis-of-the-latest-version-of-the-aitm-phishing-kit/
+
+- id: IDI-067
+  title: Genesis Market 폐쇄(감염 PC의 자격증명·쿠키·브라우저 지문 판매)
+  date: 2023-04
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [SaaS, CIAM·고객 서비스]
+  id_type: [인력, 고객]
+  region: 글로벌
+  actor: Genesis Market 운영자·이용자
+  impact: [자격증명·토큰 탈취]
+  summary: >-
+    FBI 등 17개국 수사기관은 감염 PC 150만 대 이상에서 수집한 8천만 건 이상의 자격증명과 세션 쿠키·브라우저 지문을 묶어 팔아, 구매자가
+    피해자를 그대로 흉내 내 로그인하게 한 Genesis Market을 폐쇄하고 119명을 체포했다(Operation Cookie Monster).
+  idt: [IDT-CR-01.1, IDT-TS-01.1]
+  sources:
+    - DOJ(2023) Criminal Marketplace Disrupted in International Cyber Operation | https://www.justice.gov/archives/opa/pr/criminal-marketplace-disrupted-international-cyber-operation
+    - The Hacker News(2023) FBI Cracks Down on Genesis Market — 119 Arrested in Cybercrime Operation | https://thehackernews.com/2023/04/fbi-cracks-down-on-genesis-market-119.html
+
+- id: IDI-068
+  title: Lumma 인포스틸러 기반 시설 차단(감염 PC 39만 4천여 대)
+  date: 2025-05
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [SaaS, CIAM·고객 서비스]
+  id_type: [인력, 고객]
+  region: 글로벌
+  actor: Lumma Stealer 운영자
+  impact: [자격증명·토큰 탈취]
+  summary: >-
+    Microsoft·미 법무부·Europol 등은 비밀번호·카드·암호화폐 지갑 등을 훔치는 인포스틸러 Lumma의 도메인 약 2,300개와 관리 패널을
+    압수했다. Microsoft는 2025-03~05 두 달 동안 Lumma에 감염된 Windows PC를 39만 4천여 대 확인했다.
+  idt: [IDT-CR-01.1]
+  attack_ref: [S1213]
+  sources:
+    - Help Net Security(2025) Lumma Stealer Malware-as-a-Service operation disrupted | https://www.helpnetsecurity.com/2025/05/21/lumma-stealer-malware-as-a-service-operation-disrupted/
+    - The Hacker News(2025) FBI and Europol Disrupt Lumma Stealer Malware Network | https://thehackernews.com/2025/05/fbi-and-europol-disrupt-lumma-stealer.html
+
+- id: IDI-069
+  title: HELLCAT 인포스틸러 유출 Jira 자격증명으로 연쇄 침해(Telefónica·Schneider·JLR 등)
+  date: 2025-03
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 글로벌
+  actor: HELLCAT
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    Hudson Rock은 HELLCAT이 인포스틸러 감염 단말에서 나온 Jira 자격증명으로 Telefónica·Schneider Electric·Orange·Jaguar Land Rover 등의
+    Jira에 들어가 데이터를 빼내고 갈취했다고 분석했다. JLR 사례는 협력사 직원 단말에서 2021년에 유출된 자격증명이 여전히 유효했다.
+  idt: [IDT-CR-01.1, IDT-AU-01.2, IDT-NH-01.2, IDT-IM-03]
+  sources:
+    - Infostealers.com(2025) Jaguar Land Rover Breached by HELLCAT Ransomware Group Using Its Infostealer Playbook | https://www.infostealers.com/article/jaguar-land-rover-breached-by-hellcat-ransomware-using-its-infostealer-playbook-then-a-second-hacker-strikes/
+    - SC Media(2025) Pilfered Jira credentials leveraged in HellCat ransomware attacks | https://www.scworld.com/brief/pilfered-jira-credentials-leveraged-in-hellcat-ransomware-attacks
+
+- id: IDI-070
+  title: Disney 사내 Slack 1.1TB 유출(악성 AI 도구로 직원 비밀번호 관리자 자격증명 탈취)
+  date: 2024-07
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 미국
+  actor: NullBulge(개인, 유죄 인정)
+  impact: [데이터 반출]
+  summary: >-
+    AI 이미지 생성 도구로 위장한 악성 프로그램을 설치한 Disney 직원의 PC에서 비밀번호 관리자에 저장된 자격증명이 탈취되어, 공격자가
+    사내 Slack 채널 약 1만 개에서 1.1TB를 내려받아 공개했다. 범인은 2025년 유죄를 인정했다.
+  idt: [IDT-CR-01.1, IDT-CR-02.2, IDT-IM-03]
+  sources:
+    - BleepingComputer(2025) Hacker 'NullBulge' pleads guilty to stealing Disney's Slack data | https://www.bleepingcomputer.com/news/security/hacker-nullbulge-pleads-guilty-to-stealing-disneys-slack-data/
+
+- id: IDI-071
+  title: LastPass 고객 금고 백업 탈취(DevOps 엔지니어 개인 PC 키로거로 마스터 비밀번호 탈취)
+  date: 2022-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 인프라]
+  id_type: [특권]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자는 패치되지 않은 미디어 서버 소프트웨어로 DevOps 엔지니어의 개인 PC를 장악해 키로거를 심고, 엔지니어가 MFA를 마친 뒤 입력한
+    마스터 비밀번호를 가로채 회사 금고에서 클라우드 백업 복호화 키를 얻어 고객 금고 백업을 빼냈다. 이 엔지니어는 키 접근권을 가진 4명 중 1명이었다.
+  idt: [IDT-CR-01.3, IDT-CR-02.2, IDT-IM-03]
+  origin: [SCI-079]
+  sources:
+    - Sophos(2023) LastPass — Keylogger on home PC led to cracked corporate password vault | https://www.sophos.com/en-us/blog/lastpass-the-crooks-used-a-keylogger-to-crack-a-corporatre-password-vault
+    - Help Net Security(2022) LastPass breach — Source code, proprietary tech info stolen | https://www.helpnetsecurity.com/2022/08/26/lastpass-breach/
+
+- id: IDI-072
+  title: Retool 고객 계정 27곳 장악(SMS 피싱·딥페이크 음성·인증 앱 클라우드 동기화)
+  date: 2023-08
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력]
+  region: 미국
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    IT팀을 사칭한 SMS로 직원을 가짜 로그인 페이지로 유도한 뒤, 직원 목소리를 딥페이크로 흉내 낸 전화로 추가 MFA 코드를 받아 공격자 장치를
+    Okta에 등록했다. Google 인증 앱의 클라우드 동기화로 MFA 코드가 함께 넘어가 클라우드 고객 27곳의 계정이 장악됐다.
+  idt: [IDT-SE-01.3, IDT-SE-04, IDT-PE-02.2, IDT-IM-05]
+  origin: [SCI-104]
+  sources:
+    - Retool(2023) When MFA isn't actually MFA | https://retool.com/blog/mfa-isnt-mfa
+    - The Hacker News(2023) Retool Falls Victim to SMS-Based Phishing Attack Affecting 27 Cloud Clients | https://thehackernews.com/2023/09/retool-falls-victim-to-sms-based.html
+
+- id: IDI-073
+  title: CircleCI 고객 비밀 유출(엔지니어 노트북 악성코드로 2FA 완료 SSO 세션 탈취)
+  date: 2023-01
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD, 클라우드 IdP]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    엔지니어 노트북의 악성코드가 2FA를 마친 SSO 세션 쿠키를 훔쳐 공격자가 운영 시스템 일부에 접근하고, 고객 환경변수·토큰·키가 든
+    데이터를 빼냈다. CircleCI는 모든 고객에게 저장된 비밀 전체를 교체하라고 권고했다.
+  idt: [IDT-CR-01.1, IDT-TS-01.1, IDT-IM-05]
+  origin: [SCI-091]
+  sources:
+    - CircleCI(2023) Incident report for January 4, 2023 security incident | https://circleci.com/blog/jan-4-2023-incident-report
+
+- id: IDI-074
+  title: Dropbox 내부 GitHub 저장소 130개 탈취(CircleCI 사칭 피싱으로 자격증명·일회용 코드)
+  date: 2022-10
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    CircleCI를 사칭한 피싱으로 개발자의 GitHub 자격증명과 일회용 코드를 빼낸 공격자가 Dropbox 내부 GitHub 저장소 130개를 복제했다.
+  idt: [IDT-SE-01.1, IDT-IM-03]
+  origin: [SCI-078]
+  sources:
+    - BleepingComputer(2022) Dropbox discloses breach after hacker stole 130 GitHub repositories | https://www.bleepingcomputer.com/news/security/dropbox-discloses-breach-after-hacker-stole-130-github-repositories/
+
+- id: IDI-075
+  title: Google Docs 사칭 OAuth 동의 피싱 웜(약 100만 명)
+  date: 2017-05
+  kind: 캠페인
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [고객, 인력]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 계정 탈취]
+  summary: >-
+    'Google Docs'라는 이름의 악성 OAuth 앱이 정상 Google 동의 화면에서 Gmail·연락처 권한을 승인받은 뒤, 피해자 메일함으로 연락처에
+    같은 메일을 다시 보내 웜처럼 퍼졌다. Google은 약 1시간 만에 차단했으며 사용자의 약 0.1%(약 100만 명)가 영향을 받았다고 밝혔다.
+  idt: [IDT-SE-01.2, IDT-IM-05]
+  sources:
+    - Threatpost(2017) 1 Million Gmail Users Impacted by Google Docs Phishing Attack | https://threatpost.com/1-million-gmail-users-impacted-by-google-docs-phishing-attack/125436/
+
+- id: IDI-076
+  title: Cyberhaven 등 크롬 확장 35종 탈취(개발자 대상 OAuth 동의 피싱)
+  date: 2024-12
+  kind: 캠페인
+  verification: 피해기관 확인
+  id_env: [SaaS, 개발·CI/CD]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 계정 탈취]
+  summary: >-
+    크롬 웹스토어 정책 위반을 가장한 피싱으로 확장 개발자에게 악성 OAuth 앱 권한을 승인받아, Cyberhaven 등 확장 최소 35종에 쿠키·세션을
+    빼내는 버전을 게시했다. MFA를 켠 상태에서도 OAuth 동의로 우회됐다.
+  idt: [IDT-SE-01.2, IDT-IM-05]
+  origin: [SCI-123]
+  sources:
+    - BleepingComputer(2025) New details reveal how hackers hijacked 35 Google Chrome extensions | https://bleepingcomputer.com/news/security/new-details-reveal-how-hackers-hijacked-35-google-chrome-extensions
+
+- id: IDI-077
+  title: npm chalk·debug 메인테이너 계정 탈취(가짜 2FA 재설정 피싱)
+  date: 2025-09
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [계정 탈취, 금전 탈취]
+  summary: >-
+    npm 지원팀을 사칭한 가짜 2FA 재설정 메일(npmjs.help)로 유명 메인테이너 계정이 탈취되어 chalk·debug 등 18개 패키지에 지갑 거래를
+    가로채는 코드가 실렸다. 약 2시간 만에 정상 버전으로 되돌려졌다.
+  idt: [IDT-SE-01.1, IDT-IM-05]
+  origin: [SCI-146]
+  sources:
+    - Endor Labs(2025) Major supply chain attack compromises popular npm packages including chalk and debug | https://endorlabs.com/learn/major-supply-chain-attack-compromises-popular-npm-packages-including-chalk-and-debug
+
+- id: IDI-078
+  title: Packagist 방치 메인테이너 계정 탈취(유출 비밀번호 재사용)
+  date: 2023-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [계정 탈취, 영향 없음(사전 차단)]
+  summary: >-
+    오래 쓰지 않던 Packagist 메인테이너 계정 4개가 예전에 유출된 비밀번호로 장악되어 패키지 14개의 정보가 바뀌었다. 악성 코드 배포 전에
+    발견·복구됐다.
+  idt: [IDT-AU-01.2, IDT-LC-01.1]
+  origin: [SCI-106]
+  sources:
+    - Packagist(2023) Packagist.org maintainer account takeover | https://blog.packagist.com/packagist-org-maintainer-account-takeover/
+
+# ---------------------------------------------------------------------------
+# 공급업체·IdP·원격 접속 인프라
+# ---------------------------------------------------------------------------
+- id: IDI-079
+  title: Target 결제정보 4천만 건 유출(냉난방 협력사 자격증명으로 침투)
+  date: 2013-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    공격자가 냉난방 협력사 직원에게 보낸 피싱 메일의 악성코드로 Target 협력사 포털 자격증명을 훔쳐 네트워크에 들어갔고, 분리가 부족한
+    내부망을 거쳐 판매 단말에 악성코드를 심어 결제카드 정보를 빼냈다.
+  idt: [IDT-LC-01.2, IDT-SE-01.1, IDT-IM-03]
+  sources:
+    - Dark Reading(2014) Target Breach — HVAC Contractor Systems Investigated | https://www.darkreading.com/cyberattacks-data-breaches/target-breach-hvac-contractor-systems-investigated
+
+- id: IDI-080
+  title: RSA SecurID 시드 정보 탈취와 Lockheed Martin 침투 시도
+  date: 2011-03
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: 국가 배후 추정
+  impact: [자격증명·토큰 탈취, 계정 탈취]
+  summary: >-
+    스피어피싱으로 RSA 내부망에 들어간 공격자가 일회용 비밀번호 토큰(SecurID) 관련 정보를 빼냈고, RSA는 이 정보가 방산업체 Lockheed
+    Martin VPN 침투 시도에 쓰였다고 확인했다. RSA는 위험이 큰 고객의 토큰 교체를 제안했다.
+  idt: [IDT-DI-03.1, IDT-SE-01.1, IDT-IM-05]
+  sources:
+    - SC Media(2011) RSA confirms Lockheed hack linked to SecurID breach | https://www.scworld.com/news/rsa-confirms-lockheed-hack-linked-to-securid-breach
+
+- id: IDI-081
+  title: OneLogin 미국 데이터센터 고객 데이터 침해(탈취 AWS 키)
+  date: 2017-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, 클라우드 인프라]
+  id_type: [NHI]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출, 자격증명·토큰 탈취]
+  summary: >-
+    공격자가 AWS 키를 손에 넣어 IdP 서비스 OneLogin의 클라우드에 인스턴스를 만들어 약 7시간 정찰했고, 사용자·앱·각종 키 정보가 든 DB에
+    접근했다. 미국 데이터센터 고객 전체가 영향을 받았고 암호화 데이터를 복호화할 수 있었을 가능성도 인정됐다.
+  idt: [IDT-DI-03.1, IDT-NH-01.1, IDT-IM-05]
+  sources:
+    - WeLiveSecurity(2017) OneLogin data breach may have compromised encrypted information | https://www.welivesecurity.com/2017/06/02/onelogin-data-breach/
+
+- id: IDI-082
+  title: Cisco Duo SMS·음성 MFA 공급업체 침해(메시지 로그 유출)
+  date: 2024-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP, 통신]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    Duo가 쓰는 SMS·음성 MFA 통신 공급업체 직원 자격증명이 피싱으로 탈취되어 2024-03 한 달간의 MFA 메시지 로그(전화번호·통신사·발송
+    시각 등)가 유출됐다. 메시지 내용은 없었으나 표적 피싱에 쓰일 수 있어 약 1천 고객에 통지됐다.
+  idt: [IDT-DI-03.1, IDT-SE-01.1, IDT-LC-01.2]
+  sources:
+    - BleepingComputer(2024) Cisco Duo warns third-party data breach exposed SMS MFA logs | https://www.bleepingcomputer.com/news/security/cisco-duo-warns-third-party-data-breach-exposed-sms-mfa-logs/
+
+- id: IDI-083
+  title: JumpCloud 디렉터리 SaaS 침해와 고객 단말 명령 악용
+  date: 2023-06
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [클라우드 IdP]
+  id_type: [특권]
+  region: 미국
+  actor: 북한 연계
+  impact: [테넌트·도메인 장악, 금전 탈취]
+  summary: >-
+    스피어피싱으로 디렉터리·장치 관리 SaaS인 JumpCloud에 들어간 공격자가 고객 단말에 명령을 내리는 기능에 악성 코드를 넣어 암호화폐 기업
+    고객 일부(5곳 미만)를 노렸다. JumpCloud는 전체 고객의 관리자 API 키를 교체했다.
+  idt: [IDT-DI-03.1, IDT-SE-01.1, IDT-IM-05]
+  origin: [SCI-092]
+  sources:
+    - The Hacker News(2023) North Korean nation-state actors exploit JumpCloud breach to target crypto clients | https://thehackernews.com/2023/07/north-korean-nation-state-actors.html
+
+- id: IDI-084
+  title: BeyondTrust 원격 지원 SaaS API 키 탈취로 미 재무부 등 고객 17곳 침해
+  date: 2024-12
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [원격 접속, SaaS]
+  id_type: [NHI]
+  region: 미국
+  actor: 중국 국가 배후
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    공격자가 BeyondTrust 원격 지원 SaaS의 인프라 API 키를 손에 넣어 고객 인스턴스의 로컬 애플리케이션 비밀번호를 재설정했고, 이를 통해
+    미 재무부 단말과 비분류 문서에 원격 접근했다. 조사 중 원격 지원 제품의 명령 주입 취약점도 발견되어 KEV에 등재됐다.
+  idt: [IDT-NH-01.1, IDT-IM-05, IDT-IM-03]
+  kev: [CVE-2024-12356]
+  sources:
+    - BeyondTrust(2024) Remote Support SaaS Service Security Investigation | https://www.beyondtrust.com/remote-support-saas-service-security-investigation
+    - BleepingComputer(2024) BeyondTrust says hackers breached Remote Support SaaS instances | https://www.bleepingcomputer.com/news/security/beyondtrust-says-hackers-breached-remote-support-saas-instances/
+
+- id: IDI-085
+  title: Latitude Financial 고객 1,400만 건 유출(대형 협력사 경유 직원 자격증명 탈취)
+  date: 2023-03
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 호주
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    공격자가 대형 협력사의 내부 기반 시설을 침해해 Latitude 직원의 로그인 자격증명을 얻고, 이를 이용해 두 서비스 제공업체에 보관된
+    고객 신분증·여권 번호 등 1,400만 건 이상을 빼냈다.
+  idt: [IDT-LC-01.2, IDT-IM-03]
+  sources:
+    - BleepingComputer(2023) Latitude Financial data breach now impacts 14 million customers | https://www.bleepingcomputer.com/news/security/latitude-financial-data-breach-now-impacts-14-million-customers/
+
+- id: IDI-086
+  title: PowerSchool 고객 지원 포털 침해(탈취 자격증명으로 원격 유지보수 도구 악용)
+  date: 2024-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS, 원격 접속]
+  id_type: [특권]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    CrowdStrike 조사 보고서에 따르면 공격자가 탈취된 자격증명으로 고객 지원 포털(PowerSource)에 들어가, 원격 유지보수 도구로 고객 학교의
+    DB에 접속해 학생·교직원 정보를 빼냈다. 같은 자격증명으로 2024-08·09에도 접근한 흔적이 확인됐다.
+  idt: [IDT-AU-01.2, IDT-IM-05, IDT-IM-03]
+  sources:
+    - BleepingComputer(2025) PowerSchool previously hacked in August, months before data breach | https://www.bleepingcomputer.com/news/security/powerschool-previously-hacked-in-august-months-before-data-breach/
+
+- id: IDI-087
+  title: Ivanti Connect Secure 인증 우회 제로데이 대량 악용
+  date: 2024-01
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [원격 접속]
+  id_type: [인력, 특권]
+  region: 글로벌
+  actor: 중국 연계(UNC5221) 등
+  impact: [자격증명·토큰 탈취, 테넌트·도메인 장악]
+  summary: >-
+    인증 우회(CVE-2023-46805)와 명령 주입(CVE-2024-21887)을 연결해 인증 없이 VPN 게이트웨이를 장악하는 공격이 확산되자 CISA는 첫 긴급
+    지시(ED 24-01)를 내려 연방기관에 장비 분리를 명령했다. Mandiant는 게이트웨이에 웹셸과 자격증명 수집 코드가 심어졌다고 분석했다.
+  idt: [IDT-AU-04.1]
+  kev: [CVE-2023-46805, CVE-2024-21887]
+  sources:
+    - CISA(2024) ED 24-01 — Mitigate Ivanti Connect Secure and Ivanti Policy Secure Vulnerabilities | https://www.cisa.gov/news-events/directives/ed-24-01-mitigate-ivanti-connect-secure-and-ivanti-policy-secure-vulnerabilities
+    - Google Cloud(2024) Cutting Edge — Suspected APT Targets Ivanti Connect Secure VPN in New Zero-Day Exploitation | https://cloud.google.com/blog/topics/threat-intelligence/suspected-apt-targets-ivanti-zero-day
+
+- id: IDI-088
+  title: Citrix Bleed 세션 토큰 탈취와 LockBit 랜섬웨어(Boeing 등)
+  date: 2023-11
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 글로벌
+  actor: LockBit 3.0 계열사
+  impact: [자격증명·토큰 탈취, 랜섬웨어·파괴]
+  summary: >-
+    NetScaler 게이트웨이의 메모리 노출 결함(CVE-2023-4966)으로 유효한 세션 쿠키를 빼내 사용자 이름·비밀번호·MFA 없이 인증 세션을
+    만든 뒤 랜섬웨어를 배포했다. CISA 등은 Boeing이 제공한 정보로 합동 권고를 냈고, Mandiant는 2023-08부터 제로데이로 악용됐다고 분석했다.
+  idt: [IDT-TS-01.3, IDT-IM-02]
+  kev: [CVE-2023-4966]
+  sources:
+    - CISA(2023) AA23-325A LockBit 3.0 Ransomware Affiliates Exploit CVE 2023-4966 Citrix Bleed Vulnerability | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-325a
+    - Google Cloud(2023) Investigation of Session Hijacking via Citrix NetScaler ADC and Gateway Vulnerability | https://cloud.google.com/blog/topics/threat-intelligence/session-hijacking-citrix-cve-2023-4966
+
+- id: IDI-089
+  title: Comcast Xfinity 고객 3,590만 명 정보 유출(Citrix Bleed)
+  date: 2023-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속, CIAM·고객 서비스]
+  id_type: [고객]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출, 자격증명·토큰 탈취]
+  summary: >-
+    패치 공개 직후인 2023-10-16~19 Citrix Bleed 취약점으로 내부 시스템에 무단 접근이 일어나, 고객 약 3,590만 명의 사용자 이름과 해시
+    비밀번호, 일부 고객의 보안 질문 등이 유출됐다.
+  idt: [IDT-TS-01.3, IDT-IM-03]
+  kev: [CVE-2023-4966]
+  sources:
+    - Cybersecurity Dive(2023) Comcast's Xfinity discloses massive data breach linked to CitrixBleed vulnerability | https://www.cybersecuritydive.com/news/comcasts-xfinity-data-breach-citrixbleed/702957/
+
+- id: IDI-090
+  title: CitrixBleed 2 세션 토큰 탈취 악용
+  date: 2025-07
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 글로벌
+  actor: 다수(DragonForce 계열사 포함)
+  impact: [자격증명·토큰 탈취, 랜섬웨어·파괴]
+  summary: >-
+    NetScaler 게이트웨이의 메모리 초과 읽기 결함(CVE-2025-5777)으로 로그인 전 단계에서 세션 토큰을 빼내 MFA를 우회하고 세션을 가로채는
+    공격이 관찰됐다. CISA는 2025-07-10 KEV에 등재하며 하루 안에 조치하도록 했고, 랜섬웨어 배포로 이어진 사례도 분석됐다.
+  idt: [IDT-TS-01.3, IDT-IM-02]
+  kev: [CVE-2025-5777]
+  sources:
+    - Huntress(2025) CitrixBleed 2 (CVE-2025-5777) — 7 Steps to DragonForce Ransomware | https://www.huntress.com/blog/citrixbleed-2-dragonforce-ransomware
+    - SecurityWeek(2025) Evidence Suggests Exploitation of CitrixBleed 2 Vulnerability | https://www.securityweek.com/evidence-suggests-exploitation-of-citrixbleed-2-vulnerability/
+
+- id: IDI-091
+  title: FortiGate SSL-VPN 장비 8만 7천 대의 VPN 자격증명 공개 유출
+  date: 2021-09
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 글로벌
+  actor: 'Orange(RAMP 포럼 운영자)'
+  impact: [자격증명·토큰 탈취]
+  summary: >-
+    경로 조작 취약점(CVE-2018-13379)으로 수집된 FortiGate SSL-VPN 장비 약 8만 7천 대의 사용자 자격증명 약 50만 건이 공개됐다. Fortinet은
+    장비를 패치했더라도 당시 비밀번호를 바꾸지 않았다면 여전히 위험하다며 전체 비밀번호 재설정을 권고했다.
+  idt: [IDT-AU-04.1, IDT-AU-01.2]
+  kev: [CVE-2018-13379]
+  sources:
+    - Fortinet(2021) Malicious Actor Discloses FortiGate SSL-VPN Credentials | https://www.fortinet.com/blog/psirt-blogs/malicious-actor-discloses-fortigate-ssl-vpn-credentials
+
+- id: IDI-092
+  title: Akira 랜섬웨어의 MFA 없는 Cisco VPN 대입 공격
+  date: 2023-08
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 글로벌
+  actor: Akira(G1024)
+  impact: [계정 탈취, 랜섬웨어·파괴]
+  summary: >-
+    Cisco는 Akira 랜섬웨어 조직이 MFA를 적용하지 않은 Cisco ASA VPN을 노려 자격증명 대입·무차별 대입으로 침투한다고 경고했다. Rapid7은
+    2023-03~08 Cisco ASA를 경유한 침해 고객을 최소 11곳 확인했고, 이후 관련 취약점(CVE-2023-20269)도 KEV에 등재됐다.
+  idt: [IDT-AU-01.1, IDT-AU-03.3, IDT-IM-02]
+  attack_ref: [G1024, S1129]
+  kev: [CVE-2023-20269]
+  sources:
+    - Cisco(2023) Akira Ransomware Targeting VPNs without Multi-Factor Authentication | https://blogs.cisco.com/security/akira-ransomware-targeting-vpns-without-multi-factor-authentication
+    - BleepingComputer(2023) Hacking campaign bruteforces Cisco VPNs to breach networks | https://www.bleepingcomputer.com/news/security/hacking-campaign-bruteforces-cisco-vpns-to-breach-networks/
+
+# ---------------------------------------------------------------------------
+# 정부 합동 권고(신원 공격 수법)
+# ---------------------------------------------------------------------------
+- id: IDI-093
+  title: 이란 연계 행위자 무차별 대입·MFA 푸시 폭탄·MFA 장치 등록(합동 권고)
+  date: 2024-10
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [클라우드 IdP, 원격 접속]
+  id_type: [인력]
+  region: 글로벌
+  actor: 이란 연계
+  impact: [계정 탈취, 자격증명·토큰 탈취]
+  summary: >-
+    FBI·CISA·NSA 등은 2023-10부터 이란 연계 행위자가 비밀번호 스프레이와 MFA 푸시 폭탄으로 의료·정부·IT·에너지 분야 계정을 탈취하고,
+    자기 장치를 MFA에 등록해 접근을 유지했으며, 일부는 열린 MFA 등록 절차를 악용했다고 경보했다. 수집한 자격증명은 범죄 포럼에 팔린 것으로 평가했다.
+  idt: [IDT-AU-01.1, IDT-AU-03.1, IDT-PE-02.2]
+  sources:
+    - CISA(2024) AA24-290A Iranian Cyber Actors' Brute Force and Credential Access Activity Compromises Critical Infrastructure Organizations | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-290a
+
+- id: IDI-094
+  title: 러시아 SVR의 클라우드 초기 접근 수법 변화(휴면·서비스 계정·토큰·장치 등록)
+  date: 2024-02
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력, NHI]
+  region: 글로벌
+  actor: APT29(G0016)
+  impact: [계정 탈취, 자격증명·토큰 탈취]
+  summary: >-
+    CISA·영국 NCSC 등은 SVR(APT29)이 비밀번호 스프레이·대입으로 시스템 계정과 퇴사자 등의 휴면 계정을 탈취하고, 훔친 액세스 토큰으로
+    비밀번호 없이 로그인하며, MFA 피로 공격으로 우회한 뒤 자기 장치를 테넌트에 새 장치로 등록한다고 경보했다.
+  idt: [IDT-AU-01.1, IDT-LC-01.1, IDT-NH-02.1, IDT-TS-01.2, IDT-AU-03.1, IDT-PE-02.2]
+  attack_ref: [G0016]
+  sources:
+    - CISA(2024) AA24-057A SVR Cyber Actors Adapt Tactics for Initial Cloud Access | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-057a
+
+- id: IDI-095
+  title: Volt Typhoon의 도메인 자격증명 반복 탈취(NTDS.dit)와 기본 자격증명 시도
+  date: 2024-02
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 미국
+  actor: Volt Typhoon(G1017)
+  impact: [자격증명·토큰 탈취, 테넌트·도메인 장악]
+  summary: >-
+    CISA 등은 Volt Typhoon이 볼륨 섀도 복사본으로 도메인 컨트롤러의 NTDS.dit를 빼내 전체 도메인 계정 해시를 확보하고, 수년에 걸쳐 여러
+    차례 반복 탈취해 유효한 자격증명을 유지했으며, 도메인에 연결된 OT 자산에 장비 제조사 기본 자격증명을 시험했다고 경보했다.
+  idt: [IDT-DI-01.1, IDT-AU-02]
+  attack_ref: [G1017]
+  sources:
+    - CISA(2024) AA24-038A PRC State-Sponsored Actors Compromise and Maintain Persistent Access to U.S. Critical Infrastructure | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a
+
+- id: IDI-096
+  title: Ryuk의 Zerologon 악용으로 5시간 만에 도메인 전체 암호화
+  date: 2020-10
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 미국
+  actor: Ryuk 운영 조직
+  impact: [테넌트·도메인 장악, 랜섬웨어·파괴]
+  summary: >-
+    피싱 메일로 침투한 지 2시간도 안 돼 Netlogon 취약점(Zerologon, CVE-2020-1472)으로 도메인 컨트롤러 자격증명을 재설정해 도메인 관리자
+    권한을 얻고, 도메인 컨트롤러에서 RDP로 백업·파일 서버와 단말에 Ryuk를 배포해 5시간 만에 도메인 전체를 암호화했다.
+  idt: [IDT-DI-01.4, IDT-IM-02]
+  attack_ref: [S0446]
+  kev: [CVE-2020-1472]
+  sources:
+    - The DFIR Report(2020) Ryuk in 5 Hours | https://thedfirreport.com/2020/10/18/ryuk-in-5-hours/
+
+- id: IDI-097
+  title: NotPetya의 자격증명 탈취·재사용 확산
+  date: 2017-06
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [온프레미스 AD]
+  id_type: [인력, 특권]
+  region: 글로벌
+  actor: Sandworm(G0034)
+  impact: [랜섬웨어·파괴, 서비스 중단]
+  summary: >-
+    NotPetya는 감염 단말 메모리에서 Windows 자격증명을 빼내 PsExec·WMIC 같은 정상 관리 도구로 같은 네트워크의 다른 시스템에 퍼지고,
+    SMB 취약점도 함께 악용해 전 세계 기업 네트워크를 파괴했다. 도메인 관리자 자격증명이 한 번 넘어가면 조직 전체로 번졌다.
+  idt: [IDT-CR-01.2, IDT-TS-02.1, IDT-IM-02]
+  attack_ref: [S0368, G0034]
+  sources:
+    - CISA(2017) Petya Ransomware | https://www.cisa.gov/news-events/alerts/2017/07/01/petya-ransomware
+
+- id: IDI-098
+  title: Skeleton Key — 도메인 컨트롤러 인증 메모리 패치 악성코드
+  date: 2015-01
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: 미상
+  impact: [테넌트·도메인 장악]
+  summary: >-
+    Dell SecureWorks는 도메인 관리자 권한을 가진 공격자가 도메인 컨트롤러 메모리를 패치해 공격자가 정한 비밀번호 하나로 어떤 사용자로든
+    인증되게 하는 악성코드를 고객망에서 발견했다. 재부팅 후에도 다른 원격 접근 악성코드로 다시 설치했다.
+  idt: [IDT-DI-04]
+  attack_ref: [S0007]
+  sources:
+    - Help Net Security(2015) Skeleton Key malware makes all passwords valid | https://www.helpnetsecurity.com/2015/01/14/skeleton-key-malware-makes-all-passwords-valid/
+
+- id: IDI-099
+  title: Conti 랜섬웨어 공격 매뉴얼 유출(AD 열거·Zerologon 권한 상승)
+  date: 2021-08
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: Conti(S0575)
+  impact: [테넌트·도메인 장악]
+  summary: >-
+    불만을 품은 Conti 계열사가 유출한 교육 자료에는 AdFind로 AD 사용자·관리자를 열거하고 Zerologon 등 취약점으로 도메인 관리자 권한을
+    얻는 절차가 담겨 있었다. Talos는 경험이 적은 공격자도 따라 할 수 있을 만큼 상세하다고 평가했다.
+  idt: [IDT-DI-01.4]
+  attack_ref: [S0575]
+  sources:
+    - BleepingComputer(2021) Translated Conti ransomware playbook gives insight into attacks | https://www.bleepingcomputer.com/news/security/translated-conti-ransomware-playbook-gives-insight-into-attacks/
+
+- id: IDI-100
+  title: Okta 고객 대상 대규모 크리덴셜 스터핑(주거용 프록시·Tor 경유)
+  date: 2024-04
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP]
+  id_type: [인력]
+  region: 글로벌
+  actor: 미상
+  impact: [계정 탈취]
+  summary: >-
+    Okta는 2024-04-19~26 유출 자격증명 목록과 주거용 프록시·Tor를 이용한 크리덴셜 스터핑과 비밀번호 스프레이가 전례 없는 규모로 늘었다고
+    경고하고, 인증 전에 주거용 프록시 요청을 차단하라고 권고했다.
+  idt: [IDT-AU-01.2, IDT-AU-01.1]
+  sources:
+    - Help Net Security(2024) Okta warns customers about credential stuffing onslaught | https://www.helpnetsecurity.com/2024/04/29/okta-credential-stuffing/
+
+# ---------------------------------------------------------------------------
+# 내부자·수명주기·위장 취업
+# ---------------------------------------------------------------------------
+- id: IDI-101
+  title: Ubiquiti 내부자 데이터 탈취·갈취(관리 권한 악용)
+  date: 2020-12
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [클라우드 인프라, 개발·CI/CD]
+  id_type: [특권]
+  region: 미국
+  actor: 내부자(징역 6년)
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    클라우드 부서 엔지니어가 업무상 가진 AWS·GitHub 관리 권한으로 기밀 데이터를 내려받은 뒤, 익명 해커로 위장해 50비트코인을 요구하고
+    언론에 거짓 정보를 흘렸다. 그는 징역 6년을 선고받았다.
+  idt: [IDT-LC-02.1, IDT-IM-03, IDT-IM-01]
+  sources:
+    - BleepingComputer(2023) Former Ubiquiti dev who extorted the firm gets six years in prison | https://www.bleepingcomputer.com/news/security/former-ubiquiti-dev-who-extorted-the-firm-gets-six-years-in-prison/
+
+- id: IDI-102
+  title: Tesla 전 직원 2명의 직원 7만 5천여 명 정보 유출
+  date: 2023-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력]
+  region: 미국·독일
+  actor: 전 직원
+  impact: [데이터 반출]
+  summary: >-
+    전 직원 2명이 IT 보안·개인정보 정책을 어기고 직원 약 7만 5천 명의 개인정보 등 내부 데이터를 빼내 독일 언론에 넘겼다. Tesla는 두 사람을
+    상대로 소송을 내 장치를 압수했다.
+  idt: [IDT-LC-02.1, IDT-IM-03]
+  sources:
+    - Quartz(2023) Tesla is suing two former employees over a massive data breach | https://qz.com/tesla-data-breach-insider-job-former-employees-lawsuit-1850756905
+
+- id: IDI-103
+  title: Cash App 퇴사자의 고객 보고서 무단 다운로드(820만 명)
+  date: 2022-04
+  kind: 공시
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [인력, 고객]
+  region: 미국
+  actor: 전 직원
+  impact: [데이터 반출]
+  summary: >-
+    재직 중 업무로 접근하던 고객 보고서를 퇴사 후에도 내려받을 수 있었던 전 직원이 2021-12 Cash App 투자 서비스 고객 820만 명의 이름·
+    계좌번호·보유 내역 등을 내려받았다. 회사는 2022-04 SEC 공시로 알렸다.
+  idt: [IDT-LC-01.1, IDT-LC-02.1, IDT-IM-03]
+  sources:
+    - Block(2022) Form 8-K | https://www.sec.gov/Archives/edgar/data/1512673/000119312522095215/d343042d8k.htm
+    - BankInfoSecurity(2022) Cash App Warns 8.2 Million Customers of Insider Breach | https://www.bankinfosecurity.com/investment-co-warns-82-million-customers-insider-breach-a-18860
+
+- id: IDI-104
+  title: KnowBe4 북한 위장 IT 인력 채용(도용 신원·AI 보정 사진)
+  date: 2024-07
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: 북한 IT 인력
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    도용한 미국인 신원과 AI로 보정한 사진으로 여러 차례 화상 면접과 신원 조회를 통과한 북한 인력이 채용됐고, 지급된 노트북을 받은 직후
+    악성코드를 내려받다 탐지되어 25분 만에 격리됐다. 고객 데이터·시스템 접근은 없었다.
+  idt: [IDT-LC-03]
+  sources:
+    - KnowBe4(2024) How a North Korean Fake IT Worker Tried to Infiltrate Us | https://blog.knowbe4.com/how-a-north-korean-fake-it-worker-tried-to-infiltrate-us
+    - CyberScoop(2024) Cyber firm KnowBe4 hired a fake IT worker from North Korea | https://cyberscoop.com/cyber-firm-knowbe4-hired-a-fake-it-worker-from-north-korea/
+
+- id: IDI-105
+  title: 북한 원격 IT 인력 위장 취업 일제 단속(도용·위조 신원, 노트북 농장)
+  date: 2025-06
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  id_env: [원격 접속]
+  id_type: [인력]
+  region: 미국
+  actor: 북한 IT 인력(UNC5267)·국내 조력자
+  impact: [금전 탈취, 데이터 반출]
+  summary: >-
+    미 법무부는 북한 인력이 도용·위조 신원으로 미국 기업 100곳 이상에 원격 IT 인력으로 취업하고, 조력자가 회사 지급 노트북을 모아 둔
+    '노트북 농장'으로 원격 접속하게 한 조직을 기소하고 16개 주 노트북 농장을 수색했다. Mandiant는 일부가 데이터 탈취·갈취로 이어졌다고 분석했다.
+  idt: [IDT-LC-03, IDT-IM-03]
+  sources:
+    - DOJ(2025) Justice Department Announces Coordinated, Nationwide Actions to Combat North Korean Remote Information Technology Workers' Illicit Revenue Generation Schemes | https://www.justice.gov/opa/pr/justice-department-announces-coordinated-nationwide-actions-combat-north-korean-remote
+    - Google Cloud(2024) Staying a Step Ahead — Mitigating the DPRK IT Worker Threat | https://cloud.google.com/blog/topics/threat-intelligence/mitigating-dprk-it-worker-threat
+
+# ---------------------------------------------------------------------------
+# 비인간 신원(NHI)·토큰·AI 에이전트
+# ---------------------------------------------------------------------------
+- id: IDI-106
+  title: Heroku·Travis CI 발급 GitHub OAuth 토큰 탈취로 비공개 저장소 반출
+  date: 2022-04
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS, 개발·CI/CD]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    Heroku·Travis CI에 발급된 GitHub OAuth 사용자 토큰을 탈취한 공격자가 npm 등 수십 개 조직의 비공개 저장소를 복제했다. GitHub 자체가
+    아니라 연동 서비스 쪽 토큰이 새어 나간 사례다.
+  idt: [IDT-NH-03.1, IDT-IM-05, IDT-IM-03]
+  origin: [SCI-074]
+  sources:
+    - GitHub(2022) Security alert — Attack campaign involving stolen OAuth user tokens issued to two third-party integrators | https://github.blog/2022-04-15-security-alert-stolen-oauth-user-tokens/
+
+- id: IDI-107
+  title: Slack 직원 토큰 탈취로 외부 호스팅 GitHub 저장소 반출
+  date: 2022-12
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [인력, NHI]
+  region: 미국
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    소수의 Slack 직원 토큰이 탈취·악용되어 외부에 호스팅된 GitHub 저장소의 비공개 코드가 2022-12-27 내려받아졌다. 핵심 코드베이스와
+    고객 데이터는 포함되지 않았고 Slack은 토큰을 모두 무효화했다.
+  idt: [IDT-TS-01.2, IDT-IM-03]
+  sources:
+    - BleepingComputer(2023) Slack's private GitHub code repositories stolen over holidays | https://www.bleepingcomputer.com/news/security/slacks-private-github-code-repositories-stolen-over-holidays/
+
+- id: IDI-108
+  title: New York Times 소스 코드 270GB 유출(과다 권한 GitHub 토큰 노출)
+  date: 2024-01
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [NHI]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    외부 코드 플랫폼용 자격증명(GitHub 토큰)이 실수로 노출되어 공격자가 조직 전체 저장소에 접근하고 약 270GB·5천여 개 저장소를 빼내
+    공개했다. 유출된 코드 안에서도 클라우드 키 등 비밀 수천 건이 추가로 발견됐다.
+  idt: [IDT-CR-02.1, IDT-NH-01.1, IDT-IM-03]
+  sources:
+    - BleepingComputer(2024) New York Times source code stolen using exposed GitHub token | https://www.bleepingcomputer.com/news/security/new-york-times-source-code-stolen-using-exposed-github-token/
+
+- id: IDI-109
+  title: Internet Archive 연쇄 침해(2년간 방치된 GitLab 토큰·미교체 Zendesk API 토큰)
+  date: 2024-10
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD, SaaS]
+  id_type: [NHI]
+  region: 미국
+  actor: 미상
+  impact: [자격증명·토큰 탈취, 데이터 반출]
+  summary: >-
+    개발 서버에 노출된 채 약 2년간 방치된 GitLab 토큰으로 소스 코드와 사용자 DB를 빼낸 공격자가, 침해 후에도 교체하지 않은 Zendesk API
+    토큰으로 다시 들어가 2018년 이후 지원 요청 첨부 신분증 등에 접근했다.
+  idt: [IDT-CR-02.1, IDT-NH-01.2, IDT-IM-03]
+  sources:
+    - BleepingComputer(2024) Internet Archive breached again through stolen access tokens | https://www.bleepingcomputer.com/news/security/internet-archive-breached-again-through-stolen-access-tokens/
+
+- id: IDI-110
+  title: Toyota T-Connect 접근 키 5년간 공개 GitHub 노출
+  date: 2022-10
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD, CIAM·고객 서비스]
+  id_type: [NHI]
+  region: 일본
+  actor: 해당 없음(노출)
+  impact: [데이터 반출]
+  summary: >-
+    외주 개발사가 T-Connect 소스 일부를 하드코딩된 접근 키와 함께 공개 GitHub 저장소에 올려 약 5년간 노출됐다. Toyota는 고객 이메일
+    주소·관리 번호 약 29만 6천 건에 제3자가 접근했을 가능성을 배제하지 못한다고 밝혔다.
+  idt: [IDT-CR-02.1, IDT-NH-01.1]
+  origin: [SCI-084]
+  sources:
+    - GitGuardian(2022) Toyota accidently exposed a secret key publicly on GitHub for five years | https://blog.gitguardian.com/toyota-accidently-exposed-a-secret-key-publicly-on-github-for-five-years/
+
+- id: IDI-111
+  title: Uber 2016 운전자·이용자 5,700만 명 정보 유출(재사용 비밀번호로 GitHub 접근·AWS 키)
+  date: 2016-11
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [개발·CI/CD, 클라우드 인프라]
+  id_type: [인력, NHI]
+  region: 미국
+  actor: 미상
+  impact: [데이터 반출, 금전 탈취]
+  summary: >-
+    FTC에 따르면 공격자가 다른 대형 유출에서 나온 비밀번호로 엔지니어의 GitHub 계정에 들어가 비공개 저장소의 평문 AWS 접근 키를 찾아
+    S3 백업을 내려받았다. Uber는 엔지니어가 개인 이메일 계정으로 저장소에 접근하게 하고 비밀번호 재사용 금지·MFA를 요구하지 않았다.
+  idt: [IDT-AU-01.2, IDT-AU-03.3, IDT-CR-02.1, IDT-IM-03]
+  sources:
+    - FTC(2018) Uber Agrees to Expanded Settlement with FTC Related to Privacy, Security Claims | https://www.ftc.gov/news-events/news/press-releases/2018/04/uber-agrees-expanded-settlement-ftc-related-privacy-security-claims
+
+- id: IDI-112
+  title: Capital One 1억 600만 명 정보 유출(과다 권한 워크로드 역할 자격증명)
+  date: 2019-07
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [클라우드 인프라]
+  id_type: [NHI]
+  region: 미국·캐나다
+  actor: 개인(전 클라우드 업체 직원)
+  impact: [데이터 반출]
+  summary: >-
+    잘못 구성된 웹 방화벽의 SSRF로 인스턴스 메타데이터 서비스에서 IAM 역할 자격증명을 얻었는데, 이 역할이 고객 데이터 S3 버킷을 나열·
+    조회할 수 있을 만큼 권한이 과다해 약 1억 600만 명의 정보가 유출됐다. 감독당국(OCC)은 8천만 달러 제재금을 부과했다.
+  idt: [IDT-NH-02.2, IDT-IM-03]
+  sources:
+    - KrebsOnSecurity(2019) What We Can Learn from the Capital One Hack | https://krebsonsecurity.com/2019/08/what-we-can-learn-from-the-capital-one-hack/
+    - CyberScoop(2020) US financial regulator fines Capital One $80 million over data breach | https://cyberscoop.com/capital-one-breach-penalty-occ/
+
+- id: IDI-113
+  title: Ronin 브리지 6억 달러대 탈취(검증자 키 탈취·미회수 서명 권한)
+  date: 2022-03
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [클라우드 인프라]
+  id_type: [NHI]
+  region: 글로벌
+  actor: Lazarus Group(G0032)
+  impact: [금전 탈취]
+  summary: >-
+    가짜 채용 제안 문서로 Sky Mavis 엔지니어를 감염시킨 공격자가 검증자 키 9개 중 5개를 확보해 약 6억 달러 상당 암호화폐를 인출했다. 다섯
+    번째 키는 2021-11 일시적 부하 대응을 위해 위임받은 Axie DAO 서명 권한으로, 이후 회수되지 않았다. 미 재무부는 Lazarus 소행으로 지목했다.
+  idt: [IDT-NH-01.1, IDT-NH-01.2, IDT-IM-01]
+  attack_ref: [G0032]
+  sources:
+    - CoinDesk(2022) Axie Infinity's Ronin Network Suffers $625M Exploit | https://www.coindesk.com/tech/2022/03/29/axie-infinitys-ronin-network-suffers-625m-exploit
+    - IT Security Guru(2022) Hackers Used Fake Job Offer on LinkedIn to Target Axie Infinity | https://www.itsecurityguru.org/2022/07/11/hackers-used-fake-job-offer-on-linkedin-to-target-axie-infinity/
+
+- id: IDI-114
+  title: Hugging Face Spaces 비밀 무단 접근과 토큰 일괄 폐기
+  date: 2024-05
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS, 개발·CI/CD]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 미상
+  impact: [자격증명·토큰 탈취]
+  summary: >-
+    AI 앱 호스팅 서비스 Spaces에 저장된 비밀 일부에 무단 접근이 탐지되어 Hugging Face가 해당 토큰을 폐기하고, 조직 토큰을 없애고 비밀
+    저장에 키 관리 서비스(KMS)를 도입했으며 세분화된 권한 토큰으로 전환을 권고했다.
+  idt: [IDT-NH-01.1, IDT-NH-01.2]
+  sources:
+    - Hugging Face(2024) Space secrets leak disclosure | https://huggingface.co/blog/space-secrets-disclosure
+    - BleepingComputer(2024) AI platform Hugging Face says hackers stole auth tokens from Spaces | https://www.bleepingcomputer.com/news/security/ai-platform-hugging-face-says-hackers-stole-auth-tokens-from-spaces/
+
+- id: IDI-115
+  title: Storm-2139 — 노출된 고객 API 키로 생성형 AI 서비스 탈취·재판매
+  date: 2025-02
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 글로벌
+  actor: Storm-2139
+  impact: [자격증명·토큰 탈취, 금전 탈취]
+  summary: >-
+    Microsoft는 공개된 곳에서 수집한 고객 API 키로 Azure OpenAI 등 생성형 AI 서비스에 접근하고, 안전 필터를 우회하는 도구와 함께 접근권을
+    재판매한 조직을 민사 소송으로 대응하고 핵심 도메인을 압수했다.
+  idt: [IDT-NH-01.1, IDT-CR-02.1]
+  sources:
+    - Dark Reading(2025) Microsoft Busts Hackers Selling Illegal Azure AI Access | https://www.darkreading.com/application-security/microsoft-openai-hackers-selling-illicit-access-azure-llm-services
+
+- id: IDI-116
+  title: LLMjacking — 탈취한 클라우드 자격증명으로 AI 모델 사용권 탈취
+  date: 2024-05
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 인프라]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 미상
+  impact: [금전 탈취]
+  summary: >-
+    Sysdig는 공격자가 웹 프레임워크 취약점으로 빼낸 클라우드 자격증명으로 클라우드에 호스팅된 LLM 서비스 10곳에 접근해 사용권을 재판매하는
+    공격을 관찰했고, 방치하면 피해 조직이 하루 4만 6천 달러 이상의 사용 요금을 떠안을 수 있다고 분석했다.
+  idt: [IDT-NH-01.1, IDT-IM-01]
+  kev: [CVE-2021-3129]
+  sources:
+    - The Hacker News(2024) Researchers Uncover 'LLMjacking' Scheme Targeting Cloud-Hosted AI Models | https://thehackernews.com/2024/05/researchers-uncover-llmjacking-scheme.html
+
+- id: IDI-117
+  title: Asana MCP 서버 조직 간 데이터 노출(AI 연동 권한 격리 결함)
+  date: 2025-06
+  kind: 사고
+  verification: 피해기관 확인
+  id_env: [SaaS]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 해당 없음(결함)
+  impact: [데이터 반출]
+  summary: >-
+    AI 에이전트 연동용 MCP 서버의 논리 결함으로 한 조직의 MCP 사용자가 다른 조직의 작업·프로젝트·댓글·파일 정보를 볼 수 있는 상태가 됐다.
+    약 1천 고객이 노출 대상이 되어 Asana는 2025-06-05~17 MCP 기능을 중단했다.
+  idt: [IDT-NH-04, IDT-IM-03]
+  sources:
+    - BleepingComputer(2025) Asana warns MCP AI feature exposed customer data to other orgs | https://www.bleepingcomputer.com/news/security/asana-warns-mcp-ai-feature-exposed-customer-data-to-other-orgs/
+
+# ---------------------------------------------------------------------------
+# 연구·시연(실증)
+# ---------------------------------------------------------------------------
+- id: IDI-118
+  title: PetitPotam — 강제 인증·NTLM 릴레이로 AD 인증서 서비스 경유 도메인 장악
+  date: 2021-07
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: 연구자(Topotam)
+  impact: [테넌트·도메인 장악]
+  summary: >-
+    인증 없이 도메인 컨트롤러가 공격자에게 NTLM 인증을 하도록 강제하고 이를 AD 인증서 서비스 웹 등록 페이지로 중계해 도메인 컨트롤러
+    인증서를 발급받는 공격이 공개됐다. Microsoft는 EPA·서명 적용 등 완화 지침을 냈다.
+  idt: [IDT-TS-02.3, IDT-DI-01.3]
+  kev: [CVE-2021-36942]
+  sources:
+    - CISA(2021) Microsoft Releases Guidance for Mitigating PetitPotam NTLM Relay Attacks | https://www.cisa.gov/news-events/alerts/2021/07/27/microsoft-releases-guidance-mitigating-petitpotam-ntlm-relay-attacks
+    - Rapid7(2021) PetitPotam — Novel Attack Chain Can Fully Compromise Windows Domains Running AD CS | https://www.rapid7.com/blog/post/2021/08/03/petitpotam-novel-attack-chain-can-fully-compromise-windows-domains-running-ad-cs/
+
+- id: IDI-119
+  title: Certified Pre-Owned — AD 인증서 서비스 템플릿 오설정 악용(ESC1~ESC8)
+  date: 2021-06
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  id_env: [온프레미스 AD]
+  id_type: [특권]
+  region: 글로벌
+  actor: 연구자(SpecterOps)
+  impact: [테넌트·도메인 장악]
+  summary: >-
+    SpecterOps는 저권한 사용자가 요청자 지정 주체 대체 이름(SAN)을 허용하는 인증서 템플릿으로 관리자 명의 인증서를 받아 Kerberos 인증을
+    통과하는 등 AD 인증서 서비스 오설정으로 도메인을 장악하는 기법 8종을 공개했다.
+  idt: [IDT-DI-01.3]
+  sources:
+    - SpecterOps(2021) Certified Pre-Owned | https://specterops.io/blog/2021/06/17/certified-pre-owned/
+
+- id: IDI-120
+  title: Entra ID Actor 토큰 결함 — 모든 테넌트의 전역 관리자 사칭 가능(CVE-2025-55241)
+  date: 2025-09
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP]
+  id_type: [특권]
+  region: 글로벌
+  actor: 연구자(Dirk-jan Mollema)
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    서비스 간 인증에 쓰이는 문서화되지 않은 Actor 토큰을 공격자 테넌트에서 발급받아 레거시 Azure AD Graph API에 제시하면 출처 테넌트 검증
+    결함으로 다른 테넌트의 임의 사용자(전역 관리자 포함)로 인증되는 문제가 보고됐다. 조건부 액세스가 적용되지 않고 로그도 거의 남지 않았으며,
+    Microsoft는 보고 며칠 만에 수정했다.
+  idt: [IDT-AU-04.2, IDT-TS-03.3]
+  sources:
+    - dirkjanm.io(2025) One Token to rule them all — obtaining Global Admin in every Entra ID tenant via Actor tokens | https://dirkjanm.io/obtaining-global-admin-in-every-entra-id-tenant-with-actor-tokens/
+
+- id: IDI-121
+  title: nOAuth — 변경 가능한 이메일 클레임을 신뢰한 SSO 연동 앱 계정 탈취
+  date: 2023-06
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  id_env: [클라우드 IdP, SaaS]
+  id_type: [인력, 고객]
+  region: 글로벌
+  actor: 연구자(Descope)
+  impact: [계정 탈취]
+  summary: >-
+    공격자가 자기 Azure AD 테넌트에서 계정 이메일 속성을 피해자 이메일로 바꾼 뒤 'Microsoft로 로그인'을 하면, 이메일 클레임으로 사용자를
+    식별·병합하는 연동 앱에서 피해자 계정을 장악할 수 있음이 실제 서비스 여러 곳에서 확인됐다.
+  idt: [IDT-AU-04.2]
+  sources:
+    - The Hacker News(2023) Critical 'nOAuth' Flaw in Microsoft Azure AD Enabled Complete Account Takeover | https://thehackernews.com/2023/06/critical-noauth-flaw-in-microsoft-azure.html
+
+- id: IDI-122
+  title: GitHub MCP 서버 프롬프트 인젝션으로 에이전트가 비공개 저장소 유출
+  date: 2025-05
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  id_env: [개발·CI/CD]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 연구자(Invariant Labs)
+  impact: [데이터 반출]
+  summary: >-
+    공개 저장소 이슈에 숨긴 지시를 AI 에이전트가 읽으면, 사용자의 GitHub 토큰 권한으로 비공개 저장소 내용을 가져와 공개 PR로 올리도록
+    조종할 수 있음이 시연됐다. 에이전트가 사용자 권한 전체를 위임받아 쓰는 구조 자체의 문제로 지적됐다.
+  idt: [IDT-NH-04]
+  sources:
+    - Docker(2025) MCP Horror Stories — The GitHub Prompt Injection Data Heist | https://www.docker.com/blog/mcp-horror-stories-github-prompt-injection/
+
+- id: IDI-123
+  title: Microsoft AI 연구조직 과다 권한 SAS 토큰 노출(38TB)
+  date: 2023-06
+  kind: 연구·시연
+  verification: 피해기관 확인
+  id_env: [클라우드 인프라]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 해당 없음(노출)
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    공개 GitHub 저장소로 AI 학습 데이터를 공유하면서 저장소 계정 전체에 권한을 주는 Azure SAS 토큰 링크를 넣어, 직원 단말 백업·비밀·키 등
+    38TB가 노출됐다. Wiz가 발견해 Microsoft가 토큰을 폐기했다(고객 데이터 노출 없음).
+  idt: [IDT-NH-01.1]
+  origin: [SCI-095]
+  sources:
+    - The Register(2023) Microsoft AI researchers expose 38TB of internal data | https://www.theregister.com/2023/09/18/more_microsoft_token_trouble/
+
+- id: IDI-124
+  title: Python·PyPI 관리자 GitHub 토큰의 공개 Docker 이미지 노출
+  date: 2024-06
+  kind: 연구·시연
+  verification: 피해기관 확인
+  id_env: [개발·CI/CD]
+  id_type: [NHI]
+  region: 글로벌
+  actor: 해당 없음(노출)
+  impact: [영향 없음(사전 차단)]
+  summary: >-
+    빌드 과정에 남은 컴파일 파일 때문에 Python·PyPI GitHub 조직 관리자 권한 토큰이 공개 Docker 이미지에 1년 넘게 노출됐다. JFrog가 발견해
+    17분 만에 폐기됐고 악용 흔적은 없었다.
+  idt: [IDT-CR-02.1, IDT-NH-01.1]
+  origin: [SCI-124]
+  sources:
+    - The Hacker News(2024) GitHub Token Leak Exposes Python's Core Repositories to Potential Attacks | https://thehackernews.com/2024/07/github-token-leak-exposes-pythons-core.html
+
+- id: IDI-125
+  title: 노출된 자격증명으로 Git 저장소 수백 개 삭제·몸값 요구
+  date: 2019-05
+  kind: 캠페인
+  verification: 언론 보도
+  id_env: [개발·CI/CD]
+  id_type: [인력, NHI]
+  region: 글로벌
+  actor: 미상
+  impact: [랜섬웨어·파괴, 금전 탈취]
+  summary: >-
+    공개된 설정 파일 등에 노출된 자격증명으로 GitHub·GitLab·Bitbucket 저장소 수백 개에 접근해 커밋 이력을 지우고 몸값을 요구했다.
+  idt: [IDT-CR-02.1, IDT-IM-02]
+  origin: [SCI-047]
+  sources:
+    - The Verge(2019) A hacker is demanding ransom for hundreds of stolen Git code repositories | https://www.theverge.com/2019/5/6/18531222/hacker-data-theft-ransom-stolen-git-code-bitcoin
+
+- id: IDI-126
+  title: Yahoo 계정 관리 도구 악용과 위조 쿠키로 계정 무단 접근
+  date: 2017-03
+  kind: 사고
+  verification: 정부·사법 확인
+  id_env: [CIAM·고객 서비스]
+  id_type: [고객, 특권]
+  region: 글로벌
+  actor: 러시아 FSB 요원·범죄 해커(기소)
+  impact: [계정 탈취, 데이터 반출]
+  summary: >-
+    미 법무부 기소에 따르면 2014년 Yahoo에 침투한 공격자가 사용자 DB와 내부 계정 관리 도구에 접근해 관심 대상 계정을 찾아내고, 비밀번호 없이
+    로그인할 수 있는 인증 쿠키를 직접 만들어 최소 6,500개 계정에 무단 접근했다.
+  idt: [IDT-TS-03.3, IDT-PE-01.2, IDT-IM-03]
+  sources:
+    - KrebsOnSecurity(2017) Four Men Charged With Hacking 500M Yahoo Accounts | https://krebsonsecurity.com/2017/03/four-men-charged-with-hacking-500m-yahoo-accounts/

@@ -1,0 +1,1224 @@
+{
+ "notice": "Browser & Identity Attacks Matrix (formerly SaaS Attacks Matrix) © Push Security and contributors, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). 이 파일은 원본에서 ID·명칭·전술·요약 첫 문장·링크만 추출한 것이며 내용을 변경하지 않았다.",
+ "source": "https://github.com/pushsecurity/saas-attacks",
+ "commit": "20bf340f3a68ac7233f12ff4cfbec0eef595be4b",
+ "commit_date": "2026-04-21",
+ "techniques": {
+  "SAT1001": {
+   "name": "Abuse existing OAuth integrations",
+   "slug": "abuse_existing_oauth_integrations",
+   "tactics": [
+    "Privilege Escalation",
+    "Lateral Movement"
+   ],
+   "summary_first": "Some SaaS apps allow OAuth integrations to other apps, which allow the app to gain access to certain data and additional functionality.",
+   "examples": [
+    "Zapier"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/abuse_existing_oauth_integrations/description.md"
+  },
+  "SAT1002": {
+   "name": "Account ambushing",
+   "slug": "account_ambushing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Many SaaS apps have features that can be used to effectively backdoor an account, such as the ability to configure multiple login methods or create API keys to access the account programmatically.",
+   "examples": [
+    "IFTTT"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/account_ambushing/description.md"
+  },
+  "SAT1003": {
+   "name": "Account recovery",
+   "slug": "account_recovery",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "summary_first": "Most SaaS apps allow accounts to be recovered via email.",
+   "examples": [
+    "IFTTT"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/account_recovery/description.md"
+  },
+  "SAT1004": {
+   "name": "API keys",
+   "slug": "api_keys",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "Many SaaS apps let you configure an API key to enable programmatic access.",
+   "examples": [
+    "Shortcut"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/api_keys/description.md"
+  },
+  "SAT1005": {
+   "name": "API secret theft",
+   "slug": "api_secret_theft",
+   "tactics": [
+    "Credential Access",
+    "Lateral Movement"
+   ],
+   "summary_first": "Apps that support integrations through API keys (rather than the more common OAuth integrations) will sometimes allow those keys to be read after being set.",
+   "examples": [
+    "Postman"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1528"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/api_secret_theft/description.md"
+  },
+  "SAT1006": {
+   "name": "App directory lookup",
+   "slug": "app_directory_lookup",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary_first": "SaaS apps will generally have a user directory and often this is visible to any user of the app.",
+   "examples": [
+    "Shortcut"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1087"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/app_directory_lookup/description.md"
+  },
+  "SAT1007": {
+   "name": "App spraying",
+   "slug": "app_spraying",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "An adversary may attempt to authenticate to a SaaS account by guessing a large number of passwords.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/app_spraying/description.md"
+  },
+  "SAT1008": {
+   "name": "Automation workflow sharing",
+   "slug": "automation_workflow_sharing",
+   "tactics": [
+    "Execution",
+    "Lateral Movement"
+   ],
+   "summary_first": "Some SaaS automation apps allow pre-configured automations to be shared with other users.",
+   "examples": [
+    "Microsoft Power Automate"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/automation_workflow_sharing/description.md"
+  },
+  "SAT1009": {
+   "name": "Client-side app spoofing",
+   "slug": "client-side_app_spoofing",
+   "tactics": [
+    "Execution",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "Some OAuth integrations intended for use by desktop or mobile clients (rather than typical SaaS-to-SaaS integrations) can be controlled by adversaries.",
+   "examples": [
+    "Thunderbird",
+    "GitHub VSCode extension"
+   ],
+   "n_examples": 2,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "Maintaining persistent access in a SaaS-first world",
+     "url": "https://pushsecurity.com/blog/maintaining-persistent-access-in-a-saas-first-world"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/client-side_app_spoofing/description.md"
+  },
+  "SAT1010": {
+   "name": "Consent phishing",
+   "slug": "consent_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "OAuth allows users to grant third-party apps permissions to access their data.",
+   "examples": [
+    "Microsoft",
+    "GitHub"
+   ],
+   "n_examples": 2,
+   "n_refs": 4,
+   "references": [
+    {
+     "title": "Decoding consent phishing - technical blog post",
+     "url": "https://www.mwrcybersec.com/decoding-consent-phishing"
+    },
+    {
+     "title": "O365 attack toolkit - perform consent phishing attacks against O365",
+     "url": "https://github.com/mdsecactivebreach/o365-attack-toolkit"
+    },
+    {
+     "title": "Compromised Microsoft Partner Network accounts used for consent phishing",
+     "url": "https://www.bleepingcomputer.com/news/security/microsoft-disables-verified-partner-accounts-used-for-oauth-phishing/"
+    }
+   ],
+   "attack": [
+    "T1566.002"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/consent_phishing/description.md"
+  },
+  "SAT1011": {
+   "name": "Credential stuffing",
+   "slug": "credential_stuffing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Credential stuffing is the re-use of stolen credentials, often from leaked password databases, in an attempt to authenticate to other apps.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1110.004"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/credential_stuffing/description.md"
+  },
+  "SAT1012": {
+   "name": "Device code phishing",
+   "slug": "device_code_phishing",
+   "tactics": [
+    "Initial Access",
+    "Defense Evasion"
+   ],
+   "summary_first": "OAuth supports multiple different authentication flows that can be used to grant access to an app.",
+   "examples": [
+    "Microsoft",
+    "GitHub"
+   ],
+   "n_examples": 2,
+   "n_refs": 5,
+   "references": [
+    {
+     "title": "Introducing a new phishing technique for compromising Office 365 accounts",
+     "url": "https://aadinternals.com/post/phishing/"
+    },
+    {
+     "title": "How to Detect Malicious OAuth Device Code Phishing",
+     "url": "https://www.inversecos.com/2022/12/how-to-detect-malicious-oauth-device.html"
+    },
+    {
+     "title": "PhishInSuits - a tool for device code phishing vs SMS",
+     "url": "https://github.com/secureworks/PhishInSuits"
+    },
+    {
+     "title": "Microsoft device code documentation",
+     "url": "https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-device-code"
+    }
+   ],
+   "attack": [
+    "T1566.002"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/device_code_phishing/description.md"
+  },
+  "SAT1013": {
+   "name": "DNS reconnaissance",
+   "slug": "dns_reconnaissance",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary_first": "Some SaaS apps require ownership verification for a domain as part of the setup process.",
+   "examples": [
+    "TXT records"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1590.002"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/dns_reconnaissance/description.md"
+  },
+  "SAT1014": {
+   "name": "Email discovery",
+   "slug": "email_discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary_first": "There is generally evidence in a user’s mailbox when they are actively using a SaaS app.",
+   "examples": [
+    "Welcome to search"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/email_discovery/description.md"
+  },
+  "SAT1015": {
+   "name": "Email phishing",
+   "slug": "email_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Email phishing is the classic social engineering attack that involves an email being sent to a target user with an embedded link or malicious attachment.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Evilginx - MITM framework for phishing login credentials",
+     "url": "https://github.com/kgretzky/evilginx2"
+    }
+   ],
+   "attack": [
+    "T1566"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/email_phishing/description.md"
+  },
+  "SAT1016": {
+   "name": "Evil twin integrations",
+   "slug": "evil_twin_integrations",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "OAuth apps provide a mechanism for maintaining long-term persistent access to compromised accounts that resist normal recovery actions, such as password resets.",
+   "examples": [
+    "Hubspot"
+   ],
+   "n_examples": 1,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Maintaining persistent access in a SaaS-first world - Technical blog post",
+     "url": "https://pushsecurity.com/blog/maintaining-persistent-access-in-a-saas-first-world"
+    },
+    {
+     "title": "The shadow workflow's evil twin - Technical blog post",
+     "url": "https://pushsecurity.com/blog/nearly-invisible-attack-chain/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/evil_twin_integrations/description.md"
+  },
+  "SAT1017": {
+   "name": "Ghost logins",
+   "slug": "ghost_logins",
+   "tactics": [
+    "Initial access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "A common SaaS app feature allows logins to the same account using multiple methods simultaneously – for example, a standard password-based authentication (local to the SaaS app) and an SSO mechanism, such as an OIDC social login or SAML login.",
+   "examples": [
+    "Snowflake",
+    "Shortcut",
+    "Expensify"
+   ],
+   "n_examples": 3,
+   "n_refs": 3,
+   "references": [
+    {
+     "title": "X thread explaining ghost logins with reference to Snowflake",
+     "url": "https://x.com/jukelennings/status/1801985628034281703"
+    },
+    {
+     "title": "Google email verification flaw abused to compromise 3rd party SaaS services",
+     "url": "https://krebsonsecurity.com/2024/07/crooks-bypassed-googles-email-verification-to-create-workspace-accounts-access-3rd-party-services/"
+    }
+   ],
+   "attack": [
+    "T1550"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/ghost_logins/description.md"
+  },
+  "SAT1018": {
+   "name": "IM phishing",
+   "slug": "im_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Traditionally, phishing attacks have been mostly email-based.",
+   "examples": [
+    "Slack",
+    "MS Teams"
+   ],
+   "n_examples": 2,
+   "n_refs": 8,
+   "references": [
+    {
+     "title": "Slack Attack: A phisher's guide to initial access",
+     "url": "https://pushsecurity.com/blog/slack-phishing-for-initial-access/"
+    },
+    {
+     "title": "Slack Attack: A phisher's guide to persistence and lateral movement",
+     "url": "https://pushsecurity.com/blog/phishing-slack-persistence/"
+    },
+    {
+     "title": "Jumpsec Advisory: IDOR in Microsoft Teams Allows for External Tenants to Introduce Malware",
+     "url": "https://labs.jumpsec.com/advisory-idor-in-microsoft-teams-allows-for-external-tenants-to-introduce-malware/"
+    },
+    {
+     "title": "TeamsPhisher",
+     "url": "https://github.com/Octoberfest7/TeamsPhisher"
+    },
+    {
+     "title": "Slack Jack - A tool for Slack bot token abuse",
+     "url": "https://github.com/adelapazborrero/slack_jack?tab=readme-ov-file"
+    },
+    {
+     "title": "Evilginx - AITM framework for phishing login credentials",
+     "url": "https://github.com/kgretzky/evilginx2"
+    },
+    {
+     "title": "Storm-0324 distributes malware using TeamsPhisher",
+     "url": "https://www.microsoft.com/en-us/security/blog/2023/09/12/malware-distributor-storm-0324-facilitates-ransomware-access/"
+    }
+   ],
+   "attack": [
+    "T1566.003"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/im_phishing/description.md"
+  },
+  "SAT1019": {
+   "name": "IM user spoofing",
+   "slug": "im_user_spoofing",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary_first": "Some instant messaging apps do not strongly control the way a user presents themselves in terms of display names, full names, user handles, photos, and so on.",
+   "examples": [
+    "Slack"
+   ],
+   "n_examples": 1,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Slack Attack: A phisher's guide to initial access",
+     "url": "https://pushsecurity.com/blog/slack-phishing-for-initial-access/"
+    },
+    {
+     "title": "Slack Attack: A phisher's guide to persistence and lateral movement",
+     "url": "https://pushsecurity.com/blog/phishing-slack-persistence/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/im_user_spoofing/description.md"
+  },
+  "SAT1020": {
+   "name": "In-app phishing",
+   "slug": "in-app_phishing",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary_first": "It’s possible to conduct phishing and other social engineering attacks, using native features of SaaS apps.",
+   "examples": [
+    "GitHub",
+    "Monday.com"
+   ],
+   "n_examples": 2,
+   "n_refs": 5,
+   "references": [
+    {
+     "title": "Jade sleet compromise using GitHub repository collaboration",
+     "url": "https://github.blog/2023-07-18-security-alert-social-engineering-campaign-targets-technology-industry-employees/"
+    },
+    {
+     "title": "Evilginx - MITM framework for phishing login credentials",
+     "url": "https://github.com/kgretzky/evilginx2"
+    },
+    {
+     "title": "Phishing lures embedded within shared documents",
+     "url": "https://www.proofpoint.com/uk/blog/cloud-security/community-alert-ongoing-malicious-campaign-impacting-azure-cloud-environments"
+    },
+    {
+     "title": "GitHub notification phishing",
+     "url": "https://www.bleepingcomputer.com/news/security/gitloker-attacks-abuse-github-notifications-to-push-malicious-oauth-apps/"
+    }
+   ],
+   "attack": [
+    "T1566.003"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/in-app_phishing/description.md"
+  },
+  "SAT1021": {
+   "name": "Link backdooring",
+   "slug": "link_backdooring",
+   "tactics": [
+    "Privilege Escalation",
+    "Lateral Movement"
+   ],
+   "summary_first": "Users have long been trained to be wary of clicking links from external sources such as email.",
+   "examples": [
+    "Nuclino"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "Evilginx - MITM framework for phishing login credentials",
+     "url": "https://github.com/kgretzky/evilginx2"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/link_backdooring/description.md"
+  },
+  "SAT1022": {
+   "name": "Link sharing",
+   "slug": "link_sharing",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "Many SaaS apps offer the ability to share items with third parties through sharing links.",
+   "examples": [
+    "OneDrive",
+    "Nuclino"
+   ],
+   "n_examples": 2,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/link_sharing/description.md"
+  },
+  "SAT1023": {
+   "name": "Malicious mail rules",
+   "slug": "malicious_mail_rules",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation",
+    "Defense Evasion"
+   ],
+   "summary_first": "Common SaaS mail providers like Office365 and Gmail provide mail rule functionality that allows users to automate certain tasks on their mailboxes.",
+   "examples": [
+    "Office 365"
+   ],
+   "n_examples": 1,
+   "n_refs": 6,
+   "references": [
+    {
+     "title": "Malicious Outlook Rules - Technical blog post",
+     "url": "https://www.netspi.com/blog/technical/adversary-simulation/malicious-outlook-rules/"
+    },
+    {
+     "title": "Ruler - A tool to abuse Exchange services",
+     "url": "https://github.com/sensepost/ruler"
+    },
+    {
+     "title": "XRulez - A command line tool for creating malicious outlook rules",
+     "url": "https://github.com/FSecureLABS/XRulez"
+    },
+    {
+     "title": "Multi-account Office365 compromise using mail rules",
+     "url": "https://darktrace.com/blog/breakdown-of-a-multi-account-compromise-within-office-365"
+    },
+    {
+     "title": "Microsoft blog - Mail rules used to hide attacks",
+     "url": "https://www.microsoft.com/en-us/security/blog/2023/12/12/threat-actors-misuse-oauth-applications-to-automate-financially-driven-attacks/"
+    }
+   ],
+   "attack": [
+    "T1114.003"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/malicious_mail_rules/description.md"
+  },
+  "SAT1024": {
+   "name": "MFA fatigue",
+   "slug": "mfa_fatigue",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "One of the most common implementations of MFA is using push notifications to a mobile device that allow the user to approve or deny the login request.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Uber breach by Lapsus$",
+     "url": "https://www.darkreading.com/attacks-breaches/uber-breach-external-contractor-mfa-bombing-attack"
+    }
+   ],
+   "attack": [
+    "T1621"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/mfa_fatigue/description.md"
+  },
+  "SAT1025": {
+   "name": "nOAuth",
+   "slug": "noauth",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "SaaS apps that make use of OAuth integrations require an identifier to match accounts between the application and identity provider.",
+   "examples": [
+    "AzureAD"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "nOAuth: How Microsoft OAuth Misconfiguration Can Lead to Full Account Takeover",
+     "url": "https://www.descope.com/blog/post/noauth"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/noauth/description.md"
+  },
+  "SAT1026": {
+   "name": "OAuth token enumeration",
+   "slug": "oauth_token_enumeration",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary_first": "SaaS app users may have authenticated using OIDC (social logins) or have created other OAuth integrations to share data and make better use of the app.",
+   "examples": [
+    "Google",
+    "Microsoft"
+   ],
+   "n_examples": 2,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/oauth_token_enumeration/description.md"
+  },
+  "SAT1027": {
+   "name": "OAuth tokens",
+   "slug": "oauth_tokens",
+   "tactics": [
+    "Execution",
+    "Persistence"
+   ],
+   "summary_first": "An adversary can use a malicious OAuth app or API development tool to create an OAuth token, using arbitrary permissions to maintain long-term programmatic access to a compromised user account.",
+   "examples": [
+    "Microsoft Graph Explorer",
+    "Slack API tester"
+   ],
+   "n_examples": 2,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Microsoft blog - Threat actors misuse OAuth applications to automate financially driven attacks",
+     "url": "https://www.microsoft.com/en-us/security/blog/2023/12/12/threat-actors-misuse-oauth-applications-to-automate-financially-driven-attacks/"
+    },
+    {
+     "title": "Microsoft blog - Midnight Blizzard using OAuth for persistence in attack against MS",
+     "url": "https://www.microsoft.com/en-us/security/blog/2024/01/25/midnight-blizzard-guidance-for-responders-on-nation-state-attack/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/oauth_tokens/description.md"
+  },
+  "SAT1028": {
+   "name": "Password scraping",
+   "slug": "password_scraping",
+   "tactics": [
+    "Credential Access"
+   ],
+   "summary_first": "While it may not be security good practice, many teams stored passwords in cleartext, especially shared or system credentials.",
+   "examples": [
+    "Okta",
+    "Canva"
+   ],
+   "n_examples": 2,
+   "n_refs": 3,
+   "references": [
+    {
+     "title": "Abusing Okta SWA - Technical blog post",
+     "url": "https://pushsecurity.com/blog/okta-swa/"
+    },
+    {
+     "title": "Can my admins steal my cloud password manager secrets? - Technical blog post",
+     "url": "https://pushsecurity.com/blog/can-my-admins-steal-my-cloud-password-manager-secrets/"
+    }
+   ],
+   "attack": [
+    "T1552"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/password_scraping/description.md"
+  },
+  "SAT1029": {
+   "name": "Passwordless logins",
+   "slug": "passwordless_logins",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "summary_first": "Some SaaS apps allow passwordless email-based authentication, where an OTP is sent via email when a login is requested, rather than a user having a standard password.",
+   "examples": [
+    "Canva",
+    "Slack",
+    "Expensify"
+   ],
+   "n_examples": 3,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/passwordless_logins/description.md"
+  },
+  "SAT1030": {
+   "name": "Poisoned tenants",
+   "slug": "poisoned_tenants",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "An adversary can register a new tenant that it controls and administers with the intent of tricking users to join it, by convincing them it is owned by their organization.",
+   "examples": [
+    "Trello",
+    "Nuclino"
+   ],
+   "n_examples": 2,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "SAMLjacking a poisoned tenant - Technical blog post",
+     "url": "https://pushsecurity.com/blog/samljacking-a-poisoned-tenant/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/poisoned_tenants/description.md"
+  },
+  "SAT1031": {
+   "name": "SAML enumeration",
+   "slug": "saml_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary_first": "It’s often possible to determine if an organization is using a SaaS app by checking whether a SAML login IdP has been configured for the organization domain.",
+   "examples": [
+    "Ramp",
+    "Expensify"
+   ],
+   "n_examples": 2,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/saml_enumeration/description.md"
+  },
+  "SAT1032": {
+   "name": "SAMLjacking",
+   "slug": "samljacking",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary_first": "When configuring SAML integrations for a SaaS app, you must provide a URL to an IdP service so the app can hand-off authentication during the SAML flow.",
+   "examples": [
+    "Nuclino",
+    "Datadog"
+   ],
+   "n_examples": 2,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Evilginx - MITM framework for phishing login credentials",
+     "url": "https://github.com/kgretzky/evilginx2"
+    },
+    {
+     "title": "SAMLjacking a poisoned tenant - Technical blog post",
+     "url": "https://pushsecurity.com/blog/samljacking-a-poisoned-tenant/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/samljacking/description.md"
+  },
+  "SAT1033": {
+   "name": "Shadow workflows",
+   "slug": "shadow_workflows",
+   "tactics": [
+    "Execution",
+    "Exfiltration"
+   ],
+   "summary_first": "The SaaS world is, by design, largely abstracted away from operating systems and application binaries.",
+   "examples": [
+    "Zapier"
+   ],
+   "n_examples": 1,
+   "n_refs": 5,
+   "references": [
+    {
+     "title": "Living off the Cloud. Cloudy with a Chance of Exfiltration",
+     "url": "https://www.pentestpartners.com/security-blog/living-off-the-cloud-cloudy-with-a-chance-of-exfiltration/"
+    },
+    {
+     "title": "The shadow workflow's evil twin - Technical blog post",
+     "url": "https://pushsecurity.com/blog/nearly-invisible-attack-chain/"
+    },
+    {
+     "title": "Slack Attack: A phisher's guide to persistence and lateral movement",
+     "url": "https://pushsecurity.com/blog/phishing-slack-persistence/"
+    },
+    {
+     "title": "Octo Tempest use FiveTran to steal SalesForce and ZenDesk databases",
+     "url": "https://www.microsoft.com/en-us/security/blog/2023/10/25/octo-tempest-crosses-boundaries-to-facilitate-extortion-encryption-and-destruction/"
+    }
+   ],
+   "attack": [
+    "T1020"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/shadow_workflows/description.md"
+  },
+  "SAT1034": {
+   "name": "Slug tenant enumeration",
+   "slug": "slug_tenant_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary_first": "SaaS vendors make use of different strategies to separate tenants from one another.",
+   "examples": [
+    "BambooHR"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1595.003"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/slug_tenant_enumeration/description.md"
+  },
+  "SAT1035": {
+   "name": "Subdomain tenant discovery",
+   "slug": "subdomain_tenant_discovery",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary_first": "SaaS vendors make use of different strategies to separate different tenants from one another.",
+   "examples": [
+    "BambooHR"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1595.003"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/subdomain_tenant_discovery/description.md"
+  },
+  "SAT1036": {
+   "name": "System integrations",
+   "slug": "system_integrations",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary_first": "Some SaaS apps allow OAuth integrations that are not tied to a user account, but to the app tenant, or a machine account instead.",
+   "examples": [
+    "Slack"
+   ],
+   "n_examples": 1,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Slack Attack: A phisher's guide to persistence and lateral movement",
+     "url": "https://pushsecurity.com/blog/phishing-slack-persistence/"
+    },
+    {
+     "title": "Slack Jack - A tool for Slack bot token abuse",
+     "url": "https://github.com/adelapazborrero/slack_jack?tab=readme-ov-file"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/system_integrations/description.md"
+  },
+  "SAT1037": {
+   "name": "Takeout services",
+   "slug": "takeout_services",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "summary_first": "Takeout services allow users to export all of their data from a SaaS app into a downloadable format.",
+   "examples": [
+    "Google"
+   ],
+   "n_examples": 1,
+   "n_refs": 0,
+   "references": [],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/takeout_services/description.md"
+  },
+  "SAT1038": {
+   "name": "Username enumeration",
+   "slug": "username_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary_first": "When attempting to authenticate to a SaaS app, the login mechanism itself may disclose whether the username/email address is a known/valid account, even if the provided password is incorrect.",
+   "examples": [
+    "Ramp",
+    "Expensify"
+   ],
+   "n_examples": 2,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Holehe - OSINT tool for finding registered accounts",
+     "url": "https://github.com/megadose/holehe"
+    }
+   ],
+   "attack": [
+    "T1087"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/username_enumeration/description.md"
+  },
+  "SAT1039": {
+   "name": "Webhooks",
+   "slug": "webhooks",
+   "tactics": [
+    "Defense Evasion",
+    "Exfiltration"
+   ],
+   "summary_first": "Some SaaS apps allow webhooks to be configured so callbacks are made when certain events are triggered.",
+   "examples": [
+    "Microsoft 365"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [],
+   "attack": [
+    "T1567"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/webhooks/description.md"
+  },
+  "SAT1040": {
+   "name": "Hijack OAuth flows",
+   "slug": "hijack_oauth_flows",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "During the OAuth authorization code flow, after a user grants permission to a third-party application, the service provider generates an authorization code and redirects the user's browser back to the third-party application's specified *redirect_uri*.",
+   "examples": [
+    "HackerOne - OAuth redirect_uri bypass using IDN homograph attack resulting in user's access token leakage",
+    "HackerOne - Stealing Users OAuth authorization code via redirect_uri"
+   ],
+   "n_examples": 2,
+   "n_refs": 3,
+   "references": [
+    {
+     "title": "OWASP - Testing for OAuth Authorization Server Weaknesses",
+     "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/05.1-Testing_for_OAuth_Authorization_Server_Weaknesses"
+    },
+    {
+     "title": "PortSwigger - OAuth 2.0 authentication vulnerabilities",
+     "url": "https://portswigger.net/web-security/oauth#leaking-authorization-codes-and-access-tokens"
+    },
+    {
+     "title": "PortSwigger - Hidden OAuth attack vectors",
+     "url": "https://portswigger.net/research/hidden-oauth-attack-vectors"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/hijack_oauth_flows/description.md"
+  },
+  "SAT1041": {
+   "name": "Inbound federation",
+   "slug": "inbound_federation",
+   "tactics": [
+    "Persistence",
+    "Lateral Movement"
+   ],
+   "summary_first": "Inbound federation allows users to login to a target identity provider by authenticating with a source identity provider.",
+   "examples": [
+    "Okta"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "Okta Cross-Tenant Impersonation",
+     "url": "https://sec.okta.com/articles/2023/08/cross-tenant-impersonation-prevention-and-detection"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/inbound_federation/description.md"
+  },
+  "SAT1042": {
+   "name": "AiTM Phishing",
+   "slug": "aitm_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Attacker-in-the-Middle (AITM) phishing is a newer variant of phishing that uses dedicated tooling to act as a web proxy between the victim and a legitimate login portal for an application the victim has access to, principally to make it easier to defeat MFA protection.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 5,
+   "references": [
+    {
+     "title": "Evilginx - AITM web proxy",
+     "url": "https://github.com/kgretzky/evilginx2"
+    },
+    {
+     "title": "EvilnoVNC - AITM noVNC proxy",
+     "url": "https://github.com/JoelGMSec/EvilnoVNC"
+    },
+    {
+     "title": "Modlishka- AITM web proxy",
+     "url": "https://github.com/drk1wi/Modlishka"
+    },
+    {
+     "title": "Muraena - AITM web proxy",
+     "url": "https://github.com/muraenateam/muraena"
+    },
+    {
+     "title": "NoPhish - AITM noVNC proxy",
+     "url": "https://github.com/powerseb/NoPhish"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/aitm_phishing/description.md"
+  },
+  "SAT1043": {
+   "name": "Device Enrollment",
+   "slug": "device_enrollment",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary_first": "Some attack techniques result in temporary access to an account being obtained, possibly including knowledge of the account password, such as through AiTM phishing that proxies MFA codes or similar.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 4,
+   "references": [
+    {
+     "title": "NCSC advisory on cloud attacks by APT29",
+     "url": "https://www.ncsc.gov.uk/news/svr-cyber-actors-adapt-tactics-for-initial-cloud-access"
+    },
+    {
+     "title": "Scattered Spider Attack Analysis - Technical Blog",
+     "url": "https://www.reliaquest.com/blog/scattered-spider-attack-analysis-account-compromise/"
+    },
+    {
+     "title": "APT29 Attack Analysis - Technical Blog",
+     "url": "https://www.mandiant.com/resources/blog/apt29-continues-targeting-microsoft"
+    }
+   ],
+   "attack": [
+    "T1098.005"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/device_enrollment/description.md"
+  },
+  "SAT1044": {
+   "name": "Session cookie theft",
+   "slug": "session_cookie_theft",
+   "tactics": [
+    "Lateral Movement",
+    "Defense Evasion"
+   ],
+   "summary_first": "Due to increasing use of SaaS apps, core identity providers acting as SSO gateways to them, and the widespread adoption of MFA, hybrid attacks involving the theft of valid browser session cookies from compromised endpoints using infostealing malware are becoming more common.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 3,
+   "references": [
+    {
+     "title": "2024 Sophos Threat Report",
+     "url": "https://news.sophos.com/en-us/2024/03/12/2024-sophos-threat-report/"
+    },
+    {
+     "title": "Traffers - a deep dive into the information stealer ecosystem",
+     "url": "https://blog.sekoia.io/traffers-a-deep-dive-into-the-information-stealer-ecosystem/"
+    }
+   ],
+   "attack": [
+    "T1185"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/session_cookie_theft/description.md"
+  },
+  "SAT1045": {
+   "name": "MFA downgrade",
+   "slug": "mfa_downgrade",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "Phishing-resistant MFA factors, such as passkeys or vendor-specific implementations like Okta Fastpass, have been introduced to deal with the problem of [AiTM phishing attacks](/techniques/aitm_phishing/description.md) and credential theft.",
+   "examples": [
+    "Microsoft - Windows Hello for Business MFA downgrade attack"
+   ],
+   "n_examples": 1,
+   "n_refs": 3,
+   "references": [
+    {
+     "title": "FIDO Alliance - Passkeys 101",
+     "url": "https://fidoalliance.org/passkeys/"
+    },
+    {
+     "title": "X33fcon - Unraveling and Countering Adversary-in-the-Middle Phishing Attacks - MFA downgrade section",
+     "url": "https://youtu.be/-W-LxcbUxI4?t=1541"
+    },
+    {
+     "title": "Evilginx phishlet for WHfB MFA downgrade attack",
+     "url": "https://github.com/yudasm/WHfB-o365-Phishlet"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/mfa_downgrade/description.md"
+  },
+  "SAT1046": {
+   "name": "Guest Access Abuse",
+   "slug": "guest_access_abuse",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary_first": "In SaaS platforms like Salesforce, ServiceNow, and Zendesk, misconfigurations related to guest user permissions can lead to unauthorized data access or escalation of privileges.",
+   "examples": [
+    "Salesforce guest user misconfiguration allowing data access",
+    "ServiceNow instance where guest users could access PII Data"
+   ],
+   "n_examples": 2,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Give Secure Access to Unauthenticated Users with the Guest User Profile",
+     "url": "https://help.salesforce.com/s/articleView?id=sf.networks_public_access.htm&type=5"
+    },
+    {
+     "title": "General Information | Potential Public List Widget Misconfiguration",
+     "url": "https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB1553688"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/guest_access_abuse/description.md"
+  },
+  "SAT1047": {
+   "name": "Cross-IdP Impersonation",
+   "slug": "cross-idp_impersonation",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary_first": "Cross-IdP impersonation is when an adversary uses an account with the correct target email address but registered with an identity provider that is not in use by the target organization to authenticate to a target SaaS application.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "Technical blog post - Verification phishing and cross-idp impersonation",
+     "url": "https://pushsecurity.com/blog/a-new-class-of-phishing-verification-phishing-and-cross-idp-impersonation/"
+    },
+    {
+     "title": "Zendesk vulnerability allows Slack compromise",
+     "url": "https://cyberinsider.com/zendesk-vulnerability-allows-slack-takeovers-through-apple-oauth-exploit/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/cross-idp_impersonation/description.md"
+  },
+  "SAT1048": {
+   "name": "Verification phishing",
+   "slug": "verification_phishing",
+   "tactics": [
+    "Initial access"
+   ],
+   "summary_first": "Email verification is sometimes used as a control, such as when registering new accounts.",
+   "examples": [],
+   "n_examples": 0,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "Technical blog post - Verification phishing and cross-idp impersonation",
+     "url": "https://pushsecurity.com/blog/a-new-class-of-phishing-verification-phishing-and-cross-idp-impersonation/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/verification_phishing/description.md"
+  },
+  "SAT1049": {
+   "name": "UI redressing",
+   "slug": "ui_redressing",
+   "tactics": [
+    "Initial access"
+   ],
+   "summary_first": "UI redressing attacks can be used to trick a user into performing an action on a legitimate application that is different to what they perceived.",
+   "examples": [
+    "Salesforce",
+    "Slack",
+    "Shopify"
+   ],
+   "n_examples": 3,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "OWASP - Clickjacking",
+     "url": "https://owasp.org/www-community/attacks/Clickjacking"
+    },
+    {
+     "title": "Technical blog - DoubleClickjacking: A New Era of UI Redressing",
+     "url": "https://www.paulosyibelo.com/2024/12/doubleclickjacking-what.html"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/ui_redressing/description.md"
+  },
+  "SAT1050": {
+   "name": "App-specific password phishing",
+   "slug": "app_specific_password_phishing",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary_first": "App-Specific password phishing is a social engineering technique where an adversary tricks a user into generating an \"app-specific password\" for their account and then sharing it with the attacker.",
+   "examples": [
+    "Google"
+   ],
+   "n_examples": 1,
+   "n_refs": 1,
+   "references": [
+    {
+     "title": "Technical blog - Russian Government-Linked Social Engineering Targets App-Specific Passwords",
+     "url": "https://citizenlab.ca/2025/06/russian-government-linked-social-engineering-targets-app-specific-passwords/"
+    }
+   ],
+   "attack": [],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/app_specific_password_phishing/description.md"
+  },
+  "SAT1051": {
+   "name": "ConsentFix",
+   "slug": "consentfix",
+   "tactics": [
+    "Initial Access",
+    "Defense Evasion"
+   ],
+   "summary_first": "ConsentFix is a social engineering technique that combines ClickFix-style deception with OAuth authorization code theft.",
+   "examples": [
+    "Microsoft"
+   ],
+   "n_examples": 1,
+   "n_refs": 2,
+   "references": [
+    {
+     "title": "ConsentFix - Push Security blog",
+     "url": "https://pushsecurity.com/blog/consentfix/"
+    }
+   ],
+   "attack": [
+    "T1566.002"
+   ],
+   "url": "https://github.com/pushsecurity/saas-attacks/blob/main/techniques/consentfix/description.md"
+  }
+ }
+}

@@ -1,0 +1,203 @@
+# 교차 매핑·대응 기준 카탈로그 — ID·명칭만 수록(원문 미수록)
+#
+# 각 항목은 [영문 공식 명칭, 국문 번역 명칭]. 설명 원문은 싣지 않으며 세부위협 문구는 분석가가 새로 작성한다.
+# 출처·버전·이용 조건은 meta에 적고, 워크북 '개요'·'평가 기준' 시트에 같은 내용을 고지한다.
+# Browser & Identity Attacks Matrix(SAT)·NIST SP 800-53 명칭은 reference/ 추출본에서 읽는다(scripts/prepare_push.py · prepare_refs.py).
+
+meta:
+  attack:
+    name: MITRE ATT&CK Enterprise
+    version: v19.2
+    source: 저장소 루트 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본
+    license: © The MITRE Corporation — https://attack.mitre.org/resources/legal-and-branding/terms-of-use/
+  sat:
+    name: Browser & Identity Attacks Matrix (구 SaaS Attacks Matrix, Push Security)
+    version: 커밋 20bf340 (2026-04-21)
+    source: https://github.com/pushsecurity/saas-attacks
+    license: CC BY 4.0 — reference/push-bia/ 에 ID·명칭·전술·링크 추출본과 라이선스 수록. 예시는 앱별 시연(PoC)이라 실증 근거로만 사용
+  owasp_nhi:
+    name: OWASP Non-Human Identities Top 10
+    version: 2025
+    source: https://github.com/OWASP/www-project-non-human-identities-top-10
+    license: CC BY-SA 4.0 — ID·명칭만 인용
+  sp80063:
+    name: NIST SP 800-63-4 Digital Identity Guidelines (63A 신원 확인 · 63B 인증 · 63C 페더레이션)
+    version: Revision 4 (2025)
+    source: https://pages.nist.gov/800-63-4/
+    license: 미국 정부 저작물(공공 영역) — 요구사항 주제 단위로 연계(절 번호 대신 주제 코드)
+  asvs:
+    name: OWASP Application Security Verification Standard
+    version: 5.0 (저장소 커밋 9b5da31)
+    source: https://github.com/OWASP/ASVS (5.0/en)
+    license: CC BY-SA 4.0 — 절(Section) ID·명칭만 인용
+  oat:
+    name: OWASP Automated Threats to Web Applications
+    version: 저장소 커밋 14da2ff (2026-09)
+    source: https://github.com/OWASP/www-project-automated-threats-to-web-applications
+    license: CC BY-SA 3.0 — ID·명칭만 인용
+  ccm:
+    name: CSA Cloud Controls Matrix
+    version: v4.1.0 (저장소 루트 CCMv4.1.0-generated_at_2026_01_13.xlsx)
+    source: https://cloudsecurityalliance.org/research/cloud-controls-matrix
+    license: CSA 이용 조건 — 통제 ID·명칭만 인용
+  cis:
+    name: CIS Critical Security Controls
+    version: v8.1
+    source: https://www.cisecurity.org/controls
+    license: CC BY-NC-ND 4.0 — 세이프가드 ID·명칭만 인용
+  nist80053:
+    name: NIST SP 800-53 Rev.5 통제명
+    version: OSCAL 5.2.0 (2026-05-11)
+    source: https://github.com/usnistgov/oscal-content
+    license: 미국 정부 저작물(공공 영역) — reference/nist/ 명칭 추출본
+  ismsp:
+    name: 정보보호 및 개인정보보호 관리체계(ISMS-P) 인증기준
+    version: 2023 개정 고시 기준
+    source: https://isms.kisa.or.kr
+    license: 공공 기준 — 항목 번호·명칭만 인용
+
+attack_tactics_ko:
+  Reconnaissance: 정찰
+  Resource Development: 자원 개발
+  Initial Access: 초기 침투
+  Execution: 실행
+  Persistence: 지속성
+  Privilege Escalation: 권한 상승
+  Stealth: 은닉
+  Defense Impairment: 방어 무력화
+  Credential Access: 자격증명 접근
+  Discovery: 탐색
+  Lateral Movement: 횡적 이동
+  Collection: 수집
+  Command and Control: 명령·제어
+  Exfiltration: 반출
+  Impact: 영향
+
+# OWASP Non-Human Identities Top 10 (2025)
+owasp_nhi:
+  NHI1: [Improper Offboarding, 부적절한 폐기(오프보딩)]
+  NHI2: [Secret Leakage, 비밀 유출]
+  NHI3: [Vulnerable Third-Party NHI, 취약한 서드파티 비인간 신원]
+  NHI4: [Insecure Authentication, 안전하지 않은 인증]
+  NHI5: [Overprivileged NHI, 과다 권한 비인간 신원]
+  NHI6: [Insecure Cloud Deployment Configurations, 안전하지 않은 클라우드 배포 구성]
+  NHI7: [Long-Lived Secrets, 장기 비밀]
+  NHI8: [Environment Isolation, 환경 격리 미흡]
+  NHI9: [NHI Reuse, 비인간 신원 재사용]
+  NHI10: [Human Use of NHI, 사람의 비인간 신원 사용]
+
+# NIST SP 800-63-4 — 요구사항 주제 코드(분석가 정의, 절 번호 대신 주제명으로 연계)
+sp80063:
+  63A-IAL: [Identity Assurance Levels (IAL1–IAL3), 신원 확인 보증 수준]
+  63A-FRAUD: [Identity Proofing Fraud Management, 신원 확인 사기 관리(위조 신분증·합성 신원·주입 공격)]
+  63B-AAL: [Authentication Assurance Levels (AAL1–AAL3), 인증 보증 수준]
+  63B-PR: [Phishing-Resistant Authentication, 피싱 저항 인증(채널 바인딩·검증자 이름 바인딩)]
+  63B-PWD: [Password Requirements, 비밀번호 요건(길이·차단 목록·주기적 변경 강제 금지)]
+  63B-RL: [Rate Limiting (Throttling), 인증 실패 횟수 제한]
+  63B-OOB: [Out-of-Band Authenticators and PSTN Restrictions, 대역 외 인증과 전화망(SMS·음성) 사용 제한]
+  63B-SYNC: [Syncable Authenticators, 동기화 인증기(패스키)·동기화 계층 보호]
+  63B-RECOV: [Account Recovery, 계정 복구]
+  63B-LIFE: [Authenticator Event Management, 인증기 등록·분실·폐기 관리]
+  63B-SESS: [Session Management and Reauthentication, 세션 관리·재인증]
+  63C-FAL: [Federation Assurance Levels (FAL1–FAL3), 페더레이션 보증 수준]
+  63C-ASSERT: [Assertion Protection, 어설션 보호(서명·대상 제한·주입 방지)]
+  63C-TRUST: [Trust Agreements and RP Registration, 신뢰 협약·신뢰 당사자(RP) 등록]
+
+# OWASP ASVS 5.0 — 신원 관련 절
+asvs:
+  V6.1: [Authentication Documentation, 인증 문서화]
+  V6.2: [Password Security, 비밀번호 보안]
+  V6.3: [General Authentication Security, 일반 인증 보안]
+  V6.4: [Authentication Factor Lifecycle and Recovery, 인증 요소 수명주기·복구]
+  V6.5: [General Multi-factor authentication requirements, 다중 인증 일반 요건]
+  V6.6: [Out-of-Band authentication mechanisms, 대역 외 인증]
+  V6.7: [Cryptographic authentication mechanism, 암호 기반 인증]
+  V6.8: [Authentication with an Identity Provider, IdP 기반 인증]
+  V7.1: [Session Management Documentation, 세션 관리 문서화]
+  V7.2: [Fundamental Session Management Security, 기본 세션 관리 보안]
+  V7.3: [Session Timeout, 세션 만료]
+  V7.4: [Session Termination, 세션 종료]
+  V7.5: [Defenses Against Session Abuse, 세션 악용 방어]
+  V7.6: [Federated Re-authentication, 페더레이션 재인증]
+  V8.2: [General Authorization Design, 일반 인가 설계]
+  V8.3: [Operation Level Authorization, 작업 단위 인가]
+  V9.1: [Token source and integrity, 토큰 출처·무결성]
+  V9.2: [Token content, 토큰 내용]
+  V10.1: [Generic OAuth and OIDC Security, OAuth·OIDC 일반 보안]
+  V10.2: [OAuth Client, OAuth 클라이언트]
+  V10.3: [OAuth Resource Server, OAuth 리소스 서버]
+  V10.4: [OAuth Authorization Server, OAuth 인가 서버]
+  V10.5: [OIDC Client, OIDC 클라이언트]
+  V10.6: [OpenID Provider, OpenID 제공자]
+  V10.7: [Consent Management, 동의 관리]
+  V13.3: [Secret Management, 비밀 관리]
+  V16.3: [Security Events, 보안 이벤트 기록]
+
+# OWASP Automated Threats — 신원 관련 항목
+oat:
+  OAT-002: [Token Cracking, 토큰 대입]
+  OAT-007: [Credential Cracking, 자격증명 추측 대입]
+  OAT-008: [Credential Stuffing, 크리덴셜 스터핑]
+  OAT-009: [CAPTCHA Defeat, CAPTCHA 우회]
+  OAT-019: [Account Creation, 계정 대량 생성]
+  OAT-020: [Account Aggregation, 계정 집적]
+
+# CSA CCM v4.1 — IAM 도메인 전체와 신원 관련 통제
+ccm:
+  IAM-01: [Identity and Access Management Policy and Procedures, ID·접근 관리 정책·절차]
+  IAM-02: [Credentials Management Policy and Procedures, 자격증명 관리 정책·절차]
+  IAM-03: [Identity Inventory, 신원 인벤토리]
+  IAM-04: [Separation of Duties, 직무 분리]
+  IAM-05: [Least Privilege, 최소 권한]
+  IAM-06: [Access Provisioning, 접근 권한 부여]
+  IAM-07: [Access Changes and Revocation, 접근 권한 변경·회수]
+  IAM-08: [Access Review, 접근 권한 검토]
+  IAM-09: [Segregation of Privileged Access Roles, 특권 역할 분리]
+  IAM-10: [Management of Privileged Access Roles, 특권 역할 관리]
+  IAM-11: [Service Customers Approval for Agreed Privileged Access Roles, 합의된 특권 접근에 대한 고객 승인]
+  IAM-12: [Unique Identities, 고유 신원]
+  IAM-13: [Strong Authentication, 강한 인증]
+  IAM-14: [Credentials Management, 자격증명 관리]
+  IAM-15: [Authorization Mechanisms, 인가 메커니즘]
+  HRS-06: [Employment Termination, 고용 종료]
+  HRS-09: [Personnel Roles and Responsibilities, 인력 역할·책임]
+  CEK-11: [Key Purpose, 키 용도]
+  CEK-12: [Key Rotation, 키 교체]
+  CEK-13: [Key Revocation, 키 폐기]
+  CEK-19: [Key Compromise, 키 침해 대응]
+  LOG-03: [Security Monitoring and Alerting, 보안 모니터링·경보]
+  LOG-05: [Audit Logs Monitoring and Response, 감사 로그 모니터링·대응]
+  STA-09: [Service Bill of Material (BOM), 서비스 구성요소 명세]
+
+# CIS Controls v8.1 — 5 계정 관리 · 6 접근 통제 관리
+cis:
+  '5.1': [Establish and Maintain an Inventory of Accounts, 계정 인벤토리 수립·유지]
+  '5.2': [Use Unique Passwords, 고유 비밀번호 사용]
+  '5.3': [Disable Dormant Accounts, 휴면 계정 비활성화]
+  '5.4': [Restrict Administrator Privileges to Dedicated Administrator Accounts, 관리자 권한을 전용 관리자 계정으로 제한]
+  '5.5': [Establish and Maintain an Inventory of Service Accounts, 서비스 계정 인벤토리 수립·유지]
+  '5.6': [Centralize Account Management, 계정 관리 중앙화]
+  '6.1': [Establish an Access Granting Process, 접근 권한 부여 절차 수립]
+  '6.2': [Establish an Access Revoking Process, 접근 권한 회수 절차 수립]
+  '6.3': [Require MFA for Externally-Exposed Applications, 외부 노출 애플리케이션 MFA 적용]
+  '6.4': [Require MFA for Remote Network Access, 원격 네트워크 접속 MFA 적용]
+  '6.5': [Require MFA for Administrative Access, 관리자 접근 MFA 적용]
+  '6.6': [Establish and Maintain an Inventory of Authentication and Authorization Systems, 인증·인가 시스템 인벤토리 수립·유지]
+  '6.7': [Centralize Access Control, 접근 통제 중앙화]
+  '6.8': [Define and Maintain Role-Based Access Control, 역할 기반 접근 통제 정의·유지]
+
+# ISMS-P 인증기준 — 신원 관련 항목
+ismsp:
+  2.2.5: [퇴직 및 직무변경 관리]
+  2.3.3: [외부자 보안 이행 관리]
+  2.3.4: [외부자 계약 변경 및 만료 시 보안]
+  2.5.1: [사용자 계정 관리]
+  2.5.2: [사용자 식별]
+  2.5.3: [사용자 인증]
+  2.5.4: [비밀번호 관리]
+  2.5.5: [특수 계정 및 권한 관리]
+  2.5.6: [접근권한 검토]
+  2.6.6: [원격접근 통제]
+  2.7.2: [암호키 관리]
+  2.9.4: [로그 및 접속기록 관리]
+  2.9.5: [로그 및 접속기록 점검]

@@ -1,0 +1,1653 @@
+# 통합 신원(아이덴티티)·계정 보안위협 매트릭스 — 분류 체계(원천)
+#
+# 구조: Lv1 도메인(신원 공격면) → Lv2 위협분류(IDT-<도메인>-NN) → Lv3 세부위협(IDT-<도메인>-NN.m)
+#       하위 세부위협이 하나뿐인 위협분류는 Lv2 = Lv3 (ID에 '.m' 없음)
+# ID는 고정 — 항목을 없애도 번호를 다시 매기거나 재사용하지 않음(폐지 시 retired 표시)
+#
+# Lv3 필드
+#   name / en       세부위협명(국문) / 영문명
+#   stage           주 공격 단계 — ATT&CK v19.2 전술 국문명
+#   id_types        대상 신원 유형 — 인력 · 특권 · NHI · 고객
+#   id_envs         ID 환경 — 온프레미스 AD · 클라우드 IdP · SaaS · 원격 접속 · CIAM·고객 서비스 · 통신 · 개발·CI/CD · 클라우드 인프라
+#   attack          ATT&CK v19.2 기법 ID
+#   sat             Browser & Identity Attacks Matrix 기법 ID(SAT10NN)
+#   nhi             OWASP Non-Human Identities Top 10(2025)
+#   sp80063         NIST SP 800-63-4 요구사항 주제 코드(frameworks.yaml sp80063)
+#   asvs / oat      OWASP ASVS 5.0 절 / OWASP 자동화 위협
+#   ccm / cis / nist / ismsp   대응 기준(CSA CCM v4.1 · CIS Controls v8.1 · NIST SP 800-53 Rev.5 · ISMS-P)
+#   cloud / ai / ot / sct      다른 매트릭스 연계 — 통합 AI·클라우드·OT 매트릭스 v2 요약 ID(CL-·AI-·OT-), 공급망 매트릭스 v2(SCT-)
+#   severity        심각도(상·중·하) — 기준은 assessment.severity_rule
+#   severity_why    심각도 근거(대표 사례는 사고 DB에 있어야 함)
+
+assessment:
+  severity_rule:
+    상: 공격이 성공하면 IdP·디렉터리·서명 키·특권 계정·비인간 신원 등 신원 체계 자체를 장악해 조직(테넌트) 전체 또는 다수 계정에 임의 인증·토큰 위조가 가능해지거나, 인증 통제를 체계적으로 우회해 다수 계정을 동시에 장악하거나, 정상 권한 범위 안에서 대량 데이터·금전 피해가 바로 나는 위협
+    중: 성공해도 단일 사용자·계정 범위의 발판에 머물러 추가 단계가 필요하거나, 사용자의 선택·실수가 필요한 위협, 또는 단독으로는 피해가 없고 다른 위협의 피해를 키우는 조건·지속성·은닉 기법
+    하: 영향이 제한적·일시적이고 복구가 쉬운 위협
+  likelihood_rule: 상 = 실제 사고 2건 이상(AI v3.2·클라우드 v5·OT·공급망 매트릭스와 같은 수식), 중 = 실제 사고 1건 또는 ATT&CK 사례·KEV(신원)·위협인텔·실증 중 하나 이상, 하 = 근거 없음
+  severity_check: "'상' 판정은 장악 범위(조직 전체·다수 계정·정상 권한 대량 피해)를 severity_why에 적은 경우에만 — 공급망 매트릭스의 위험도 포화(60개 중 38개 매우 높음)를 피하기 위한 기준"
+
+id_types:
+  인력: 임직원·협력사 직원의 업무 계정(SSO·메일·VPN·SaaS)
+  특권: 관리자·도메인 관리자·IdP 관리자·특권 접근 관리(PAM) 대상 계정
+  NHI: 서비스 계정·API 키·OAuth 앱·토큰·워크로드 ID·AI 에이전트 등 비인간 신원
+  고객: 고객·이용자 계정과 본인확인(CIAM·통신 가입자)
+
+id_envs:
+  - 온프레미스 AD
+  - 클라우드 IdP
+  - SaaS
+  - 원격 접속
+  - CIAM·고객 서비스
+  - 통신
+  - 개발·CI/CD
+  - 클라우드 인프라
+
+domains:
+  # =========================================================================
+  - code: AU
+    ko: 인증 공격
+    en: Authentication Attacks
+    desc: 비밀번호·MFA·인증 시스템 자체를 겨눠 정상 로그인을 얻는 위협. 비밀번호 대입·재사용, 기본 자격증명, MFA 우회, 인증 장비·IdP 제품 취약점, 계정 열거
+    lv2:
+      - id: IDT-AU-01
+        name: 비밀번호 기반 공격
+        lv3:
+          - id: IDT-AU-01.1
+            name: 비밀번호 스프레이·무차별 대입
+            en: Password spraying and brute force
+            stage: [자격증명 접근, 초기 침투]
+            id_types: [인력, 특권]
+            id_envs: [클라우드 IdP, SaaS, 원격 접속, 온프레미스 AD]
+            attack: [T1110.001, T1110.002, T1110.003]
+            sat: [SAT1007]
+            nhi: []
+            sp80063: [63B-PWD, 63B-RL]
+            asvs: [V6.2, V6.3]
+            oat: [OAT-007]
+            ccm: [IAM-13, IAM-02]
+            cis: ['5.2', '6.3', '6.4']
+            nist: [AC-7, IA-5(1), IA-2(1), IA-2(2)]
+            ismsp: [2.5.3, 2.5.4]
+            cloud: [CL-CA-01]
+            ai: []
+            ot: [OT-LM-04]
+            sct: [SCT-SC-03.2]
+            severity: 중
+            severity_why: 한 번에 많은 계정을 겨누지만 성공하면 개별 계정 발판을 얻는 단계 — 피해는 MFA 미적용(IDT-AU-03.3)과 결합될 때 커짐(Microsoft 2024 레거시 테스트 테넌트, Mandiant X 계정 2024)
+          - id: IDT-AU-01.2
+            name: 유출·탈취 자격증명 재사용(유효 계정 악용)
+            en: Reuse of leaked or stolen credentials (valid account abuse)
+            stage: [초기 침투, 지속성]
+            id_types: [인력, 특권]
+            id_envs: [클라우드 IdP, SaaS, 원격 접속, 개발·CI/CD]
+            attack: [T1078, T1078.004, T1110.004, T1589.001, T1597.002]
+            sat: [SAT1011]
+            nhi: []
+            sp80063: [63B-PWD, 63B-AAL]
+            asvs: [V6.2, V6.3]
+            oat: [OAT-008]
+            ccm: [IAM-13, IAM-14]
+            cis: ['5.2', '6.3', '6.4']
+            nist: [IA-5(1), IA-2(1), IA-2(2), SI-4]
+            ismsp: [2.5.3, 2.5.4]
+            cloud: [CL-IA-07, CL-CA-01]
+            ai: [AI-07-02]
+            ot: [OT-LM-02]
+            sct: [SCT-SC-03.2]
+            severity: 중
+            severity_why: 탈취 자격증명 자체는 개별 계정 접근이며, 조직 전체 피해는 MFA 미적용·과다 권한 같은 조건과 결합될 때 발생(Colonial Pipeline 2021, Change Healthcare 2024) — 조건 행(IDT-AU-03.3·IDT-PE-01.1)에서 '상'으로 반영
+      - id: IDT-AU-02
+        name: 기본·하드코딩·공유 자격증명 악용
+        lv3:
+          - id: IDT-AU-02
+            name: 기본·하드코딩·공유 자격증명 악용
+            en: Default, hard-coded or shared credentials
+            stage: [초기 침투, 지속성]
+            id_types: [특권, NHI]
+            id_envs: [CIAM·고객 서비스, 원격 접속, 온프레미스 AD]
+            attack: [T1078.001, T1552.001]
+            sat: []
+            nhi: [NHI9]
+            sp80063: [63B-PWD]
+            asvs: [V6.2, V6.3]
+            oat: []
+            ccm: [IAM-02, IAM-12]
+            cis: ['5.2', '5.4']
+            nist: [IA-5(1), IA-5(7), CM-6]
+            ismsp: [2.5.4, 2.5.5]
+            cloud: []
+            ai: []
+            ot: [OT-LM-03]
+            sct: [SCT-SC-01.1]
+            severity: 중
+            severity_why: 노출된 장비·관리 화면 하나의 관리자 권한을 주지만 조직 전체 장악까지는 추가 단계가 필요 — 다만 고객 인증 시스템처럼 대량 데이터 저장소의 관리 화면이면 대량 유출로 직결(LG유플러스 2023 CAS 관리자 'admin')
+      - id: IDT-AU-03
+        name: 다중 인증(MFA) 우회
+        lv3:
+          - id: IDT-AU-03.1
+            name: MFA 승인 요청 폭탄(MFA 피로)
+            en: MFA fatigue / push bombing
+            stage: [자격증명 접근]
+            id_types: [인력]
+            id_envs: [클라우드 IdP, 원격 접속]
+            attack: [T1621]
+            sat: [SAT1024]
+            nhi: []
+            sp80063: [63B-PR, 63B-OOB]
+            asvs: [V6.5, V6.6]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3', '6.4', '6.5']
+            nist: [IA-2(1), IA-2(2), IA-2(8)]
+            ismsp: [2.5.3]
+            cloud: [CL-CA-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 사용자 승인이 필요하고 결과는 한 계정 — 다만 탈취 계정에서 특권 자격증명을 찾으면 조직 전체로 번짐(Uber 2022 PAM 자격증명, Cisco 2022)
+          - id: IDT-AU-03.2
+            name: SMS·음성 OTP 가로채기와 SIM 스와핑
+            en: SMS/voice OTP interception and SIM swapping
+            stage: [자격증명 접근]
+            id_types: [고객, 인력]
+            id_envs: [통신, CIAM·고객 서비스, SaaS]
+            attack: [T1111]
+            sat: []
+            nhi: []
+            sp80063: [63B-OOB, 63B-PR]
+            asvs: [V6.6]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3']
+            nist: [IA-2(1), IA-2(2), IA-2(13)]
+            ismsp: [2.5.3]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 개별 이용자의 전화번호를 노려 그 계정과 연결 자산을 탈취 — 피해가 크더라도 범위는 개인 단위(KT 심스와핑 2022, SEC X 계정 2024)
+          - id: IDT-AU-03.3
+            name: MFA 미적용·레거시 인증 경로 악용
+            en: Missing MFA and legacy authentication paths
+            stage: [초기 침투]
+            id_types: [인력, 특권]
+            id_envs: [원격 접속, SaaS, 클라우드 IdP]
+            attack: [T1078, T1133]
+            sat: [SAT1045, SAT1050]
+            nhi: []
+            sp80063: [63B-AAL, 63B-PR]
+            asvs: [V6.3, V6.5]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3', '6.4', '6.5']
+            nist: [IA-2(1), IA-2(2), AC-17]
+            ismsp: [2.5.3, 2.6.6]
+            cloud: [CL-IA-07]
+            ai: []
+            ot: [OT-IA-02]
+            sct: []
+            severity: 상
+            severity_why: MFA 없는 원격 접속·SaaS·클라우드 관리 경로는 비밀번호 하나로 조직 네트워크·데이터 전체에 들어가는 문이 됨 — Change Healthcare 2024(전국 청구 마비), Snowflake 고객 약 165곳 2024, Colonial Pipeline 2021
+      - id: IDT-AU-04
+        name: 인증 시스템 취약점 악용
+        lv3:
+          - id: IDT-AU-04.1
+            name: 원격 접속·경계 장비 인증 우회
+            en: Authentication bypass on remote-access gateways and edge devices
+            stage: [초기 침투]
+            id_types: [인력, 특권]
+            id_envs: [원격 접속]
+            attack: [T1190, T1133, T1556.004]
+            sat: []
+            nhi: []
+            sp80063: [63B-AAL]
+            asvs: [V6.3]
+            oat: []
+            ccm: [IAM-13, IAM-15]
+            cis: ['6.4', '6.6']
+            nist: [AC-17, SI-2, RA-5]
+            ismsp: [2.6.6]
+            cloud: [CL-IA-01, CL-IA-02]
+            ai: []
+            ot: [OT-IA-02]
+            sct: []
+            severity: 상
+            severity_why: 인증 없이 VPN·게이트웨이를 장악하면 그 장비를 통과하는 모든 사용자 자격증명·세션과 내부망 전체가 노출됨 — Ivanti Connect Secure 2024(CISA 긴급 지시), FortiGate VPN 자격증명 50만 건 유출 2021
+          - id: IDT-AU-04.2
+            name: IdP·SSO 제품·연동 구현 결함 악용
+            en: Flaws in IdP/SSO products and federation integrations
+            stage: [초기 침투, 권한 상승]
+            id_types: [특권, 인력, 고객]
+            id_envs: [클라우드 IdP, SaaS, CIAM·고객 서비스]
+            attack: [T1190, T1212, T1606]
+            sat: [SAT1025, SAT1032]
+            nhi: []
+            sp80063: [63C-ASSERT, 63C-FAL]
+            asvs: [V6.8, V9.1, V10.5, V10.6]
+            oat: []
+            ccm: [IAM-15]
+            cis: ['6.6', '6.7']
+            nist: [IA-8, IA-13, SI-2]
+            ismsp: [2.5.3]
+            cloud: [CL-CA-04]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 인증 결정을 내리는 IdP·SSO 검증 자체가 깨지면 그 IdP를 믿는 모든 앱·테넌트의 임의 사용자로 인증 가능 — Entra ID Actor 토큰 결함 2025(전 테넌트 전역 관리자 사칭), nOAuth 2023
+      - id: IDT-AU-05
+        name: 계정·테넌트 열거와 표적 정찰
+        lv3:
+          - id: IDT-AU-05
+            name: 계정·테넌트 열거와 표적 정찰
+            en: Account and tenant enumeration
+            stage: [정찰, 탐색]
+            id_types: [인력]
+            id_envs: [클라우드 IdP, SaaS]
+            attack: [T1589.002, T1087.004, T1087.002]
+            sat: [SAT1038, SAT1031, SAT1034, SAT1035, SAT1014, SAT1006, SAT1013]
+            nhi: []
+            sp80063: [63B-RL]
+            asvs: [V6.3]
+            oat: []
+            ccm: [IAM-12]
+            cis: ['6.6']
+            nist: [SI-4, AC-7]
+            ismsp: [2.5.2]
+            cloud: [CL-DS-01]
+            ai: [AI-01-01]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 단독 피해는 없고 대입·피싱 표적을 정확히 고르게 해 다른 위협의 성공률을 높이는 정찰 단계(Peach Sandstorm 2023 스프레이 후 Azure AD 정보 수집)
+
+  # =========================================================================
+  - code: SE
+    ko: 사회공학·계정 복구 경로
+    en: Social Engineering and Recovery Paths
+    desc: 사람과 지원 절차를 속여 인증을 통과하는 위협. 프록시 피싱·OAuth 동의·디바이스 코드 피싱, 헬프데스크·IT 지원 사칭, 계정 복구 악용, 딥페이크 사칭
+    lv2:
+      - id: IDT-SE-01
+        name: 자격증명·인증 피싱
+        lv3:
+          - id: IDT-SE-01.1
+            name: 가짜 로그인·AiTM 피싱(세션 프록시로 MFA 우회)
+            en: Credential and adversary-in-the-middle phishing
+            stage: [초기 침투, 자격증명 접근]
+            id_types: [인력, 고객]
+            id_envs: [클라우드 IdP, SaaS, 개발·CI/CD]
+            attack: [T1566.002, T1557, T1539]
+            sat: [SAT1042, SAT1015, SAT1049, SAT1009]
+            nhi: []
+            sp80063: [63B-PR]
+            asvs: [V6.5, V6.7]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3', '6.5']
+            nist: [IA-2(1), IA-2(8), AT-2(3), SC-23]
+            ismsp: [2.5.3]
+            cloud: [CL-IA-03, CL-CA-02]
+            ai: [AI-01-08]
+            ot: [OT-IA-04]
+            sct: [SCT-SC-03.1]
+            severity: 중
+            severity_why: 사용자가 가짜 페이지에 입력해야 하고 결과는 그 사용자 계정·세션 — 피싱 저항 인증(FIDO2)이면 차단됨(Twilio 0ktapus 2022 중 하드웨어 키 사용 Cloudflare 무피해)
+          - id: IDT-SE-01.2
+            name: OAuth 동의·디바이스 코드 피싱
+            en: OAuth consent and device code phishing
+            stage: [초기 침투, 자격증명 접근]
+            id_types: [인력]
+            id_envs: [클라우드 IdP, SaaS]
+            attack: [T1566.002, T1528]
+            sat: [SAT1010, SAT1012, SAT1040, SAT1051, SAT1048]
+            nhi: [NHI3]
+            sp80063: [63C-ASSERT, 63B-PR]
+            asvs: [V10.4, V10.7]
+            oat: []
+            ccm: [IAM-15]
+            cis: ['6.7']
+            nist: [AC-3, AT-2(3), IA-2(8)]
+            ismsp: [2.5.3]
+            cloud: [CL-PE-03]
+            ai: []
+            ot: []
+            sct: [SCT-SC-03.1]
+            severity: 중
+            severity_why: 정상 IdP 화면에서 사용자가 직접 승인·코드 입력해야 성립하고 결과는 그 사용자의 토큰 — 비밀번호·MFA 재설정으로도 끊기지 않는 점이 위험(Storm-2372 2025, Google Docs OAuth 웜 2017)
+          - id: IDT-SE-01.3
+            name: SMS·메신저·협업 도구 피싱
+            en: SMS, messenger and collaboration-tool phishing
+            stage: [초기 침투]
+            id_types: [인력]
+            id_envs: [SaaS, 클라우드 IdP]
+            attack: [T1566.003]
+            sat: [SAT1018, SAT1019, SAT1020]
+            nhi: []
+            sp80063: [63B-PR]
+            asvs: []
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3']
+            nist: [AT-2(3), SI-8]
+            ismsp: [2.5.3]
+            cloud: [CL-LM-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 메일 보안 통제를 우회하는 채널이지만 결과는 개별 계정 탈취 — 여러 조직을 동시에 노리는 캠페인으로 번지기 쉬움(0ktapus 2022, Midnight Blizzard Teams 2023)
+      - id: IDT-SE-02
+        name: 헬프데스크·IT 지원 사칭
+        lv3:
+          - id: IDT-SE-02.1
+            name: 헬프데스크 사칭으로 비밀번호·MFA 재설정
+            en: Help desk impersonation for password/MFA reset
+            stage: [초기 침투, 지속성]
+            id_types: [특권, 인력]
+            id_envs: [클라우드 IdP, 온프레미스 AD]
+            attack: [T1566.004, T1684.001, T1098.005]
+            sat: [SAT1003]
+            nhi: []
+            sp80063: [63B-RECOV, 63A-IAL]
+            asvs: [V6.4]
+            oat: []
+            ccm: [IAM-13, IAM-07]
+            cis: ['6.5', '5.4']
+            nist: [IA-5, IA-12, AT-2(3)]
+            ismsp: [2.5.1, 2.5.3]
+            cloud: [CL-IA-04, CL-PE-02]
+            ai: [AI-01-08]
+            ot: []
+            sct: [SCT-SC-03.3]
+            severity: 상
+            severity_why: 특권 계정의 MFA를 통째로 재설정받으면 IdP 관리 권한으로 조직 전체를 장악하고 랜섬웨어까지 바로 이어짐 — MGM 2023(약 1억 달러), Clorox 2023(약 3억 8천만 달러 주장), M&S·Co-op 2025
+          - id: IDT-SE-02.2
+            name: IT 지원 사칭으로 원격 지원 허용·연결 앱 승인 유도
+            en: IT support impersonation to obtain remote access or app authorization
+            stage: [초기 침투, 실행]
+            id_types: [인력]
+            id_envs: [SaaS, 원격 접속]
+            attack: [T1566.004, T1219, T1684.001, T1528]
+            sat: [SAT1010]
+            nhi: [NHI3]
+            sp80063: [63B-PR]
+            asvs: [V10.7]
+            oat: []
+            ccm: [IAM-15, IAM-05]
+            cis: ['6.7', '6.8']
+            nist: [AT-2(3), AC-3, CM-7]
+            ismsp: [2.5.3]
+            cloud: [CL-IA-04]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 직원 한 명이 승인한 연결 앱·원격 지원 세션이 조직의 SaaS 데이터 전체나 단말 장악으로 이어짐 — Salesforce 대상 음성 피싱 2025(다수 조직 대량 반출), Storm-1811 2024(랜섬웨어)
+      - id: IDT-SE-03
+        name: 계정 복구·재설정 절차 악용
+        lv3:
+          - id: IDT-SE-03
+            name: 계정 복구·재설정 절차 악용
+            en: Account recovery and reset abuse
+            stage: [초기 침투, 횡적 이동]
+            id_types: [고객, 인력]
+            id_envs: [CIAM·고객 서비스, SaaS]
+            attack: [T1098, T1684.001]
+            sat: [SAT1003]
+            nhi: []
+            sp80063: [63B-RECOV, 63B-LIFE]
+            asvs: [V6.4]
+            oat: []
+            ccm: [IAM-14]
+            cis: ['6.3']
+            nist: [IA-5, IA-11]
+            ismsp: [2.5.3, 2.5.4]
+            cloud: []
+            ai: []
+            ot: []
+            sct: [SCT-SC-03.3]
+            severity: 중
+            severity_why: 복구 절차의 약한 고리로 개별 계정을 넘기는 위협 — 결함이 시스템에 있으면 다수 고객이 같은 방식으로 털림(Coinbase 2021 고객 6천여 명, Mat Honan 2012)
+      - id: IDT-SE-04
+        name: 딥페이크·AI 음성 사칭
+        lv3:
+          - id: IDT-SE-04
+            name: 딥페이크·AI 음성 사칭(송금·접근 요청)
+            en: Deepfake voice/video impersonation
+            stage: [초기 침투, 영향]
+            id_types: [인력]
+            id_envs: [SaaS]
+            attack: [T1684.001, T1566.004]
+            sat: []
+            nhi: []
+            sp80063: [63A-FRAUD]
+            asvs: []
+            oat: []
+            ccm: [IAM-13]
+            cis: []
+            nist: [AT-2(3), IA-12]
+            ismsp: [2.5.3]
+            cloud: [CL-IA-04]
+            ai: [AI-01-07, AI-01-08]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 피해자의 판단(송금·코드 제공)이 필요하지만 한 번에 큰 금액이 나갈 수 있음 — Arup 2024(약 2,500만 달러), Retool 2023(직원 목소리 딥페이크)
+
+  # =========================================================================
+  - code: CR
+    ko: 자격증명 탈취·유출
+    en: Credential Theft and Exposure
+    desc: 단말·저장소에서 자격증명·쿠키·비밀을 훔치거나 코드·설정에 노출된 비밀을 찾는 위협. 인포스틸러, OS 자격증명 덤프, 키로깅, 코드 속 비밀, 비밀번호 관리자 침해
+    lv2:
+      - id: IDT-CR-01
+        name: 단말 자격증명 탈취
+        lv3:
+          - id: IDT-CR-01.1
+            name: 인포스틸러로 브라우저 저장 비밀번호·세션 쿠키 탈취
+            en: Infostealer theft of saved passwords and session cookies
+            stage: [자격증명 접근]
+            id_types: [인력, 고객]
+            id_envs: [SaaS, 원격 접속, 클라우드 IdP]
+            attack: [T1555.003, T1539, T1005]
+            sat: [SAT1028, SAT1044]
+            nhi: []
+            sp80063: [63B-SESS, 63B-PR]
+            asvs: [V7.5]
+            oat: []
+            ccm: [IAM-14, IAM-13]
+            cis: ['6.3', '6.4']
+            nist: [SI-3, SI-4, SC-23, IA-2(1)]
+            ismsp: [2.5.3, 2.5.4]
+            cloud: [CL-CA-05, CL-CA-03]
+            ai: [AI-07-01]
+            ot: [OT-LM-04]
+            sct: [SCT-DE-01.1]
+            severity: 상
+            severity_why: 개인 단말 한 대 감염으로 업무 SSO 세션·관리 계정·협력사 자격증명이 통째로 넘어가 MFA 없이 조직 데이터 전체에 접근 — Snowflake 고객 약 165곳 2024, Medibank 970만 명 2022, HELLCAT Jira 연쇄 2025
+          - id: IDT-CR-01.2
+            name: OS 자격증명 덤프(LSASS·SAM·캐시)
+            en: OS credential dumping (LSASS, SAM, cached credentials)
+            stage: [자격증명 접근]
+            id_types: [인력, 특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1003.001, T1003.002, T1003.005]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-09, IAM-10]
+            cis: ['5.4']
+            nist: [AC-6(5), SI-4, CM-7]
+            ismsp: [2.5.5]
+            cloud: []
+            ai: []
+            ot: [OT-LM-04]
+            sct: []
+            severity: 중
+            severity_why: 이미 장악한 단말에서 다음 단계 자격증명을 얻는 횡적 이동 준비 — 도메인 관리자 자격증명이 남아 있으면 전사 확산으로 이어짐(NotPetya 2017)
+          - id: IDT-CR-01.3
+            name: 키로깅·입력 가로채기
+            en: Keylogging and input capture
+            stage: [자격증명 접근, 수집]
+            id_types: [특권, 인력]
+            id_envs: [클라우드 인프라, SaaS]
+            attack: [T1056.001, T1056.004]
+            sat: []
+            nhi: []
+            sp80063: [63B-PR]
+            asvs: []
+            oat: []
+            ccm: [IAM-14]
+            cis: ['6.5']
+            nist: [SI-3, SI-4, IA-2(6)]
+            ismsp: [2.5.3]
+            cloud: []
+            ai: []
+            ot: [OT-LM-04]
+            sct: [SCT-DE-01.1]
+            severity: 중
+            severity_why: 감염 단말 사용자의 입력만 가로채므로 범위는 개인 — 다만 키 관리 권한자의 마스터 비밀번호면 피해가 커짐(LastPass 2022)
+      - id: IDT-CR-02
+        name: 저장·노출된 비밀
+        lv3:
+          - id: IDT-CR-02.1
+            name: 코드·설정·문서에 노출된 자격증명
+            en: Credentials exposed in code, configuration and documents
+            stage: [자격증명 접근]
+            id_types: [NHI, 특권]
+            id_envs: [개발·CI/CD, 클라우드 인프라, SaaS]
+            attack: [T1552.001, T1552.004, T1552.008, T1593.003]
+            sat: [SAT1005, SAT1028]
+            nhi: [NHI2]
+            sp80063: []
+            asvs: [V13.3]
+            oat: []
+            ccm: [IAM-14, IAM-02]
+            cis: ['5.5']
+            nist: [IA-5(7), SC-12, SA-15]
+            ismsp: [2.7.2, 2.5.4]
+            cloud: [CL-CA-05]
+            ai: [AI-02-05, AI-07-01]
+            ot: []
+            sct: [SCT-SC-01.1]
+            severity: 중
+            severity_why: 노출 자체는 조건이고 피해 범위는 노출된 키의 권한에 좌우됨 — 권한이 크면 대량 유출로 직결(Uber 2016 AWS 키, Internet Archive 2024, New York Times 2024)
+          - id: IDT-CR-02.2
+            name: 비밀번호 관리자·자격증명 금고 침해
+            en: Password manager and credential vault compromise
+            stage: [자격증명 접근]
+            id_types: [특권, 인력]
+            id_envs: [SaaS, 클라우드 인프라]
+            attack: [T1555.005, T1555.006]
+            sat: []
+            nhi: [NHI7]
+            sp80063: [63B-SYNC]
+            asvs: []
+            oat: []
+            ccm: [IAM-14, CEK-19]
+            cis: ['5.4']
+            nist: [IA-5(18), SC-12, AC-6(5)]
+            ismsp: [2.7.2, 2.5.5]
+            cloud: [CL-CA-05]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 금고 하나에 조직·고객의 자격증명과 복호화 키가 모여 있어 한 번 뚫리면 연결된 모든 시스템이 노출 — LastPass 2022(고객 금고 백업), Disney 2024(비밀번호 관리자 자격증명으로 Slack 1.1TB)
+
+  # =========================================================================
+  - code: TS
+    ko: 토큰·세션·티켓
+    en: Tokens, Sessions and Tickets
+    desc: 인증이 끝난 뒤의 증표(세션 쿠키·리프레시 토큰·Kerberos 티켓·SAML/OIDC 토큰)를 훔치거나 위조해 MFA를 거치지 않고 접근하는 위협
+    lv2:
+      - id: IDT-TS-01
+        name: 세션·토큰 탈취와 재사용
+        lv3:
+          - id: IDT-TS-01.1
+            name: 세션 쿠키 탈취·재사용
+            en: Session cookie theft and replay
+            stage: [자격증명 접근, 횡적 이동]
+            id_types: [인력, 고객]
+            id_envs: [SaaS, 클라우드 IdP, 개발·CI/CD]
+            attack: [T1539, T1550.004, T1185]
+            sat: [SAT1044, SAT1017]
+            nhi: []
+            sp80063: [63B-SESS]
+            asvs: [V7.2, V7.5]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3']
+            nist: [SC-23, AC-12, IA-11]
+            ismsp: [2.5.3]
+            cloud: [CL-CA-03]
+            ai: [AI-07-02]
+            ot: []
+            sct: [SCT-DE-01.1, SCT-SC-03.2]
+            severity: 중
+            severity_why: 세션 하나는 사용자 한 명의 권한 — 그 사용자가 고객 비밀·운영 시스템에 접근하면 피해가 커짐(CircleCI 2023, EA 2021)
+          - id: IDT-TS-01.2
+            name: 리프레시 토큰·주 리프레시 토큰(PRT)·장기 토큰 탈취
+            en: Refresh token, PRT and long-lived token theft
+            stage: [자격증명 접근, 지속성]
+            id_types: [인력, NHI]
+            id_envs: [클라우드 IdP, SaaS, 개발·CI/CD]
+            attack: [T1528, T1550.001]
+            sat: [SAT1027, SAT1026]
+            nhi: [NHI7]
+            sp80063: [63B-SESS, 63C-ASSERT]
+            asvs: [V9.1, V10.4]
+            oat: []
+            ccm: [IAM-14]
+            cis: ['6.2']
+            nist: [IA-11, AC-12, SC-23]
+            ismsp: [2.5.3]
+            cloud: [CL-CA-03]
+            ai: [AI-07-02]
+            ot: []
+            sct: [SCT-SC-02.3]
+            severity: 중
+            severity_why: 비밀번호를 바꿔도 남는 장기 접근이지만 범위는 발급된 사용자·앱 권한 — 장치 등록과 결합하면 지속성이 길어짐(Storm-2372 2025, SVR 합동 권고 2024)
+          - id: IDT-TS-01.3
+            name: 인증 장비 메모리 노출 세션 탈취(Citrix Bleed류)
+            en: Session theft via memory disclosure in authentication appliances
+            stage: [초기 침투, 자격증명 접근]
+            id_types: [인력, 고객]
+            id_envs: [원격 접속]
+            attack: [T1190, T1550.004]
+            sat: []
+            nhi: []
+            sp80063: [63B-SESS]
+            asvs: [V7.4]
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.4']
+            nist: [SI-2, SC-23, AC-12]
+            ismsp: [2.6.6]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 원격 접속 장비에 붙은 모든 사용자의 유효 세션을 인증 없이 가져와 MFA를 우회 — 대량 악용과 랜섬웨어로 이어짐(Citrix Bleed 2023 Boeing·Xfinity 3,590만 명, CitrixBleed 2 2025)
+      - id: IDT-TS-02
+        name: Windows·Kerberos 인증 자료 재사용
+        lv3:
+          - id: IDT-TS-02.1
+            name: 해시 전달(Pass-the-Hash)·티켓 전달(Pass-the-Ticket)
+            en: Pass-the-Hash and Pass-the-Ticket
+            stage: [횡적 이동]
+            id_types: [특권, 인력]
+            id_envs: [온프레미스 AD]
+            attack: [T1550.002, T1550.003]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-09]
+            cis: ['5.4']
+            nist: [AC-6(5), IA-2(8), SI-4]
+            ismsp: [2.5.5]
+            cloud: [CL-LM-01]
+            ai: []
+            ot: [OT-LM-02]
+            sct: []
+            severity: 중
+            severity_why: 이미 얻은 해시·티켓으로 다른 시스템에 옮겨 가는 횡적 이동 기법 — 도메인 관리자 자료면 전사 확산(NotPetya 2017)
+          - id: IDT-TS-02.2
+            name: Kerberoasting·AS-REP Roasting
+            en: Kerberoasting and AS-REP roasting
+            stage: [자격증명 접근]
+            id_types: [NHI, 특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1558.003, T1558.004]
+            sat: []
+            nhi: [NHI5, NHI7]
+            sp80063: [63B-PWD]
+            asvs: []
+            oat: []
+            ccm: [IAM-14, IAM-10]
+            cis: ['5.5', '5.2']
+            nist: [IA-5(1), AC-6(5), SC-12]
+            ismsp: [2.5.4, 2.5.5]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 서비스 계정 비밀번호를 오프라인으로 깨는 단계로 피해는 그 계정 권한에 좌우 — 특권 서비스 계정이면 도메인 장악(Ascension 2024 환자 560만 명)
+          - id: IDT-TS-02.3
+            name: 강제 인증·NTLM 릴레이
+            en: Forced authentication and NTLM relay
+            stage: [자격증명 접근, 횡적 이동]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1187, T1557.001]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-15]
+            cis: ['6.7']
+            nist: [IA-2(8), SC-8, CM-7]
+            ismsp: [2.5.3]
+            cloud: []
+            ai: []
+            ot: [OT-CO-03]
+            sct: []
+            severity: 중
+            severity_why: 서명·EPA가 없는 서비스로 인증을 중계하는 조건형 기법 — AD 인증서 서비스와 결합하면 도메인 장악(PetitPotam 2021 실증)
+      - id: IDT-TS-03
+        name: 토큰·티켓 위조
+        lv3:
+          - id: IDT-TS-03.1
+            name: Golden Ticket·Silver Ticket 위조
+            en: Golden and Silver Ticket forgery
+            stage: [자격증명 접근, 지속성]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1558.001, T1558.002]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [CEK-12, IAM-10]
+            cis: ['5.4']
+            nist: [SC-12, IA-5, SI-4(16)]
+            ismsp: [2.7.2, 2.5.5]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: KRBTGT·서비스 키로 임의 사용자 티켓을 만들면 도메인 전체에 무제한 접근하고, 키를 두 번 바꾸기 전까지 비밀번호 재설정으로도 끊기지 않음
+          - id: IDT-TS-03.2
+            name: SAML 토큰 위조(Golden SAML)
+            en: SAML token forgery (Golden SAML)
+            stage: [자격증명 접근, 지속성]
+            id_types: [특권]
+            id_envs: [온프레미스 AD, 클라우드 IdP]
+            attack: [T1606.002, T1552.004]
+            sat: []
+            nhi: []
+            sp80063: [63C-ASSERT, 63C-FAL]
+            asvs: [V9.1]
+            oat: []
+            ccm: [CEK-19, IAM-15]
+            cis: ['6.6']
+            nist: [SC-12, IA-13, AU-6]
+            ismsp: [2.7.2]
+            cloud: [CL-CA-04]
+            ai: []
+            ot: []
+            sct: [SCT-PB-03.1]
+            severity: 상
+            severity_why: 페더레이션 서명 인증서로 임의 사용자의 SAML 토큰을 만들면 연동된 모든 클라우드·SaaS에 MFA 없이 접근 — SolarWinds 침해 이후 클라우드 장악 2020, FoggyWeb 2021
+          - id: IDT-TS-03.3
+            name: IdP·서비스 서명 키 탈취와 토큰·쿠키 위조
+            en: Signing key theft and token/cookie forgery
+            stage: [자격증명 접근]
+            id_types: [특권, 고객, NHI]
+            id_envs: [클라우드 IdP, CIAM·고객 서비스]
+            attack: [T1606.001, T1606, T1552.004]
+            sat: []
+            nhi: [NHI2, NHI7]
+            sp80063: [63C-ASSERT, 63B-SESS]
+            asvs: [V9.1, V9.2]
+            oat: []
+            ccm: [CEK-12, CEK-13, CEK-19]
+            cis: ['6.6']
+            nist: [SC-12, IA-13, AU-6]
+            ismsp: [2.7.2]
+            cloud: [CL-CA-04]
+            ai: []
+            ot: []
+            sct: [SCT-PB-03.1]
+            severity: 상
+            severity_why: 토큰 서명 키 하나로 그 서비스의 모든 계정을 정상 로그인 없이 사칭 — Storm-0558 2023(약 25개 기관 메일), 쿠팡 2025(퇴사자 서명키로 3,367만 건), Yahoo 2014(위조 쿠키)
+
+  # =========================================================================
+  - code: DI
+    ko: 디렉터리·IdP·페더레이션
+    en: Directory, IdP and Federation
+    desc: 신원 체계의 중심인 AD·인증서 서비스·하이브리드 동기화·클라우드 IdP·페더레이션 신뢰를 장악하거나 변조하는 위협. 성공하면 조직 전체의 인증 결정을 공격자가 쥠
+    lv2:
+      - id: IDT-DI-01
+        name: Active Directory 장악
+        lv3:
+          - id: IDT-DI-01.1
+            name: DCSync·NTDS.dit 탈취
+            en: DCSync and NTDS.dit theft
+            stage: [자격증명 접근]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1003.006, T1003.003]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-09, IAM-10]
+            cis: ['5.4', '6.8']
+            nist: [AC-6(5), SI-4(20), AU-6]
+            ismsp: [2.5.5]
+            cloud: []
+            ai: []
+            ot: [OT-LM-04]
+            sct: []
+            severity: 상
+            severity_why: 도메인 전체 계정의 해시를 한 번에 가져가 모든 계정을 사칭할 수 있음 — Volt Typhoon 2024(수년간 반복 탈취)
+          - id: IDT-DI-01.2
+            name: AD 권한 구성 결함 악용(ACL·그룹 정책·위임)
+            en: AD permission misconfiguration abuse (ACL, GPO, delegation)
+            stage: [권한 상승, 방어 무력화]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1484.001, T1222.001, T1134.005, T1098.007]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-05, IAM-08]
+            cis: ['6.8', '5.4']
+            nist: [AC-6, AC-6(7), CM-6]
+            ismsp: [2.5.5, 2.5.6]
+            cloud: []
+            ai: []
+            ot: [OT-PV-02]
+            sct: []
+            severity: 중
+            severity_why: 과다 위임·쓰기 권한은 도메인 관리자로 가는 경로를 만드는 조건 — 장악 후 그룹 정책은 전사 배포 수단이 됨(Prestige 2022)
+          - id: IDT-DI-01.3
+            name: AD 인증서 서비스(AD CS) 악용
+            en: AD Certificate Services abuse
+            stage: [자격증명 접근, 권한 상승]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1649]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [CEK-11, IAM-15]
+            cis: ['6.6']
+            nist: [SC-17, IA-5(2), CM-6]
+            ismsp: [2.7.2]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 템플릿 오설정·릴레이로 관리자·도메인 컨트롤러 명의 인증서를 받으면 저권한 사용자가 곧바로 도메인을 장악하고, 인증서 유효기간 동안 비밀번호 변경과 무관하게 접근 유지(Certified Pre-Owned 2021, PetitPotam 2021)
+          - id: IDT-DI-01.4
+            name: 디렉터리 서비스 취약점 악용(Zerologon·noPac 등)
+            en: Exploitation of directory service vulnerabilities
+            stage: [권한 상승]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1068, T1210]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-15]
+            cis: ['6.6']
+            nist: [SI-2, RA-5]
+            ismsp: [2.5.5]
+            cloud: []
+            ai: []
+            ot: [OT-PV-01]
+            sct: []
+            severity: 상
+            severity_why: 일반 도메인 사용자나 네트워크 접근만으로 도메인 관리자 권한을 얻음 — Ryuk 2020(Zerologon 악용 5시간 만에 도메인 전체 암호화)
+      - id: IDT-DI-02
+        name: 하이브리드 ID·동기화 인프라 침해
+        lv3:
+          - id: IDT-DI-02
+            name: 하이브리드 ID·동기화 인프라 침해(Entra Connect·AD FS·PTA)
+            en: Hybrid identity sync infrastructure compromise
+            stage: [자격증명 접근, 권한 상승]
+            id_types: [특권, NHI]
+            id_envs: [온프레미스 AD, 클라우드 IdP]
+            attack: [T1556.007, T1078.004]
+            sat: []
+            nhi: [NHI5]
+            sp80063: [63C-TRUST]
+            asvs: []
+            oat: []
+            ccm: [IAM-09, IAM-10]
+            cis: ['5.4', '6.6']
+            nist: [AC-6(5), IA-13, SI-4]
+            ismsp: [2.5.5]
+            cloud: [CL-PV-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 온프레미스와 클라우드 ID를 잇는 동기화 계정·서버를 장악하면 클라우드 테넌트로 넘어가 비밀번호 변경·전역 관리자 확보가 가능 — Storm-0501 2024·2025, MERCURY 2023(클라우드 자원 대량 삭제)
+      - id: IDT-DI-03
+        name: IdP·인증 서비스 침해
+        lv3:
+          - id: IDT-DI-03.1
+            name: IdP·인증 서비스 공급업체 침해
+            en: Compromise of IdP and authentication service providers
+            stage: [초기 침투, 자격증명 접근]
+            id_types: [특권, NHI]
+            id_envs: [클라우드 IdP, 원격 접속]
+            attack: [T1199, T1195]
+            sat: []
+            nhi: [NHI3]
+            sp80063: [63C-TRUST]
+            asvs: []
+            oat: []
+            ccm: [STA-09, IAM-11]
+            cis: ['6.6']
+            nist: [SA-9, SR-6, IA-13]
+            ismsp: [2.3.3]
+            cloud: [CL-IA-06]
+            ai: []
+            ot: []
+            sct: [SCT-CS-02.3]
+            severity: 상
+            severity_why: 고객 다수가 믿는 인증 공급업체가 뚫리면 그 공급업체를 쓰는 조직 전체가 동시에 노출 — Okta 지원 시스템 2023(고객 134곳), RSA SecurID 2011, OneLogin 2017
+          - id: IDT-DI-03.2
+            name: IdP 관리 권한 장악·테넌트 설정 변조(외부 IdP·페더레이션 추가)
+            en: IdP admin takeover and tenant/federation configuration tampering
+            stage: [지속성, 권한 상승]
+            id_types: [특권]
+            id_envs: [클라우드 IdP]
+            attack: [T1484.002, T1556.007, T1098.003]
+            sat: [SAT1041, SAT1047, SAT1030]
+            nhi: []
+            sp80063: [63C-TRUST, 63C-FAL]
+            asvs: []
+            oat: []
+            ccm: [IAM-09, IAM-10]
+            cis: ['6.5', '6.6']
+            nist: [AC-6(5), AU-6, CM-6, IA-13]
+            ismsp: [2.5.5]
+            cloud: [CL-PV-02, CL-PE-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 공격자 IdP를 신뢰하도록 테넌트를 바꾸면 조직 안 아무 사용자로나 로그인하는 백도어가 됨 — Okta 교차 테넌트 사칭 2023, Storm-0501 2025(악성 페더레이션 도메인), MGM 2023
+      - id: IDT-DI-04
+        name: 인증 모듈·페더레이션 서버 백도어
+        lv3:
+          - id: IDT-DI-04
+            name: 인증 모듈·페더레이션 서버 백도어(AD FS·DC 인증 패치)
+            en: Authentication module and federation server backdoors
+            stage: [지속성, 자격증명 접근]
+            id_types: [특권]
+            id_envs: [온프레미스 AD]
+            attack: [T1556.001, T1556.002, T1207]
+            sat: []
+            nhi: []
+            sp80063: [63C-ASSERT]
+            asvs: []
+            oat: []
+            ccm: [IAM-15, LOG-03]
+            cis: ['6.6']
+            nist: [SI-7, SI-4, CM-7]
+            ismsp: [2.9.4]
+            cloud: [CL-PE-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 인증 처리 자체를 바꿔 임의 사용자 인증·자격증명 수집이 가능하고 정상 로그처럼 보임 — MagicWeb 2022, Skeleton Key 2015, FoggyWeb 2021
+
+  # =========================================================================
+  - code: PE
+    ko: 특권·권한과 지속성
+    en: Privilege and Persistence
+    desc: 얻은 신원의 권한을 키우고, 백도어 계정·추가 인증 수단·메일 규칙으로 접근을 유지하며, 로그·정책을 바꿔 탐지를 피하는 위협
+    lv2:
+      - id: IDT-PE-01
+        name: 권한 상승·특권 계정
+        lv3:
+          - id: IDT-PE-01.1
+            name: 과다 권한·권한 상승 경로 악용
+            en: Excessive permissions and privilege escalation paths
+            stage: [권한 상승]
+            id_types: [인력, 특권]
+            id_envs: [클라우드 IdP, SaaS, 온프레미스 AD]
+            attack: [T1078, T1098.003, T1548.005, T1069.003]
+            sat: [SAT1001, SAT1021]
+            nhi: []
+            sp80063: []
+            asvs: [V8.2, V8.3]
+            oat: []
+            ccm: [IAM-05, IAM-08]
+            cis: ['6.8']
+            nist: [AC-6, AC-6(7), AC-2]
+            ismsp: [2.5.5, 2.5.6]
+            cloud: [CL-PV-01, CL-DS-01]
+            ai: [AI-06-01]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 단독 피해는 없고 탈취 계정 하나의 피해를 조직 전체로 키우는 조건 — Twitter 2020(지원 인력의 내부 도구로 유명인 계정 130개 장악)
+          - id: IDT-PE-01.2
+            name: 특권 접근 관리(PAM)·관리 도구 체계 침해
+            en: Compromise of privileged access management and admin tooling
+            stage: [권한 상승, 자격증명 접근]
+            id_types: [특권]
+            id_envs: [SaaS, 온프레미스 AD, CIAM·고객 서비스]
+            attack: [T1555, T1078.003, T1552.001]
+            sat: []
+            nhi: [NHI10]
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-09, IAM-10]
+            cis: ['5.4', '6.5']
+            nist: [AC-2(7), AC-6(5), IA-2(1)]
+            ismsp: [2.5.5]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 특권 자격증명을 모아 관리하는 PAM·관리 도구를 장악하면 연결된 모든 시스템의 관리 권한을 한 번에 얻음 — Uber 2022(스크립트 속 PAM 관리자 자격증명), Yahoo 2014(계정 관리 도구)
+      - id: IDT-PE-02
+        name: 신원 기반 지속성
+        lv3:
+          - id: IDT-PE-02.1
+            name: 백도어 계정 생성·자격증명 추가
+            en: Backdoor accounts and additional credentials
+            stage: [지속성]
+            id_types: [특권, NHI]
+            id_envs: [클라우드 IdP, 온프레미스 AD, 클라우드 인프라]
+            attack: [T1136.001, T1136.002, T1136.003, T1098.001]
+            sat: [SAT1004]
+            nhi: [NHI9]
+            sp80063: [63B-LIFE]
+            asvs: []
+            oat: []
+            ccm: [IAM-03, IAM-08]
+            cis: ['5.1', '5.5']
+            nist: [AC-2, AC-2(12), AU-6]
+            ismsp: [2.5.1, 2.5.6]
+            cloud: [CL-PE-01]
+            ai: [AI-07-05]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 이미 얻은 접근을 유지하는 지속성 기법 — 앱·서비스 주체에 자격증명을 더하면 사용자 비밀번호 재설정으로 끊기지 않음(SolarWinds 침해 이후 클라우드 장악 2020)
+          - id: IDT-PE-02.2
+            name: MFA 장치·인증 수단 추가 등록
+            en: Registering attacker MFA devices and authentication methods
+            stage: [지속성]
+            id_types: [인력, 특권]
+            id_envs: [클라우드 IdP]
+            attack: [T1098.005, T1556.006]
+            sat: [SAT1043, SAT1017, SAT1002]
+            nhi: []
+            sp80063: [63B-LIFE, 63B-RECOV]
+            asvs: [V6.4]
+            oat: []
+            ccm: [IAM-13, IAM-07]
+            cis: ['6.3', '6.5']
+            nist: [IA-5, IA-2(1), AU-6]
+            ismsp: [2.5.3]
+            cloud: [CL-PE-02]
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 탈취 계정에 자기 인증 수단을 붙여 접근을 유지하는 단계 — 범위는 그 계정이나 등록 정책이 열려 있으면 반복됨(이란 연계 합동 권고 2024, Storm-1167 2023)
+          - id: IDT-PE-02.3
+            name: 메일함 규칙·위임·전달 설정 악용
+            en: Mailbox rules, delegation and forwarding abuse
+            stage: [지속성, 수집, 은닉]
+            id_types: [인력]
+            id_envs: [SaaS]
+            attack: [T1114.003, T1564.008, T1098.002]
+            sat: [SAT1023, SAT1022]
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [LOG-05]
+            cis: []
+            nist: [AU-6, SI-4]
+            ismsp: [2.9.5]
+            cloud: [CL-PE-04, CL-ST-01, CL-CO-05]
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 탈취 메일함에서 대화를 숨기고 가로채 BEC를 돕는 은닉·지속 수단(AiTM 피싱 후 BEC 2022, Storm-1167 2023)
+      - id: IDT-PE-03
+        name: 신원 통제 무력화
+        lv3:
+          - id: IDT-PE-03
+            name: 감사 로그·조건부 액세스·MFA 정책 무력화
+            en: Disabling audit logs, conditional access and MFA policies
+            stage: [방어 무력화]
+            id_types: [특권]
+            id_envs: [클라우드 IdP, SaaS]
+            attack: [T1556.009, T1685.002, T1556.006]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: [V16.3]
+            oat: []
+            ccm: [LOG-03, IAM-13]
+            cis: ['6.7']
+            nist: [AU-9, AU-12, CM-6, SI-4]
+            ismsp: [2.9.4]
+            cloud: [CL-PE-02, CL-DI-01]
+            ai: []
+            ot: [OT-EV-03]
+            sct: []
+            severity: 중
+            severity_why: 피해를 직접 내지 않지만 탐지·차단을 꺼 다른 위협을 오래 숨기는 은닉 기법 — 관리 권한을 이미 얻은 뒤에만 가능
+
+  # =========================================================================
+  - code: NH
+    ko: 비인간 신원(NHI)
+    en: Non-Human Identities
+    desc: 서비스 계정·API 키·OAuth 앱·워크로드 ID·AI 에이전트처럼 사람이 아닌 신원을 악용하는 위협. MFA가 없고 권한이 크며 오래 살아 있어 한 번 새면 조용히 오래 쓰임
+    lv2:
+      - id: IDT-NH-01
+        name: 장기·과다 권한 비밀
+        lv3:
+          - id: IDT-NH-01.1
+            name: 장기 액세스 키·API 키·토큰 악용
+            en: Abuse of long-lived access keys, API keys and tokens
+            stage: [초기 침투, 지속성]
+            id_types: [NHI]
+            id_envs: [클라우드 인프라, SaaS, 개발·CI/CD]
+            attack: [T1078.004, T1552.001, T1550.001]
+            sat: [SAT1004, SAT1005]
+            nhi: [NHI2, NHI5, NHI7]
+            sp80063: []
+            asvs: [V13.3]
+            oat: []
+            ccm: [IAM-14, IAM-05, CEK-12]
+            cis: ['5.5']
+            nist: [IA-5(13), IA-9, AC-6, SC-12]
+            ismsp: [2.5.5, 2.7.2]
+            cloud: [CL-IA-07, CL-CA-05]
+            ai: [AI-07-01, AI-07-02]
+            ot: []
+            sct: [SCT-SC-02.3]
+            severity: 상
+            severity_why: MFA 없이 넓은 권한을 가진 키 하나로 고객 데이터·인프라 전체에 접근 — BeyondTrust 2024(API 키로 미 재무부 등 고객 17곳), OneLogin 2017, Ronin 2022(검증자 키)
+          - id: IDT-NH-01.2
+            name: 비밀·자격증명 교체·폐기 실패
+            en: Failure to rotate or revoke secrets and credentials
+            stage: [지속성]
+            id_types: [NHI, 특권]
+            id_envs: [SaaS, 개발·CI/CD, 통신]
+            attack: [T1078.004, T1550.001]
+            sat: []
+            nhi: [NHI1, NHI7]
+            sp80063: [63B-LIFE]
+            asvs: []
+            oat: []
+            ccm: [CEK-12, CEK-13, IAM-07]
+            cis: ['5.5', '6.2']
+            nist: [IA-5, IA-5(13), AC-2(3)]
+            ismsp: [2.5.1, 2.7.2]
+            cloud: []
+            ai: []
+            ot: []
+            sct: [SCT-SC-02.3]
+            severity: 중
+            severity_why: 단독 피해는 없고 이미 샌 비밀이 계속 유효하게 남는 조건 — 침해 대응 후에도 재침투를 허용(Cloudflare 2023, Internet Archive 2024, SK텔레콤 2025 서버 계정 비밀번호 미변경)
+      - id: IDT-NH-02
+        name: 서비스 계정·워크로드 ID
+        lv3:
+          - id: IDT-NH-02.1
+            name: 서비스 계정 악용·사람의 비인간 신원 사용
+            en: Service account abuse and human use of NHIs
+            stage: [초기 침투, 권한 상승]
+            id_types: [NHI, 특권]
+            id_envs: [SaaS, 클라우드 IdP, 온프레미스 AD]
+            attack: [T1078.002, T1078.004]
+            sat: []
+            nhi: [NHI10, NHI5, NHI9]
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-03, IAM-05]
+            cis: ['5.5', '5.4']
+            nist: [IA-9, AC-2, AC-6]
+            ismsp: [2.5.1, 2.5.5]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 높은 권한·MFA 예외인 서비스 계정을 탈취하면 고객 DB·지원 시스템 전체에 접근 — Dropbox Sign 2024(전 사용자 정보), Okta 지원 시스템 2023, Storm-0501 2025(전역 관리자 동기화 계정)
+          - id: IDT-NH-02.2
+            name: 워크로드 ID 과다 권한·신뢰 설정 오류
+            en: Overprivileged workload identities and trust misconfiguration
+            stage: [권한 상승, 자격증명 접근]
+            id_types: [NHI]
+            id_envs: [클라우드 인프라, 개발·CI/CD]
+            attack: [T1552.005, T1078.004]
+            sat: []
+            nhi: [NHI5, NHI6, NHI8]
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-05, IAM-15]
+            cis: ['6.8']
+            nist: [AC-6, IA-9, CM-6]
+            ismsp: [2.5.5]
+            cloud: [CL-CA-06, CL-PV-01]
+            ai: []
+            ot: []
+            sct: [SCT-SC-02.2]
+            severity: 중
+            severity_why: 워크로드가 털렸을 때 피해 범위를 키우는 조건 — 과다 권한 역할이면 대량 유출로 직결(Capital One 2019 1억 600만 명)
+      - id: IDT-NH-03
+        name: OAuth 앱·SaaS 연동
+        lv3:
+          - id: IDT-NH-03.1
+            name: SaaS 연동 앱 토큰 탈취와 연쇄 접근
+            en: Theft of SaaS integration tokens and chained access
+            stage: [자격증명 접근, 횡적 이동]
+            id_types: [NHI]
+            id_envs: [SaaS, 개발·CI/CD]
+            attack: [T1528, T1550.001, T1199]
+            sat: [SAT1027, SAT1036, SAT1001]
+            nhi: [NHI3, NHI7]
+            sp80063: [63C-TRUST]
+            asvs: [V10.2, V10.4]
+            oat: []
+            ccm: [IAM-14, STA-09]
+            cis: ['6.6']
+            nist: [IA-9, SA-9, AC-6]
+            ismsp: [2.3.3, 2.5.5]
+            cloud: [CL-PE-03, CL-IA-06]
+            ai: [AI-07-02]
+            ot: []
+            sct: [SCT-CS-03.1]
+            severity: 상
+            severity_why: 연동 공급자 한 곳의 토큰 저장소가 뚫리면 그 앱을 연결한 수백 개 조직 데이터에 동시에 접근 — Salesloft Drift 2025, Heroku·Travis CI 2022
+          - id: IDT-NH-03.2
+            name: 악성·과다 권한 OAuth 앱 등록·권한 부여
+            en: Malicious or overprivileged OAuth app registration and grants
+            stage: [지속성, 권한 상승]
+            id_types: [NHI, 특권]
+            id_envs: [클라우드 IdP, SaaS]
+            attack: [T1671, T1098.003, T1098.001]
+            sat: [SAT1016, SAT1036, SAT1033]
+            nhi: [NHI5]
+            sp80063: []
+            asvs: [V10.7]
+            oat: []
+            ccm: [IAM-15, IAM-08]
+            cis: ['6.7', '6.8']
+            nist: [AC-6, AC-2, AU-6]
+            ismsp: [2.5.5, 2.5.6]
+            cloud: [CL-PE-03]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 앱 권한으로 사용자 MFA와 무관하게 조직 전체 메일함·데이터에 지속 접근 — Microsoft 2024(전체 메일함 접근 역할), Salesforce 음성 피싱 2025(변조 Data Loader 앱)
+      - id: IDT-NH-04
+        name: AI 에이전트 신원·위임
+        lv3:
+          - id: IDT-NH-04
+            name: AI 에이전트 신원·위임 권한 악용
+            en: Abuse of AI agent identity and delegated authority
+            stage: [실행, 수집]
+            id_types: [NHI]
+            id_envs: [SaaS, 개발·CI/CD]
+            attack: [T1550.001, T1528]
+            sat: []
+            nhi: [NHI5, NHI8]
+            sp80063: []
+            asvs: [V8.3, V10.3]
+            oat: []
+            ccm: [IAM-05, IAM-15]
+            cis: ['6.8']
+            nist: [AC-6, IA-9, AC-3]
+            ismsp: [2.5.5]
+            cloud: []
+            ai: [AI-07-01, AI-07-03, AI-07-05, AI-06-01]
+            ot: []
+            sct: [SCT-DE-03.2]
+            severity: 중
+            severity_why: 에이전트가 위임받은 사용자 권한 안에서 움직이므로 범위는 위임 권한에 좌우 — 권한 격리 결함이면 조직 간 노출(Asana MCP 2025, GitHub MCP 2025 실증)
+
+  # =========================================================================
+  - code: LC
+    ko: 수명주기·거버넌스·내부자
+    en: Lifecycle, Governance and Insiders
+    desc: 계정의 생성·변경·회수와 외부 인력 관리의 빈틈, 정상 권한을 가진 내부자의 오남용, 위장 취업처럼 신원 거버넌스 실패에서 오는 위협
+    lv2:
+      - id: IDT-LC-01
+        name: 계정 수명주기 결함
+        lv3:
+          - id: IDT-LC-01.1
+            name: 퇴사자·휴면·미사용 계정과 권한 미회수
+            en: Orphaned, dormant and unrevoked accounts
+            stage: [초기 침투, 지속성]
+            id_types: [인력, 특권, NHI]
+            id_envs: [원격 접속, SaaS, 클라우드 IdP, CIAM·고객 서비스]
+            attack: [T1078, T1078.002]
+            sat: []
+            nhi: [NHI1]
+            sp80063: [63B-LIFE]
+            asvs: []
+            oat: []
+            ccm: [IAM-07, HRS-06, IAM-08]
+            cis: ['5.3', '6.2']
+            nist: [AC-2(3), PS-4, PS-5, AC-2]
+            ismsp: [2.2.5, 2.5.1, 2.5.6]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 남은 계정·키는 다른 공격의 입구가 되는 조건 — 탐지가 늦어 피해가 커짐(Colonial Pipeline 2021 미사용 VPN 계정, Cash App 2022 퇴사자, 쿠팡 2025 퇴사자 서명키)
+          - id: IDT-LC-01.2
+            name: 협력사·외주·게스트 계정 악용
+            en: Abuse of vendor, contractor and guest accounts
+            stage: [초기 침투]
+            id_types: [인력]
+            id_envs: [원격 접속, 클라우드 IdP, SaaS]
+            attack: [T1199, T1078]
+            sat: [SAT1046]
+            nhi: []
+            sp80063: [63A-IAL]
+            asvs: []
+            oat: []
+            ccm: [IAM-06, IAM-08, STA-09]
+            cis: ['6.1', '6.2']
+            nist: [PS-7, AC-2, AC-20, SA-9]
+            ismsp: [2.3.3, 2.3.4]
+            cloud: [CL-IA-06]
+            ai: []
+            ot: [OT-IA-02]
+            sct: [SCT-CS-02.3]
+            severity: 중
+            severity_why: 협력사 계정 하나가 입구가 되는 경로 — 내부망 분리가 약하면 대량 유출로 커짐(Target 2013, Medibank 2022, Latitude 2023)
+      - id: IDT-LC-02
+        name: 내부자 위협
+        lv3:
+          - id: IDT-LC-02.1
+            name: 내부자의 정상 권한 오남용·반출
+            en: Insider misuse of legitimate access
+            stage: [수집, 반출]
+            id_types: [인력, 특권]
+            id_envs: [SaaS, CIAM·고객 서비스, 클라우드 인프라]
+            attack: [T1078, T1530, T1213]
+            sat: [SAT1037]
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-04, IAM-05, LOG-05]
+            cis: ['6.8']
+            nist: [PM-12, AC-6, AU-6, PS-4]
+            ismsp: [2.5.6, 2.9.5, 2.2.5]
+            cloud: [CL-CO-04]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 정상 권한 안의 행위라 탐지가 늦고 한 사람이 대량 데이터를 가져감 — 카드 3사 2014(약 1억 건), 쿠팡 2025(3,367만 건), Ubiquiti 2020
+          - id: IDT-LC-02.2
+            name: 외부의 내부자 매수·포섭
+            en: Bribed or recruited insiders
+            stage: [초기 침투, 수집]
+            id_types: [인력]
+            id_envs: [CIAM·고객 서비스, SaaS]
+            attack: [T1078, T1684.001]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-04, HRS-09, LOG-05]
+            cis: ['6.8']
+            nist: [PM-12, PS-3, AU-6]
+            ismsp: [2.5.6, 2.9.5]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 고객 데이터 조회 권한을 가진 지원 인력 여럿이 매수되면 정상 조회로 대량 고객 정보가 빠져나가 2차 사기로 이어짐 — Coinbase 2025(대응 비용 최대 4억 달러 추정), LAPSUS$ 2022 내부자 모집
+      - id: IDT-LC-03
+        name: 채용·온보딩 신원 사기
+        lv3:
+          - id: IDT-LC-03
+            name: 위장 취업(도용·위조 신원으로 정규 계정 획득)
+            en: Fraudulent hiring with stolen or fake identities
+            stage: [초기 침투]
+            id_types: [인력]
+            id_envs: [원격 접속, 클라우드 IdP]
+            attack: [T1585, T1078]
+            sat: []
+            nhi: []
+            sp80063: [63A-IAL, 63A-FRAUD]
+            asvs: []
+            oat: []
+            ccm: [HRS-09, IAM-06]
+            cis: ['6.1']
+            nist: [PS-3, IA-12, PM-12]
+            ismsp: [2.5.1]
+            cloud: []
+            ai: [AI-01-07]
+            ot: []
+            sct: [SCT-DE-01.2]
+            severity: 중
+            severity_why: 정규 직원 권한으로 들어오지만 초기 권한은 해당 직무 범위 — 일부는 데이터 탈취·갈취로 이어짐(북한 IT 인력 위장 취업 2025, KnowBe4 2024)
+
+  # =========================================================================
+  - code: CI
+    ko: 고객 계정·본인확인(CIAM)
+    en: Customer Identity and Identity Proofing
+    desc: 고객·이용자 계정과 본인확인 체계를 노리는 위협. 대규모 크리덴셜 스터핑, 통신 가입자 인증 체계 침해, 명의 도용·합성 신원, eKYC·얼굴 인증 우회
+    lv2:
+      - id: IDT-CI-01
+        name: 고객 계정 대량 탈취
+        lv3:
+          - id: IDT-CI-01
+            name: 고객 계정 대량 크리덴셜 스터핑
+            en: Large-scale credential stuffing against customer accounts
+            stage: [자격증명 접근, 초기 침투]
+            id_types: [고객]
+            id_envs: [CIAM·고객 서비스]
+            attack: [T1110.004, T1078]
+            sat: [SAT1011]
+            nhi: []
+            sp80063: [63B-PWD, 63B-RL, 63B-AAL]
+            asvs: [V6.2, V6.3, V6.5]
+            oat: [OAT-008, OAT-007, OAT-009]
+            ccm: [IAM-13]
+            cis: ['6.3']
+            nist: [AC-7, IA-5(1), IA-2(2), SI-4]
+            ismsp: [2.5.3, 2.5.4]
+            cloud: [CL-CA-01]
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 자동화로 수만~수십만 계정을 동시에 탈취해 개인정보 대량 노출·부정 결제로 이어짐 — GS리테일 2025(166만 명), 23andMe 2023(690만 명 노출), Roku 2024(57만 계정)
+      - id: IDT-CI-02
+        name: 통신 가입자 인증 체계 침해
+        lv3:
+          - id: IDT-CI-02
+            name: 통신 가입자 인증 체계 침해(유심 인증 정보·불법 기지국)
+            en: Compromise of telecom subscriber authentication (SIM keys, rogue base stations)
+            stage: [자격증명 접근, 수집]
+            id_types: [고객]
+            id_envs: [통신]
+            attack: [T1557, T1111]
+            sat: []
+            nhi: []
+            sp80063: [63B-OOB]
+            asvs: []
+            oat: []
+            ccm: [CEK-19, IAM-15]
+            cis: []
+            nist: [SC-12, SC-8, SI-4]
+            ismsp: [2.7.2, 2.5.3]
+            cloud: []
+            ai: []
+            ot: []
+            sct: []
+            severity: 상
+            severity_why: 가입자 인증 정보·결제 인증 경로가 통째로 노출되면 휴대폰 기반 본인확인·OTP를 쓰는 모든 서비스가 영향을 받음 — SK텔레콤 2025(유심 정보 2,696만 건), KT 2025(무단 소액결제)
+      - id: IDT-CI-03
+        name: 명의 도용·본인확인 우회
+        lv3:
+          - id: IDT-CI-03.1
+            name: 명의 도용·합성 신원 계정 개설
+            en: Account opening with stolen or synthetic identities
+            stage: [자원 개발, 초기 침투]
+            id_types: [고객]
+            id_envs: [CIAM·고객 서비스]
+            attack: [T1585, T1585.003]
+            sat: []
+            nhi: []
+            sp80063: [63A-IAL, 63A-FRAUD]
+            asvs: []
+            oat: [OAT-019]
+            ccm: [IAM-12]
+            cis: []
+            nist: [IA-12, IA-8]
+            ismsp: [2.5.2]
+            cloud: []
+            ai: [AI-01-07]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 가짜·도용 명의 계좌·계정이 사기 자금 세탁과 2차 범죄 수단이 되지만 개별 계정 단위(홍콩 딥페이크 대출 사기 2023, FinCEN 경보 2024)
+          - id: IDT-CI-03.2
+            name: eKYC·얼굴 인증 우회(딥페이크·주입 공격)
+            en: Bypassing eKYC and face verification (deepfake, injection)
+            stage: [초기 침투]
+            id_types: [고객]
+            id_envs: [CIAM·고객 서비스]
+            attack: [T1684.001]
+            sat: []
+            nhi: []
+            sp80063: [63A-FRAUD, 63A-IAL]
+            asvs: []
+            oat: []
+            ccm: [IAM-13]
+            cis: []
+            nist: [IA-12, IA-12(5)]
+            ismsp: [2.5.3]
+            cloud: []
+            ai: [AI-01-07, AI-04-04]
+            ot: []
+            sct: []
+            severity: 중
+            severity_why: 피해자 생체 정보·신분증을 확보해야 하는 표적형 — 성공하면 해당 계좌·대출을 장악(GoldPickaxe 2024, 홍콩 딥페이크 대출 사기 2023)
+
+  # =========================================================================
+  - code: IM
+    ko: 영향·확산
+    en: Impact and Propagation
+    desc: 신원 장악이 만드는 결과 유형. 송금 사기·BEC, 랜섬웨어·파괴, 대량 데이터 탈취·갈취, 계정 접근 차단, 공급업체에서 고객으로의 연쇄 계정 탈취
+    lv2:
+      - id: IDT-IM-01
+        name: 계정 장악 기반 금전 사기
+        lv3:
+          - id: IDT-IM-01
+            name: 계정 장악 기반 금전 사기(BEC·송금·사칭 게시)
+            en: Account-takeover fraud (BEC, payment and impersonation)
+            stage: [영향]
+            id_types: [인력, 고객]
+            id_envs: [SaaS, CIAM·고객 서비스]
+            attack: [T1657, T1114.002, T1586.002]
+            sat: []
+            nhi: []
+            sp80063: [63B-PR]
+            asvs: []
+            oat: []
+            ccm: [IAM-13]
+            cis: ['6.3']
+            nist: [AT-2(3), SI-4, IA-2(1)]
+            ismsp: [2.5.3]
+            cloud: [CL-IM-05]
+            ai: [AI-01-08]
+            ot: []
+            sct: [SCT-IM-04]
+            severity: 상
+            severity_why: 정상 계정·채널로 송금 지시·사기 게시가 이뤄져 대규모 금전 피해가 바로 남 — Arup 2024(약 2,500만 달러), AiTM 피싱 후 BEC 2022, Coinbase 2025
+      - id: IDT-IM-02
+        name: 신원 장악 후 랜섬웨어·파괴
+        lv3:
+          - id: IDT-IM-02
+            name: 신원 장악 후 랜섬웨어·파괴(도메인·테넌트 전체)
+            en: Ransomware and destruction after identity takeover
+            stage: [영향]
+            id_types: [특권]
+            id_envs: [온프레미스 AD, 클라우드 IdP, 클라우드 인프라]
+            attack: [T1486, T1485, T1490]
+            sat: []
+            nhi: []
+            sp80063: []
+            asvs: []
+            oat: []
+            ccm: [IAM-10, LOG-03]
+            cis: ['5.4', '6.5']
+            nist: [CP-9, AC-6(5), SI-4]
+            ismsp: [2.5.5]
+            cloud: [CL-IM-01, CL-IM-02]
+            ai: []
+            ot: [OT-IM-02]
+            sct: [SCT-IM-05]
+            severity: 상
+            severity_why: 도메인·IdP 관리 권한이 곧 전사 암호화·백업 삭제 수단이 됨 — MGM 2023, Change Healthcare 2024, Ascension 2024, M&S 2025
+      - id: IDT-IM-03
+        name: 계정 기반 대량 데이터 탈취·갈취
+        lv3:
+          - id: IDT-IM-03
+            name: 계정 기반 대량 데이터 탈취·갈취
+            en: Mass data theft and extortion via identities
+            stage: [수집, 반출, 영향]
+            id_types: [인력, NHI, 고객]
+            id_envs: [SaaS, CIAM·고객 서비스, 클라우드 인프라]
+            attack: [T1530, T1213, T1114.002]
+            sat: [SAT1037, SAT1039, SAT1033]
+            nhi: []
+            sp80063: []
+            asvs: [V16.3]
+            oat: [OAT-020]
+            ccm: [LOG-05, IAM-05]
+            cis: ['6.8']
+            nist: [AC-6, SI-4, AU-6]
+            ismsp: [2.9.5]
+            cloud: [CL-CO-01, CL-CO-04, CL-IM-05]
+            ai: []
+            ot: [OT-IM-06]
+            sct: [SCT-IM-03]
+            severity: 상
+            severity_why: 정상 계정·토큰으로 SaaS·DB를 대량 조회해 수천만 건이 빠져나가고 갈취로 이어짐 — Snowflake 2024, Salesforce 대상 음성 피싱 2025, SK텔레콤 2025, 쿠팡 2025
+      - id: IDT-IM-04
+        name: 계정 접근 차단·관리자 축출
+        lv3:
+          - id: IDT-IM-04
+            name: 계정 접근 차단·관리자 축출과 계정 연동 파괴
+            en: Account access removal and admin lockout
+            stage: [영향]
+            id_types: [특권, 고객]
+            id_envs: [클라우드 IdP, 온프레미스 AD, CIAM·고객 서비스]
+            attack: [T1531, T1485]
+            sat: []
+            nhi: []
+            sp80063: [63B-RECOV]
+            asvs: []
+            oat: []
+            ccm: [IAM-10]
+            cis: ['5.4']
+            nist: [CP-9, AC-2(7), IR-4]
+            ismsp: [2.5.5]
+            cloud: [CL-IM-03]
+            ai: []
+            ot: [OT-IR-06]
+            sct: []
+            severity: 중
+            severity_why: 대응·복구를 방해하는 결과로, 별도 긴급(break-glass) 계정이 있으면 복구 가능 — LAPSUS$ 2022(관리자 계정 삭제), MERCURY 2023, Mat Honan 2012(원격 삭제)
+      - id: IDT-IM-05
+        name: 연쇄 계정 탈취
+        lv3:
+          - id: IDT-IM-05
+            name: 공급업체·플랫폼 경유 고객 계정 연쇄 탈취
+            en: Chained account compromise across vendors and customers
+            stage: [횡적 이동, 영향]
+            id_types: [NHI, 인력]
+            id_envs: [SaaS, 클라우드 IdP, 개발·CI/CD]
+            attack: [T1199, T1550.001]
+            sat: [SAT1029, SAT1008]
+            nhi: [NHI3]
+            sp80063: [63C-TRUST]
+            asvs: []
+            oat: []
+            ccm: [STA-09, IAM-11]
+            cis: ['6.6']
+            nist: [SA-9, SR-6, IR-4]
+            ismsp: [2.3.3]
+            cloud: [CL-IA-06]
+            ai: [AI-06-07]
+            ot: []
+            sct: [SCT-IM-01.2, SCT-CS-03.1]
+            severity: 상
+            severity_why: 한 곳의 신원 침해가 그 공급자를 믿는 수많은 조직의 계정·토큰 침해로 번짐 — Okta 2023 → Cloudflare·1Password, Salesloft Drift 2025, 0ktapus 2022(130여 조직)
