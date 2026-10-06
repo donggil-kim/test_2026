@@ -1,0 +1,453 @@
+{
+ "notice": "Browser & Identity Attacks Matrix (formerly SaaS Attacks Matrix), Push Security — CC BY 4.0",
+ "source": "github.com/pushsecurity/saas-attacks @ 20bf340 (2026-04-21)",
+ "tactics_order": [
+  "Reconnaissance",
+  "Initial Access",
+  "Execution",
+  "Persistence",
+  "Privilege Escalation",
+  "Defense Evasion",
+  "Credential Access",
+  "Discovery",
+  "Lateral Movement",
+  "Exfiltration"
+ ],
+ "techniques": {
+  "SAT1001": {
+   "name": "Abuse existing OAuth integrations",
+   "slug": "abuse_existing_oauth_integrations",
+   "tactics": [
+    "Privilege Escalation",
+    "Lateral Movement"
+   ],
+   "summary": "Some SaaS apps allow OAuth integrations to other apps, which allow the app to gain access to certain data and additional functionality. If an adversary compromises an SaaS account integrated with other apps, they can escalate privileges and move laterally to other apps. To abuse apps with existing integrations, that app must expose some usable functionality though the integration back to the user."
+  },
+  "SAT1002": {
+   "name": "Account ambushing",
+   "slug": "account_ambushing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Many SaaS apps have features that can be used to effectively backdoor an account, such as the ability to configure multiple login methods or create API keys to access the account programmatically. This makes it possible for an adversary to backdoor user accounts before they are first used by the legitimate user. As some apps do not perform email verification during registration, it is often possib"
+  },
+  "SAT1003": {
+   "name": "Account recovery",
+   "slug": "account_recovery",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "summary": "Most SaaS apps allow accounts to be recovered via email. This can be through the use of forgotten password functionality via the directly registered email address or via a secondary recovery email address. This presents an opportunity for an adversary to laterally move to other SaaS apps if they have gained access to a user’s mailbox and then triggering an account recovery process. While this may "
+  },
+  "SAT1042": {
+   "name": "AiTM Phishing",
+   "slug": "aitm_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Attacker-in-the-Middle (AITM) phishing is a newer variant of phishing that uses dedicated tooling to act as a web proxy between the victim and a legitimate login portal for an application the victim has access to, principally to make it easier to defeat MFA protection. As MFA has become more universal, classic password harvesting focused phishing attacks have reduced in effectiveness. Typically, f"
+  },
+  "SAT1004": {
+   "name": "API keys",
+   "slug": "api_keys",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "Many SaaS apps let you configure an API key to enable programmatic access. These keys generally do not expire, are not affected by password resets, are not covered by MFA, and are often not even tied to user accounts. As such, they’re an ideal persistence mechanism as they survive the deletion of a compromised account. API actions are also often logged differently to normal user access, which make"
+  },
+  "SAT1005": {
+   "name": "API secret theft",
+   "slug": "api_secret_theft",
+   "tactics": [
+    "Credential Access",
+    "Lateral Movement"
+   ],
+   "summary": "Apps that support integrations through API keys (rather than the more common OAuth integrations) will sometimes allow those keys to be read after being set. Adversaries who gain access to apps where these integrations have been created can extract these secrets and use them to laterally move to different apps or contexts. In apps that don’t explicitly make these secrets readable to the user, it mi"
+  },
+  "SAT1006": {
+   "name": "App directory lookup",
+   "slug": "app_directory_lookup",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary": "SaaS apps will generally have a user directory and often this is visible to any user of the app. It may be a direct list of all users of the app or a result of visible group memberships or similar. An adversary who has gained a foothold via a SaaS app could download the list of users accessible to them in order to better target attacks against other users. Commonly, usernames or emails for users w"
+  },
+  "SAT1050": {
+   "name": "App-specific password phishing",
+   "slug": "app_specific_password_phishing",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary": "App-Specific password phishing is a social engineering technique where an adversary tricks a user into generating an \"app-specific password\" for their account and then sharing it with the attacker. These legacy passwords are a feature in some major SaaS providers (like Google and Apple) designed to allow older applications that do not support modern authentication (like OAuth 2.0) to access accoun"
+  },
+  "SAT1007": {
+   "name": "App spraying",
+   "slug": "app_spraying",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "An adversary may attempt to authenticate to a SaaS account by guessing a large number of passwords. However, many apps limit the rate or number of passwords that can be guessed. If you assume a user shares passwords between SaaS apps, the set of passwords to be guessed can be split between all the apps the user has accounts for, circumventing the rate-limits on any one SaaS app. This can be partic"
+  },
+  "SAT1008": {
+   "name": "Automation workflow sharing",
+   "slug": "automation_workflow_sharing",
+   "tactics": [
+    "Execution",
+    "Lateral Movement"
+   ],
+   "summary": "Some SaaS automation apps allow pre-configured automations to be shared with other users. These can sometimes be shared directly within the app with other app users. Since automations are incredibly powerful, it is possible for an adversary to create an automation that is designed to appear safe but to backdoor it in a way that performs a malicious action on behalf of the target user. If a user do"
+  },
+  "SAT1009": {
+   "name": "Client-side app spoofing",
+   "slug": "client-side_app_spoofing",
+   "tactics": [
+    "Execution",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "Some OAuth integrations intended for use by desktop or mobile clients (rather than typical SaaS-to-SaaS integrations) can be controlled by adversaries. These client integrations tend to either make use of the [public client type](https://oauth.net/2/client-types/) for OAuth (the correct intended flow for this scenario), or the client secret for the OAuth app is directly embedded in the code, which"
+  },
+  "SAT1010": {
+   "name": "Consent phishing",
+   "slug": "consent_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "OAuth allows users to grant third-party apps permissions to access their data. Adversaries can abuse this functionality by tricking users into authorizing access for malicious OAuth apps. In a consent phishing attack, an adversary sends a phishing link to a target that requests permissions to access sensitive data or permissions to perform dangerous actions. If the target grants consent for the pe"
+  },
+  "SAT1051": {
+   "name": "ConsentFix",
+   "slug": "consentfix",
+   "tactics": [
+    "Initial Access",
+    "Defense Evasion"
+   ],
+   "summary": "ConsentFix is a social engineering technique that combines ClickFix-style deception with OAuth authorization code theft. An adversary presents a fake verification screen — often impersonating a Cloudflare Turnstile or similar challenge — that prompts the target to sign in via a legitimate OAuth flow. The attack abuses a trusted first-party OAuth application (such as Azure CLI) to avoid consent pro"
+  },
+  "SAT1011": {
+   "name": "Credential stuffing",
+   "slug": "credential_stuffing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Credential stuffing is the re-use of stolen credentials, often from leaked password databases, in an attempt to authenticate to other apps. This is often successful due to the tendency of users to share passwords between multiple systems and accounts. This can be particularly effective against heavy users of SaaS apps as the higher the number of systems in use, the greater the chance that a compro"
+  },
+  "SAT1047": {
+   "name": "Cross-IdP Impersonation",
+   "slug": "cross-idp_impersonation",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary": "Cross-IdP impersonation is when an adversary uses an account with the correct target email address but registered with an identity provider that is not in use by the target organization to authenticate to a target SaaS application. This can allow strong SSO authentication measures to be circumvented. For example, if a target organization has user@example.com email addresses and uses Microsoft Entr"
+  },
+  "SAT1012": {
+   "name": "Device code phishing",
+   "slug": "device_code_phishing",
+   "tactics": [
+    "Initial Access",
+    "Defense Evasion"
+   ],
+   "summary": "OAuth supports multiple different authentication flows that can be used to grant access to an app. One of these is the device authorization grant, which is intended for use with input-constrained devices, such as smart TVs and printers. This flow operates by supplying a user with a unique code and instructing them to visit a webpage in a browser on a different device to enter the code in order to "
+  },
+  "SAT1043": {
+   "name": "Device Enrollment",
+   "slug": "device_enrollment",
+   "tactics": [
+    "Initial Access",
+    "Persistence"
+   ],
+   "summary": "Some attack techniques result in temporary access to an account being obtained, possibly including knowledge of the account password, such as through AiTM phishing that proxies MFA codes or similar. In these situations, the ability to enroll a new device for an account can allow an adversary to maintain long-term access to the account. Most commonly, this would be the enrollment of a new MFA devic"
+  },
+  "SAT1013": {
+   "name": "DNS reconnaissance",
+   "slug": "dns_reconnaissance",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary": "Some SaaS apps require ownership verification for a domain as part of the setup process. A common way to verify ownership is to publish a specific string as a DNS TXT record that the SaaS vendor can verify as proof. Querying DNS TXT records can reveal which SaaS apps the target organization might be using. MX and SPF records are also useful in discovering SaaS apps used to send and receive mail fo"
+  },
+  "SAT1014": {
+   "name": "Email discovery",
+   "slug": "email_discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary": "There is generally evidence in a user’s mailbox when they are actively using a SaaS app. At a minimum, there is usually some form of welcome or verification email, if not usage notifications Email is a prime source of discovery of other SaaS apps the target is using. If an adversary gains access to a mailbox, they may use this information to perform further attacks and move laterally to other SaaS"
+  },
+  "SAT1015": {
+   "name": "Email phishing",
+   "slug": "email_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Email phishing is the classic social engineering attack that involves an email being sent to a target user with an embedded link or malicious attachment. The email is meant to either convince the target to enter their login credentials or open a malicious attachment. SaaS-focused phishing attacks tend to be focused on capturing credentials and MFA codes where necessary, in order to gain access to "
+  },
+  "SAT1016": {
+   "name": "Evil twin integrations",
+   "slug": "evil_twin_integrations",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "OAuth apps provide a mechanism for maintaining long-term persistent access to compromised accounts that resist normal recovery actions, such as password resets. However, an in-depth investigation may lead to the discovery of OAuth integrations created by the adversary. Once these malicious integrations are deleted, the adversary would lose their persistence mechanism as soon as the access token ex"
+  },
+  "SAT1017": {
+   "name": "Ghost logins",
+   "slug": "ghost_logins",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "A common SaaS app feature allows logins to the same account using multiple methods simultaneously – for example, a standard password-based authentication (local to the SaaS app) and an SSO mechanism, such as an OIDC social login or SAML login. This can be relevant for both initial access and persistence phases. For initial access, it's possible users will have configured much weaker authentication"
+  },
+  "SAT1046": {
+   "name": "Guest Access Abuse",
+   "slug": "guest_access_abuse",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "In SaaS platforms like Salesforce, ServiceNow, and Zendesk, misconfigurations related to guest user permissions can lead to unauthorized data access or escalation of privileges. These platforms often allow guest/unauthenticated users limited access for specific purposes. However, if the guest access is not correctly configured, it may grant broader permissions than intended. An attacker can exploi"
+  },
+  "SAT1040": {
+   "name": "Hijack OAuth flows",
+   "slug": "hijack_oauth_flows",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "During the OAuth authorization code flow, after a user grants permission to a third-party application, the service provider generates an authorization code and redirects the user's browser back to the third-party application's specified *redirect_uri*. This *redirect_uri* is an endpoint on the third-party application's server where the authorization code will be sent. If the service provider has n"
+  },
+  "SAT1018": {
+   "name": "IM phishing",
+   "slug": "im_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Traditionally, phishing attacks have been mostly email-based. While many organizations have been making use of SaaS-based instant messaging apps, these have been traditionally focused on internal communications, but this is changing rapidly. Due to the ubiquity and effectiveness of instant messaging apps, communication with external parties has become more common. Instant messaging apps also lack "
+  },
+  "SAT1019": {
+   "name": "IM user spoofing",
+   "slug": "im_user_spoofing",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary": "Some instant messaging apps do not strongly control the way a user presents themselves in terms of display names, full names, user handles, photos, and so on. Given that instant messaging systems are often focused on internal communications, users usually trust them. An adversary could take advantage of this to use a compromised account, or an external account where the instant messaging app permi"
+  },
+  "SAT1020": {
+   "name": "In-app phishing",
+   "slug": "in-app_phishing",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary": "It’s possible to conduct phishing and other social engineering attacks, using native features of SaaS apps. This will often result in activity directly within an app the target already uses and/or may result in email notifications being delivered directly to the target but from legitimate email domains associated with the SaaS app. This is a broad area but commonly can be through shared content or"
+  },
+  "SAT1041": {
+   "name": "Inbound federation",
+   "slug": "inbound_federation",
+   "tactics": [
+    "Persistence",
+    "Lateral Movement"
+   ],
+   "summary": "Inbound federation allows users to login to a target identity provider by authenticating with a source identity provider. This is often used in scenarios that involve multiple large divisions that form part of a larger parent, such as with conglomerates or during mergers and acquisitions. An adversary who has gained administrative control of an application, such as a core identity provider, can us"
+  },
+  "SAT1021": {
+   "name": "Link backdooring",
+   "slug": "link_backdooring",
+   "tactics": [
+    "Privilege Escalation",
+    "Lateral Movement"
+   ],
+   "summary": "Users have long been trained to be wary of clicking links from external sources such as email. However, they don’t usually exercise the same caution when clicking links within trusted apps. Many SaaS apps have functionality to include links to other systems. For example, SaaS-based Office documents may have links in them, tickets in ticket tracking systems and wikis can be especially link-heavy. O"
+  },
+  "SAT1022": {
+   "name": "Link sharing",
+   "slug": "link_sharing",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "Many SaaS apps offer the ability to share items with third parties through sharing links. A file storage app may allow a document to be shared with a third party either through explicitly sharing with named accounts in a separate tenant or through creation of an anonymous/public-sharing link. An adversary can create sharing links to maintain persistent access to data if the password is changed or "
+  },
+  "SAT1023": {
+   "name": "Malicious mail rules",
+   "slug": "malicious_mail_rules",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation",
+    "Defense Evasion"
+   ],
+   "summary": "Common SaaS mail providers like Office365 and Gmail provide mail rule functionality that allows users to automate certain tasks on their mailboxes. This includes forwarding, moving emails, marking them as read and deleting them. This can be used maliciously for multiple purposes. Mail rules persist after account changes, such as password resets. So one obvious tactic is to use them to persist acce"
+  },
+  "SAT1045": {
+   "name": "MFA downgrade",
+   "slug": "mfa_downgrade",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Phishing-resistant MFA factors, such as passkeys or vendor-specific implementations like Okta Fastpass, have been introduced to deal with the problem of [AiTM phishing attacks](/techniques/aitm_phishing/description.md) and credential theft. An MFA downgrade attack can be used to prevent the use of a passkey in order to force the use of a vulnerable factor, such that an AiTM phishing attack is stil"
+  },
+  "SAT1024": {
+   "name": "MFA fatigue",
+   "slug": "mfa_fatigue",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "One of the most common implementations of MFA is using push notifications to a mobile device that allow the user to approve or deny the login request. This is generally the most user friendly approach as a user can authenticate with the push of a button from their phone lock screen, without needing to read a code from another app and type it in anywhere. An adversary can exploit this process by co"
+  },
+  "SAT1025": {
+   "name": "nOAuth",
+   "slug": "noauth",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "SaaS apps that make use of OAuth integrations require an identifier to match accounts between the application and identity provider. The OAuth specification states that a user should be identified by the subject claim. The subject claim is an immutable identifier and not an attribute that a user can alter. However, apps can be configured to identify users via other claims (in other words account m"
+  },
+  "SAT1026": {
+   "name": "OAuth token enumeration",
+   "slug": "oauth_token_enumeration",
+   "tactics": [
+    "Discovery"
+   ],
+   "summary": "SaaS app users may have authenticated using OIDC (social logins) or have created other OAuth integrations to share data and make better use of the app. If an adversary has compromised a user’s account, they can list out existing OAuth integrations to identify other SaaS apps in use. This may allow an adversary to target those apps for lateral movement or better target those apps for attack."
+  },
+  "SAT1027": {
+   "name": "OAuth tokens",
+   "slug": "oauth_tokens",
+   "tactics": [
+    "Execution",
+    "Persistence"
+   ],
+   "summary": "An adversary can use a malicious OAuth app or API development tool to create an OAuth token, using arbitrary permissions to maintain long-term programmatic access to a compromised user account. SaaS apps typically use OAuth tokens to grant access to app APIs, normally in the context of the user creating the token. Long term access is maintained through refresh tokens, which typically never expire."
+  },
+  "SAT1028": {
+   "name": "Password scraping",
+   "slug": "password_scraping",
+   "tactics": [
+    "Credential Access"
+   ],
+   "summary": "While it may not be security good practice, many teams stored passwords in cleartext, especially shared or system credentials. This could be passwords stored in files that are hosted in SaaS file stores, passwords noted in wikis or ticketing systems or passwords sent in emails during registration processes or as a result of forgotten password functionality. One more modern example is that some Saa"
+  },
+  "SAT1029": {
+   "name": "Passwordless logins",
+   "slug": "passwordless_logins",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "summary": "Some SaaS apps allow passwordless email-based authentication, where an OTP is sent via email when a login is requested, rather than a user having a standard password. An adversary with email access could laterally move to other SaaS apps that support this login type. This technique has the added benefit of avoiding detection due to a user noticing that their credentials have been altered."
+  },
+  "SAT1030": {
+   "name": "Poisoned tenants",
+   "slug": "poisoned_tenants",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "An adversary can register a new tenant that it controls and administers with the intent of tricking users to join it, by convincing them it is owned by their organization. This often means the adversary will have access to all data within the SaaS tenant and may be able to abuse employee-created OAuth or API integrations with other SaaS apps. Targeting SaaS apps that require or encourage users to "
+  },
+  "SAT1031": {
+   "name": "SAML enumeration",
+   "slug": "saml_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary": "It’s often possible to determine if an organization is using a SaaS app by checking whether a SAML login IdP has been configured for the organization domain. Where a dedicated SAML IdP endpoint has been configured, a SaaS app usually needs to map certain logins to that endpoint under certain conditions. Commonly, this will be based on the email domain of the user account, or based on a subdomain o"
+  },
+  "SAT1032": {
+   "name": "SAMLjacking",
+   "slug": "samljacking",
+   "tactics": [
+    "Initial Access",
+    "Lateral Movement"
+   ],
+   "summary": "When configuring SAML integrations for a SaaS app, you must provide a URL to an IdP service so the app can hand-off authentication during the SAML flow. Users expect to be redirected to common SSO login pages (e.g. Google or Microsoft login), and are unlikely to check that the login URL they are redirected to matches the official domain. An adversary could configure an app tenant with SAML and con"
+  },
+  "SAT1044": {
+   "name": "Session cookie theft",
+   "slug": "session_cookie_theft",
+   "tactics": [
+    "Lateral Movement",
+    "Defense Evasion"
+   ],
+   "summary": "Due to increasing use of SaaS apps, core identity providers acting as SSO gateways to them, and the widespread adoption of MFA, hybrid attacks involving the theft of valid browser session cookies from compromised endpoints using infostealing malware are becoming more common. These session cookies are then used to pivot from an endpoint compromise and laterally move to downstream SaaS applications."
+  },
+  "SAT1033": {
+   "name": "Shadow workflows",
+   "slug": "shadow_workflows",
+   "tactics": [
+    "Execution",
+    "Exfiltration"
+   ],
+   "summary": "The SaaS world is, by design, largely abstracted away from operating systems and application binaries. There isn’t always a generic equivalent of gaining code execution as you might during an endpoint compromise. The closest approximation to this in the SaaS world may be low- or no-code automation apps. These are SaaS apps that are focused on integrating with a variety of other SaaS apps and allow"
+  },
+  "SAT1034": {
+   "name": "Slug tenant enumeration",
+   "slug": "slug_tenant_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary": "SaaS vendors make use of different strategies to separate tenants from one another. Often, this is based on the creation of a “slug” chosen by the user during tenant creation. This is used as either a path separator, query parameter, or subdomain to separate tenants. There are often methods within a SaaS app that allow existing slugs to be enumerated, for example, when attempting to create a new t"
+  },
+  "SAT1035": {
+   "name": "Subdomain tenant discovery",
+   "slug": "subdomain_tenant_discovery",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary": "SaaS vendors make use of different strategies to separate different tenants from one another. One of these methods is the use of a unique subdomain, which is often picked during the creation of a new tenant. Consequently, DNS enumeration techniques to discover valid subdomains can give an insight into who uses a given SaaS app. For example, adversaries can use DNS brute forcing or passive DNS enum"
+  },
+  "SAT1036": {
+   "name": "System integrations",
+   "slug": "system_integrations",
+   "tactics": [
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "summary": "Some SaaS apps allow OAuth integrations that are not tied to a user account, but to the app tenant, or a machine account instead. Since the integration is not tied to a specific user, persistence can be maintained after a user account has been disabled or deleted. It can also frustrate forensics by obfuscating which user account is responsible for actions taken by the integration, particularly whe"
+  },
+  "SAT1037": {
+   "name": "Takeout services",
+   "slug": "takeout_services",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "summary": "Takeout services allow users to export all of their data from a SaaS app into a downloadable format. This is often used to satisfy compliance with GDPR which requires that data subjects maintain ownership of their data. An adversary can make use of this functionality to quickly and easily exfiltrate a very complete set of data from a SaaS app."
+  },
+  "SAT1049": {
+   "name": "UI redressing",
+   "slug": "ui_redressing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "UI redressing attacks can be used to trick a user into performing an action on a legitimate application that is different to what they perceived. The classic example is Clickjacking, that operates by overlaying an invisible iframe over a malicious website. The user thinks they are clicking buttons or other elements on the visible malicious site but are actually clicking buttons in the invisible if"
+  },
+  "SAT1038": {
+   "name": "Username enumeration",
+   "slug": "username_enumeration",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "summary": "When attempting to authenticate to a SaaS app, the login mechanism itself may disclose whether the username/email address is a known/valid account, even if the provided password is incorrect. Since email addresses are commonly used during the authentication process and the domain associated will often give away the organization, checking known valid email address combinations for the target organi"
+  },
+  "SAT1048": {
+   "name": "Verification phishing",
+   "slug": "verification_phishing",
+   "tactics": [
+    "Initial Access"
+   ],
+   "summary": "Email verification is sometimes used as a control, such as when registering new accounts. This is typically implemented by emailing the target user with either a clickable link for them to verify or a verification code that that they need to enter. Verification phishing is when an adversary uses phishing, or some other type of social engineering, to convince a user to click a verification link or "
+  },
+  "SAT1039": {
+   "name": "Webhooks",
+   "slug": "webhooks",
+   "tactics": [
+    "Defense Evasion",
+    "Exfiltration"
+   ],
+   "summary": "Some SaaS apps allow webhooks to be configured so callbacks are made when certain events are triggered. For example, a webmail platform may allow a webhook callback when a new email is received. This is useful to an adversary looking to extract new data as it is created from that API. This could be new emails, new files, a real-time view into channels in instant messaging apps, etc. Adversaries us"
+  }
+ }
+}
