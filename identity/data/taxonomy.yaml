@@ -1451,7 +1451,7 @@ domains:
         name: 통신 가입자 인증 체계 침해
         lv3:
           - id: IDT-CI-02
-            name: 통신 가입자 인증 체계 침해(유심 인증 정보·불법 기지국)
+            name: 통신 가입자 인증 체계 침해(유심 인증키·불법 기지국)
             en: Compromise of telecom subscriber authentication (SIM keys, rogue base stations)
             stage: [자격증명 접근, 수집]
             id_types: [고객]
@@ -1471,7 +1471,7 @@ domains:
             ot: []
             sct: []
             severity: 상
-            severity_why: 가입자 인증 정보·결제 인증 경로가 통째로 노출되면 휴대폰 기반 본인확인·OTP를 쓰는 모든 서비스가 영향을 받음 — SK텔레콤 2025(유심 정보 2,696만 건), KT 2025(무단 소액결제)
+            severity_why: 가입자 인증키·결제 인증 경로가 통째로 노출되면 휴대폰 기반 본인확인·OTP를 쓰는 모든 서비스가 영향을 받음 — SK텔레콤 2025(유심 정보 2,696만 건), KT 2025(무단 소액결제)
       - id: IDT-CI-03
         name: 명의 도용·본인확인 우회
         lv3:
