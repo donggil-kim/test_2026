@@ -35,15 +35,16 @@
 
 - Lv1 도메인 7개(RC·PA·SV·HU·IN·EX·IM) → Lv2 위협분류 → Lv3 세부위협.
 - ID: `PHT-<도메인>-NN`(Lv2) · `PHT-<도메인>-NN.m`(Lv3). 고정, 재사용 금지.
-- 각 Lv3: id·name·en·stage(공격 단계)·assets·attack(해당 시 ATT&CK ID)·nist(800-53 PE/PS)·
-  iso(ISO 27001 물리 통제, 확인 후)·cross(디지털 매트릭스 연계 ID)·severity·severity_why.
-- 씨앗으로 도메인마다 예시 Lv3 1행이 들어 있습니다. 새 세션이 Lv2/Lv3를 확장합니다.
+- 각 Lv3: id·name·en·stage(공격 단계)·actors(위협 주체 유형)·profiles(적용 프로파일)·assets·attack(없으면 attack_none 사유)·
+  nist·iso·ismsp·cert(대응 기준)·idt·sct·ot·cloud·ai(다른 매트릭스 연계)·refs(참고 문헌 키)·severity·severity_why.
+- **1단계 완료(2026-10-06)**: 도메인 7 · 위협분류 31 · 세부위협 45 ID 대장 확정. 필드 설명은 taxonomy.yaml 머리말.
 
 ## 3. 사고 DB (data/incidents.yaml)
 
-- 필드: id(PHI-NNN)·title·date(YYYY-MM)·kind·verification·sector·region·actor·vector(도메인 코드)·
-  impact·summary·pht(매핑 Lv3)·sources('출처 | URL').
+- 필드: id(PHI-NNN)·title·date(YYYY-MM)·kind·verification·legal(선택)·region·sector·actor·actor_type·
+  impact·summary·pht(매핑 Lv3, 도메인은 여기서 자동 산출)·attack_ref·origin(선택)·sources('출처 | URL').
 - kind/verification/sector/impact 어휘는 scripts/taxonomy_rules.py 에 정의. 실제 사고만 발생가능성 '상'.
+  정부 경보·위협인텔·연구·시연은 '중'까지만 반영. 정부 통계는 사고로 세지 않고 taxonomy.yaml 도메인 context에만 적음.
 - **씨앗은 형식 예시입니다. 공개 출처(정부 발표·법원 기소문·공신력 있는 보도)로 실제 사례를 조사해
   출처 URL과 함께 채우세요.** 북한 IT 인력 위장취업, 내부자 영업비밀 유출, 핵심시설 드론 출현 등이
   출발점입니다. 근거 밀도가 영역마다 다릅니다(위장취업·내부자는 공개 사례 많음, 드론 기업스파이는
@@ -103,8 +104,8 @@
   4단계(문구·시나리오·방법론, v2). 단계마다 커밋·푸시 후 요약 보고, 확인 없이 다음 단계 계속.
 
 ## 할 일 체크리스트
-- [ ] 도메인·Lv2·Lv3 확정(ID 대장) — taxonomy.yaml
-- [ ] 프레임워크 카탈로그 채우기(NIST PE/PS 공식 명칭은 NIST OSCAL에서) — frameworks.yaml
+- [x] 도메인·Lv2·Lv3 확정(ID 대장) — taxonomy.yaml (1단계, 45행)
+- [x] 프레임워크·참고 문헌 카탈로그 — frameworks.yaml, reference/ 추출본(ATT&CK·ITKB·NIST·연계 ID) (1단계)
 - [ ] 공개 출처로 사고 DB 구축(출처 URL 필수) — incidents.yaml
 - [ ] build/validate 를 supplychain 기준으로 이식
 - [ ] 도메인별 관점 문구 작성 + 검증 통과

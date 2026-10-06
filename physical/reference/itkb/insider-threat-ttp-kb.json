@@ -1,0 +1,1282 @@
+{
+ "notice": "Insider Threat TTP Knowledge Base © 2024 MITRE Center for Threat-Informed Defense (Approved for public release, CT0041·CT0102). Licensed under the Apache License, Version 2.0. Uses MITRE ATT&CK® (https://attack.mitre.org/resources/legal-and-branding/terms-of-use/).",
+ "source": "https://github.com/center-for-threat-informed-defense/insider-threat-ttp-kb",
+ "version": "v2(ATT&CK v14 기준) · 커밋 0f816d4(2026-07-06)",
+ "license": "Apache-2.0",
+ "counts": {
+  "rows": 76,
+  "techniques": 70,
+  "parent": 43,
+  "sub": 27
+ },
+ "techniques": {
+  "T1005": {
+   "name": "Data from Local System",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1057"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0012",
+    "DS0017",
+    "DS0022"
+   ],
+   "v19": "T1005",
+   "v19_name": "Data from Local System"
+  },
+  "T1011": {
+   "name": "Exfiltration Over Other Network Medium",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1028"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1011",
+   "v19_name": "Exfiltration Over Other Network Medium"
+  },
+  "T1011.001": {
+   "name": "Exfiltration Over Bluetooth",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1028"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0017",
+    "DS0022"
+   ],
+   "v19": "T1011.001",
+   "v19_name": "Exfiltration Over Other Network Medium: Exfiltration Over Bluetooth"
+  },
+  "T1016": {
+   "name": "System Network Configuration",
+   "tactics": [
+    "Discovery"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0017",
+    "DS0012",
+    "DS0009"
+   ],
+   "v19": "T1016",
+   "v19_name": "System Network Configuration Discovery"
+  },
+  "T1016.001": {
+   "name": "Internet Connection Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0009",
+    "DS0017"
+   ],
+   "v19": "T1016.001",
+   "v19_name": "System Network Configuration Discovery: Internet Connection Discovery"
+  },
+  "T1021": {
+   "name": "Remote Services",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "mitigations": [
+    "M1018",
+    "M1042",
+    "M1032"
+   ],
+   "datasources": [
+    "DS0011",
+    "DS0029",
+    "DS0017",
+    "DS0033",
+    "DS0005",
+    "DS0028",
+    "DS0009"
+   ],
+   "v19": "T1021",
+   "v19_name": "Remote Services"
+  },
+  "T1021.001": {
+   "name": "Remote Desktop Protocol",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "mitigations": [
+    "M1047",
+    "M1035",
+    "M1030",
+    "M1028",
+    "M1042",
+    "M1018",
+    "M1032",
+    "M1026"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0028",
+    "DS0009"
+   ],
+   "v19": "T1021.001",
+   "v19_name": "Remote Services: Remote Desktop Protocol"
+  },
+  "T1021.004": {
+   "name": "SSH",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1032",
+    "M1018"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0009",
+    "DS0029"
+   ],
+   "v19": "T1021.004",
+   "v19_name": "Remote Services: SSH"
+  },
+  "T1027": {
+   "name": "Obfuscated Files or Information",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1047",
+    "M1040",
+    "M1017",
+    "M1049"
+   ],
+   "datasources": [
+    "DS0005",
+    "DS0012",
+    "DS0022",
+    "DS0011",
+    "DS0017",
+    "DS0009",
+    "DS0024"
+   ],
+   "v19": "T1027",
+   "v19_name": "Obfuscated Files or Information"
+  },
+  "T1036": {
+   "name": "Masquerading",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1017",
+    "M1045",
+    "M1040",
+    "M1022",
+    "M1049",
+    "M1038"
+   ],
+   "datasources": [
+    "DS0022",
+    "DS0009",
+    "DS0019",
+    "DS0007",
+    "DS0003",
+    "DS0017"
+   ],
+   "v19": "T1036",
+   "v19_name": "Masquerading"
+  },
+  "T1039": {
+   "name": "Data from Network Shared Drive",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0033",
+    "DS0017",
+    "DS0029",
+    "DS0022"
+   ],
+   "v19": "T1039",
+   "v19_name": "Data from Network Shared Drive"
+  },
+  "T1046": {
+   "name": "Network Service Scanning",
+   "tactics": [
+    "Discovery",
+    "Discovery"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1031",
+    "M1030"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0017",
+    "DS0025"
+   ],
+   "v19": "T1046",
+   "v19_name": "Network Service Discovery"
+  },
+  "T1048": {
+   "name": "Exfiltration Over Alternative Protocol",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1030",
+    "M1057",
+    "M1037",
+    "M1031",
+    "M1022",
+    "M1018"
+   ],
+   "datasources": [
+    "DS0010",
+    "DS0029",
+    "DS0017",
+    "DS0015",
+    "DS0022"
+   ],
+   "v19": "T1048",
+   "v19_name": "Exfiltration Over Alternative Protocol"
+  },
+  "T1048.001": {
+   "name": "Exfiltration Over Symmetric Encrypted Non-C2 Protocol",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1037",
+    "M1031",
+    "M1030"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0017",
+    "DS0022"
+   ],
+   "v19": "T1048.001",
+   "v19_name": "Exfiltration Over Alternative Protocol: Exfiltration Over Symmetric Encrypted Non-C2 Protocol"
+  },
+  "T1052": {
+   "name": "Exfiltration Over Physical Medium",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1057",
+    "M1034",
+    "M1042"
+   ],
+   "datasources": [
+    "DS0022",
+    "DS0016",
+    "DS0009",
+    "DS0017"
+   ],
+   "v19": "T1052",
+   "v19_name": "Exfiltration Over Physical Medium"
+  },
+  "T1052.001": {
+   "name": "Exfiltration over USB",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1034",
+    "M1057"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0016",
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1052.001",
+   "v19_name": "Exfiltration Over Physical Medium: Exfiltration over USB"
+  },
+  "T1070": {
+   "name": "Indicator Removal on Host",
+   "tactics": [
+    "Defense Evasion",
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1041",
+    "M1029",
+    "M1022"
+   ],
+   "datasources": [
+    "DS0003",
+    "DS0022",
+    "DS0018",
+    "DS0002",
+    "DS0009",
+    "DS0015",
+    "DS0017",
+    "DS0024",
+    "DS0029"
+   ],
+   "v19": "T1070",
+   "v19_name": "Indicator Removal"
+  },
+  "T1070.001": {
+   "name": "Clear Windows Event Logs",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1022",
+    "M1029",
+    "M1041"
+   ],
+   "datasources": [
+    "DS0017",
+    "DS0022",
+    "DS0009"
+   ],
+   "v19": "T1685.005",
+   "v19_name": "Disable or Modify Tools: Clear Windows Event Logs",
+   "note": "ATT&CK v19.2에 없는 ID — 후속 ID 기록"
+  },
+  "T1070.004": {
+   "name": "File Deletion",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0017",
+    "DS0022"
+   ],
+   "v19": "T1070.004",
+   "v19_name": "Indicator Removal: File Deletion"
+  },
+  "T1074": {
+   "name": "Data Staged",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0022",
+    "DS0024",
+    "DS0017"
+   ],
+   "v19": "T1074",
+   "v19_name": "Data Staged"
+  },
+  "T1074.001": {
+   "name": "Local Data Staging",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0022",
+    "DS0024",
+    "DS0017"
+   ],
+   "v19": "T1074.001",
+   "v19_name": "Data Staged: Local Data Staging"
+  },
+  "T1078": {
+   "name": "Valid Accounts",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1027",
+    "M1018",
+    "M1026",
+    "M1013",
+    "M1017",
+    "M1015",
+    "M1036"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0002"
+   ],
+   "v19": "T1078",
+   "v19_name": "Valid Accounts"
+  },
+  "T1078.001": {
+   "name": "Default Accounts",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1027"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0002"
+   ],
+   "v19": "T1078.001",
+   "v19_name": "Valid Accounts: Default Accounts"
+  },
+  "T1078.002": {
+   "name": "Domain Accounts",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1032",
+    "M1026",
+    "M1017"
+   ],
+   "datasources": [
+    "DS0002",
+    "DS0028"
+   ],
+   "v19": "T1078.002",
+   "v19_name": "Valid Accounts: Domain Accounts"
+  },
+  "T1078.004": {
+   "name": "Cloud Accounts",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1027",
+    "M1015",
+    "M1026",
+    "M1032",
+    "M1036",
+    "M1017",
+    "M1018"
+   ],
+   "datasources": [
+    "DS0002",
+    "DS0028"
+   ],
+   "v19": "T1078.004",
+   "v19_name": "Valid Accounts: Cloud Accounts"
+  },
+  "T1098": {
+   "name": "Account Manipulation",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1030",
+    "M1018",
+    "M1032",
+    "M1026",
+    "M1028"
+   ],
+   "datasources": [
+    "DS0017",
+    "DS0009",
+    "DS0026",
+    "DS0022",
+    "DS0036",
+    "DS0002"
+   ],
+   "v19": "T1098",
+   "v19_name": "Account Manipulation"
+  },
+  "T1098.005": {
+   "name": "Device Registration",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1032"
+   ],
+   "datasources": [
+    "DS0015",
+    "DS0026",
+    "DS0002"
+   ],
+   "v19": "T1098.005",
+   "v19_name": "Account Manipulation: Device Registration"
+  },
+  "T1106": {
+   "name": "Native API",
+   "tactics": [
+    "Execution"
+   ],
+   "mitigations": [
+    "M1038",
+    "M1040"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0011"
+   ],
+   "v19": "T1106",
+   "v19_name": "Native API"
+  },
+  "T1113": {
+   "name": "Screen Capture",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0017",
+    "DS0009"
+   ],
+   "v19": "T1113",
+   "v19_name": "Screen Capture"
+  },
+  "T1114": {
+   "name": "Email Collection",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1032",
+    "M1041",
+    "M1047"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0015",
+    "DS0029",
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1114",
+   "v19_name": "Email Collection"
+  },
+  "T1114.001": {
+   "name": "Local Email Collection",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1041"
+   ],
+   "datasources": [
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1114.001",
+   "v19_name": "Email Collection: Local Email Collection"
+  },
+  "T1119": {
+   "name": "Automated Collection",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1029",
+    "M1041"
+   ],
+   "datasources": [
+    "DS0017",
+    "DS0022",
+    "DS0012"
+   ],
+   "v19": "T1119",
+   "v19_name": "Automated Collection"
+  },
+  "T1133": {
+   "name": "External Remote Services",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1030",
+    "M1042",
+    "M1035",
+    "M1032"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0028",
+    "DS0015"
+   ],
+   "v19": "T1133",
+   "v19_name": "External Remote Services"
+  },
+  "T1135": {
+   "name": "Network Share Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "mitigations": [
+    "M1028"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0017"
+   ],
+   "v19": "T1135",
+   "v19_name": "Network Share Discovery"
+  },
+  "T1136": {
+   "name": "Create Account",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1030",
+    "M1028",
+    "M1032",
+    "M1026"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0017",
+    "DS0002"
+   ],
+   "v19": "T1136",
+   "v19_name": "Create Account"
+  },
+  "T1136.001": {
+   "name": "Local Account",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1032",
+    "M1026"
+   ],
+   "datasources": [
+    "DS0002",
+    "DS0009",
+    "DS0017"
+   ],
+   "v19": "T1136.001",
+   "v19_name": "Create Account: Local Account"
+  },
+  "T1199": {
+   "name": "Trusted Relationship",
+   "tactics": [
+    "Initial Access"
+   ],
+   "mitigations": [
+    "M1032",
+    "M1018",
+    "M1030"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0029",
+    "DS0015"
+   ],
+   "v19": "T1199",
+   "v19_name": "Trusted Relationship"
+  },
+  "T1210": {
+   "name": "Exploitation of Remote Services",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "mitigations": [
+    "M1042",
+    "M1016",
+    "M1050",
+    "M1030",
+    "M1019",
+    "M1048",
+    "M1026",
+    "M1051"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0015"
+   ],
+   "v19": "T1210",
+   "v19_name": "Exploitation of Remote Services"
+  },
+  "T1213": {
+   "name": "Data from Information Repositories",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1017",
+    "M1018",
+    "M1047"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0015"
+   ],
+   "v19": "T1213",
+   "v19_name": "Data from Information Repositories"
+  },
+  "T1213.002": {
+   "name": "Sharepoint",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1047",
+    "M1018",
+    "M1017"
+   ],
+   "datasources": [
+    "DS0028",
+    "DS0015"
+   ],
+   "v19": "T1213.002",
+   "v19_name": "Data from Information Repositories: Sharepoint"
+  },
+  "T1213.003": {
+   "name": "Code Repositories",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1017",
+    "M1047",
+    "M1018",
+    "M1032"
+   ],
+   "datasources": [
+    "DS0015",
+    "DS0028"
+   ],
+   "v19": "T1213.003",
+   "v19_name": "Data from Information Repositories: Code Repositories"
+  },
+  "T1219": {
+   "name": "Remote Access Software",
+   "tactics": [
+    "Command and Control"
+   ],
+   "mitigations": [
+    "M1038",
+    "M1037",
+    "M1031"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0029"
+   ],
+   "v19": "T1219",
+   "v19_name": "Remote Access Tools"
+  },
+  "T1485": {
+   "name": "Data Destruction",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1053"
+   ],
+   "datasources": [
+    "DS0020",
+    "DS0009",
+    "DS0022",
+    "DS0007",
+    "DS0030",
+    "DS0034",
+    "DS0010",
+    "DS0017"
+   ],
+   "v19": "T1485",
+   "v19_name": "Data Destruction"
+  },
+  "T1496": {
+   "name": "Resource Hijacking",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0029",
+    "DS0022",
+    "DS0013",
+    "DS0009",
+    "DS0017"
+   ],
+   "v19": "T1496",
+   "v19_name": "Resource Hijacking"
+  },
+  "T1529": {
+   "name": "System Shutdown/Reboot",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0009",
+    "DS0013",
+    "DS0017"
+   ],
+   "v19": "T1529",
+   "v19_name": "System Shutdown/Reboot"
+  },
+  "T1546": {
+   "name": "Event Triggered Execution",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [],
+   "datasources": [
+    "DS0011",
+    "DS0005",
+    "DS0022",
+    "DS0024",
+    "DS0017",
+    "DS0025",
+    "DS0009"
+   ],
+   "v19": "T1546",
+   "v19_name": "Event Triggered Execution"
+  },
+  "T1546.003": {
+   "name": "WMI Event Subscription",
+   "tactics": [
+    "Persistence"
+   ],
+   "mitigations": [
+    "M1018",
+    "M1026",
+    "M1040"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0017",
+    "DS0005"
+   ],
+   "v19": "T1546.003",
+   "v19_name": "Event Triggered Execution: Windows Management Instrumentation Event Subscription"
+  },
+  "T1548": {
+   "name": "Abuse Elevation Control Mechanism",
+   "tactics": [
+    "Privilege Escalation"
+   ],
+   "mitigations": [
+    "M1038",
+    "M1028",
+    "M1052",
+    "M1026",
+    "M1018",
+    "M1047",
+    "M1022"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0002",
+    "DS0017",
+    "DS0022",
+    "DS0024"
+   ],
+   "v19": "T1548",
+   "v19_name": "Abuse Elevation Control Mechanism"
+  },
+  "T1552": {
+   "name": "Unsecured Credentials",
+   "tactics": [
+    "Credential Access"
+   ],
+   "mitigations": [
+    "M1041",
+    "M1051",
+    "M1017",
+    "M1015",
+    "M1027",
+    "M1028",
+    "M1037",
+    "M1022",
+    "M1035",
+    "M1047",
+    "M1026"
+   ],
+   "datasources": [
+    "DS0024",
+    "DS0015",
+    "DS0017",
+    "DS0009",
+    "DS0022",
+    "DS0002"
+   ],
+   "v19": "T1552",
+   "v19_name": "Unsecured Credentials"
+  },
+  "T1552.008": {
+   "name": "Chat Messages",
+   "tactics": [
+    "Credential Access"
+   ],
+   "mitigations": [
+    "M1047",
+    "M1017"
+   ],
+   "datasources": [
+    "DS0015"
+   ],
+   "v19": "T1552.008",
+   "v19_name": "Unsecured Credentials: Chat Messages"
+  },
+  "T1555": {
+   "name": "Credentials from Password Stores",
+   "tactics": [
+    "Credential Access"
+   ],
+   "mitigations": [
+    "M1026",
+    "M1027"
+   ],
+   "datasources": [
+    "DS0022",
+    "DS0017",
+    "DS0009",
+    "DS0025"
+   ],
+   "v19": "T1555",
+   "v19_name": "Credentials from Password Stores"
+  },
+  "T1555.005": {
+   "name": "Password Managers",
+   "tactics": [
+    "Credential Access"
+   ],
+   "mitigations": [
+    "M1051",
+    "M1054",
+    "M1027"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1555.005",
+   "v19_name": "Credentials from Password Stores: Password Managers"
+  },
+  "T1560": {
+   "name": "Archive Collected Data",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1047"
+   ],
+   "datasources": [
+    "DS0017",
+    "DS0012",
+    "DS0009",
+    "DS0022"
+   ],
+   "v19": "T1560",
+   "v19_name": "Archive Collected Data"
+  },
+  "T1560.001": {
+   "name": "Archive via Utility",
+   "tactics": [
+    "Collection"
+   ],
+   "mitigations": [
+    "M1047"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0017",
+    "DS0022"
+   ],
+   "v19": "T1560.001",
+   "v19_name": "Archive Collected Data: Archive via Utility"
+  },
+  "T1561": {
+   "name": "Disk Wipe",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1053"
+   ],
+   "datasources": [
+    "DS0027",
+    "DS0016",
+    "DS0017",
+    "DS0009"
+   ],
+   "v19": "T1561",
+   "v19_name": "Disk Wipe"
+  },
+  "T1561.001": {
+   "name": "Disk Content Wipe",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1053"
+   ],
+   "datasources": [
+    "DS0016",
+    "DS0027",
+    "DS0017",
+    "DS0009"
+   ],
+   "v19": "T1561.001",
+   "v19_name": "Disk Wipe: Disk Content Wipe"
+  },
+  "T1562": {
+   "name": "Impair Defenses",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1054",
+    "M1018",
+    "M1038",
+    "M1022",
+    "M1024",
+    "M1047"
+   ],
+   "datasources": [
+    "DS0022",
+    "DS0025",
+    "DS0018",
+    "DS0017",
+    "DS0012",
+    "DS0009",
+    "DS0024",
+    "DS0019",
+    "DS0002",
+    "DS0013",
+    "DS0027"
+   ],
+   "v19": "T1685",
+   "v19_name": "Disable or Modify Tools",
+   "note": "ATT&CK v19.2에 없는 ID — 후속 ID 기록"
+  },
+  "T1562.001": {
+   "name": "Disable or Modify Tools",
+   "tactics": [
+    "Defense Evasion"
+   ],
+   "mitigations": [
+    "M1038",
+    "M1024",
+    "M1018",
+    "M1022"
+   ],
+   "datasources": [
+    "DS0013",
+    "DS0009",
+    "DS0019",
+    "DS0024",
+    "DS0017",
+    "DS0027"
+   ],
+   "v19": "T1685",
+   "v19_name": "Disable or Modify Tools",
+   "note": "ATT&CK v19.2에 없는 ID — 후속 ID 기록"
+  },
+  "T1565": {
+   "name": "Data Manipulation",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1041",
+    "M1029",
+    "M1030",
+    "M1022"
+   ],
+   "datasources": [
+    "DS0009",
+    "DS0029",
+    "DS0022"
+   ],
+   "v19": "T1565",
+   "v19_name": "Data Manipulation"
+  },
+  "T1565.001": {
+   "name": "Stored Data Manipulation",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1022",
+    "M1029",
+    "M1041"
+   ],
+   "datasources": [
+    "DS0022"
+   ],
+   "v19": "T1565.001",
+   "v19_name": "Data Manipulation: Stored Data Manipulation"
+  },
+  "T1567": {
+   "name": "Exfiltration Over Web Service",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1021",
+    "M1057"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0017",
+    "DS0022",
+    "DS0015"
+   ],
+   "v19": "T1567",
+   "v19_name": "Exfiltration Over Web Service"
+  },
+  "T1567.002": {
+   "name": "Exfiltration to Cloud Storage",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "mitigations": [
+    "M1021"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0022",
+    "DS0017"
+   ],
+   "v19": "T1567.002",
+   "v19_name": "Exfiltration Over Web Service: Exfiltration to Cloud Storage"
+  },
+  "T1585": {
+   "name": "Establish Accounts",
+   "tactics": [
+    "Resource Development"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0029",
+    "DS0021"
+   ],
+   "v19": "T1585",
+   "v19_name": "Establish Accounts"
+  },
+  "T1588": {
+   "name": "Obtain Capabilities",
+   "tactics": [
+    "Resource Development"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0037",
+    "DS0004",
+    "DS0035"
+   ],
+   "v19": "T1588",
+   "v19_name": "Obtain Capabilities"
+  },
+  "T1588.002": {
+   "name": "Tool",
+   "tactics": [
+    "Resource Development"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0004"
+   ],
+   "v19": "T1588.002",
+   "v19_name": "Obtain Capabilities: Tool"
+  },
+  "T1589": {
+   "name": "Gather Victim Identity Information",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0029"
+   ],
+   "v19": "T1589",
+   "v19_name": "Gather Victim Identity Information"
+  },
+  "T1595": {
+   "name": "Active Scanning",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0029"
+   ],
+   "v19": "T1595",
+   "v19_name": "Active Scanning"
+  },
+  "T1595.001": {
+   "name": "Scanning IP Blocks",
+   "tactics": [
+    "Reconnaissance"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [
+    "DS0029"
+   ],
+   "v19": "T1595.001",
+   "v19_name": "Active Scanning: Scanning IP Blocks"
+  },
+  "T1650": {
+   "name": "Acquire Access",
+   "tactics": [
+    "Resource Development"
+   ],
+   "mitigations": [
+    "M1056"
+   ],
+   "datasources": [],
+   "v19": "T1650",
+   "v19_name": "Acquire Access"
+  },
+  "T1657": {
+   "name": "Financial Theft",
+   "tactics": [
+    "Impact"
+   ],
+   "mitigations": [
+    "M1017",
+    "M1018"
+   ],
+   "datasources": [
+    "DS0015"
+   ],
+   "v19": "T1657",
+   "v19_name": "Financial Theft"
+  }
+ },
+ "ohi": [
+  "Subject had elevated privileges",
+  "Monitoring status of subject",
+  "Telework status of subject",
+  "Performance Improvement Plan required",
+  "Turnover rate of subject's role",
+  "Time at company",
+  "Management level",
+  "Seniority of subject",
+  "Government security clearance"
+ ]
+}

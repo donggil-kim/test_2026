@@ -1,34 +1,312 @@
-# 교차 매핑·대응 기준 카탈로그 (씨앗) — ID·명칭만. 원문 비수록(공개 저장소).
-# 공식 명칭은 새 세션이 1차 출처로 확인해 채운다(특히 NIST 공식 영문 명칭은 NIST OSCAL에서).
+# 교차 매핑·대응 기준·참고 문헌 카탈로그 — ID·명칭만 수록(원문 미수록)
+#
+# 역할(작업방향 6장)
+#   ② 교차 매핑  : MITRE ATT&CK v19.2(물리 접점) · MITRE CTID 내부자 TTP 지식베이스(ITKB) · 다른 매트릭스 ID
+#   ③ 대응 기준  : NIST SP 800-53 Rev.5 · ISO/IEC 27001:2022 부속서 A 5~7 · ISMS-P 2.2~2.4(+관련 항목) · CERT 내부자 가이드 7판 실천과제
+#   ⑤ 참고 문헌  : NPSA 지침 · CISA 지침 · ISO 22341 등 — ID 열 없이 '참고 문헌' 열(refs)과 문구의 '참고:' 인용으로만 사용
+# 각 항목은 [영문 공식 명칭, 국문 번역 명칭](ISMS-P는 [국문 명칭]). 설명 원문은 싣지 않으며 세부위협 문구는 분석가가 새로 작성한다.
+# NIST SP 800-53 명칭은 reference/nist/ 추출본, ATT&CK·ITKB는 reference/attack/·reference/itkb/ 추출본에서 읽는다.
+# 국내 법령(산업기술보호법·부정경쟁방지법·방위산업기술보호법·항공안전법·전파법)은 열을 두지 않고 심각도 근거·대응 문구에만 표기(D9).
+
 meta:
-  note: "확정=NIST 800-53 PE/PS·ATT&CK 물리 접점. 확인 후 추가=CISA/NPSA/ISO/MITRE 내부자 KB."
-  todo: "각 프레임워크의 공식 명칭·버전·라이선스를 reference/README.md 와 함께 확정"
+  attack:
+    name: MITRE ATT&CK Enterprise
+    version: v19.2
+    source: 저장소 루트 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본(scripts/prepare_attack.py)
+    license: © The MITRE Corporation — https://attack.mitre.org/resources/legal-and-branding/terms-of-use/ — ID·명칭만 인용
+    note: 물리 침입·감시·포섭은 대부분 기법 정의 밖 — 연계 없는 행은 taxonomy.yaml attack_none에 미연계 사유를 적음
+  itkb:
+    name: MITRE CTID Insider Threat TTP Knowledge Base
+    version: v2(ATT&CK v14 기준) · 커밋 0f816d4(2026-07-06)
+    source: https://github.com/center-for-threat-informed-defense/insider-threat-ttp-kb → reference/itkb/ 추출본(scripts/prepare_itkb.py)
+    license: Apache-2.0 — 추출본과 라이선스 원문(reference/itkb/LICENSE-Apache-2.0.txt) 보관
+    note: 참여 기관 실제 내부자 사례에서 관측된 ATT&CK 기법 70개(기법 43 · 하위 27, 전술 조합 76행). IT 시스템 위 내부자 행위만 다루므로 IN·EX 일부 행에만 걸림. v14→v19.2 변경 3건(T1562·T1562.001→T1685, T1070.001→T1685.005)은 추출본에 후속 ID 기록
+  nist80053:
+    name: NIST SP 800-53 Rev.5 통제명
+    version: OSCAL 5.2.0 (2026-05-11)
+    source: https://github.com/usnistgov/oscal-content → reference/nist/ 명칭 추출본(identity/ 추출본 재사용)
+    license: 미국 정부 저작물(공공 영역)
+  iso27001:
+    name: ISO/IEC 27001:2022 Annex A (5 조직 통제 일부 · 6 인적 통제 · 7 물리 통제)
+    version: "2022"
+    source: https://www.iso.org/standard/27001
+    license: 유료 표준 — 원문 비수록, 통제 번호·제목만 인용
+  ismsp:
+    name: 정보보호 및 개인정보보호 관리체계(ISMS-P) 인증기준
+    version: 2023 개정 고시 기준
+    source: https://isms.kisa.or.kr
+    license: 공공 기준 — 항목 번호·명칭만 인용
+    note: 2.2 인적 보안 · 2.3 외부자 보안 · 2.4 물리 보안 전체와, 행 매핑에 쓰는 관련 항목(2.6·2.10·2.11·2.12 일부)
+  cert:
+    name: CERT Common Sense Guide to Mitigating Insider Threats, Seventh Edition (CMU SEI CERT National Insider Threat Center)
+    version: 7판(2022-09) — 실천과제 22개
+    source: https://www.sei.cmu.edu/library/common-sense-guide-to-mitigating-insider-threats-seventh-edition/
+    license: © Carnegie Mellon University — 실천과제 번호·제목만 인용
+    note: 제목은 검색 결과 기준으로 대조(sei.cmu.edu·dtic.mil 직접 열람 차단). 1~16·19~22는 7판 문구 확인, 17·18은 6판과 같은 제목으로 확인
 
-# NIST SP 800-53 Rev.5 — 물리·환경(PE)·인적 보안(PS) 계열 (영문 명칭은 OSCAL에서 확정)
-nist80053:
-  PE-2: [TODO-공식명, 물리적 접근 권한 부여]
-  PE-3: [TODO-공식명, 물리적 접근 통제]
-  PE-6: [TODO-공식명, 물리적 접근 모니터링]
-  PE-8: [TODO-공식명, 방문자 접근 기록]
-  PE-19: [TODO-공식명, 정보 유출(전자파 등) 방지]
-  PS-3: [TODO-공식명, 인사 심사(screening)]
-  PS-4: [TODO-공식명, 퇴직 처리]
-  PS-5: [TODO-공식명, 인사 이동]
-  PS-7: [TODO-공식명, 외부 인력(계약자) 보안]
-  PS-8: [TODO-공식명, 인사 제재]
-  MP-5: [TODO-공식명, 매체 반출·이송 통제]
+# 공격 단계(행 stage·시나리오 단계 어휘) — 작업방향 3장
+stages:
+  정찰: 표적 조직·인력·시설 정보를 모음
+  접근: 시설·사람·조직에 다가가거나 들어감(물리 접근·접촉·포섭 시도)
+  실행: 수집·설치·조작 등 목적 행위를 수행(촬영·도청·장치 설치·사보타주)
+  지속: 접근·수집 수단을 유지(상주 장치·반복 접근)
+  내부자화: 내부 신분을 얻거나 내부자를 포섭(위장취업·매수 성공)
+  반출: 정보·자산이 조직 밖으로 나감
+  영향: 피해가 발생함(기술 유출·운영 중단·안전 위협·금전·법적 피해)
 
-# MITRE ATT&CK Enterprise — 물리 접점(소수). 명칭은 ATT&CK에서 확정.
-attack_physical:
-  T1200: [Hardware Additions, 하드웨어 추가(악성 장치 반입)]
-  T1091: [Replication Through Removable Media, 이동식 매체를 통한 전파]
-  T1052: [Exfiltration Over Physical Medium, 물리 매체를 통한 반출]
-  T1052.001: [Exfiltration over USB, USB를 통한 반출]
+# 위협 주체 유형 — CISA 내부자 유형(비의도·의도·공모·제3자) + 외부자(작업방향 5.4)
+actor_types:
+  외부자: 조직에 승인된 접근이 없는 행위자(경쟁사·국가배후 조직·범죄자·브로커)
+  내부자(악의): 승인된 접근을 가졌거나 가졌던 사람이 의도적으로 피해를 일으킴(재직자·퇴직자)
+  내부자(비의도): 부주의·실수·분실로 피해를 일으킨 내부자
+  공모: 내부자와 외부자가 함께 행동(매수된 내부자·대리 수령자 등)
+  제3자: 협력사·파견·외주·정비 인력처럼 계약 관계로 접근을 가진 사람
 
-# 확인 후 편입할 후보 — 1차 출처 검증 전까지는 근거로 쓰지 않음
-candidate_frameworks:
-  - "CISA Insider Threat Mitigation (내부자 위협 완화 지침)"
-  - "MITRE Insider Threat TTP Knowledge Base"
-  - "UK NPSA(구 CPNI) 인적·물리 보안 지침"
-  - "ISO/IEC 27001 Annex A 물리 통제 · ISO 22341(보안設計)"
-  - "CISA Counter-UAS (대드론) 지침"
+# 적용 프로파일 — 행이 주로 해당하는 조직 유형(작업방향 5.4)
+profiles:
+  제조·연구: 핵심기술을 보유한 제조기업·기업 연구소
+  반도체·방산: 국가핵심기술·방산기술 보유 기업(반도체·디스플레이·이차전지·조선·항공우주·방산)
+  기반시설: 에너지·교통·공항·항만·통신 등 국가기반시설·국가중요시설
+  공공·연구기관: 정부·군·공공기관·대학·정부출연연구기관
+  일반기업: 사무·서비스 중심 일반 조직(원격 근무·외주 개발 포함)
+
+# ISO/IEC 27001:2022 Annex A — 5(일부) · 6 · 7
+iso27001:
+  '5.3': [Segregation of duties, 직무 분리]
+  '5.7': [Threat intelligence, 위협 인텔리전스]
+  '5.9': [Inventory of information and other associated assets, 정보 및 관련 자산 목록]
+  '5.10': [Acceptable use of information and other associated assets, 정보 및 관련 자산의 허용된 사용]
+  '5.11': [Return of assets, 자산 반납]
+  '5.12': [Classification of information, 정보 분류]
+  '5.13': [Labelling of information, 정보 표시]
+  '5.14': [Information transfer, 정보 전송]
+  '5.19': [Information security in supplier relationships, 공급자 관계의 정보보호]
+  '5.20': [Addressing information security within supplier agreements, 공급자 계약의 정보보호 반영]
+  '5.21': [Managing information security in the ICT supply chain, ICT 공급망 정보보호 관리]
+  '5.24': [Information security incident management planning and preparation, 정보보호 사고 관리 계획·준비]
+  '5.26': [Response to information security incidents, 정보보호 사고 대응]
+  '5.29': [Information security during disruption, 중단 상황의 정보보호]
+  '5.30': [ICT readiness for business continuity, 사업 연속성을 위한 ICT 준비]
+  '5.31': [Legal, statutory, regulatory and contractual requirements, 법적·규제·계약 요구사항]
+  '5.32': [Intellectual property rights, 지식재산권]
+  '6.1': [Screening, 신원 심사]
+  '6.2': [Terms and conditions of employment, 고용 계약 조건]
+  '6.3': [Information security awareness, education and training, 정보보호 인식·교육·훈련]
+  '6.4': [Disciplinary process, 징계 절차]
+  '6.5': [Responsibilities after termination or change of employment, 고용 종료·변경 후 책임]
+  '6.6': [Confidentiality or non-disclosure agreements, 비밀유지 계약]
+  '6.7': [Remote working, 원격 근무]
+  '6.8': [Information security event reporting, 정보보호 이벤트 보고]
+  '7.1': [Physical security perimeters, 물리 보안 경계]
+  '7.2': [Physical entry, 물리적 출입]
+  '7.3': [Securing offices, rooms and facilities, 사무실·공간·시설 보안]
+  '7.4': [Physical security monitoring, 물리 보안 모니터링]
+  '7.5': [Protecting against physical and environmental threats, 물리·환경 위협으로부터 보호]
+  '7.6': [Working in secure areas, 보안 구역 내 작업]
+  '7.7': [Clear desk and clear screen, 클린 데스크·클린 스크린]
+  '7.8': [Equipment siting and protection, 장비 배치·보호]
+  '7.9': [Security of assets off-premises, 사외 자산 보안]
+  '7.10': [Storage media, 저장 매체]
+  '7.11': [Supporting utilities, 지원 설비]
+  '7.12': [Cabling security, 배선 보안]
+  '7.13': [Equipment maintenance, 장비 유지보수]
+  '7.14': [Secure disposal or re-use of equipment, 장비의 안전한 폐기·재사용]
+
+# ISMS-P 인증기준 — 2.2 인적 보안 · 2.3 외부자 보안 · 2.4 물리 보안 + 관련 항목
+ismsp:
+  2.2.1: [주요 직무자 지정 및 관리]
+  2.2.2: [직무 분리]
+  2.2.3: [보안 서약]
+  2.2.4: [인식제고 및 교육훈련]
+  2.2.5: [퇴직 및 직무변경 관리]
+  2.2.6: [보안 위반 시 조치]
+  2.3.1: [외부자 현황 관리]
+  2.3.2: [외부자 계약 시 보안]
+  2.3.3: [외부자 보안 이행 관리]
+  2.3.4: [외부자 계약 변경 및 만료 시 보안]
+  2.4.1: [보호구역 지정]
+  2.4.2: [출입통제]
+  2.4.3: [정보시스템 보호]
+  2.4.4: [보호설비 운영]
+  2.4.5: [보호구역 내 작업]
+  2.4.6: [반출입 기기 통제]
+  2.4.7: [업무환경 보안]
+  2.6.1: [네트워크 접근]
+  2.6.6: [원격접근 통제]
+  2.10.6: [업무용 단말기기 보안]
+  2.10.7: [보조저장매체 관리]
+  2.11.1: [사고 예방 및 대응체계 구축]
+  2.11.5: [사고 대응 및 복구]
+  2.12.1: [재해·재난 대비 안전조치]
+
+# CERT Common Sense Guide 7판 실천과제(번호·제목)
+cert:
+  1: [Know and Protect Your Critical Assets, 핵심 자산 식별·보호]
+  2: [Develop a Formalized Insider Risk Management Program, 공식 내부자 위험 관리 프로그램 수립]
+  3: [Clearly Document and Consistently Enforce Administrative Controls, 관리 통제의 명확한 문서화·일관된 집행]
+  4: [Beginning With the Hiring Process, Monitor and Respond to Suspicious or Disruptive Behavior, 채용 단계부터 의심·문제 행동 감시·대응]
+  5: [Anticipate and Manage Negative Issues in the Work Environment, 업무 환경의 부정적 문제 예측·관리]
+  6: [Consider Threats From Insiders and Trusted External Entities in Enterprise-Wide Risk Assessments, 전사 위험평가에 내부자·신뢰 외부 주체 위협 반영]
+  7: [Be Especially Vigilant Regarding Social Media, 소셜 미디어 각별 주의]
+  8: [Structure Management and Tasks to Minimize Insider Stress and Mistakes, 내부자 스트레스·실수를 줄이는 관리·업무 구조]
+  9: [Incorporate Insider Threat Awareness Into Periodic Security Training for All Workforce Members, 전 인력 정기 보안교육에 내부자 위협 인식 포함]
+  10: [Implement Strict Password and Account Management Policies and Practices, 엄격한 비밀번호·계정 관리]
+  11: [Institute Stringent Access Controls and Monitoring Policies on Privileged Users, 특권 사용자 접근 통제·모니터링]
+  12: [Deploy Solutions for Monitoring Workforce Member Actions and Correlating Information from Multiple Data Sources, 인력 행위 모니터링·다중 데이터 상관 분석]
+  13: [Monitor and Control Remote Access from All Endpoints, Including Mobile Devices, 모바일 포함 전 단말 원격 접속 감시·통제]
+  14: [Establish a Baseline of Normal Behavior for Both Networks and Workforce Members, 네트워크·인력의 정상 행위 기준선 수립]
+  15: [Enforce Separation of Duties and Least Privilege, 직무 분리·최소 권한]
+  16: [Define Explicit Security Agreements for Cloud Services, Especially Access Restrictions and Monitoring Capabilities, 클라우드 서비스 보안 계약 명시]
+  17: [Institutionalize System Change Controls, 시스템 변경 통제 제도화]
+  18: [Implement Secure Backup and Recovery Processes, 안전한 백업·복구]
+  19: [Mitigate Unauthorized Data Exfiltration, 무단 자료 반출 완화]
+  20: [Develop a Comprehensive Workforce Member Termination Procedure, 포괄적 퇴직 절차 수립]
+  21: [Adopt Positive Incentives to Align the Workforce With the Organization, 긍정적 유인으로 인력과 조직 정렬]
+  22: [Learn From Past Insider Threat Incidents, 과거 내부자 사건에서 학습]
+
+# ⑤ 참고 문헌 — 행 refs 키와 문구 '참고: …' 인용의 카탈로그(D11·D12, 작업방향 6.5)
+#   지침이지 사고가 아니므로 발생가능성·근거 수준 산정에 넣지 않는다. 요지 의역·출처 표기만 하고 원문·PDF는 넣지 않는다.
+#   checked = 확인일. 'verify'는 확인 방법(npsa.gov.uk·gov.uk·sei.cmu.edu는 이 환경에서 직접 열람이 막혀 검색 결과로 대조)
+references:
+  NPSA-TOP:
+    title: NPSA 보호보안 위험 주제(차량·드론 · 내부자 위험 · 사보타주 · 무단 침입 · 적대적 정찰 · 지식재산 등)
+    short: NPSA 〈위험 주제〉
+    publisher: UK National Protective Security Authority(MI5 산하, 구 CPNI)
+    year: 웹
+    urls: [https://www.npsa.gov.uk/]
+    use: [분류 근거]
+    domains: [RC, PA, SV, HU, IN, EX, IM]
+    terms: Crown copyright — 공개 사이트 재이용 조건 미확인(외부망 이용 약관만 확인) → 요지 의역·출처 표기, 원문 비수록
+    verify: 검색 결과 기준(직접 열람 차단)
+    checked: '2026-10-06'
+  NPSA-DEF:
+    title: NPSA Changes to Insider Risk Definitions · Setting the foundations — five principles for a shared approach to insider risk
+    short: NPSA 〈내부자 위험 정의〉
+    publisher: NPSA
+    year: '2023-05'
+    urls:
+      - https://www.npsa.gov.uk/blog/npsa-changes-insider-risk-definitions
+      - https://www.waterisac.org/tlpclear-uk-national-protective-security-authority-setting-the-foundations-five-principles-for-a-shared-approach-to-insider-risk
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [IN, HU]
+    terms: Crown copyright — 정의는 짧은 문장만 출처와 함께 인용, 나머지는 요지 의역
+    verify: 검색 결과 기준 — 2023-05-22 게시, 내부자·내부자 위험·내부자 위협·내부자 사건 4개 정의 확인. 5원칙은 재게시본(WaterISAC) 기준
+    checked: '2026-10-06'
+  NPSA-IRMF:
+    title: NPSA Insider Risk Mitigation Framework · Role-based protective security risk assessment guidance
+    short: NPSA 〈내부자 위험 완화 프레임워크〉
+    publisher: NPSA
+    year: 웹
+    urls:
+      - https://www.npsa.gov.uk/insider-risks/insider-risk-mitigation-framework
+      - https://www.npsa.gov.uk/system/files/documents/npsa-role-based-protective-security-risk-assessment-guidance.pdf
+    archive: https://tnaqa.mirrorweb.com/ukgwa/20260407053659mp_/https://www.npsa.gov.uk/insider-risks/insider-risk-mitigation-framework
+    use: [대응 문구]
+    domains: [IN, HU]
+    terms: Crown copyright — 요지 의역·출처 표기
+    verify: 검색 결과 기준 — 경영진 참여·거버넌스, 보안 문화, 직무 기반 보안 위험평가, 지속 개선 구성 확인. 영국 정부 웹 아카이브 스냅숏(2026-04-07) 존재
+    checked: '2026-10-06'
+  NPSA-HR:
+    title: NPSA Hostile Reconnaissance · Crowded Places Guidance(Hostile reconnaissance 장) · SCaN for all staff
+    short: NPSA 〈적대적 정찰〉
+    publisher: NPSA · NaCTSO(GOV.UK) · ProtectUK
+    year: 웹
+    urls:
+      - https://www.npsa.gov.uk/hostile-reconnaissance
+      - https://www.gov.uk/government/publications/crowded-places-guidance/hostile-reconnaissance
+      - https://www.protectuk.police.uk/advice-and-guidance/security/scan-all-staff
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [RC, PA, HU]
+    terms: GOV.UK 게시본은 별도 표시가 없으면 OGL v3.0(출처 표기), npsa.gov.uk 게시본은 Crown copyright — GOV.UK 게시본 우선 인용
+    verify: 검색 결과 기준(직접 열람 차단). 대테러 맥락을 기업 기술보호 맥락으로 조정해 인용
+    checked: '2026-10-06'
+  NPSA-CUAS:
+    title: Countering Threats From Uncrewed Aerial Systems — Making Your Site Ready · UAS Vulnerability Assessment · C-UAS Detect, Track and Identify operational requirements
+    short: NPSA 〈대드론 — 시설 대비〉
+    publisher: NPSA
+    year: 2023-08 초판 · 2025 개정본
+    urls:
+      - https://www.npsa.gov.uk/system/files/documents/cuas-making-your-site-ready-2025.pdf
+      - https://www.npsa.gov.uk/system/files/documents/npsa-uas-vulnerability-assessment-official.pdf
+      - https://www.npsa.gov.uk/system/files/documents/npsa-c-uas-developing-operational-requirements-for-detect-track-and-identify-technology_0.pdf
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [SV, IM]
+    terms: Crown copyright — 요지 의역·출처 표기. 영국 법적 권한 관련 내용은 국내 제도(항공안전법·전파법)로 바꿔 쓰거나 '영국 지침'으로 표기
+    verify: 검색 결과 기준 — 위험평가 → 대드론 전략·계획 → 무모·부주의 비행 감소, 물리 강화, 기술 대안, 운영 대응 구성 확인
+    checked: '2026-10-06'
+  NPSA-SI:
+    title: Secure Innovation — security advice for emerging technology companies(NPSA·NCSC, Five Eyes 공동) · Investor guidance
+    short: NPSA 〈Secure Innovation〉
+    publisher: NPSA · NCSC
+    year: '2023-10'
+    urls:
+      - https://www.npsa.gov.uk/system/files/2023-10/secure-innovation-companies-booklet.pdf
+      - https://www.npsa.gov.uk/secure-innovation/investor-guidance
+      - https://www.mi5.gov.uk/news/five-eyes-launch-drive-to-secure-innovation
+    archive: https://tnaqa.mirrorweb.com/ukgwa/20260407053530mp_/https://www.npsa.gov.uk/secure-innovation
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [HU, PA, IN, EX, RC, IM]
+    terms: Crown copyright — 요지 의역·출처 표기. 영국 국가안보투자법은 국내 산업기술보호법(국가핵심기술 해외 인수·합병 승인·신고)으로 바꿔 씀
+    verify: 검색 결과 기준 — 2023-10-17 Five Eyes 공동 발표, 투자·공급망·출장·IT 네트워크·클라우드 주제 확인
+    checked: '2026-10-06'
+  NPSA-TR:
+    title: Trusted Research(NPSA·NCSC) — 학계·연구기관 국제 협력 보안 지침
+    short: NPSA 〈Trusted Research〉
+    publisher: NPSA · NCSC
+    year: 2019-09~
+    urls: [https://www.npsa.gov.uk/trusted-research]
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [HU, RC]
+    terms: Crown copyright — 요지 의역·출처 표기
+    verify: 검색 결과 기준(직접 열람 차단)
+    checked: '2026-10-06'
+  NPSA-TBYL:
+    title: Think Before You Link(MI5·CPNI) — 업무용 SNS 위장 프로필 접근 대응 앱·캠페인
+    short: NPSA 〈Think Before You Link〉
+    publisher: MI5 · CPNI(현 NPSA)
+    year: 2021-04 경고 · 2022-05 앱 공개
+    urls:
+      - https://www.gov.uk/government/news/new-app-to-counter-malicious-approaches-online
+      - https://bbc.in/3argIDF
+    use: [분류 근거, 위협 내용, 대응 문구]
+    domains: [RC, HU]
+    terms: GOV.UK 게시본 OGL v3.0(출처 표기)
+    verify: 검색 결과 기준 — MI5가 업무용 SNS의 위장 접근 1만 건 이상을 확인했다고 경고, CPNI가 위장 프로필 점검 앱 공개
+    checked: '2026-10-06'
+  CISA-ITMG:
+    title: CISA Insider Threat Mitigation Guide · Defining Insider Threats
+    short: CISA 〈내부자 위협 완화 지침〉
+    publisher: US Cybersecurity and Infrastructure Security Agency
+    year: '2020-11'
+    urls:
+      - https://www.cisa.gov/sites/default/files/publications/Insider%20Threat%20Mitigation%20Guide_Final_508.pdf
+      - https://www.cisa.gov/defining-insider-threats
+    use: [분류 근거, 대응 문구]
+    domains: [IN, HU, EX, PA]
+    terms: 미국 정부 저작물(공공 영역) — 요지 의역·출처 표기
+    verify: 검색 결과 기준 — 내부자 유형(비의도[부주의·사고] · 의도 · 공모 · 제3자), 부주의 예시로 보안 출입구 동반 진입 허용·저장장치 분실
+    checked: '2026-10-06'
+  CISA-UAS:
+    title: CISA UAS Detection Technology Guidance · Suspicious UAS Activity Guidance · Safe Handling Considerations for Downed UAS(Be Air Aware)
+    short: CISA 〈무인기(UAS) 지침〉
+    publisher: US Cybersecurity and Infrastructure Security Agency
+    year: '2025-11'
+    urls:
+      - https://www.waterisac.org/tlpclear-cisa-releases-three-unmanned-aircraft-systems-uas-security-guidance-products
+      - https://law.hawaii.gov/ohs/wp-content/uploads/sites/2/2025/12/SUSPICIOUS_UNMANNED_AIRCRAFT_SYSTEM_ACTIVITY_GUIDANCE-508_11JULY25.pdf
+    use: [분류 근거, 대응 문구]
+    domains: [SV, IM]
+    terms: 미국 정부 저작물(공공 영역) — 요지 의역·출처 표기
+    verify: 검색 결과 기준 — 2025-11-19 공개 3종. 탐지 지침은 탐지·추적·식별만 다루고 비행 방해·제어 기술은 제외
+    checked: '2026-10-06'
+  ISO-22341:
+    title: ISO 22341:2021 Security and resilience — Protective security — Guidelines for crime prevention through environmental design(CPTED)
+    short: ISO 22341 〈환경설계를 통한 범죄 예방〉
+    publisher: ISO
+    year: '2021'
+    urls: [https://www.iso.org/standard/50078.html]
+    use: [대응 문구]
+    domains: [PA, RC]
+    terms: 유료 표준 — 원문 비수록, 번호·제목만 인용
+    verify: 번호·제목 확인(2021-01 발행, 본문 미열람)
+    checked: '2026-10-06'

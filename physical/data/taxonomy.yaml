@@ -1,151 +1,1110 @@
-# 물리·인적 보안위협 매트릭스 — 분류 체계 (씨앗)
-# 도메인(Lv1) → 위협분류(Lv2) → 세부위협(Lv3). 아래 Lv3는 "형식 예시"이며 새 세션이 확장한다.
-# ID: PHT-<도메인>-NN(.m). severity ∈ {상,중,하}. attack/nist/iso/cross 는 해당 없으면 [].
+# 물리·인적 보안위협 매트릭스 — 분류 체계(원천)
+#
+# 구조: Lv1 도메인(물리·인적 공격면 7개) → Lv2 위협분류(PHT-<도메인>-NN) → Lv3 세부위협(PHT-<도메인>-NN.m)
+#       하위 세부위협이 하나뿐인 위협분류는 Lv2 = Lv3 (ID에 '.m' 없음)
+# ID는 고정 — 항목을 없애도 번호를 다시 매기거나 재사용하지 않음(폐지 시 retired 표시)
+# 경계 규칙(작업방향 5.2, D2): 한 행 = 한 행위. 여러 단계에 걸친 흐름은 행으로 합치지 않고 공격 체인 시나리오(data/scenarios.yaml)로 잇는다.
+#   계정·디지털 경로는 원 매트릭스 ID로 연계만 한다(작업방향 4장, D3) — 위장취업의 계정 획득은 IDT-LC-03, 내부자의 메일·클라우드 반출은 IDT-LC-02.1 등.
+#   국가배후 여부는 행 속성이 아니라 사고 DB의 actor 필드로만 다룬다(행위자 축과 위협 축을 섞지 않음).
+#
+# Lv3 필드
+#   name / en       세부위협명(국문) / 영문명
+#   stage           공격 단계 — frameworks.yaml stages(정찰·접근·실행·지속·내부자화·반출·영향)
+#   actors          위협 주체 유형 — frameworks.yaml actor_types(외부자·내부자(악의)·내부자(비의도)·공모·제3자)
+#   profiles        적용 프로파일 — frameworks.yaml profiles(제조·연구·반도체·방산·기반시설·공공·연구기관·일반기업)
+#   assets          노리는 자산·통제 지점
+#   attack          ATT&CK v19.2 기법 ID(물리·인적 접점만). 없으면 attack_none에 미연계 사유(필수)
+#                   'ITKB'(내부자 관측 기법) 열은 attack ∩ reference/itkb 추출본으로 자동 산출
+#   nist / iso / ismsp / cert   대응 기준(NIST SP 800-53 Rev.5 · ISO/IEC 27001:2022 부속서 A · ISMS-P · CERT 7판 실천과제 번호)
+#   idt / sct / ot / cloud / ai  다른 매트릭스 연계 — 아이덴티티 v2(IDT-) · 공급망 v2(SCT-) · OT v5(OTC-)·통합 v2 OT(OT-) ·
+#                                통합 v2 클라우드(CL-) · 통합 v2 AI(AI-)
+#   refs            참고 문헌 키(frameworks.yaml references) — 워크북 '참고 문헌' 열, 문구 '참고:' 인용(D11·D12)
+#   severity        심각도(상·중·하) — 기준은 assessment.severity_rule
+#   severity_why    심각도 근거('상'은 피해 범위를 적음)
 
 assessment:
-  likelihood_rule: "상 = 실제 사고 2건 이상 / 중 = 실제 사고 1건 또는 실증·공개 취약점·문헌 중 하나 이상 / 하 = 근거 없음"
-  severity_rule:   # TODO: 새 세션이 확정
-    상: "영업비밀·핵심기술 대량 유출, 인명·안전·핵심시설 위협, 장기 잠복 내부자 등 대규모·회복 불가 피해"
-    중: "개별 자산·단일 조직 범위 피해, 또는 다른 위협의 피해를 키우는 조건"
-    하: "영향이 제한적·일시적이고 복구가 쉬운 위협"
-  stages: [정찰, 접근, 실행, 지속·내부자화, 반출, 영향]   # 공격 단계 어휘
-
-profiles:   # 적용 대상(조직 유형) — TODO 확정
-  제조·연구: "반도체·방산·바이오 등 핵심기술 보유 기업·연구소"
-  기반시설: "에너지·통신·교통 등 국가기반시설"
-  일반기업: "사무·SaaS 중심 조직"
+  severity_rule:
+    상: 성공하면 국가핵심기술·핵심 영업비밀·국가기밀이 통째로 유출되거나, 시설 안전·인명·핵심 기반시설 운영에 위협이 되거나, 신뢰된 내부 접근이 장기간 유지되어 피해 범위를 가늠하기 어려운 위협
+    중: 피해가 개별 자산·단일 구역·단일 조직에 머물거나, 단독 피해는 없고 다른 위협을 키우는 조건(정찰·접근 확보 등)인 위협
+    하: 영향이 제한적·일시적이고 복구가 쉬운 위협
+  likelihood_rule: 상 = 실제 사고 2건 이상(AI v3.2·클라우드 v5·OT·공급망·아이덴티티 매트릭스와 같은 수식), 중 = 실제 사고 1건 또는 ATT&CK 물리·인적 맥락 사례·ITKB 내부자 관측 기법·정부 경보·위협인텔·실증 중 하나 이상, 하 = 근거 없음
+  severity_check: "'상' 판정은 피해 범위(핵심기술 통째 유출·기반시설 운영·안전·장기 잠복)를 severity_why에 적은 경우에만 — 위험도 포화(공급망 60개 중 38개 매우 높음)를 피하기 위한 기준"
 
 domains:
+  # =========================================================================
   - code: RC
     ko: 정찰·표적 선정
     en: Reconnaissance & Targeting
-    desc: 공개정보(OSINT)·현장 답사·인물 물색으로 표적 조직·인력·시설을 파악하는 단계
+    desc: 사람·조직·시설 정보를 모으는 활동 — 공개정보 수집, 현장 답사(적대적 정찰), 위장 접촉을 통한 정보 수집. 적대적 정찰은 적대 행위를 계획하려고 정보를 모으는 의도적 관찰(NPSA)
+    excludes: 장비(드론·은닉 카메라·무선)로 수집 → SV · 사람을 포섭해 지속 협력자로 만듦 → HU
     lv2:
       - id: PHT-RC-01
-        name: 공개정보·소셜미디어 기반 인물·조직 정찰
+        name: 공개정보 기반 인물·조직·시설 파악
         lv3:
-          - id: PHT-RC-01.1
-            name: 임직원 신상·근무지 수집(SNS·채용·학회)
-            en: Targeting staff via social media, job posts, conferences
+          - id: PHT-RC-01
+            name: 공개정보 기반 핵심 인력·조직·시설 파악
+            en: Open-source profiling of key staff, organization and facilities
             stage: [정찰]
-            assets: [임직원, 조직도·인사정보]
-            attack: []
-            nist: [PS-3]
-            iso: []
-            cross: []
+            actors: [외부자]
+            profiles: [반도체·방산, 제조·연구, 기반시설, 공공·연구기관]
+            assets: [핵심 인력 명단·경력, 조직도·과제 정보, 시설 위치·배치]
+            attack: [T1589.003, T1591.001, T1591.004, T1593.001]
+            nist: [AC-22, AT-2(3), PM-16]
+            iso: ['5.7', '6.3']
+            ismsp: [2.2.4]
+            cert: [1, 7]
+            idt: []
+            sct: [SCT-DE-01.2]
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-HR, NPSA-SI]
             severity: 중
-            severity_why: 단독 피해는 없으나 포섭·위장취업·사회공학의 표적 선정 토대가 됨
+            severity_why: 단독 피해는 없으나 포섭·위장 접촉·침입의 표적을 고르는 토대가 되는 조건 — 조직이 통제하지 못한 공개정보(경력 프로필·운동 기록 앱·채용 공고)가 출발점이 됨
+      - id: PHT-RC-02
+        name: 현장 답사(적대적 정찰)
+        lv3:
+          - id: PHT-RC-02
+            name: 시설 주변 촬영·관찰과 보안 체계 탐색(현장 답사)
+            en: On-site hostile reconnaissance — photography, observation and probing of security
+            stage: [정찰]
+            actors: [외부자]
+            profiles: [기반시설, 반도체·방산, 공공·연구기관]
+            assets: [시설 경계·출입 동선, 경비 체계, 군사·기반시설]
+            attack: []
+            attack_none: ATT&CK 정찰 기법은 디지털 정보 수집 중심 — 사람이 현장에서 관찰·촬영하는 활동은 기법 정의 밖
+            nist: [PE-6, PE-6(1), PM-16]
+            iso: ['7.1', '7.4']
+            ismsp: [2.4.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-HR, ISO-22341]
+            severity: 중
+            severity_why: 정찰 자체는 피해가 없지만 침입·감시·사보타주를 계획하는 앞 단계 — 정찰 중에 탐지하면 이후 단계를 끊을 수 있음(NPSA 정보 거부·탐지·억지 원칙)
+      - id: PHT-RC-03
+        name: 위장 접촉을 통한 정보 수집
+        lv3:
+          - id: PHT-RC-03.1
+            name: 온라인 위장 프로필 접근(헤드헌터·연구자·싱크탱크 사칭)
+            en: Approaches via fake online personas (recruiters, researchers, think tanks)
+            stage: [정찰, 접근]
+            actors: [외부자]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [핵심 기술 인력, 보안 인가 보유자]
+            attack: [T1585.001, T1593.001, T1598]
+            nist: [AT-2(3), PM-16]
+            iso: ['6.3', '6.8']
+            ismsp: [2.2.4]
+            cert: [7, 9]
+            idt: []
+            sct: [SCT-DE-01.2]
+            ot: []
+            cloud: []
+            ai: [AI-01-08]
+            refs: [NPSA-TBYL, NPSA-TR]
+            severity: 중
+            severity_why: 접근 대상 한 사람에서 정보가 새거나 대면 포섭으로 이어지는 출발점 — 피해는 포섭(PHT-HU-01.1)·반출 단계에서 커짐
+          - id: PHT-RC-03.2
+            name: 학회·면접·거래 상담을 가장한 기술 질의
+            en: Elicitation under the pretext of conferences, job interviews or business talks
+            stage: [정찰]
+            actors: [외부자]
+            profiles: [제조·연구, 반도체·방산, 공공·연구기관]
+            assets: [공정·설계 노하우, 연구 성과]
+            attack: []
+            attack_none: 대면 대화로 정보를 끌어내는 행위는 ATT&CK 범위 밖 — 전자 수단의 정보 피싱만 T1598로 정의
+            nist: [AT-2(3), PM-16]
+            iso: ['5.14', '6.3', '6.6']
+            ismsp: [2.2.3, 2.2.4]
+            cert: [7, 9]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-TR, NPSA-SI]
+            severity: 중
+            severity_why: 질의 한 번에 나가는 정보는 제한적이지만 강연·면접 초청이 반복되며 협력·포섭으로 이어지는 조건
+
+  # =========================================================================
   - code: PA
     ko: 물리 침입·접근
     en: Physical Intrusion & Access
-    desc: 시설 경계·출입통제를 우회해 건물·구역·장비에 물리적으로 접근
+    desc: 시설·구역·장비에 대한 물리 접근 — 출입통제 우회, 방문자·협력업체 위장 출입, 악성 장치 반입, 출장지 장비 접근, 배송·설치·정비 과정 접근
+    excludes: 내부자의 정상 출입 → IN · 드론 등 원격 장비 수집 → SV
     lv2:
       - id: PHT-PA-01
         name: 출입통제 우회
         lv3:
           - id: PHT-PA-01.1
-            name: 테일게이팅·출입증 위·변조로 통제구역 진입
-            en: Tailgating and badge forgery into controlled areas
+            name: 경계 침입·보호구역 무단 진입
+            en: Perimeter breach and unauthorized entry into secure areas
             stage: [접근]
-            assets: [출입통제, 통제구역]
+            actors: [외부자]
+            profiles: [기반시설, 공공·연구기관, 반도체·방산]
+            assets: [시설 경계·울타리, 보호구역, 공항 보안구역]
             attack: []
-            nist: [PE-3, PE-6]
-            iso: []
-            cross: []
+            attack_none: 물리 침입은 ATT&CK 기법 정의 밖
+            nist: [PE-3, PE-6, PE-6(1), CA-8(3)]
+            iso: ['7.1', '7.2', '7.4']
+            ismsp: [2.4.1, 2.4.2]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [ISO-22341, NPSA-HR]
             severity: 중
-            severity_why: 접근 자체는 국지적이나 반출·장비 임플란트·내부망 접점으로 이어질 수 있음
+            severity_why: 침입 자체는 단일 시설·구역 범위 — 피해는 침입 뒤 장치 설치·반출·사보타주로 커짐
+          - id: PHT-PA-01.2
+            name: 출입증 대리 사용·위조·동반 진입(테일게이팅)
+            en: Badge sharing, forgery and tailgating
+            stage: [접근]
+            actors: [외부자, 내부자(악의), 내부자(비의도), 공모]
+            profiles: [제조·연구, 반도체·방산, 일반기업]
+            assets: [출입 카드·출입 기록, 통제구역]
+            attack: []
+            attack_none: 출입증 위조·동반 진입은 ATT&CK 기법 정의 밖
+            nist: [PE-2, PE-3, PE-6]
+            iso: ['7.2', '7.4']
+            ismsp: [2.4.2]
+            cert: [3, 12]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [CISA-ITMG]
+            severity: 중
+            severity_why: 출입 기록을 믿을 수 없게 만들어 다른 위협(반출·알리바이 위장)을 키우는 조건 — 단독 피해는 구역 단위
+      - id: PHT-PA-02
+        name: 방문자·협력업체 위장 출입
+        lv3:
+          - id: PHT-PA-02
+            name: 방문객·택배·협력업체 직원 위장 출입
+            en: Entry under visitor, courier or contractor pretext
+            stage: [접근]
+            actors: [외부자]
+            profiles: [일반기업, 제조·연구, 공공·연구기관, 기반시설]
+            assets: [접견구역, 사무 공간, 네트워크 포트]
+            attack: [T1684.001]
+            nist: [PE-2, PE-3, PE-8]
+            iso: ['7.2', '7.3']
+            ismsp: [2.4.2, 2.4.5]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-HR]
+            severity: 중
+            severity_why: 위장 출입 자체는 방문 구역 범위 — 피해는 출입 뒤 장치 반입(PHT-PA-03.1)·정보 수집으로 커짐
+      - id: PHT-PA-03
+        name: 악성 장치·매체 반입
+        lv3:
+          - id: PHT-PA-03.1
+            name: 위장 출입자의 악성 장치 내부망 연결
+            en: Planting rogue devices on internal networks after physical entry
+            stage: [접근, 지속]
+            actors: [외부자]
+            profiles: [일반기업, 기반시설, 공공·연구기관]
+            assets: [사내 네트워크 포트, 회의실·로비 단말]
+            attack: [T1200, T1091]
+            nist: [PE-3, SC-41, CM-8(3)]
+            iso: ['7.2', '7.8']
+            ismsp: [2.4.6, 2.10.7]
+            cert: []
+            idt: []
+            sct: []
+            ot: [OTC-IA-04, OT-IA-05]
+            cloud: []
+            ai: []
+            refs: []
+            severity: 상
+            severity_why: 내부망에 상주 장치를 두면 원격 침투 경로가 장기간 유지되어 망 전체가 발판이 됨 — 물리 접근 한 번이 조직 전체 침해로 커지는 경로
+          - id: PHT-PA-03.2
+            name: 우편·사은품으로 위장한 악성 USB 장치 투입
+            en: Malicious USB devices delivered by mail or as gifts
+            stage: [접근, 실행]
+            actors: [외부자]
+            profiles: [일반기업, 기반시설, 반도체·방산]
+            assets: [임직원 업무 PC, 우편물 수발]
+            attack: [T1200, T1091]
+            nist: [AT-2, MP-7, SC-41]
+            iso: ['6.3', '7.10']
+            ismsp: [2.2.4, 2.10.7]
+            cert: [9]
+            idt: []
+            sct: []
+            ot: [OTC-IA-04]
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 받은 사람이 장치를 연결해야 성공하고 결과는 연결한 단말에서 시작 — 망 전체 피해는 추가 단계가 필요
+      - id: PHT-PA-04
+        name: 출장·원격근무 환경의 장비 접근
+        lv3:
+          - id: PHT-PA-04
+            name: 출장지·숙소·국경 검색에서 업무 단말 접근·복제
+            en: Access to or copying of devices during travel (hotels, border checks)
+            stage: [접근, 반출]
+            actors: [외부자]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [출장용 노트북·휴대폰, 단말 저장 자료]
+            attack: []
+            attack_none: 출장지 단말의 물리 접근·국경 검색은 ATT&CK 기법 정의 밖
+            nist: [AC-19, AC-19(5), PE-17]
+            iso: ['6.7', '7.9']
+            ismsp: [2.10.6]
+            cert: [13]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 중
+            severity_why: 피해가 들고 간 단말·자료 범위에 머무름 — 다만 단말이 사내 접속 수단이면 침투 발판이 됨
+      - id: PHT-PA-05
+        name: 배송·설치·정비 과정 접근
+        lv3:
+          - id: PHT-PA-05
+            name: 배송·설치·정비 과정의 장비 변조·장치 추가
+            en: Tampering with equipment during delivery, installation or maintenance
+            stage: [접근, 지속]
+            actors: [외부자, 제3자]
+            profiles: [기반시설, 반도체·방산]
+            assets: [도입 장비·설비, 정비 인력·원격 정비 경로]
+            attack: [T1195.003]
+            nist: [MA-5, PE-16, SR-10, SR-11]
+            iso: ['5.19', '5.21', '7.13']
+            ismsp: [2.3.3, 2.4.5]
+            cert: [6]
+            idt: []
+            sct: []
+            ot: [OTC-IA-07, OTC-IA-08]
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 변조가 확인돼도 실제 악용 여부는 별도 조사가 필요하고 영향은 해당 장비 범위 — 설치 이후 원격 악용은 OT·공급망 매트릭스에서 평가
+
+  # =========================================================================
   - code: SV
     ko: 감시·도청·무단촬영
-    en: Surveillance & Eavesdropping
-    desc: 드론·은닉 카메라·도청·RF로 시설·화면·대화·전자파를 원격 수집
+    en: Surveillance, Eavesdropping & Covert Imaging
+    desc: 장비로 원격·은밀하게 수집 — 드론·무인기, 은닉 카메라·도청기, 무선·전자파 신호, 화면·문서 노출과 폐기물. 목적이 정찰이어도 장비로 수집하면 SV
+    excludes: 사람을 통한 수집(포섭·위장 접촉) → HU·RC · 사람이 현장에서 하는 관찰·촬영 → RC-02 · 내부자의 휴대폰 촬영 반출 → EX-03
     lv2:
       - id: PHT-SV-01
-        name: 드론·무인기 기반 무단 촬영·정찰
+        name: 드론·무인기
         lv3:
           - id: PHT-SV-01.1
-            name: 드론으로 시설 내부·화면·동선 무단 촬영
-            en: Unauthorized drone surveillance of facilities
+            name: 드론으로 시설·장비 무단 촬영
+            en: Unauthorized drone photography of facilities and assets
             stage: [정찰, 실행]
-            assets: [시설 외관·내부, 화면·문서]
+            actors: [외부자]
+            profiles: [기반시설, 반도체·방산, 공공·연구기관]
+            assets: [시설 배치·옥외 설비, 군함·항공기, 정부 청사]
             attack: []
-            nist: [PE-6, PE-19]
-            iso: []
-            cross: []
+            attack_none: ATT&CK에 무인기 기반 수집 기법 없음
+            nist: [PE-6, PE-6(1), PM-16]
+            iso: ['7.1', '7.4']
+            ismsp: [2.4.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-CUAS, CISA-UAS]
             severity: 중
-            severity_why: 비접촉 원거리 수집으로 탐지가 어렵고 반복 가능, 핵심시설 배치·공정 노출
+            severity_why: 울타리 밖 원거리 촬영으로 시설 배치·설비가 노출되지만 직접 피해는 정보 노출 범위 — 정찰 결과는 다른 공격의 기반이 됨
+          - id: PHT-SV-01.2
+            name: 통제 공역·시설 상공 드론 무단 비행·반복 출현
+            en: Unauthorized drone incursions and repeated overflights of sites
+            stage: [접근, 영향]
+            actors: [외부자]
+            profiles: [기반시설, 공공·연구기관]
+            assets: [공항·항만·발전소 상공, 군 기지]
+            attack: []
+            attack_none: ATT&CK에 무인기 기법 없음
+            nist: [CP-2, IR-4, PE-6]
+            iso: ['5.24', '7.4']
+            ismsp: [2.4.1, 2.11.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-CUAS, CISA-UAS]
+            severity: 중
+            severity_why: 비행 자체는 시설 단위 위협이고 운영 중단·안전 피해는 결과 행(PHT-IM-03·IM-04)에서 평가 — 의도·조종자 식별이 어려워 반복 출현에 대응이 늦음
+      - id: PHT-SV-02
+        name: 은닉 촬영·도청 장비
+        lv3:
+          - id: PHT-SV-02.1
+            name: 시설·회의실·교통로에 은닉 카메라·도청기 설치
+            en: Hidden cameras and listening devices planted in facilities or along routes
+            stage: [실행, 지속]
+            actors: [외부자, 공모]
+            profiles: [공공·연구기관, 반도체·방산, 기반시설]
+            assets: [회의실·집무실, 철도·물류 경로, 생산 현장]
+            attack: []
+            attack_none: 물리 도청·은닉 촬영 장비는 ATT&CK 기법 정의 밖(T1123·T1125는 침해 단말의 주변기기 이용)
+            nist: [PE-3, PE-6]
+            iso: ['7.3', '7.4', '7.6']
+            ismsp: [2.4.1, 2.4.5]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 상
+            severity_why: 설치된 장비가 발견될 때까지 최고 수준 대화·이동 정보를 장기간 수집 — 탐지 전까지 피해 범위를 가늠하기 어려움
+          - id: PHT-SV-02.2
+            name: 착용형·위장형 소형 촬영 장비로 몰래 촬영
+            en: Covert filming with wearable or disguised cameras
+            stage: [실행]
+            actors: [내부자(악의), 외부자, 공모]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [보안 단말 화면, 기밀 문서, 생산 설비]
+            attack: []
+            attack_none: 소형 촬영 장비의 물리적 사용은 ATT&CK 기법 정의 밖
+            nist: [PE-3, PE-6, PL-4]
+            iso: ['7.6', '7.7']
+            ismsp: [2.4.6, 2.4.7]
+            cert: [3]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 촬영자가 접근할 수 있는 화면·문서 범위에 머무름 — 반입 통제를 피해 반복 촬영하면 반출(PHT-EX-03)로 이어짐
+      - id: PHT-SV-03
+        name: 무선·전자파 신호
+        lv3:
+          - id: PHT-SV-03.1
+            name: 근접 무선 접속·가로채기(Wi-Fi·가짜 기지국)
+            en: Close-access wireless intrusion and interception (Wi-Fi, rogue base stations)
+            stage: [접근, 실행]
+            actors: [외부자]
+            profiles: [공공·연구기관, 일반기업, 기반시설]
+            assets: [사내 무선망, 임직원 휴대폰 통신]
+            attack: [T1669, T1557, T1040]
+            nist: [AC-18, SC-40, SI-4(14)]
+            iso: ['7.8']
+            ismsp: [2.6.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: [OTC-IA-06, OTC-CO-10]
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 무선 접속으로 얻는 것은 망 발판이나 통신 일부 — 조직 전체 피해는 내부망 확산 단계(다른 매트릭스)가 필요
+          - id: PHT-SV-03.2
+            name: 전자파·음향 등 부채널 정보 유출
+            en: Compromising emanations and side channels (TEMPEST, acoustic)
+            stage: [실행]
+            actors: [외부자]
+            profiles: [공공·연구기관, 반도체·방산]
+            assets: [망분리·폐쇄망 단말, 암호 장비]
+            attack: []
+            attack_none: 전자파·부채널 수집은 ATT&CK 기법 정의 밖
+            nist: [PE-19, PE-19(1)]
+            iso: ['7.8']
+            ismsp: [2.4.3]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 하
+            severity_why: 근접·장시간 수집이 필요하고 한 번에 새는 정보량이 적음 — 공개 사례는 연구 시연 위주
+      - id: PHT-SV-04
+        name: 화면·문서 노출과 폐기물
+        lv3:
+          - id: PHT-SV-04.1
+            name: 화면·휴대 문서 노출과 원거리 촬영
+            en: Visual exposure of screens and carried documents (shoulder surfing, long-lens photography)
+            stage: [실행]
+            actors: [외부자, 내부자(비의도)]
+            profiles: [공공·연구기관, 일반기업]
+            assets: [휴대 문서, 화면, 화이트보드]
+            attack: []
+            attack_none: 육안·원거리 촬영은 ATT&CK 기법 정의 밖
+            nist: [AC-11, MP-5]
+            iso: ['7.7']
+            ismsp: [2.4.7]
+            cert: [9]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 노출되는 것은 그 순간 보이는 문서·화면 범위 — 다만 작전·계획 문서가 찍히면 일정 변경 등 업무 피해로 이어짐
+          - id: PHT-SV-04.2
+            name: 폐기 문서·장비에서 정보 회수
+            en: Information recovered from discarded documents and devices
+            stage: [실행, 반출]
+            actors: [외부자, 제3자]
+            profiles: [일반기업, 공공·연구기관]
+            assets: [폐기 저장매체·장비, 파쇄 전 문서]
+            attack: []
+            attack_none: 폐기물 회수는 ATT&CK 기법 정의 밖
+            nist: [MP-6, SR-12]
+            iso: ['7.10', '7.14']
+            ismsp: [2.10.7]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 피해는 폐기된 매체에 남은 자료 범위 — 대량 폐기 장비를 처리 업체가 되팔면 고객 정보 대량 노출로 커짐
+
+  # =========================================================================
   - code: HU
     ko: 인적 포섭·사회공학
-    en: Human Intelligence & Social Engineering
-    desc: 금전·협박·관계로 임직원·협력사를 포섭하거나 대면 사회공학으로 정보를 끌어냄
+    en: Human Recruitment & Social Engineering
+    desc: 외부 행위자가 사람을 움직이는 행위 — 금전·협박·관계 기반 포섭, 인재 영입 위장, 연구·산학 협력 위장, 대면·방문 사칭, 투자·합작 위장 기술 획득
+    excludes: 전화·메신저·딥페이크 사칭 → IDT-SE 연계 · 포섭된 내부자가 하는 반출 → IN·EX · 매수된 권한의 계정 오남용 → IDT-LC-02.2
     lv2:
       - id: PHT-HU-01
-        name: 임직원 포섭·매수·협박
+        name: 금전·협박·관계 기반 포섭
         lv3:
           - id: PHT-HU-01.1
-            name: 금전·협박으로 재직자 포섭(정보제공·반입)
-            en: Recruiting or coercing employees for insider access
-            stage: [접근, 지속·내부자화]
-            assets: [임직원, 영업비밀]
-            attack: []
-            nist: [PS-3, PS-8]
-            iso: []
-            cross: []
+            name: 금전 제공으로 재직자 포섭·매수
+            en: Bribing or paying employees to act as insiders
+            stage: [접근, 내부자화]
+            actors: [외부자, 공모]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [보안 인가자, 핵심 기술 인력, 내부 시스템 접근]
+            attack: [T1650]
+            nist: [AT-2(2), PM-12, PS-3]
+            iso: ['6.1', '6.3', '6.8']
+            ismsp: [2.2.1, 2.2.4]
+            cert: [2, 4, 9]
+            idt: [IDT-LC-02.2]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, NPSA-IRMF]
             severity: 상
-            severity_why: 신뢰된 내부 접근을 장기간 제공해 탐지가 어렵고 핵심기술 유출로 직결
+            severity_why: 매수된 재직자는 정상 접근 권한으로 기밀·시스템에 장기간 접근하므로 탐지가 늦고 피해 범위를 가늠하기 어려움
+          - id: PHT-HU-01.2
+            name: 협박·약점·관계를 이용한 포섭
+            en: Coercion, blackmail or relationship-based recruitment
+            stage: [접근, 내부자화]
+            actors: [외부자]
+            profiles: [공공·연구기관, 반도체·방산]
+            assets: [보안 인가자, 해외 연고 인력]
+            attack: []
+            attack_none: 인적 포섭은 ATT&CK 기법 정의 밖
+            nist: [AT-2(2), PM-12, PS-3]
+            iso: ['6.3', '6.8']
+            ismsp: [2.2.4]
+            cert: [4, 5, 9]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, NPSA-IRMF]
+            severity: 상
+            severity_why: 협박·관계로 포섭된 내부자도 정상 접근을 장기간 제공하고, 피해자가 신고를 꺼려 발견이 늦음
+          - id: PHT-HU-01.3
+            name: SNS 구인으로 일회성 대리인 모집(감시·사보타주)
+            en: Recruiting disposable proxies via social media or messengers for surveillance or sabotage
+            stage: [접근, 실행]
+            actors: [외부자]
+            profiles: [기반시설, 일반기업]
+            assets: [철도·물류·창고 시설, 지역 주민·청년]
+            attack: []
+            attack_none: 대리인 모집은 ATT&CK 기법 정의 밖
+            nist: [IR-6, PE-6, PM-16]
+            iso: ['5.7', '7.4']
+            ismsp: [2.11.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-HR]
+            severity: 중
+            severity_why: 대리인 한 명이 하는 행위는 개별 시설·건 단위 — 감시·사보타주 피해는 결과 행(PHT-IM-02)에서 평가
+      - id: PHT-HU-02
+        name: 인재 영입 위장(브로커 스카우트)
+        lv3:
+          - id: PHT-HU-02
+            name: 브로커·위장 법인을 통한 핵심 인력 영입
+            en: Poaching key engineers via brokers, headhunters or front companies
+            stage: [접근, 내부자화]
+            actors: [외부자, 공모]
+            profiles: [반도체·방산, 제조·연구]
+            assets: [핵심 기술 인력, 연구개발 조직]
+            attack: []
+            attack_none: 인력 영입은 ATT&CK 기법 정의 밖
+            nist: [PM-12, PS-4(1), PS-6]
+            iso: ['6.2', '6.5', '6.6']
+            ismsp: [2.2.3, 2.2.5]
+            cert: [5, 20, 21]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 상
+            severity_why: 핵심 인력을 집단으로 데려가면 공정·설계 노하우가 사람과 함께 통째로 이전되어 회복이 어려움
+      - id: PHT-HU-03
+        name: 연구·산학 협력 위장
+        lv3:
+          - id: PHT-HU-03
+            name: 공동연구·인재 유치 프로그램을 가장한 연구 성과 획득
+            en: Acquiring research through disguised collaboration or talent programs
+            stage: [접근, 내부자화]
+            actors: [외부자, 내부자(악의)]
+            profiles: [공공·연구기관, 반도체·방산]
+            assets: [국가 R&D 성과, 연구 데이터·시료]
+            attack: []
+            attack_none: 연구 협력 위장은 ATT&CK 기법 정의 밖
+            nist: [PM-12, PS-6]
+            iso: ['5.14', '5.32', '6.6']
+            ismsp: [2.2.3]
+            cert: [6]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-TR]
+            severity: 중
+            severity_why: 피해는 참여 연구자·과제의 성과 범위 — 국가핵심기술 과제면 IM-01 결과로 커짐
+      - id: PHT-HU-04
+        name: 대면·방문 사칭
+        lv3:
+          - id: PHT-HU-04
+            name: 대면·방문 사칭으로 정보·협조 획득
+            en: In-person impersonation to obtain information or cooperation
+            stage: [접근, 실행]
+            actors: [외부자]
+            profiles: [일반기업, 공공·연구기관]
+            assets: [안내·경비·총무 인력, 고객·시설 정보]
+            attack: [T1684.001]
+            nist: [AT-2(3), PE-8]
+            iso: ['6.3', '7.2']
+            ismsp: [2.2.4]
+            cert: [9]
+            idt: [IDT-SE-02.1, IDT-SE-02.2]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 속은 직원이 내줄 수 있는 정보·출입 범위에 머무름 — 출입이 열리면 PA 단계로 이어짐
+      - id: PHT-HU-05
+        name: 투자·합작 위장 기술 획득
+        lv3:
+          - id: PHT-HU-05.1
+            name: 지분 투자·인수 후 기술·인력 이전
+            en: Technology transfer after equity investment or acquisition
+            stage: [접근, 반출]
+            actors: [외부자]
+            profiles: [반도체·방산, 제조·연구]
+            assets: [핵심 공정 기술, 연구 인력, 특허]
+            attack: []
+            attack_none: 투자·인수를 통한 기술 이전은 ATT&CK 범위 밖
+            nist: []
+            iso: ['5.31', '5.32']
+            ismsp: []
+            cert: [6]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 상
+            severity_why: 경영권을 얻으면 합법적 지위로 기술·인력을 통째로 옮길 수 있고, 이전 뒤 회사가 쇠퇴해도 되돌릴 수 없음
+          - id: PHT-HU-05.2
+            name: 합작·위탁생산·거래 상담을 가장한 기술 자료 요구
+            en: Technology solicitation under joint venture, contract manufacturing or deal talks
+            stage: [정찰, 반출]
+            actors: [외부자, 공모]
+            profiles: [반도체·방산, 제조·연구]
+            assets: [공장 설계·공정 자료, 장비 사양]
+            attack: []
+            attack_none: 거래를 가장한 자료 요구는 ATT&CK 범위 밖
+            nist: [PS-6]
+            iso: ['5.14', '5.20', '5.32']
+            ismsp: [2.3.2]
+            cert: [6]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 상
+            severity_why: 공장 설계·공정 자료를 합법 거래의 형식으로 넘겨받으면 생산 라인 전체를 복제할 수 있음
+
+  # =========================================================================
   - code: IN
     ko: 위장취업·내부자
-    en: Fraudulent Employment & Insider
-    desc: 신분을 위장해 입사하거나 재직 내부자가 신뢰 접근을 악용
+    en: Fraudulent Employment & Insiders
+    desc: 내부 신분을 얻거나 가진 주체의 위협 — 위장취업, 악의적 재직자, 퇴직·이직자, 협력사·파견 인력, 비의도 내부자. 내부자는 조직 자원에 승인된 접근 권한이나 지식을 가졌거나 과거에 가졌던 사람(NPSA)
+    excludes: 계정 오남용·계정 수명주기 → IDT-LC 연계 · 정보가 나가는 물리 경로 자체 → EX
     lv2:
       - id: PHT-IN-01
-        name: 위장취업·신분 위장 입사
+        name: 위장취업
         lv3:
           - id: PHT-IN-01.1
-            name: 위조·도용 신분으로 입사해 내부 접근 확보
-            en: Fraudulent hiring using fake or stolen identity
-            stage: [접근, 지속·내부자화]
-            assets: [채용 절차, 내부 시스템·문서]
-            attack: []
-            nist: [PS-3]
-            iso: []
-            cross: []   # 예) 아이덴티티 매트릭스의 신원증명·온보딩 사기와 연계(ID 확정 후 기입)
+            name: 도용·위조 신분으로 원격 개발직 위장취업
+            en: Remote hiring under stolen or fabricated identities
+            stage: [내부자화]
+            actors: [외부자, 내부자(악의)]
+            profiles: [일반기업, 제조·연구]
+            assets: [채용·신원 확인 절차, 개발 저장소·내부 시스템]
+            attack: [T1078, T1585]
+            nist: [IA-12, PM-12, PS-3]
+            iso: ['6.1']
+            ismsp: [2.2.3]
+            cert: [4]
+            idt: [IDT-LC-03, IDT-SE-04]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, NPSA-IRMF]
             severity: 상
-            severity_why: 정상 임직원 권한을 장기 보유, 국가배후 조직적 위장취업 사례로 피해 광범위
+            severity_why: 한 조직이 여러 기업에 동시에 잠입해 정규 직원 권한을 장기간 유지하며 급여 송금·자료 반출·갈취를 함 — 피해가 개별 기업을 넘어 산업 전반에 퍼짐
+          - id: PHT-IN-01.2
+            name: 업무 장비 대리 수령·원격 조작(랩톱 팜)
+            en: Proxy receipt and remote operation of company laptops (laptop farms)
+            stage: [내부자화, 지속]
+            actors: [외부자, 공모]
+            profiles: [일반기업, 제조·연구]
+            assets: [지급 노트북·배송지, 원격 접속 도구]
+            attack: [T1219]
+            nist: [AC-17, CM-8, PE-20]
+            iso: ['5.9', '6.7', '7.9']
+            ismsp: [2.6.6]
+            cert: [13]
+            idt: [IDT-LC-03]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 장비 대리 수령은 위장취업을 유지하는 수단(조건) — 피해는 위장취업 행(PHT-IN-01.1)에서 평가
+      - id: PHT-IN-02
+        name: 악의적 재직 내부자
+        lv3:
+          - id: PHT-IN-02.1
+            name: 재직자의 기밀·기술 자료 무단 수집·유출
+            en: Malicious current employees collecting and leaking sensitive material
+            stage: [실행, 반출]
+            actors: [내부자(악의)]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [기밀 문서, 설계·공정 자료, 보안 시스템]
+            attack: [T1005, T1078, T1213]
+            nist: [AC-6, AU-13, PM-12, PS-8]
+            iso: ['5.10', '5.12', '6.4']
+            ismsp: [2.2.2, 2.2.6]
+            cert: [3, 12, 14, 19]
+            idt: [IDT-LC-02.1]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, NPSA-IRMF]
+            severity: 상
+            severity_why: 정상 권한 안에서 오래 모으면 국가기밀·핵심기술이 통째로 나가고, 정상 업무와 구분이 어려워 발견이 늦음
+          - id: PHT-IN-02.2
+            name: 재직자의 설비·제품·시스템 사보타주
+            en: Insider sabotage of equipment, products or systems
+            stage: [실행, 영향]
+            actors: [내부자(악의)]
+            profiles: [기반시설, 제조·연구]
+            assets: [생산·발전 설비, 제품 품질, 제어 시스템]
+            attack: [T1485]
+            nist: [AC-5, PE-3, PM-12]
+            iso: ['5.3', '6.4', '7.4']
+            ismsp: [2.2.2, 2.4.5]
+            cert: [5, 15, 17]
+            idt: []
+            sct: []
+            ot: [OTC-IM-10]
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF]
+            severity: 상
+            severity_why: 설비 구조를 아는 내부자가 핵심 설비를 손상시키면 기반시설이 장기간 멈추고 안전 위험이 생김
+      - id: PHT-IN-03
+        name: 퇴직·이직자
+        lv3:
+          - id: PHT-IN-03.1
+            name: 퇴직·이직 직전 자료 대량 반출
+            en: Mass removal of data before resignation or job change
+            stage: [반출]
+            actors: [내부자(악의)]
+            profiles: [반도체·방산, 제조·연구, 공공·연구기관]
+            assets: [설계·공정 자료, 연구 데이터]
+            attack: [T1074, T1078, T1213]
+            nist: [AU-13, PM-12, PS-4]
+            iso: ['5.11', '6.5']
+            ismsp: [2.2.5]
+            cert: [14, 19, 20]
+            idt: [IDT-LC-01.1, IDT-LC-02.1]
+            sct: [SCT-IM-03]
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-IRMF]
+            severity: 상
+            severity_why: 퇴직 직전에는 접근이 아직 살아 있어 핵심기술 자료를 통째로 가져갈 수 있고, 이직처에서 바로 쓰여 피해가 확정됨
+          - id: PHT-IN-03.2
+            name: 이직·창업 후 전 직장 기술 재현·사용
+            en: Using former employer's technology at a new employer or start-up
+            stage: [반출, 영향]
+            actors: [내부자(악의)]
+            profiles: [반도체·방산, 제조·연구]
+            assets: [공정 노하우, 장비 설계]
+            attack: []
+            attack_none: 이직 후 기술 사용은 ATT&CK 범위 밖
+            nist: [PS-4(1), PS-6]
+            iso: ['6.5', '6.6']
+            ismsp: [2.2.3, 2.2.5]
+            cert: [20]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 상
+            severity_why: 머릿속 노하우와 반출 자료로 경쟁 업체의 공정·장비를 재현하면 핵심기술 우위가 통째로 사라짐
+      - id: PHT-IN-04
+        name: 협력사·파견 인력
+        lv3:
+          - id: PHT-IN-04
+            name: 협력사·파견·외주 인력의 현장 자료 반출
+            en: Data removal by contractors, seconded or outsourced staff on site
+            stage: [반출]
+            actors: [제3자]
+            profiles: [반도체·방산, 제조·연구, 기반시설]
+            assets: [공동 개발 자료, 생산 현장 자료]
+            attack: [T1078, T1199]
+            nist: [PE-3, PS-7]
+            iso: ['5.19', '5.20', '7.6']
+            ismsp: [2.3.2, 2.3.3, 2.3.4]
+            cert: [6]
+            idt: [IDT-LC-01.2]
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
+            severity: 중
+            severity_why: 협력 인력의 접근은 계약 업무 범위로 한정 — 다만 공동 개발 현장에서는 핵심 자료에 닿을 수 있어 접근 범위 관리가 관건
+      - id: PHT-IN-05
+        name: 비의도 내부자
+        lv3:
+          - id: PHT-IN-05.1
+            name: 저장매체·문서·장비 분실과 부주의 방치
+            en: Loss or careless abandonment of media, documents and devices
+            stage: [반출]
+            actors: [내부자(비의도), 제3자]
+            profiles: [공공·연구기관, 기반시설, 일반기업]
+            assets: [USB·노트북, 기밀 문서]
+            attack: []
+            attack_none: 비의도 분실은 공격 기법이 아니어서 ATT&CK 범위 밖
+            nist: [MP-5, SC-28]
+            iso: ['5.10', '7.9', '7.10']
+            ismsp: [2.4.6, 2.10.7]
+            cert: [8, 9]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, CISA-ITMG]
+            severity: 중
+            severity_why: 피해는 잃어버린 매체·문서 범위 — 암호화하지 않은 매체에 보안 정보·개인정보가 담기면 노출 범위가 커짐
+          - id: PHT-IN-05.2
+            name: 부주의한 공개·노출로 민감 정보 누설
+            en: Inadvertent disclosure through careless public exposure
+            stage: [반출]
+            actors: [내부자(비의도)]
+            profiles: [공공·연구기관, 반도체·방산, 기반시설]
+            assets: [위치·활동 기록, 기밀 문서 표지]
+            attack: []
+            attack_none: 부주의 노출은 공격 기법이 아니어서 ATT&CK 범위 밖
+            nist: [AC-22, AT-2, PL-4]
+            iso: ['6.3', '7.7']
+            ismsp: [2.2.4, 2.4.7]
+            cert: [7, 9]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: [NPSA-DEF, CISA-ITMG]
+            severity: 중
+            severity_why: 노출된 정보 범위에 머무르지만 시설 위치·작전 일정처럼 다른 위협의 정찰 자료가 됨
+
+  # =========================================================================
   - code: EX
     ko: 자산·정보 반출
-    en: Asset & Data Exfiltration (physical)
-    desc: 문서·시제품·저장매체를 물리적으로 반출하거나 화면·육안으로 유출
+    en: Physical Exfiltration of Assets & Information
+    desc: 정보·자산이 밖으로 나가는 물리 경로 — 저장매체·장비, 출력물·문서, 촬영·기록, 시제품·시료. 같은 사고의 행위 주체는 IN·HU 행에서 평가
+    excludes: 메일·클라우드·웹 등 디지털 반출 경로 → IDT-LC-02.1 · CL-EF-02 · SCT-IM-03 연계
     lv2:
       - id: PHT-EX-01
-        name: 물리 매체·문서 반출
+        name: 저장매체·장비 반출
         lv3:
-          - id: PHT-EX-01.1
-            name: 저장매체·출력물·시제품 무단 반출
-            en: Removing media, printouts, or prototypes
+          - id: PHT-EX-01
+            name: 이동식 저장매체·업무 단말 무단 반출
+            en: Removal via removable media and portable devices
             stage: [반출]
-            assets: [저장매체, 문서·시제품]
-            attack: [T1052.001]
-            nist: [PE-3, MP-5]
-            iso: []
-            cross: []   # 예) 공급망/클라우드의 데이터 반출과 연계
+            actors: [내부자(악의), 제3자, 내부자(비의도)]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [USB·외장 디스크·SD 카드, 노트북]
+            attack: [T1052, T1052.001]
+            nist: [MP-7, PE-16, SC-41]
+            iso: ['5.14', '7.10']
+            ismsp: [2.4.6, 2.10.7]
+            cert: [19]
+            idt: [IDT-LC-02.1]
+            sct: [SCT-IM-03]
+            ot: []
+            cloud: [CL-EF-02]
+            ai: []
+            refs: [CISA-ITMG]
             severity: 상
-            severity_why: 핵심기술·설계 원본이 통째로 유출되면 회복이 어렵고 경쟁우위 상실
+            severity_why: 외장 저장장치는 용량 제약이 거의 없어 설계·연구 데이터베이스를 한 번에 통째로 옮길 수 있음
+      - id: PHT-EX-02
+        name: 출력물·문서 반출
+        lv3:
+          - id: PHT-EX-02
+            name: 출력물·수기 기록·도면 반출
+            en: Removal of printouts, handwritten notes and drawings
+            stage: [반출]
+            actors: [내부자(악의), 내부자(비의도)]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [출력물, 도면, 연구 노트]
+            attack: []
+            attack_none: 출력·수기 반출은 ATT&CK 범위 밖(디지털 반출 기법만 정의)
+            nist: [MP-5, PE-5, PE-16]
+            iso: ['5.13', '7.7']
+            ismsp: [2.4.6, 2.4.7]
+            cert: [19]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 종이·수기는 양이 제한되지만 핵심 공정 수치처럼 압축된 정보를 옮기기에 충분하고, 디지털 반출 탐지(DLP)를 피함
+      - id: PHT-EX-03
+        name: 촬영·기록 반출
+        lv3:
+          - id: PHT-EX-03
+            name: 휴대폰·카메라로 화면·문서·설비 촬영 반출
+            en: Photographing screens, documents or equipment
+            stage: [반출]
+            actors: [내부자(악의), 외부자]
+            profiles: [반도체·방산, 공공·연구기관, 제조·연구]
+            assets: [보안 단말 화면, 문서, 생산 설비]
+            attack: []
+            attack_none: 사람이 하는 촬영은 ATT&CK 범위 밖(T1113 화면 캡처는 소프트웨어 기능)
+            nist: [PE-3, PL-4]
+            iso: ['7.6', '7.7']
+            ismsp: [2.4.6, 2.4.7]
+            cert: [12, 19]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 촬영자가 볼 수 있는 화면·문서 범위 — 망분리·DLP를 우회해 반복되면 누적 피해가 큼
+      - id: PHT-EX-04
+        name: 시제품·시료 반출
+        lv3:
+          - id: PHT-EX-04
+            name: 시제품·부품·시료 반출
+            en: Removal of prototypes, components or material and biological samples
+            stage: [반출]
+            actors: [내부자(악의), 외부자]
+            profiles: [제조·연구, 공공·연구기관, 반도체·방산]
+            assets: [시제품·부품, 종자·생물 시료, 소재 샘플]
+            attack: []
+            attack_none: 실물 반출은 ATT&CK 범위 밖
+            nist: [PE-3, PE-16, PE-20]
+            iso: ['5.9', '7.2']
+            ismsp: [2.4.6]
+            cert: [1, 19]
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 실물 한 점의 반출이지만 역설계로 설계를 복원할 수 있음 — 피해 규모는 IM-01에서 평가
+
+  # =========================================================================
   - code: IM
     ko: 영향·피해
     en: Impact
-    desc: 지식재산·영업비밀 손실, 사보타주, 안전·가동 위협 등 공격 결과
+    desc: 공격의 결과 — 핵심기술·영업비밀·국가기밀 유출, 사보타주·설비 손상, 시설 운영 방해, 안전·인명 위협, 금전·법적·평판 피해. 앞 단계 세부위협이 이어져 나타나는 결과 유형
+    excludes: 결과를 만든 행위 자체 → 앞 단계 도메인(RC·PA·SV·HU·IN·EX)
     lv2:
       - id: PHT-IM-01
-        name: 지식재산·영업비밀 손실
+        name: 핵심기술·영업비밀 유출
         lv3:
-          - id: PHT-IM-01.1
-            name: 핵심기술·영업비밀 유출로 인한 경쟁력·안보 피해
-            en: Loss of trade secrets and critical technology
+          - id: PHT-IM-01
+            name: 핵심기술·영업비밀·국가기밀 유출
+            en: Loss of critical technology, trade secrets or classified information
             stage: [영향]
-            assets: [영업비밀, 국가핵심기술]
+            actors: [외부자, 내부자(악의), 공모, 제3자]
+            profiles: [반도체·방산, 제조·연구, 공공·연구기관]
+            assets: [국가핵심기술, 영업비밀, 국가기밀]
             attack: []
-            nist: []
-            iso: []
-            cross: []
+            attack_none: 기술·영업비밀 유출이라는 결과를 정의한 ATT&CK 영향 기법 없음
+            nist: [IR-4, PM-12, RA-3]
+            iso: ['5.12', '5.26', '5.32']
+            ismsp: [2.11.5]
+            cert: [1, 22]
+            idt: []
+            sct: [SCT-IM-03]
+            ot: [OTC-IM-12]
+            cloud: []
+            ai: []
+            refs: [NPSA-SI]
             severity: 상
-            severity_why: 국가핵심기술 유출은 기업·국가 안보 피해로 이어지고 원상회복 불가
+            severity_why: 국가핵심기술·영업비밀이 경쟁국·경쟁사로 넘어가면 원상회복이 불가능하고 산업·안보 피해로 이어짐(산업기술보호법·부정경쟁방지법 보호 대상)
+      - id: PHT-IM-02
+        name: 사보타주·설비 손상
+        lv3:
+          - id: PHT-IM-02
+            name: 사보타주·설비 손상
+            en: Sabotage and damage to equipment or infrastructure
+            stage: [영향]
+            actors: [외부자, 내부자(악의)]
+            profiles: [기반시설, 제조·연구]
+            assets: [발전·철도·통신 설비, 생산 설비, 물류 시설]
+            attack: []
+            attack_none: 물리 설비 손상은 ATT&CK Enterprise 영향 기법 정의 밖 — OT 매트릭스 재산·설비 피해(T0879)로 연계
+            nist: [CP-2, PE-6, PE-9]
+            iso: ['7.5', '7.11', '7.12']
+            ismsp: [2.4.3, 2.4.4]
+            cert: []
+            idt: []
+            sct: []
+            ot: [OTC-IM-10, OT-IM-05]
+            cloud: []
+            ai: []
+            refs: [NPSA-TOP]
+            severity: 상
+            severity_why: 핵심 설비가 손상되면 복구에 수개월이 걸리고 기반시설 운영·안전에 직접 영향
+      - id: PHT-IM-03
+        name: 시설 운영 방해
+        lv3:
+          - id: PHT-IM-03
+            name: 공항·기반시설 운영 중단·방해
+            en: Disruption of airport, infrastructure or facility operations
+            stage: [영향]
+            actors: [외부자]
+            profiles: [기반시설]
+            assets: [공항 이착륙, 발전·항만 운영, 철도 운행]
+            attack: []
+            attack_none: 드론·물리 행위에 의한 운영 중단은 ATT&CK 정의 밖 — OT 매트릭스 가용성 상실(T0826)로 연계
+            nist: [CP-2, IR-4, PE-6]
+            iso: ['5.29', '5.30']
+            ismsp: [2.12.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: [OTC-IM-03, OTC-IM-05, OT-IM-01]
+            cloud: []
+            ai: []
+            refs: [NPSA-CUAS, CISA-UAS]
+            severity: 상
+            severity_why: 공항·철도 같은 기반시설이 멈추면 수십만 명 단위 이용자 피해와 연쇄 운영 차질이 생김
+      - id: PHT-IM-04
+        name: 안전·인명 위협
+        lv3:
+          - id: PHT-IM-04
+            name: 안전·인명 위협
+            en: Threats to safety and human life
+            stage: [영향]
+            actors: [외부자, 내부자(악의), 내부자(비의도)]
+            profiles: [기반시설, 공공·연구기관]
+            assets: [항공기·승객, 원전·발전 설비, 작업자]
+            attack: []
+            attack_none: 안전 위협은 ATT&CK Enterprise 정의 밖 — OT 매트릭스 안전 상실(T0880)로 연계
+            nist: [CP-2, IR-4]
+            iso: ['5.29', '7.5']
+            ismsp: [2.12.1]
+            cert: []
+            idt: []
+            sct: []
+            ot: [OTC-IM-11, OT-IM-05]
+            cloud: []
+            ai: []
+            refs: [CISA-UAS]
+            severity: 상
+            severity_why: 항공기 충돌·설비 사고처럼 인명 피해로 이어질 수 있는 결과
+      - id: PHT-IM-05
+        name: 금전·법적·평판 피해
+        lv3:
+          - id: PHT-IM-05
+            name: 금전·법적·평판 피해
+            en: Financial, legal and reputational damage
+            stage: [영향]
+            actors: [외부자, 내부자(악의), 내부자(비의도), 제3자]
+            profiles: [일반기업, 반도체·방산, 제조·연구]
+            assets: [매출·손해배상, 제재·과징금, 기업 신뢰]
+            attack: []
+            attack_none: 금전·법적 결과는 ATT&CK 영향 기법 정의 밖
+            nist: [IR-4, RA-3]
+            iso: ['5.26', '5.31']
+            ismsp: [2.11.5]
+            cert: []
+            idt: []
+            sct: []
+            ot: []
+            cloud: []
+            ai: []
+            refs: []
+            severity: 중
+            severity_why: 배상·과징금·제재는 개별 조직 단위 피해 — 기술 유출 자체의 피해는 IM-01에서 평가
