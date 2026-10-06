@@ -436,13 +436,19 @@ def check_all(src, summ):
             warns += b
             if not e["id"].startswith(entry_prefix(kind, e["domain"])):
                 errs.append(f"{e['id']}: ID와 {'도메인' if kind == 'ai' else '전술'}({e['domain']}) 불일치")
-    # 3) 근거 수준과 사례 유형 정합성: '실제 사고 확인'이면 [실제 사고] 1건 이상
+    # 3) 근거 수준과 사례 유형 정합성: '실제 사고 확인'이면 [실제 사고] 1건 이상,
+    #    [EMB3D]는 구성 원본에 실제 사고·실증 사례가 없을 때만 (OT 결정 D7)
     for kind in KINDS:
         for e in valid[kind]:
             if not e.get("members"):
                 continue
-            if EVALUATE[kind](e, src[kind])["evidence"] == "실제 사고 확인" and "[실제 사고]" not in (e.get("cases") or ""):
+            cases = e.get("cases") or ""
+            if EVALUATE[kind](e, src[kind])["evidence"] == "실제 사고 확인" and "[실제 사고]" not in cases:
                 warns.append(f"{e['id']}: 근거 수준 '실제 사고 확인'이나 대표 사례에 [실제 사고] 없음")
+            if "[EMB3D]" in cases:
+                refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+                if re.search(r"^\s*- \[(실제 사고|실증|실증·연구)\]", refs, re.M):
+                    warns.append(f"{e['id']}: [EMB3D] 사례는 구성 원본에 실제 사고·실증 사례가 없을 때만 사용")
     # 4) 대표 사례 분산: 같은 Lv0 안에서 같은 사고를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
     #    사고 ID가 없는 사례(공개 취약점·EMB3D 등)는 '사례명(시점)'으로 셈. 허용 목록의 항목 안에서만 반복을 허용
     for kind in KINDS:
