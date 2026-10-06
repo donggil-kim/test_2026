@@ -1,0 +1,151 @@
+# 물리·인적 보안위협 매트릭스 — 분류 체계 (씨앗)
+# 도메인(Lv1) → 위협분류(Lv2) → 세부위협(Lv3). 아래 Lv3는 "형식 예시"이며 새 세션이 확장한다.
+# ID: PHT-<도메인>-NN(.m). severity ∈ {상,중,하}. attack/nist/iso/cross 는 해당 없으면 [].
+
+assessment:
+  likelihood_rule: "상 = 실제 사고 2건 이상 / 중 = 실제 사고 1건 또는 실증·공개 취약점·문헌 중 하나 이상 / 하 = 근거 없음"
+  severity_rule:   # TODO: 새 세션이 확정
+    상: "영업비밀·핵심기술 대량 유출, 인명·안전·핵심시설 위협, 장기 잠복 내부자 등 대규모·회복 불가 피해"
+    중: "개별 자산·단일 조직 범위 피해, 또는 다른 위협의 피해를 키우는 조건"
+    하: "영향이 제한적·일시적이고 복구가 쉬운 위협"
+  stages: [정찰, 접근, 실행, 지속·내부자화, 반출, 영향]   # 공격 단계 어휘
+
+profiles:   # 적용 대상(조직 유형) — TODO 확정
+  제조·연구: "반도체·방산·바이오 등 핵심기술 보유 기업·연구소"
+  기반시설: "에너지·통신·교통 등 국가기반시설"
+  일반기업: "사무·SaaS 중심 조직"
+
+domains:
+  - code: RC
+    ko: 정찰·표적 선정
+    en: Reconnaissance & Targeting
+    desc: 공개정보(OSINT)·현장 답사·인물 물색으로 표적 조직·인력·시설을 파악하는 단계
+    lv2:
+      - id: PHT-RC-01
+        name: 공개정보·소셜미디어 기반 인물·조직 정찰
+        lv3:
+          - id: PHT-RC-01.1
+            name: 임직원 신상·근무지 수집(SNS·채용·학회)
+            en: Targeting staff via social media, job posts, conferences
+            stage: [정찰]
+            assets: [임직원, 조직도·인사정보]
+            attack: []
+            nist: [PS-3]
+            iso: []
+            cross: []
+            severity: 중
+            severity_why: 단독 피해는 없으나 포섭·위장취업·사회공학의 표적 선정 토대가 됨
+  - code: PA
+    ko: 물리 침입·접근
+    en: Physical Intrusion & Access
+    desc: 시설 경계·출입통제를 우회해 건물·구역·장비에 물리적으로 접근
+    lv2:
+      - id: PHT-PA-01
+        name: 출입통제 우회
+        lv3:
+          - id: PHT-PA-01.1
+            name: 테일게이팅·출입증 위·변조로 통제구역 진입
+            en: Tailgating and badge forgery into controlled areas
+            stage: [접근]
+            assets: [출입통제, 통제구역]
+            attack: []
+            nist: [PE-3, PE-6]
+            iso: []
+            cross: []
+            severity: 중
+            severity_why: 접근 자체는 국지적이나 반출·장비 임플란트·내부망 접점으로 이어질 수 있음
+  - code: SV
+    ko: 감시·도청·무단촬영
+    en: Surveillance & Eavesdropping
+    desc: 드론·은닉 카메라·도청·RF로 시설·화면·대화·전자파를 원격 수집
+    lv2:
+      - id: PHT-SV-01
+        name: 드론·무인기 기반 무단 촬영·정찰
+        lv3:
+          - id: PHT-SV-01.1
+            name: 드론으로 시설 내부·화면·동선 무단 촬영
+            en: Unauthorized drone surveillance of facilities
+            stage: [정찰, 실행]
+            assets: [시설 외관·내부, 화면·문서]
+            attack: []
+            nist: [PE-6, PE-19]
+            iso: []
+            cross: []
+            severity: 중
+            severity_why: 비접촉 원거리 수집으로 탐지가 어렵고 반복 가능, 핵심시설 배치·공정 노출
+  - code: HU
+    ko: 인적 포섭·사회공학
+    en: Human Intelligence & Social Engineering
+    desc: 금전·협박·관계로 임직원·협력사를 포섭하거나 대면 사회공학으로 정보를 끌어냄
+    lv2:
+      - id: PHT-HU-01
+        name: 임직원 포섭·매수·협박
+        lv3:
+          - id: PHT-HU-01.1
+            name: 금전·협박으로 재직자 포섭(정보제공·반입)
+            en: Recruiting or coercing employees for insider access
+            stage: [접근, 지속·내부자화]
+            assets: [임직원, 영업비밀]
+            attack: []
+            nist: [PS-3, PS-8]
+            iso: []
+            cross: []
+            severity: 상
+            severity_why: 신뢰된 내부 접근을 장기간 제공해 탐지가 어렵고 핵심기술 유출로 직결
+  - code: IN
+    ko: 위장취업·내부자
+    en: Fraudulent Employment & Insider
+    desc: 신분을 위장해 입사하거나 재직 내부자가 신뢰 접근을 악용
+    lv2:
+      - id: PHT-IN-01
+        name: 위장취업·신분 위장 입사
+        lv3:
+          - id: PHT-IN-01.1
+            name: 위조·도용 신분으로 입사해 내부 접근 확보
+            en: Fraudulent hiring using fake or stolen identity
+            stage: [접근, 지속·내부자화]
+            assets: [채용 절차, 내부 시스템·문서]
+            attack: []
+            nist: [PS-3]
+            iso: []
+            cross: []   # 예) 아이덴티티 매트릭스의 신원증명·온보딩 사기와 연계(ID 확정 후 기입)
+            severity: 상
+            severity_why: 정상 임직원 권한을 장기 보유, 국가배후 조직적 위장취업 사례로 피해 광범위
+  - code: EX
+    ko: 자산·정보 반출
+    en: Asset & Data Exfiltration (physical)
+    desc: 문서·시제품·저장매체를 물리적으로 반출하거나 화면·육안으로 유출
+    lv2:
+      - id: PHT-EX-01
+        name: 물리 매체·문서 반출
+        lv3:
+          - id: PHT-EX-01.1
+            name: 저장매체·출력물·시제품 무단 반출
+            en: Removing media, printouts, or prototypes
+            stage: [반출]
+            assets: [저장매체, 문서·시제품]
+            attack: [T1052.001]
+            nist: [PE-3, MP-5]
+            iso: []
+            cross: []   # 예) 공급망/클라우드의 데이터 반출과 연계
+            severity: 상
+            severity_why: 핵심기술·설계 원본이 통째로 유출되면 회복이 어렵고 경쟁우위 상실
+  - code: IM
+    ko: 영향·피해
+    en: Impact
+    desc: 지식재산·영업비밀 손실, 사보타주, 안전·가동 위협 등 공격 결과
+    lv2:
+      - id: PHT-IM-01
+        name: 지식재산·영업비밀 손실
+        lv3:
+          - id: PHT-IM-01.1
+            name: 핵심기술·영업비밀 유출로 인한 경쟁력·안보 피해
+            en: Loss of trade secrets and critical technology
+            stage: [영향]
+            assets: [영업비밀, 국가핵심기술]
+            attack: []
+            nist: []
+            iso: []
+            cross: []
+            severity: 상
+            severity_why: 국가핵심기술 유출은 기업·국가 안보 피해로 이어지고 원상회복 불가

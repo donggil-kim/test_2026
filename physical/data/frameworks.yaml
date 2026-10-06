@@ -1,0 +1,34 @@
+# 교차 매핑·대응 기준 카탈로그 (씨앗) — ID·명칭만. 원문 비수록(공개 저장소).
+# 공식 명칭은 새 세션이 1차 출처로 확인해 채운다(특히 NIST 공식 영문 명칭은 NIST OSCAL에서).
+meta:
+  note: "확정=NIST 800-53 PE/PS·ATT&CK 물리 접점. 확인 후 추가=CISA/NPSA/ISO/MITRE 내부자 KB."
+  todo: "각 프레임워크의 공식 명칭·버전·라이선스를 reference/README.md 와 함께 확정"
+
+# NIST SP 800-53 Rev.5 — 물리·환경(PE)·인적 보안(PS) 계열 (영문 명칭은 OSCAL에서 확정)
+nist80053:
+  PE-2: [TODO-공식명, 물리적 접근 권한 부여]
+  PE-3: [TODO-공식명, 물리적 접근 통제]
+  PE-6: [TODO-공식명, 물리적 접근 모니터링]
+  PE-8: [TODO-공식명, 방문자 접근 기록]
+  PE-19: [TODO-공식명, 정보 유출(전자파 등) 방지]
+  PS-3: [TODO-공식명, 인사 심사(screening)]
+  PS-4: [TODO-공식명, 퇴직 처리]
+  PS-5: [TODO-공식명, 인사 이동]
+  PS-7: [TODO-공식명, 외부 인력(계약자) 보안]
+  PS-8: [TODO-공식명, 인사 제재]
+  MP-5: [TODO-공식명, 매체 반출·이송 통제]
+
+# MITRE ATT&CK Enterprise — 물리 접점(소수). 명칭은 ATT&CK에서 확정.
+attack_physical:
+  T1200: [Hardware Additions, 하드웨어 추가(악성 장치 반입)]
+  T1091: [Replication Through Removable Media, 이동식 매체를 통한 전파]
+  T1052: [Exfiltration Over Physical Medium, 물리 매체를 통한 반출]
+  T1052.001: [Exfiltration over USB, USB를 통한 반출]
+
+# 확인 후 편입할 후보 — 1차 출처 검증 전까지는 근거로 쓰지 않음
+candidate_frameworks:
+  - "CISA Insider Threat Mitigation (내부자 위협 완화 지침)"
+  - "MITRE Insider Threat TTP Knowledge Base"
+  - "UK NPSA(구 CPNI) 인적·물리 보안 지침"
+  - "ISO/IEC 27001 Annex A 물리 통제 · ISO 22341(보안設計)"
+  - "CISA Counter-UAS (대드론) 지침"
