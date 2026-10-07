@@ -908,6 +908,11 @@ if __name__ == "__main__":
     args = ap.parse_args()
     if args.version:
         VERSION = args.version
+    if args.data_only:  # v1 재현 — 문구·시나리오를 빼고 분류·근거·평가만 출력
+        for o in ROWS:
+            o["oneline"] = o["summary"] = o["reference"] = o["detect"] = ""
+            o["text_src"] = "문구 미작성"
+        SCENARIOS.clear()
     OUT, CSV_OUT = out_paths(VERSION)
     if not args.skip_validate:
         VALIDATION = run_validate("--data-only" if args.data_only else "--allow-missing-text" if args.allow_missing_text else "")
