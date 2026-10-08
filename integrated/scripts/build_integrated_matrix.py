@@ -222,7 +222,7 @@ def build_rows(src, summ):
     """요약 행 구성. 반환: (행 목록, 요약 항목으로 옮기지 못한 OT 원본 연계 참조 {'원본키→참조': (요약 ID, 대상 Lv0)})."""
     ai_src, cl_src, ot_src = src["ai"], src["cloud"], src["ot"]
     ai_sum, cl_sum, ot_sum = summ["ai"], summ["cloud"], summ["ot"]
-    every = ai_sum + cl_sum + ot_sum
+    every = [e for kind in common.KINDS for e in summ[kind]]
     tactic_ko = {t: label.split("] ", 1)[1] for t, label in cl_src["tactics"].items()}
     ot_ko = {t: label.split("] ", 1)[1] for t, label in ot_src["tactics"].items()}
     to_summary = {kind: {m: e["id"] for e in summ[kind] for m in e["members"]} for kind in common.KINDS}
