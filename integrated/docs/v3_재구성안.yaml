@@ -200,33 +200,33 @@ identity:
 
 physical:   # 대표 사례는 미배치 — v3_status.py가 구성 원본의 사례 후보와 이미 쓴 사고를 보여 줌(국내·최근 사고 우선)
   RC:
-    status: todo
+    status: done          # integrated/data/physical/RC.yaml — PH-RC-01~03 (사례 사용: PHI-011·077·048·070·097·012)
     items:
       - {id: PH-RC-01, name: 공개정보 기반 핵심 인력·시설 파악, members: [PHT-RC-01], basis: 단독 유지 — 조직이 통제하지 못하는 공개정보에서 시작하는 정찰로 공개정보 최소화라는 고유 통제}
       - {id: PH-RC-02, name: 현장 답사(적대적 정찰), members: [PHT-RC-02], basis: 단독 유지 — 시설 주변 현장 관찰로 경계 감시·이상 행동 신고라는 고유 통제}
       - {id: PH-RC-03, name: 위장 접촉을 통한 정보 수집, members: [PHT-RC-03.1, PHT-RC-03.2], basis: 원본 위협분류 '위장 접촉을 통한 정보 수집' 2개(온라인·대면) — 접촉 신고·대외 활동 보안 교육이라는 같은 통제}
   PA:
-    status: todo
+    status: done          # integrated/data/physical/PA.yaml — PH-PA-01~03 (사례 사용: PHI-047·096·045·046·085·084)
     items:
       - {id: PH-PA-01, name: 보호구역 무단 진입(경계 침입·출입증 악용·위장 출입), members: [PHT-PA-01.1, PHT-PA-01.2, PHT-PA-02], basis: 출입통제 우회(PA-01.x)와 방문자·협력업체 위장 출입(PA-02)은 통제구역 무단 진입이라는 같은 결과이며 경계 감지·출입 인증·방문자 관리라는 같은 통제}
       - {id: PH-PA-02, name: 악성 장치·매체 반입과 배송·정비 과정 변조, members: [PHT-PA-03.1, PHT-PA-03.2, PHT-PA-05], basis: 승인되지 않은 장치가 내부망·설비에 연결되는 같은 위협이며 장치 인벤토리·포트 통제·반입 검사라는 같은 통제}
       - {id: PH-PA-03, name: 출장지·국경 검색에서 업무 단말 접근·복제, members: [PHT-PA-04], basis: 단독 유지 — 조직 시설 밖(출장지)의 장비 접근으로 출장용 단말·귀환 점검이라는 고유 통제}
   SV:
-    status: todo
+    status: done          # integrated/data/physical/SV.yaml — PH-SV-01~04 (사례 사용: PHI-049·050·008·069·063·065·076·078)
     items:
       - {id: PH-SV-01, name: 드론 무단 촬영·비행, members: [PHT-SV-01.1, PHT-SV-01.2], basis: 원본 위협분류 '드론·무인기' 2개 — 탐지·식별·신고·차폐라는 같은 통제(무력화는 권고하지 않음)}
       - {id: PH-SV-02, name: 은닉 촬영·도청 장비, members: [PHT-SV-02.1, PHT-SV-02.2], basis: 원본 위협분류 '은닉 촬영·도청 장비' 2개 — 보안 구역 반입 통제·정기 점검이라는 같은 통제}
       - {id: PH-SV-03, name: 근접 무선·부채널 정보 수집, members: [PHT-SV-03.1, PHT-SV-03.2], basis: 원본 위협분류 '무선·전자파 신호' 2개 — 무선 감시·차폐라는 같은 통제}
       - {id: PH-SV-04, name: 화면·문서 노출과 폐기물 정보 회수, members: [PHT-SV-04.1, PHT-SV-04.2], basis: 원본 위협분류 '화면·문서 노출과 폐기물' 2개 — 클린 데스크·안전한 폐기라는 같은 통제}
   HU:
-    status: todo
+    status: done          # integrated/data/physical/HU.yaml — PH-HU-01~04 (사례 사용: PHI-009·006·014·015·017·021·028·019)
     items:
       - {id: PH-HU-01, name: 금전·협박·관계 기반 포섭, members: [PHT-HU-01.1, PHT-HU-01.2], basis: 재직자를 내부 협력자로 만드는 같은 위협이며 접촉 신고·지속 심사라는 같은 통제}
       - {id: PH-HU-02, name: 일회성 대리인 모집(감시·사보타주), members: [PHT-HU-01.3], basis: 단독 유지 — 조직 밖 일반인을 일회성으로 모집하는 위협으로 시설 경계 감시·관계 기관 공조라는 고유 통제}
       - {id: PH-HU-03, name: 인재 영입·연구 협력 위장 기술 획득, members: [PHT-HU-02, PHT-HU-03], basis: 영입·협력 프로그램을 가장해 핵심 인력·연구 성과를 가져가는 같은 위협이며 겸직·해외 영입 신고·연구보안이라는 같은 통제}
       - {id: PH-HU-04, name: 투자·합작·대면 사칭을 통한 기술 자료 획득, members: [PHT-HU-04, PHT-HU-05.1, PHT-HU-05.2], basis: 투자·거래·방문 관계를 내세워 기술 자료를 요구하는 같은 위협이며 거래 상대 실사·자료 제공 승인이라는 같은 통제}
   IN:
-    status: todo
+    status: done          # integrated/data/physical/IN.yaml — PH-IN-01~06 (사례 사용: PHI-001·003·079·035·100·099·016·029·031·034·075·074)
     items:
       - {id: PH-IN-01, name: 위장취업(랩톱 팜 포함), members: [PHT-IN-01.1, PHT-IN-01.2], basis: 원본 위협분류 '위장취업' 2개 — 채용 신원 확인·지급 장비 위치 확인이라는 같은 통제(신원 ID-LC-03 연계)}
       - {id: PH-IN-02, name: 재직자의 기밀·기술 자료 무단 수집·유출, members: [PHT-IN-02.1], basis: 단독 유지 — 물리·인적 사고가 가장 많은 행위(실제 사고 13건)로 객관적 행동 신호 분석이라는 고유 통제}
@@ -235,13 +235,13 @@ physical:   # 대표 사례는 미배치 — v3_status.py가 구성 원본의 �
       - {id: PH-IN-05, name: 협력사·파견·외주 인력의 현장 자료 반출, members: [PHT-IN-04], basis: 단독 유지 — 원청 통제가 약한 외부 인력으로 협력사 계약·현장 반출 통제라는 고유 통제}
       - {id: PH-IN-06, name: 비의도 내부자의 분실·부주의 노출, members: [PHT-IN-05.1, PHT-IN-05.2], basis: 원본 위협분류 '비의도 내부자' 2개 — 매체 암호화·인식 교육이라는 같은 통제}
   EX:
-    status: todo
+    status: done          # integrated/data/physical/EX.yaml — PH-EX-01~03 (사례 사용: PHI-033·039·025·027·041·038)
     items:
       - {id: PH-EX-01, name: 이동식 저장매체·업무 단말 무단 반출, members: [PHT-EX-01], basis: 단독 유지 — 디지털 매체 반출로 매체 통제·DLP라는 고유 통제}
       - {id: PH-EX-02, name: 출력·필사·촬영으로 반출 통제 우회, members: [PHT-EX-02, PHT-EX-03], basis: 출력물·필사(EX-02)와 촬영(EX-03)은 디지털 반출 통제를 우회하는 같은 아날로그 경로이며 출력 통제·보안 구역 촬영 기기 통제라는 같은 통제}
       - {id: PH-EX-03, name: 시제품·부품·시료 반출, members: [PHT-EX-04], basis: 단독 유지 — 실물 반출로 실물 자산 관리·반출입 검사라는 고유 통제}
   IM:
-    status: todo
+    status: done          # integrated/data/physical/IM.yaml — PH-IM-01~04 (사례 사용: PHI-026·018·043·066·055·061·020·013)
     items:
       - {id: PH-IM-01, name: 핵심기술·영업비밀·국가기밀 유출, members: [PHT-IM-01], basis: 단독 유지 — 회복 불가능한 손실 결과 유형(실제 사고 23건)}
       - {id: PH-IM-02, name: 사보타주·설비 손상, members: [PHT-IM-02], basis: 단독 유지 — 설비 손상 결과 유형}

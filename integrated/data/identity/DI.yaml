@@ -1,4 +1,4 @@
-# [DI] 디렉터리·IdP 인프라 공격 — 재구성 Lv3 (원본 8개 → 5)
+# [DI] 디렉터리·IdP·페더레이션 — 재구성 Lv3 (원본 8개 → 5)
 - id: ID-DI-01
   name: 도메인 컨트롤러 장악(DCSync·DC 취약점)
   summary: DCSync·NTDS.dit 탈취와 DC 취약점으로 도메인 전체 계정 장악
