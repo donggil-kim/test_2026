@@ -139,7 +139,7 @@ identity:
         basis: 단독 유지 — AI 에이전트가 위임받은 사용자 토큰·연동 권한이라는 새 공격면으로 위임 범위 최소화·고위험 동작 승인이라는 고유 통제(AI-07 연계)
         cases: ["Asana MCP 서버 조직 간 데이터 노출(2025-06)"]
   LC:
-    status: todo
+    status: done          # integrated/data/identity/LC.yaml — ID-LC-01~03 (사례 사용: IDI-014·079·048·012·105·104)
     items:
       - id: ID-LC-01
         name: 퇴사자·휴면·협력사 계정 악용
@@ -157,7 +157,7 @@ identity:
         basis: 단독 유지 — 채용 단계에서 정규 계정을 얻는 위협으로 채용 신원 확인·지급 장비 통제라는 고유 통제(물리 PH-IN-01 연계)
         cases: ["북한 원격 IT 인력 위장 취업 일제 단속(2025-06)", "KnowBe4 북한 위장 IT 인력 채용(2024-07)"]
   CI:
-    status: todo
+    status: done          # integrated/data/identity/CI.yaml — ID-CI-01~03 (사례 사용: IDI-044·050·040·041·061·060)
     items:
       - id: ID-CI-01
         name: 고객 계정 대량 자격증명 스터핑
@@ -175,7 +175,7 @@ identity:
         basis: 원본 위협분류 '명의 도용·본인확인 우회' 2개 — 계좌·계정 개설 단계 본인확인을 속이는 같은 위협이며 다중 증빙·라이브니스 검사라는 같은 통제
         cases: ["홍콩 딥페이크 얼굴 바꾸기로 대출·계좌 개설 사기 조직 검거(2023-08)", "GoldPickaxe 얼굴 인식 정보 탈취 트로이목마(2024-02)"]
   IM:
-    status: todo
+    status: done          # integrated/data/identity/IM.yaml — ID-IM-01~04 (사례 사용: IDI-029·113·005·057·016·011·037·073)
     items:
       - id: ID-IM-01
         name: 계정 장악 기반 금전 사기(BEC·송금·사칭 게시)
