@@ -16,7 +16,7 @@ identity:
   AU:
     status: done          # integrated/data/identity/AU.yaml — ID-AU-01~04 (사례 사용: IDI-017·043·002·047·015·018·087·091)
   SE:
-    status: todo
+    status: done          # integrated/data/identity/SE.yaml — ID-SE-01~04 (사례 사용: IDI-004·031·010·056·036·032·013·072)
     items:
       - id: ID-SE-01
         name: 인증 피싱(AiTM·OAuth 동의·문자·메신저)
@@ -39,7 +39,7 @@ identity:
         basis: 단독 유지 — 얼굴·목소리라는 신뢰 확인 수단 자체를 위조하는 위협으로 별도 채널 콜백·이중 승인이라는 고유 통제(AI-01-07·AI-01-08 연계)
         cases: ["Arup 딥페이크 화상회의 송금 사기(2024-01)", "Retool 고객 계정 27곳 장악(2023-08)"]
   CR:
-    status: todo
+    status: done          # integrated/data/identity/CR.yaml — ID-CR-01~02 (사례 사용: IDI-067·071·108·070)
     items:
       - id: ID-CR-01
         name: 단말 자격증명 탈취(인포스틸러·덤프·키로깅)
@@ -52,7 +52,7 @@ identity:
         basis: 원본 위협분류 '저장·노출된 비밀' 2개 — 저장된 비밀을 한꺼번에 얻는 같은 위협이며 비밀 스캔·비밀 저장소 분리·즉시 교체라는 같은 통제
         cases: ["New York Times 소스 코드 270GB 유출(2024-01)", "Disney 사내 Slack 1.1TB 유출(2024-07)"]
   TS:
-    status: todo
+    status: done          # integrated/data/identity/TS.yaml — ID-TS-01~03 (사례 사용: IDI-088·064·021·097·027·042)
     items:
       - id: ID-TS-01
         name: 세션·토큰 탈취와 재사용(장비 메모리 노출 포함)
