@@ -66,7 +66,8 @@ def report(plan, src, summ):
             print(f"  문안 {len(written)}개 작성 완료 (재구성안 status: {plan[kind].get('status')})")
             continue
         planned_ids = {it["id"] for it in items} | {e["id"] for e in summ[kind]}
-        members = collections.Counter(m for it in items for m in it["members"])
+        # 작성된 항목은 문안 쪽 members로 셈(재구성안과의 일치는 아래 done 검사에서 확인) — 이중 집계 방지
+        members = collections.Counter(m for it in items if it["id"] not in written for m in it["members"])
         members.update(m for e in summ[kind] for m in e["members"])
         missing = [k for k in sk["tech"] if k not in members]
         dup = [k for k, v in members.items() if v > 1]
