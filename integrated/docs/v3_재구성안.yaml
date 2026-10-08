@@ -70,7 +70,7 @@ identity:
         basis: 원본 위협분류 '토큰·티켓 위조' 3개 — 서명 키·인증서를 얻어 인증 증표를 만들어 내는 같은 위협이며 서명 키 보호(HSM)·주기 교체라는 같은 통제
         cases: ["SolarWinds 침해 이후 클라우드 장악(2020-12)", "쿠팡 고객 계정 정보 3,367만 건 유출(2025-11)"]
   DI:
-    status: todo
+    status: done          # integrated/data/identity/DI.yaml — ID-DI-01~05 (사례 사용: IDI-095·096·028·119·023·024·019·080·007·022)
     items:
       - id: ID-DI-01
         name: 도메인 컨트롤러 장악(DCSync·DC 취약점)
@@ -98,7 +98,7 @@ identity:
         basis: 단독 유지 — 고객 테넌트 안에서 IdP 관리 권한으로 신뢰 설정을 바꾸는 위협으로 페더레이션 변경 이중 승인·감시라는 고유 통제
         cases: ["Okta 고객 대상 헬프데스크 사칭·교차 테넌트 사칭(2023-08)", "Storm-0501 하이브리드 환경 랜섬웨어(2024-09)"]
   PE:
-    status: todo
+    status: done          # integrated/data/identity/PE.yaml — ID-PE-01~03 (사례 사용: IDI-063·126·008·030)
     items:
       - id: ID-PE-01
         name: 과다 권한·특권 접근 관리 체계 침해
@@ -111,12 +111,12 @@ identity:
         basis: 원본 위협분류 '신원 기반 지속성' 3개 — 비밀번호 재설정 뒤에도 접근을 유지하는 같은 위협이며 계정·인증 수단·메일 규칙 변경 감시라는 같은 통제
         cases: ["Scattered Spider 합동 권고(2023-11)", "Storm-1167 다단계 AiTM 피싱·BEC(2023-06)"]
       - id: ID-PE-03
-        name: 신원 통제 무력화(감사 로그·조건부 액세스·MFA 정책)
+        name: 신원 통제 무력화(감사 로그·조건부 액세스·MFA)  # 문안 작성 때 30자 이내로 줄임
         members: [IDT-PE-03]
         basis: 단독 유지 — 탐지·차단 통제 자체를 끄는 방어 무력화로 로그 불변 저장·정책 변경 이중 승인이라는 고유 통제
         cases: []          # 원본이 '공개 사고 미확인' — 사례 줄은 '- 공개 사고 미확인 — 사유' 형식
   NH:
-    status: todo
+    status: done          # integrated/data/identity/NH.yaml — ID-NH-01~04 (사례 사용: IDI-084·020·038·112·106·034·117·122)
     items:
       - id: ID-NH-01
         name: 장기 키·비밀 악용과 교체·폐기 실패
