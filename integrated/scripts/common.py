@@ -4,7 +4,10 @@
   - AI: sources/ai_v3.2 (통합 AI 보안위협 매트릭스 v3.2, Lv3 124개)
   - 클라우드: output/통합_클라우드보안위협_매트릭스_v5.xlsx (Lv3 154행, 고유 기법 126개)
   - OT: ot/output/통합_OT보안위협_매트릭스_v5.xlsx (Lv3 141행, 고유 기법·항목 118개)
-요약(재구성 Lv3) 문안: integrated/data/ai/D*.yaml, integrated/data/cloud/<전술>.yaml, integrated/data/ot/<전술>.yaml
+  - 공급망: supplychain/output/통합_공급망보안위협_매트릭스_v2.xlsx (세부위협 60개)
+  - 신원: identity/output/통합_신원보안위협_매트릭스_v2.xlsx (세부위협 65개)
+  - 물리·인적: physical/output/통합_물리인적보안위협_매트릭스_v2.xlsx (세부위협 45개)
+요약(재구성 Lv3) 문안: integrated/data/<Lv0>/<도메인·전술>.yaml (ai · cloud · ot · supplychain · identity · physical)
 """
 import collections
 import glob
@@ -19,6 +22,9 @@ AI_DIR = os.path.join(ROOT, "sources", "ai_v3.2")
 AI_XLSX = os.path.join(AI_DIR, "output", "통합_AI보안위협_매트릭스_v3.2_LITE.xlsx")
 CLOUD_XLSX = os.path.join(ROOT, "output", "통합_클라우드보안위협_매트릭스_v5.xlsx")
 OT_XLSX = os.path.join(ROOT, "ot", "output", "통합_OT보안위협_매트릭스_v5.xlsx")
+SC_XLSX = os.path.join(ROOT, "supplychain", "output", "통합_공급망보안위협_매트릭스_v2.xlsx")
+ID_XLSX = os.path.join(ROOT, "identity", "output", "통합_신원보안위협_매트릭스_v2.xlsx")
+PH_XLSX = os.path.join(ROOT, "physical", "output", "통합_물리인적보안위협_매트릭스_v2.xlsx")
 DATA_DIR = os.path.join(ROOT, "integrated", "data")
 
 LEVEL = {"상": 3, "중": 2, "하": 1}
@@ -35,15 +41,35 @@ OT_MAJOR_INCIDENTS = {"INC-002", "INC-003", "INC-004", "INC-008", "INC-009"}
 AI_DOMAINS = ["D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10"]
 TACTICS = ["RD", "IA", "EX", "PE", "PV", "ST", "DI", "CA", "DS", "LM", "CO", "C2", "EF", "IM"]
 OT_TACTICS = ["RD", "IA", "EX", "PE", "PV", "EV", "DS", "LM", "CO", "C2", "IR", "IP", "IM"]
-KINDS = ["ai", "cloud", "ot"]  # Lv0 순서
-LABEL = {"ai": "AI", "cloud": "클라우드", "ot": "OT"}
-DOMAINS = {"ai": AI_DOMAINS, "cloud": TACTICS, "ot": OT_TACTICS}
+SC_DOMAINS = ["DE", "SR", "DP", "BD", "SC", "PB", "CS", "IM"]
+ID_DOMAINS = ["AU", "SE", "CR", "TS", "DI", "PE", "NH", "LC", "CI", "IM"]
+PH_DOMAINS = ["RC", "PA", "SV", "HU", "IN", "EX", "IM"]
+KINDS = ["ai", "cloud", "ot", "supplychain", "identity", "physical"]  # Lv0 순서
+LABEL = {"ai": "AI", "cloud": "클라우드", "ot": "OT", "supplychain": "공급망", "identity": "신원", "physical": "물리·인적"}
+DOMAINS = {"ai": AI_DOMAINS, "cloud": TACTICS, "ot": OT_TACTICS,
+           "supplychain": SC_DOMAINS, "identity": ID_DOMAINS, "physical": PH_DOMAINS}
+# 자체 분류 체계 원본(공급망·신원·물리) — 같은 빌드 틀(분류 체계 → 사고 DB → 관점 문구)로 만든 워크북이라 로더 하나로 읽음
+#   id_col: 원본 세부위협 ID 열 · inc: 사고 DB ID 접두사 · prefix: 요약 ID 접두사 · stage: 공격 단계 열
+TAXO = {
+    "supplychain": dict(xlsx=SC_XLSX, id_col="SCT-ID", inc="SCI", prefix="SC", stage="공격 단계(ATT&CK 전술)",
+                        name="통합 소프트웨어 공급망 보안위협 매트릭스 v2"),
+    "identity": dict(xlsx=ID_XLSX, id_col="IDT-ID", inc="IDI", prefix="ID", stage="공격 단계(ATT&CK 전술)",
+                     name="통합 신원·계정 보안위협 매트릭스 v2"),
+    "physical": dict(xlsx=PH_XLSX, id_col="PHT-ID", inc="PHI", prefix="PH", stage="공격 단계",
+                     name="물리·인적 보안위협 매트릭스 v2"),
+}
+TAXO_REAL_STATUS = "실제 사고"  # 세 원본 '역매핑_사고사례' 시트 '집계 상태' 열에서 실제 사고로 세는 값
+INCIDENT_RE = re.compile(r"\b(?:INC|SCI|IDI|PHI)-\d+\b")  # 원본 참조 줄의 사고 ID (OT · 공급망 · 신원 · 물리)
 CASE_TAGS = ["실제 사고", "공개 취약점", "실증", "ATT&CK 사례", "시나리오"]
 # Lv0별 허용 사례 유형 — OT는 [위협인텔](배포 전에 발견된 공격 도구)·[EMB3D](EMB3D 장치 위협 인용)를 더 씀
-CASE_TAGS_BY_KIND = {"ai": CASE_TAGS, "cloud": CASE_TAGS, "ot": CASE_TAGS + ["위협인텔", "EMB3D"]}
-# 같은 Lv0 안 대표 사례 반복 사용 경고 — 대형 사고 5건에 근거가 몰린 OT에 적용(AI·클라우드는 v1에서 수동 검토)
-# 사례는 원본 참조 줄의 사고 ID(INC-…)로 묶어, 같은 사고의 다른 표기('2016 우크라이나'·'2016 우크라이나 송전 변전소')도 반복으로 셈
-CASE_REUSE_CHECK = {"ot"}
+# 신원은 [위협인텔]·[시연](SAT 시연), 물리는 [정부 경보]·[위협인텔]을 더 씀 — 모두 실제 사고로 세지 않음(원본 '집계 상태' 기준)
+CASE_TAGS_BY_KIND = {"ai": CASE_TAGS, "cloud": CASE_TAGS, "ot": CASE_TAGS + ["위협인텔", "EMB3D"],
+                     "supplychain": CASE_TAGS, "identity": CASE_TAGS + ["위협인텔", "시연"],
+                     "physical": CASE_TAGS + ["정부 경보", "위협인텔"]}
+# 같은 Lv0 안 대표 사례 반복 사용 경고 — 대형 사고 5건에 근거가 몰린 OT와 사고 DB 기반 공급망·신원·물리에 적용
+# (AI·클라우드는 v1에서 수동 검토). 사례는 원본 참조 줄의 사고 ID(INC-·SCI-·IDI-·PHI-…)로 묶어,
+# 같은 사고의 다른 표기('2016 우크라이나'·'2016 우크라이나 송전 변전소')도 반복으로 셈
+CASE_REUSE_CHECK = {"ot", "supplychain", "identity", "physical"}
 # 반복이 불가피한 사례 — {(Lv0, 사고 ID 또는 '사례명(시점)'): (허용 항목, 사유)}. 허용 항목 밖에서 또 쓰면 다시 경고
 # OT: 대형 5건은 가장 특징적인 항목(IR-01 2025 폴란드 · IP-02 2016 우크라이나 · IM-05 Triton · PE-01 Stuxnet ·
 #     EX-03 2015 우크라이나)에 두고, 구성 원본의 실제 사고가 다른 항목에 이미 배치된 사고뿐인 항목에서만 함께 씀
@@ -68,6 +94,10 @@ CASE_REUSE_ALLOWED = {
                         "OT-DS-02·CO-03 모두 대형 5건 밖 실제 사고가 VPNFilter뿐 — 패킷 스니퍼·ssler 중간자 모듈은 다른 기능"),
 }
 SOURCE_TAG_ALIAS = {"실증·연구": "실증"}
+# 물리·인적 작성 제약(결정 D9) — 방어 자료로 한정: 드론 기체 무력화·전파 교란은 권고하지 않고(탐지·식별·신고·차폐),
+# 인적 징후에 보호 특성을 쓰지 않음. 대응 방안·전 필드 금지 표현
+PHYSICAL_BANNED_CONTROLS = ["재밍", "전파 교란", "전파 차단", "격추", "기체 무력화", "드론 무력화"]
+PHYSICAL_BANNED_ANY = ["출신", "종교", "인종", "성별", "성적 지향"]
 RECENT_FROM = "2025"  # 최근 사고 기준 연도(이 해 1월 1일 이후)
 
 
@@ -198,12 +228,47 @@ def load_ot():
             "n_incidents": len(inc) - 1, "n_real": len(real)}
 
 
+def load_taxo(kind):
+    """자체 분류 체계 원본(공급망·신원·물리): 세부위협 행, 세부위협 ID별 행(전술 반복 없음 — 1행)·도메인·실제 사고 ID 집합.
+    클라우드·OT와 같은 구조(tech·tactics)로 돌려줘 위험 재산정(evaluate_attack)·출처 대조를 그대로 쓴다."""
+    cfg = TAXO[kind]
+    wb = openpyxl.load_workbook(cfg["xlsx"], read_only=True, data_only=True)
+    m = list(wb["통합 매트릭스"].iter_rows(values_only=True))
+    header = m[3]
+    rows = [dict(zip(header, r)) for r in m[4:] if r[1]]
+    inc = list(wb["역매핑_사고사례"].iter_rows(values_only=True))
+    incidents = [dict(zip(inc[0], x)) for x in inc[1:] if x[0]]
+    real = {x["사례 ID"] for x in incidents if x["집계 상태"] == TAXO_REAL_STATUS}
+    inc_dates = {x["사례 ID"]: str(x["시점"] or "") for x in incidents}
+    pat = re.compile(rf"\b{cfg['inc']}-\d+\b")
+    tech = collections.OrderedDict()
+    for r in rows:
+        k = r[cfg["id_col"]]
+        r["tactic"] = r["도메인(Lv1)"][1:3]
+        r["real_incidents"] = sorted(set(pat.findall(str(r["관련 사례 ID"] or ""))) & real)
+        if len(r["real_incidents"]) != r["실제 사고 수"]:
+            raise ValueError(f"{LABEL[kind]} 실제 사고 수 재현 불일치: {k}")
+        if sum(inc_dates[i][:4] >= RECENT_FROM for i in r["real_incidents"]) != (r["최근 사고(2025~)"] or 0):
+            raise ValueError(f"{LABEL[kind]} 최근 사고 수 재현 불일치: {k}")
+        tech[k] = {"row": r, "rows": [r], "ids": [k], "tactics": [r["tactic"]]}
+    tactics = collections.OrderedDict()
+    for r in rows:
+        tactics.setdefault(r["tactic"], r["도메인(Lv1)"])
+    if list(tactics) != DOMAINS[kind]:
+        raise ValueError(f"{LABEL[kind]} 도메인 순서 불일치: {list(tactics)}")
+    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": cfg["xlsx"], "inc_dates": inc_dates,
+            "incidents": incidents, "n_incidents": len(incidents), "n_real": len(real), "id_col": cfg["id_col"]}
+
+
 def load_sources():
-    return {"ai": load_ai(), "cloud": load_cloud(), "ot": load_ot()}
+    src = {"ai": load_ai(), "cloud": load_cloud(), "ot": load_ot()}
+    for kind in TAXO:
+        src[kind] = load_taxo(kind)
+    return src
 
 
 def source_keys(kind, src):
-    """Lv0별 구성 원본 키 → 원본 (AI: UT Lv3 ID, 클라우드: ATT&CK ID, OT: ATT&CK·EMB3D ID)."""
+    """Lv0별 구성 원본 키 → 원본 (AI: UT Lv3 ID, 클라우드: ATT&CK ID, OT: ATT&CK·EMB3D ID, 공급망·신원·물리: 세부위협 ID)."""
     return src["lv3"] if kind == "ai" else src["tech"]
 
 
@@ -298,7 +363,8 @@ def evaluate_attack(entry, src):
 
 
 evaluate_cloud = evaluate_ot = evaluate_attack
-EVALUATE = {"ai": evaluate_ai, "cloud": evaluate_attack, "ot": evaluate_attack}
+EVALUATE = {"ai": evaluate_ai, "cloud": evaluate_attack, "ot": evaluate_attack,
+            "supplychain": evaluate_attack, "identity": evaluate_attack, "physical": evaluate_attack}
 
 
 # ---------------------------------------------------------------- 문안 검증
@@ -310,6 +376,13 @@ BANNED = {"인증정보": "자격증명", "크리덴셜": "자격증명", "엑�
 
 def _lines(text):
     return [l for l in (text or "").split("\n") if l.strip()]
+
+
+def normalize_terms(text):
+    """원본 참조의 금지 용어를 통합본 용어로 바꾼 사본 — 출처 대조용(원본 사례명 '크리덴셜 스터핑' ↔ 요약 '자격증명 스터핑')."""
+    for bad, good in BANNED.items():
+        text = text.replace(bad, good)
+    return text
 
 
 def check_entry(entry, refs, kind):
@@ -348,7 +421,7 @@ def check_entry(entry, refs, kind):
     cases = _lines(entry["cases"])
     if not 1 <= len(cases) <= 2:
         errs.append(f"{eid}: 대표 사례는 1~2줄")
-    joined = "\n".join(refs)
+    joined = normalize_terms("\n".join(refs))
     for c in cases:
         if c.startswith("- 공개 사고 미확인"):  # 사례가 없는 기법: 원본의 '공개 사고 미확인' 근거가 있을 때만 허용
             if "공개 사고 미확인" not in joined:
@@ -384,13 +457,15 @@ def check_entry(entry, refs, kind):
 
 
 def entry_prefix(kind, domain):
-    """요약 항목 ID 접두사 — AI-<도메인번호>- / CL-<전술>- / OT-<전술>-."""
+    """요약 항목 ID 접두사 — AI-<도메인번호>- / CL-<전술>- / OT-<전술>- / SC-·ID-·PH-<도메인>-."""
+    if kind in TAXO:
+        return f"{TAXO[kind]['prefix']}-{domain}-"
     return {"ai": f"AI-{domain[1:]}-", "cloud": f"CL-{domain}-", "ot": f"OT-{domain}-"}[kind]
 
 
 def case_incidents(cases, refs):
     """대표 사례 줄 → [('사례명(시점)', 사고 ID 목록)] ([시나리오]·'공개 사고 미확인'은 제외).
-    사고 ID는 사례명(시점)이 실린 원본 참조 줄의 'INC-…'에서 가져오며, 없으면(공개 취약점·EMB3D 등) 빈 목록."""
+    사고 ID는 사례명(시점)이 실린 원본 참조 줄의 사고 ID(INC-·SCI-·IDI-·PHI-…)에서 가져오며, 없으면(공개 취약점·EMB3D 등) 빈 목록."""
     out = []
     for line in _lines(cases):
         m = CASE_RE.match(line.strip())
@@ -402,8 +477,8 @@ def case_incidents(cases, refs):
         name = n.group("name").strip()
         label = f"{name}({n.group('date')})" if n.group("date") else name
         key = label if n.group("date") else f"] {name}:"  # check_entry의 출처 대조 키와 같음
-        hit = next((l for l in (refs or "").split("\n") if key in l), "")
-        out.append((label, list(dict.fromkeys(re.findall(r"INC-\d+", hit)))))
+        hit = next((l for l in normalize_terms(refs or "").split("\n") if key in l), "")
+        out.append((label, list(dict.fromkeys(INCIDENT_RE.findall(hit)))))
     return out
 
 
@@ -449,7 +524,16 @@ def check_all(src, summ):
                 refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
                 if re.search(r"^\s*- \[(실제 사고|실증|실증·연구)\]", refs, re.M):
                     warns.append(f"{e['id']}: [EMB3D] 사례는 구성 원본에 실제 사고·실증 사례가 없을 때만 사용")
-    # 4) 대표 사례 분산: 같은 Lv0 안에서 같은 사고를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
+    # 4) 물리·인적 작성 제약(결정 D9): 금지 표현
+    for e in valid.get("physical", []):
+        for bad in PHYSICAL_BANNED_CONTROLS:
+            if bad in str(e.get("controls") or ""):
+                errs.append(f"{e['id']}: 대응 방안에 '{bad}' — 드론·전파는 탐지·식별·신고·차폐만 권고")
+        for bad in PHYSICAL_BANNED_ANY:
+            for field in ["name", "summary", "description", "scenario", "cases", "controls"]:
+                if bad in str(e.get(field) or ""):
+                    errs.append(f"{e['id']}: '{bad}' — 인적 징후·사례에 보호 특성을 쓰지 않음")
+    # 5) 대표 사례 분산: 같은 Lv0 안에서 같은 사고를 여러 항목에 쓰면 경고 (CASE_REUSE_CHECK 대상 Lv0)
     #    사고 ID가 없는 사례(공개 취약점·EMB3D 등)는 '사례명(시점)'으로 셈. 허용 목록의 항목 안에서만 반복을 허용
     for kind in KINDS:
         if kind not in CASE_REUSE_CHECK:
