@@ -2,14 +2,16 @@
 
 입력
   - 요약(재구성 Lv3) 문안: integrated/data/<Lv0>/<도메인·전술>.yaml (ai · cloud · ot · supplychain · identity · physical)
+    v4: 항목의 absorbs(Lv0 간 통합으로 흡수한 v3 위협) · data/dup_groups.yaml(중복 그룹) · data/incident_aliases.yaml(동일 사고)
   - 원본: sources/ai_v3.2 (AI v3.2 LITE, Lv3 124), output/통합_클라우드보안위협_매트릭스_v5.xlsx (154행),
           ot/output/통합_OT보안위협_매트릭스_v5.xlsx (141행), supplychain/output/통합_공급망보안위협_매트릭스_v2.xlsx (60),
           identity/output/통합_신원보안위협_매트릭스_v2.xlsx (65), physical/output/통합_물리인적보안위협_매트릭스_v2.xlsx (45)
 출력
-  - integrated/output/통합_보안위협_매트릭스_v3.xlsx
-  - integrated/output/통합_요약매트릭스_v3.csv (요약 매트릭스 검토·diff용)
-  - integrated/output/통합_요약목록_v3.md (도메인별 요약 위협 목록)
-  - --release: integrated/output/통합_보안위협_매트릭스_v3_배포본.xlsx
+  - integrated/output/통합_보안위협_매트릭스_v4.xlsx
+  - integrated/output/통합_요약매트릭스_v4.csv (요약 매트릭스 검토·diff용)
+  - integrated/output/통합_사고사례목록_v4.csv (통합 사고사례 목록)
+  - integrated/output/통합_요약목록_v4.md (도메인별 요약 위협 목록) · 통합_중복검토_v4.md (Lv0 간 통합·중복 그룹)
+  - --release: integrated/output/통합_보안위협_매트릭스_v4_배포본.xlsx
     (고객 배포본 — 클라우드 상세 시트의 CSA Top Threats 열, 신원 상세 시트의 CSA CCM·CIS Controls 열을 ID만 남김)
 
 사용: python3 integrated/scripts/build_integrated_matrix.py [--release]
@@ -29,14 +31,17 @@ from openpyxl.worksheet.pagebreak import Break
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
+import incidents  # noqa: E402
 
-VERSION = "v3"
+VERSION = "v4"
 TITLE = "통합 보안위협 매트릭스"
 OUT_DIR = os.path.join(common.ROOT, "integrated", "output")
 XLSX = os.path.join(OUT_DIR, f"통합_보안위협_매트릭스_{VERSION}.xlsx")
 XLSX_RELEASE = os.path.join(OUT_DIR, f"통합_보안위협_매트릭스_{VERSION}_배포본.xlsx")
 CSV = os.path.join(OUT_DIR, f"통합_요약매트릭스_{VERSION}.csv")
 MD = os.path.join(OUT_DIR, f"통합_요약목록_{VERSION}.md")
+CATALOG_CSV = os.path.join(OUT_DIR, f"통합_사고사례목록_{VERSION}.csv")
+REVIEW_MD = os.path.join(OUT_DIR, f"통합_중복검토_{VERSION}.md")
 LV0 = {"ai": "AI 보안위협", "cloud": "클라우드 보안위협", "ot": "OT 보안위협",  # 순서 = common.KINDS
        "supplychain": "공급망 보안위협", "identity": "신원 보안위협", "physical": "물리·인적 보안위협"}
 KIND_OF = {v: k for k, v in LV0.items()}
@@ -225,54 +230,64 @@ def build_rows(src, summ):
     every = [e for kind in common.KINDS for e in summ[kind]]
     tactic_ko = {t: label.split("] ", 1)[1] for t, label in cl_src["tactics"].items()}
     ot_ko = {t: label.split("] ", 1)[1] for t, label in ot_src["tactics"].items()}
-    to_summary = {kind: {m: e["id"] for e in summ[kind] for m in e["members"]} for kind in common.KINDS}
+    # 원본 키 → 요약 ID (v4: Lv0 간 통합으로 다른 Lv0 항목에 흡수된 원본은 흡수한 항목으로)
+    to_summary = {kind: {} for kind in common.KINDS}
+    for e in every:
+        for k, m, _ in common.entry_sources(e):
+            to_summary[k][m] = e["id"]
+    retired = common.retired_map(summ)  # 흡수로 폐기한 v3 ID → 흡수한 v4 ID (원본 연계 열이 v3 요약 ID를 가리킴)
     names = {e["id"]: e["name"] for e in every}
     order = {e["id"]: i for i, e in enumerate(every)}
+    groups = {i: g for g in common.load_groups() for i in g["items"]}
 
     # 연계 위협: 문안의 수동 연계 + 클라우드 원본 'AI 매트릭스 연계(UT)' 열
     #           + OT 원본 '클라우드 매트릭스 연계'(ATT&CK ID)·'AI 매트릭스 연계(UT)'(Lv3 ID) 열 → 양방향
     links = collections.defaultdict(set)
 
     def link(a, b):
-        links[a].add(b)
-        links[b].add(a)
+        b = retired.get(b, b)
+        if a != b:
+            links[a].add(b)
+            links[b].add(a)
+
+    def sources_of(kind):
+        """(요약 항목, 원본 키) — 해당 Lv0 원본을 구성·흡수 원본으로 가진 모든 항목."""
+        return [(e, m) for e in every for k, m, _ in common.entry_sources(e) if k == kind]
 
     for e in every:
         for target in e.get("links") or []:
             link(e["id"], target)
-    for e in cl_sum:
-        for m in e["members"]:
-            for r in cl_src["tech"][m]["rows"]:
-                for ut in re.findall(r"UT-\d+\.\d+", r["AI 매트릭스 연계(UT)"] or ""):
-                    link(e["id"], to_summary["ai"][ut])
+    for e, m in sources_of("cloud"):
+        for r in cl_src["tech"][m]["rows"]:
+            for ut in re.findall(r"UT-\d+\.\d+", r["AI 매트릭스 연계(UT)"] or ""):
+                link(e["id"], to_summary["ai"][ut])
     # OT 원본 연계 중 요약 항목으로 바로 옮길 수 없는 참조(클라우드 v5에 없는 기법, UT Lv2 ID)는 건너뛰고 문안 links로 지정
     skipped = collections.OrderedDict()
-    for e in ot_sum:
-        for m in e["members"]:
-            for r in ot_src["tech"][m]["rows"]:
-                refs = [("cloud", t) for t in re.findall(r"\bT\d{4}(?:\.\d{3})?\b", r["클라우드 매트릭스 연계"] or "")] + \
-                       [("ai", u) for u in re.findall(r"UT-\d+(?:\.\d+)?", r["AI 매트릭스 연계(UT)"] or "")]
-                for kind, ref in refs:
-                    if ref in to_summary[kind]:
-                        link(e["id"], to_summary[kind][ref])
-                    else:
-                        skipped.setdefault(f"{m}→{ref}", (e["id"], kind))
+    for e, m in sources_of("ot"):
+        for r in ot_src["tech"][m]["rows"]:
+            refs = [("cloud", t) for t in re.findall(r"\bT\d{4}(?:\.\d{3})?\b", r["클라우드 매트릭스 연계"] or "")] + \
+                   [("ai", u) for u in re.findall(r"UT-\d+(?:\.\d+)?", r["AI 매트릭스 연계(UT)"] or "")]
+            for kind, ref in refs:
+                if ref in to_summary[kind]:
+                    link(e["id"], to_summary[kind][ref])
+                else:
+                    skipped.setdefault(f"{m}→{ref}", (e["id"], kind))
     # 공급망·신원·물리 원본 '다른 매트릭스 연계' 열: 요약 ID(AI-·CL-·OT-)는 그대로, 상세 ID(OTC-·SCT-·IDT-·PHT-)는
     # 그 원본이 묶인 요약 항목 ID로 바꿈. 바꿀 수 없는 참조는 건너뛰고 경고(문안 links로 대체)
     otc = {c: to_summary["ot"][k] for k, t in ot_src["tech"].items() for c in t["otc"]}
     detail = {"OTC": otc, "SCT": to_summary["supplychain"], "IDT": to_summary["identity"], "PHT": to_summary["physical"]}
     for kind in common.TAXO:
-        for e in summ[kind]:
-            for m in e["members"]:
-                r = src[kind]["tech"][m]["row"]
-                for col in TAXO_LINK_COLS[kind]:
-                    for ref in LINK_ID_RE.findall(str(r[col] or "")):
-                        head = ref.split("-")[0]
-                        target = detail[head].get(ref) if head in detail else (ref if ref in names else None)
-                        if target and target != e["id"]:
-                            link(e["id"], target)
-                        elif not target:
-                            skipped.setdefault(f"{m}→{ref}", (e["id"], head))
+        for e, m in sources_of(kind):
+            r = src[kind]["tech"][m]["row"]
+            for col in TAXO_LINK_COLS[kind]:
+                for ref in LINK_ID_RE.findall(str(r[col] or "")):
+                    head = ref.split("-")[0]
+                    ref2 = retired.get(ref, ref)
+                    target = detail[head].get(ref) if head in detail else (ref2 if ref2 in names else None)
+                    if target and target != e["id"]:
+                        link(e["id"], target)
+                    elif not target:
+                        skipped.setdefault(f"{m}→{ref}", (e["id"], head))
     unknown = [t for k in links for t in links[k] if t not in names]
     if unknown:
         raise ValueError(f"연계 위협 ID 없음: {unknown}")
@@ -319,12 +334,34 @@ def build_rows(src, summ):
         r["links_text"] = "\n".join(f"{t} {names[t]}" for t in sorted(links[r["id"]], key=order.get))
         r["case1"] = first_case(r["cases"])
         r["control1"] = r["controls"].split("\n")[0][2:].strip()
+        # v4 Lv0 간 통합: 흡수한 v3 위협(참고 평가는 그 Lv0 원본 기준 — 위험 산정에는 넣지 않음)과 흡수 원본 ID
+        r["absorbed"] = []
+        for a in r["absorbs"]:
+            ev_a = common.evaluate_absorbed(a, src)
+            r["absorbed"].append(dict(a, ev=ev_a, origin=source_ids(a["kind"], src[a["kind"]], a["members"])))
+        r["absorbs_text"] = "\n".join(f"{a['id']} {a['name']} ({common.LABEL[a['kind']]} 참고: {a['ev']['risk']} · 실제 사고 "
+                                      f"{a['ev']['incidents']}건)" for a in r["absorbed"])
+        if r["absorbed"]:
+            r["origin"] += "\n[Lv0 간 통합] " + ", ".join(i for a in r["absorbed"] for i in a["origin"])
+        g = groups.get(r["id"])
+        r["group"] = g
+        r["group_text"] = "" if not g else f"{g['id']} {g['name']}" + \
+            (" (대표)" if g["lead"] == r["id"] else f" — 대표 {g['lead']}")
     # 우선순위: 같은 Lv0 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) → 위협 ID 순
     for kind in LV0:
         ranked = sorted((r for r in rows if r["kind"] == kind), key=priority_key)
         for i, r in enumerate(ranked, 1):
             r["rank"] = i
     return rows, skipped
+
+
+def source_ids(kind, sk, keys):
+    """구성 원본 키 → 원본 Lv3 ID 표기 (클라우드·OT는 전술 반복 행 ID 전부, 나머지는 키 그대로)."""
+    if kind == "cloud":
+        return [c for k in keys for c in sk["tech"][k]["ctc"]]
+    if kind == "ot":
+        return [c for k in keys for c in sk["tech"][k]["otc"]]
+    return list(keys)
 
 
 def priority_key(r):
@@ -347,10 +384,40 @@ def first_case(cases):
 
 # ---------------------------------------------------------------- 재구성 매핑 (원본 Lv3 → 요약 Lv3)
 def mapping_rows(src, summ, rows):
-    ai_src, ai_sum = src["ai"], summ["ai"]
+    """원본 Lv3 전수 → 요약 Lv3 대응 행. Lv0별로 구성 원본 행 뒤에 다른 Lv0 항목에 흡수된 원본 행(v4)을 붙인다."""
+    ai_src = src["ai"]
     rep = {r["id"]: r["ev"]["rep"] for r in rows}
+    every = [e for kind in common.KINDS for e in summ[kind]]
     out = []
-    for e in ai_sum:
+
+    def absorbed_rows(kind):
+        """Lv0 간 통합으로 다른 Lv0 항목에 흡수된 이 Lv0 원본 행 — 처리 유형 'Lv0 간 통합(v3 ID→v4 ID)', 위험 대표 없음."""
+        res = []
+        for e in every:
+            for a in e["absorbs"]:
+                if a["kind"] != kind:
+                    continue
+                to_dom = common.domains_of(e["kind"], src[e["kind"]])[e["domain"]]
+                label = f"Lv0 간 통합({a['id']}→{e['id']})"
+                for m in a["members"]:
+                    if kind == "ai":
+                        d = ai_src["lv3"][m]
+                        res.append([LV0[kind], d["도메인 (Lv1)"], m, "-", d["세부 위협 (Lv3)"], d["위험도"],
+                                    e["id"], e["name"], to_dom, label, "", a["reason"]])
+                    elif kind in ("cloud", "ot"):
+                        id_col = "CTC-ID" if kind == "cloud" else "OTC-ID"
+                        for r in src[kind]["tech"][m]["rows"]:
+                            res.append([LV0[kind], r["도메인(Lv1)"], r[id_col], m, r["세부위협(Lv3)"], r["위험도"],
+                                        e["id"], e["name"], to_dom, label, "", a["reason"]])
+                    else:
+                        r = src[kind]["tech"][m]["row"]
+                        attack = ", ".join(t.strip() for t in str(r["ATT&CK ID"] or "").replace("\n", ",").split(",")
+                                           if t.strip())
+                        res.append([LV0[kind], r["도메인(Lv1)"], m, attack or "-", r["세부위협(Lv3)"], r["위험도"],
+                                    e["id"], e["name"], to_dom, label, "", a["reason"]])
+        return res
+
+    for e in summ["ai"]:
         n = len(e["members"])
         for m in e["members"]:
             d = ai_src["lv3"][m]
@@ -360,6 +427,7 @@ def mapping_rows(src, summ, rows):
             out.append([LV0["ai"], d["도메인 (Lv1)"], m, "-", d["세부 위협 (Lv3)"], d["위험도"],
                         e["id"], e["name"], ai_src["domains"][e["domain"]], kind,
                         "●" if rep[e["id"]] == m else "", e["basis"]])
+    out += absorbed_rows("ai")
     for lv0, id_col in [("cloud", "CTC-ID"), ("ot", "OTC-ID")]:  # ATT&CK 기반 원본: 원본 행(전술 반복 행 포함) 단위
         sk = src[lv0]
         for e in summ[lv0]:
@@ -377,6 +445,7 @@ def mapping_rows(src, summ, rows):
                     out.append([LV0[lv0], r["도메인(Lv1)"], r[id_col], m, r["세부위협(Lv3)"], r["위험도"],
                                 e["id"], e["name"], sk["tactics"][e["domain"]], kind,
                                 "●" if rep[e["id"]] == m else "", e["basis"]])
+        out += absorbed_rows(lv0)
     for lv0 in common.TAXO:  # 자체 분류 원본: 세부위협 1행 단위, ATT&CK ID 열은 원본 'ATT&CK ID'(없으면 '-')
         sk = src[lv0]
         for e in summ[lv0]:
@@ -390,6 +459,7 @@ def mapping_rows(src, summ, rows):
                 out.append([LV0[lv0], r["도메인(Lv1)"], m, attack or "-", r["세부위협(Lv3)"], r["위험도"],
                             e["id"], e["name"], sk["tactics"][e["domain"]], kind,
                             "●" if rep[e["id"]] == m else "", e["basis"]])
+        out += absorbed_rows(lv0)
     return out
 
 
@@ -399,14 +469,14 @@ SOURCE_NOTE = ("AI v3.2 LITE(Lv3 124) · 클라우드 v5(154행) · OT v5(141행
                "물리·인적 v2(45)")
 SUMMARY_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "핵심 요약", "위협 설명", "공격 시나리오", "대표 사례",
                 "발생가능성", "심각도", "위험도", "근거 수준", "실제 사고 수", "최근 사고(2025~)", "우선순위", "대응 방안",
-                "공격 단계", "관련 기준", "연계 위협", "원본 Lv3 ID"]
+                "공격 단계", "관련 기준", "연계 위협", "중복 그룹", "Lv0 간 통합 흡수(v3 ID)", "원본 Lv3 ID"]
 
 
 def summary_values(r):
     ev = r["ev"]
     return [r["lv0"], r["lv1"], r["id"], r["name"], r["summary"], r["description"], r["scenario"], r["cases"],
             ev["likelihood"], ev["severity"], ev["risk"], ev["evidence"], ev["incidents"], ev["recent"], r["rank"],
-            r["controls"], r["stage"], r["refs"], r["links_text"], r["origin"]]
+            r["controls"], r["stage"], r["refs"], r["links_text"], r["group_text"], r["absorbs_text"], r["origin"]]
 
 
 def sheet_summary(wb, rows, today):
@@ -415,7 +485,7 @@ def sheet_summary(wb, rows, today):
           " · ".join(f"{common.LABEL[k]} {sum(r['kind'] == k for r in rows)}개" for k in common.KINDS) + " | "
           f"원본: {SOURCE_NOTE} | {today}", len(SUMMARY_COLS))
     groups(ws, 3, [("분류 체계", 4, "2E5496"), ("위협 내용", 4, "117A65"), ("위험 평가", 7, "A04000"),
-                   ("대응", 1, "6C3483"), ("교차 매핑·추적", 4, "1F7A8C")])
+                   ("대응", 1, "6C3483"), ("교차 매핑·추적", 6, "1F7A8C")])
     header(ws, 4, SUMMARY_COLS)
     for i, r in enumerate(rows, 5):
         put_row(ws, i, summary_values(r))
@@ -428,25 +498,27 @@ def sheet_summary(wb, rows, today):
         paint_level(ws.cell(i, 12), r["ev"]["evidence"])
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(SUMMARY_COLS))}{len(rows) + 4}"
-    widths(ws, [11, 18, 10, 22, 30, 58, 52, 56, 7, 7, 9, 11, 7, 7, 7, 44, 18, 24, 30, 22])
+    widths(ws, [11, 18, 10, 22, 30, 58, 52, 56, 7, 7, 9, 11, 7, 7, 7, 44, 18, 24, 30, 22, 30, 22])
     print_setup(ws, "3:4")
 
 
 BRIEF_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "핵심 요약", "위험도", "우선순위", "실제 사고 수",
-              "대표 사례", "핵심 대응"]
+              "대표 사례", "핵심 대응", "중복 그룹"]
 
 
 def sheet_brief(wb, rows, today):
     ws = wb.create_sheet("보고서용 간략 매트릭스")
     title(ws, f"보고서용 간략 매트릭스 {VERSION} — 본문 삽입용 (상세 문안은 '통합 요약 매트릭스')",
           "우선순위 = 같은 구분(Lv0) 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) 순 | 대표 사례 = 첫 번째 대표 사례 | "
-          f"핵심 대응 = 첫 번째 대응 방안 | {today}", len(BRIEF_COLS))
+          f"핵심 대응 = 첫 번째 대응 방안 | 중복 그룹 = 관점이 달라 Lv0별로 유지한 겹치는 위협 묶음(부록-중복 검토) | {today}",
+          len(BRIEF_COLS))
     groups(ws, 3, [("분류 체계", 4, "2E5496"), ("요약", 1, "117A65"), ("위험 평가", 3, "A04000"),
-                   ("사례·대응", 2, "6C3483")])
+                   ("사례·대응", 2, "6C3483"), ("중복", 1, "1F7A8C")])
     header(ws, 4, BRIEF_COLS)
     for i, r in enumerate(rows, 5):
         put_row(ws, i, [r["lv0"], r["lv1"], r["id"], r["name"], r["summary"], r["ev"]["risk"], r["rank"],
-                        r["ev"]["incidents"], r["case1"], r["control1"]])
+                        r["ev"]["incidents"], r["case1"], r["control1"],
+                        f"{r['group']['id']} {r['group']['name']}" if r["group"] else ""])
         ws.cell(i, 1).fill = fill(LV0_FILL[r["kind"]])
         ws.cell(i, 3).font = font(10, True)
         ws.cell(i, 4).font = font(10, True)
@@ -455,14 +527,14 @@ def sheet_brief(wb, rows, today):
             ws.cell(i, col).alignment = CENTER
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(BRIEF_COLS))}{len(rows) + 4}"
-    widths(ws, [11, 18, 10, 24, 44, 9, 8, 8, 36, 46])
+    widths(ws, [11, 18, 10, 24, 44, 9, 8, 8, 36, 46, 22])
     print_setup(ws, "3:4")
 
 
 def sheet_matrix_view(wb, rows, src):
     ws = wb.create_sheet("매트릭스 뷰")
     ws.cell(1, 1, "매트릭스 뷰 — 셀 색 = 위험도 (빨강 매우 높음 · 주황 높음 · 노랑 보통 · 초록 낮음), [n] = 실제 사고 수, "
-                  "같은 도메인 안에서 우선순위 순 정렬").font = font(11, True, NAVY)
+                  "같은 도메인 안에서 우선순위 순 정렬, ◆ = 중복 그룹 대표·◇ = 중복 그룹 구성").font = font(11, True, NAVY)
     r0 = 3
     for kind in common.KINDS:
         doms = common.domains_of(kind, src[kind])
@@ -471,6 +543,13 @@ def sheet_matrix_view(wb, rows, src):
         band.fill, band.font, band.alignment = fill(LV0_BAND[kind]), font(11, True, "FFFFFF"), Alignment(vertical="center")
         ws.merge_cells(start_row=r0, start_column=1, end_row=r0, end_column=len(doms))
         ws.row_dimensions[r0].height = 20
+        moved = [(a["id"], r["id"]) for r in rows for a in r["absorbed"] if a["kind"] == kind]
+        if moved:  # v4 Lv0 간 통합으로 다른 Lv0 항목에 흡수된 이 Lv0의 v3 위협 — 이 Lv0 독자가 이관 위치를 찾을 수 있게
+            r0 += 1
+            note = ws.cell(r0, 1, "v4 Lv0 간 통합으로 이관(v3 ID→흡수 위협): " + " · ".join(f"{a}→{b}" for a, b in moved))
+            note.font, note.alignment = font(9, color="404040"), Alignment(wrap_text=True, vertical="top")
+            ws.merge_cells(start_row=r0, start_column=1, end_row=r0, end_column=len(doms))
+            ws.row_dimensions[r0].height = 15 * (1 + len(note.value) // (20 * len(doms)))
         depth = 0
         for j, (code, label) in enumerate(doms.items(), 1):
             col = sorted((r for r in items if r["domain"] == code), key=priority_key)
@@ -478,7 +557,8 @@ def sheet_matrix_view(wb, rows, src):
             h.fill, h.font, h.alignment, h.border = fill(NAVY), font(9, True, "FFFFFF"), CENTER, BORDER
             for i, r in enumerate(col, r0 + 2):
                 n = r["ev"]["incidents"]
-                c = ws.cell(i, j, f"{r['id']} {r['name']}" + (f" [{n}]" if n else ""))
+                mark = "" if not r["group"] else (" ◆" if r["group"]["lead"] == r["id"] else " ◇")
+                c = ws.cell(i, j, f"{r['id']} {r['name']}" + (f" [{n}]" if n else "") + mark)
                 paint_risk(c, r["ev"]["risk"], 9)
                 c.alignment, c.border = Alignment(wrap_text=True, vertical="top"), BORDER
             depth = max(depth, len(col))
@@ -490,11 +570,11 @@ def sheet_matrix_view(wb, rows, src):
 
 def sheet_domain_summary(wb, rows, src):
     ws = wb.create_sheet("도메인 요약")
-    cols = ["구분(Lv0)", "도메인(Lv1)", "원본 Lv3 수", "요약 위협 수", "매우 높음", "높음", "보통", "낮음",
+    cols = ["구분(Lv0)", "도메인(Lv1)", "원본 Lv3 수", "흡수 원본 수", "요약 위협 수", "매우 높음", "높음", "보통", "낮음",
             "실제 사고 확인", "주요 고위험 위협"]
     title(ws, "도메인 요약 — Lv1 도메인별 요약 위협 수·위험도 분포", "원본 Lv3 수: AI는 Lv3 항목 수, 클라우드·OT는 v5 행 수"
-          "(전술 중복 행 포함, 전술 이동한 원본은 이동한 도메인에 셈), 공급망·신원·물리는 원본 세부위협 수. "
-          "위험도·우선순위는 같은 Lv0 안에서 비교", len(cols))
+          "(전술 중복 행 포함, 전술 이동한 원본은 이동한 도메인에 셈), 공급망·신원·물리는 원본 세부위협 수 — v4 Lv0 간 통합으로 다른 Lv0 "
+          "항목에 흡수된 원본은 빠지고 흡수한 도메인의 '흡수 원본 수'(위험 산정 제외)에 셈. 위험도·우선순위는 같은 Lv0 안에서 비교", len(cols))
     header(ws, 4, cols)
     r = 5
     for kind in common.KINDS:
@@ -506,28 +586,31 @@ def sheet_domain_summary(wb, rows, src):
                 n_src = sum(len(x["members"]) for x in items)
             else:
                 n_src = sum(len(src[kind]["tech"][m]["rows"]) for x in items for m in x["members"])
+            n_abs = sum(len(src[a["kind"]]["tech"][m]["rows"]) if a["kind"] != "ai" else 1
+                        for x in items for a in x["absorbs"] for m in a["members"])
             dist = collections.Counter(x["ev"]["risk"] for x in items)
             real = sum(x["ev"]["evidence"] == "실제 사고 확인" for x in items)
             top = sorted(items, key=priority_key)[:2]
-            put_row(ws, r, [LV0[kind], label, n_src, len(items)] + [dist[k] for k in common.RISK_ORDER] +
+            put_row(ws, r, [LV0[kind], label, n_src, n_abs or "", len(items)] + [dist[k] for k in common.RISK_ORDER] +
                     [real, "\n".join(f"{x['id']} {x['name']} ({x['ev']['risk']}, 우선순위 {x['rank']})" for x in top)])
             ws.cell(r, 1).fill = fill(LV0_FILL[kind])
-            for col in range(3, 10):
+            for col in range(3, 11):
                 ws.cell(r, col).alignment = CENTER
-            tot.update({"src": n_src, "n": len(items), "real": real, **dist})
+            tot.update({"src": n_src, "abs": n_abs, "n": len(items), "real": real, **dist})
             r += 1
-        put_row(ws, r, [LV0[kind], "합계", tot["src"], tot["n"]] + [tot[k] for k in common.RISK_ORDER] + [tot["real"], ""])
-        for col in range(1, 11):
+        put_row(ws, r, [LV0[kind], "합계", tot["src"], tot["abs"] or "", tot["n"]] + [tot[k] for k in common.RISK_ORDER] +
+                [tot["real"], ""])
+        for col in range(1, 12):
             ws.cell(r, col).font = font(10, True)
             ws.cell(r, col).fill = fill("F2F3F4")
-        for col in range(3, 10):
+        for col in range(3, 11):
             ws.cell(r, col).alignment = CENTER
         r += 2
-    for k, col in zip(common.RISK_ORDER, range(5, 9)):
+    for k, col in zip(common.RISK_ORDER, range(6, 10)):
         ws.cell(4, col).fill = fill(RISK_COLOR[k][0])
         ws.cell(4, col).font = font(10, True, RISK_COLOR[k][1])
     ws.freeze_panes = "C5"
-    widths(ws, [16, 30, 10, 10, 9, 9, 9, 9, 11, 60])
+    widths(ws, [16, 30, 10, 10, 10, 9, 9, 9, 9, 11, 60])
     print_setup(ws, "4:4", "A4")
 
 
@@ -562,8 +645,7 @@ def detail_sheet(wb, name, sub, cols, data, spec, col_widths):
     print_setup(ws, "3:4")
 
 
-def sheet_ai_detail(wb, ai_src, ai_sum):
-    back = {m: e["id"] for e in ai_sum for m in e["members"]}
+def sheet_ai_detail(wb, ai_src, back):
     data = []
     for k, d in ai_src["lv3"].items():
         vals = [back[k], LV0["ai"], d["도메인 (Lv1)"], d["UT-ID"], d["위협 분류 (Lv2)"], k, d["세부 위협 (Lv3)"],
@@ -572,7 +654,8 @@ def sheet_ai_detail(wb, ai_src, ai_sum):
                 ", ".join(d["atlas_incidents"]), d["owasp_incidents"]]
         data.append(("ai", vals, d["위험도"], d["근거 수준"]))
     detail_sheet(wb, "AI 위협 상세", f"원본 그대로: 통합 AI 보안위협 매트릭스 v3.2 LITE 통합매트릭스 Lv3 {len(data)}개 "
-                 "(위험도는 원본 수식 값을 정적 값으로 기록) + 통합 위협 ID 역참조 · 실제 사고 수 산정 근거(ATLAS 사고 사례·OWASP 인용)",
+                 "(위험도는 원본 수식 값을 정적 값으로 기록) + 통합 위협 ID 역참조(Lv0 간 통합 원본은 흡수한 위협 ID) · "
+                 "실제 사고 수 산정 근거(ATLAS 사고 사례·OWASP 인용)",
                  AI_DETAIL_COLS, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
                   ("교차 매핑·통제 (원본)", 4, "1F7A8C"), ("실제 사고 근거", 2, "1E8449")],
@@ -584,8 +667,7 @@ def csa_ids(value):
     return " · ".join(re.findall(r"SI-\d+", value or "")) or None
 
 
-def sheet_cloud_detail(wb, cl_src, cl_sum, release):
-    back = {m: e["id"] for e in cl_sum for m in e["members"]}
+def sheet_cloud_detail(wb, cl_src, back, release):
     data = []
     for r in cl_src["rows"]:
         tid = str(r["ATT&CK ID"])
@@ -596,7 +678,7 @@ def sheet_cloud_detail(wb, cl_src, cl_sum, release):
         data.append(("cloud", vals, r["위험도"], r["근거 수준"]))
     csa_note = " · CSA 열은 이슈 ID만 표기(배포본)" if release else ""
     detail_sheet(wb, "클라우드 위협 상세", f"원본 그대로: 통합 클라우드 보안위협 매트릭스 v5 통합 매트릭스 {len(data)}행 "
-                 f"(전술 중복 행 포함) + 통합 위협 ID 역참조. Lv2 ID는 ATT&CK 상위기법 ID{csa_note}",
+                 f"(전술 중복 행 포함) + 통합 위협 ID 역참조(Lv0 간 통합 원본은 흡수한 위협 ID). Lv2 ID는 ATT&CK 상위기법 ID{csa_note}",
                  CLOUD_DETAIL_COLS, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
                   ("기법·교차 매핑 (원본)", 12, "1F7A8C"), ("실제 근거 (원본)", 7, "1E8449"), ("탐지·대응", 1, "6C3483")],
@@ -613,8 +695,7 @@ OT_SRC_TAIL = ["ATT&CK·EMB3D ID", "ATT&CK·EMB3D 위협명", "구분", "통합�
 OT_DETAIL_COLS = CLOUD_DETAIL_COLS[:15] + OT_SRC_TAIL
 
 
-def sheet_ot_detail(wb, ot_src, ot_sum):
-    back = {m: e["id"] for e in ot_sum for m in e["members"]}
+def sheet_ot_detail(wb, ot_src, back):
     data = []
     for r in ot_src["rows"]:
         key = str(r["ATT&CK·EMB3D ID"])
@@ -664,8 +745,7 @@ def release_ids(value, pat):
     return " · ".join(uniq(found)) or None
 
 
-def sheet_taxo_detail(wb, kind, sk, summ, release):
-    back = {m: e["id"] for e in summ for m in e["members"]}
+def sheet_taxo_detail(wb, kind, sk, back, release):
     tail = taxo_tail(sk["header"], sk["id_col"])
     cols = CLOUD_DETAIL_COLS[:15] + [name for name, _ in tail]
     data = []
@@ -686,11 +766,131 @@ def sheet_taxo_detail(wb, kind, sk, summ, release):
     note = " · CSA CCM·CIS Controls 열은 ID만 표기(배포본)" if release and kind == "identity" else ""
     wide = {"핵심 요약": 30, "탐지·대응 포인트": 48, "관련 사례 ID": 22, "발생가능성 근거 (자동 산정)": 26, "ATT&CK 기법명": 22}
     detail_sheet(wb, DETAIL_SHEET[kind], f"원본 그대로: {common.TAXO[kind]['name']} 통합 매트릭스 {len(data)}행 "
-                 f"+ 통합 위협 ID 역참조. Lv2 ID는 원본 세부위협 ID의 상위 번호, 원본 ● 열(프로파일·신원 유형·위협 주체)은 한 열로 표기{note}",
+                 f"+ 통합 위협 ID 역참조(Lv0 간 통합 원본은 흡수한 위협 ID). Lv2 ID는 원본 세부위협 ID의 상위 번호, 원본 ● 열"
+                 f"(프로파일·신원 유형·위협 주체)은 한 열로 표기{note}",
                  cols, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
                   ("교차 매핑·근거·대응 기준 (원본)", len(tail), "1F7A8C")],
                  [10, 11, 15, 10, 20, 12, 22, 48, 60, 7, 7, 9, 11, 7, 24] + [wide.get(name, 16) for name, _ in tail])
+
+
+CATALOG_COLS = ["통합 사례 ID", "사례명", "시점", "사례 구분", "지역", "행위자", "영향·대상", "요약", "원본 사례 ID(DB · 원본 분류)",
+                "참조 Lv0", "위험 산정 반영 위협", "대표 사례 인용 위협", "참고 위협(Lv0 간 통합 흡수)", "최근(2025~)", "출처"]
+CATEGORY_COLOR = {"실제 사고": "D5F5E3", "실제 사고(사고 DB 밖 인용)": "D5F5E3", "실증·연구": "FCF3CF", "공개 취약점": "FDEBD0",
+                  "ATT&CK 사례": "D6EAF8", "위협인텔": "EBDEF0", "시연": "FCF3CF", "정부 경보": "F2D7D5", "EMB3D": "EAECEE",
+                  "집계 제외": "EAECEE"}
+
+
+def catalog_values(c, order):
+    """통합 사고사례 목록 한 행 값 (위협 ID는 요약 매트릭스 순서)."""
+    def ids(s):
+        return ", ".join(sorted(s, key=lambda i: order.get(i, 10 ** 6)))
+    kinds = {common.kind_of_id(i) for i in c["counted"] | c["cited"] | c["ref"]}
+    return [c["uid"], c["name"], c["date"], c["category"], c["region"], c["actor"], c["impact"], c["summary"], c["origin"],
+            " · ".join(common.LABEL[k] for k in common.KINDS if k in kinds), ids(c["counted"]), ids(c["cited"]),
+            ids(c["ref"]), "Y" if c["recent"] else "", c["source"]]
+
+
+def sheet_catalog(wb, cat, rows, today):
+    ws = wb.create_sheet("통합 사고사례 목록")
+    order = {r["id"]: i for i, r in enumerate(rows)}
+    real = [c for c in cat if c["category"].startswith("실제 사고")]
+    multi = sum(c["multi_db"] for c in cat)
+    title(ws, f"통합 사고사례 목록 {VERSION} — 요약 위협이 참조하는 사고·사례 {len(cat)}건 (실제 사고 {len(real)}건, 최근 순)",
+          "위험 산정 반영 = 구성 원본이 실제 사고로 센 사고 | 대표 사례 인용 = 요약 '대표 사례'에 쓴 사례(사고 DB 밖 인용 포함) | "
+          "참고 위협 = Lv0 간 통합으로 흡수한 다른 Lv0 원본이 센 사고(위험 산정 제외) | "
+          f"여러 DB에 실린 같은 사고 {multi}건은 한 행으로 묶음(원본 사례 ID 열) | {today}", len(CATALOG_COLS))
+    groups(ws, 3, [("사례", 8, "117A65"), ("원본 추적", 1, "2E5496"), ("요약 위협 참조", 4, "7B241C"), ("기타", 2, "7F8C8D")])
+    header(ws, 4, CATALOG_COLS)
+    for i, c in enumerate(cat, 5):
+        put_row(ws, i, catalog_values(c, order), 9)
+        ws.cell(i, 1).font = font(9, True)
+        ws.cell(i, 2).font = font(9, True)
+        ws.cell(i, 4).fill = fill(CATEGORY_COLOR.get(c["category"], "FFFFFF"))
+        for col in (3, 4, 14):
+            ws.cell(i, col).alignment = CENTER
+    ws.freeze_panes = "C5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(CATALOG_COLS))}{len(cat) + 4}"
+    widths(ws, [10, 34, 10, 12, 10, 16, 16, 60, 30, 14, 22, 18, 16, 7, 34])
+    print_setup(ws, "3:4")
+
+
+def review_absorb_rows(rows):
+    """Lv0 간 통합(흡수) 표 행."""
+    out = []
+    for r in rows:
+        for a in r["absorbed"]:
+            out.append([a["id"], a["name"], common.LABEL[a["kind"]], a["ev"]["risk"], a["ev"]["incidents"],
+                        r["id"], r["name"], common.LABEL[r["kind"]], r["ev"]["risk"], r["ev"]["incidents"], a["reason"]])
+    return out
+
+
+def review_group_rows(rows):
+    """중복 그룹 표 행."""
+    by_id = {r["id"]: r for r in rows}
+    out = []
+    for g in common.load_groups():
+        items = [by_id[i] for i in g["items"]]
+        kinds = [k for k in common.KINDS if any(x["kind"] == k for x in items)]
+        members = "\n".join(f"{x['id']} {x['name']} ({x['ev']['risk']})" + (" ◆" if x["id"] == g["lead"] else "")
+                            for x in items)
+        out.append([g["id"], g["name"], f"{g['lead']} {by_id[g['lead']]['name']}", members, len(items),
+                    " · ".join(common.LABEL[k] for k in kinds), g["basis"]])
+    return out
+
+
+def unique_estimate(rows):
+    """고유 위협 수(추정) = 중복 그룹에 속하지 않은 위협 수 + 그룹 수."""
+    gs = common.load_groups()
+    grouped = {i for g in gs for i in g["items"]}
+    return sum(r["id"] not in grouped for r in rows) + len(gs), len(gs), len(grouped)
+
+
+def sheet_review(wb, rows, today):
+    """부록-Lv0 간 통합: 흡수한 v3 위협과 흡수한 v4 위협, 참고 평가·통합 근거."""
+    ws = wb.create_sheet("부록-Lv0 간 통합")
+    absorb = review_absorb_rows(rows)
+    cols = ["흡수 v3 ID", "v3 세부 위협", "원 Lv0", "참고 위험도", "참고 실제 사고", "흡수한 v4 위협 ID", "v4 세부 위협", "v4 Lv0",
+            "v4 위험도", "v4 실제 사고", "통합 근거"]
+    title(ws, f"부록 — Lv0 간 통합 {VERSION}: 사실상 같은 위협 {len(absorb)}건을 원본 경계 규칙상 주관 Lv0 항목에 흡수",
+          "참고 위험도·실제 사고 = 흡수한 v3 위협을 원래 Lv0 원본으로 평가한 값(v4 위험 산정에는 넣지 않음 — 결정 V3) | 흡수 원본의 "
+          "원본 행은 '부록-재구성 매핑'에 처리 유형 'Lv0 간 통합'으로, 원본 상세 시트에는 흡수한 위협 ID로 역참조 | "
+          f"판정 원칙: docs/v4_중복통합_작업방향.md | {today}", len(cols))
+    groups(ws, 3, [("흡수한 v3 위협 (폐기 ID)", 5, "7F8C8D"), ("흡수한 v4 위협", 5, "7B241C"), ("근거", 1, "1F7A8C")])
+    header(ws, 4, cols)
+    for i, v in enumerate(absorb, 5):
+        put_row(ws, i, v, 9)
+        ws.cell(i, 1).font = font(9, True)
+        ws.cell(i, 6).font = font(9, True)
+        paint_risk(ws.cell(i, 4), v[3], 9)
+        paint_risk(ws.cell(i, 9), v[8], 9)
+        for col in (3, 5, 8, 10):
+            ws.cell(i, col).alignment = CENTER
+    ws.freeze_panes = "B5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(absorb) + 4}"
+    widths(ws, [10, 26, 9, 10, 8, 10, 28, 9, 10, 8, 80])
+    print_setup(ws, "3:4")
+
+
+def sheet_groups(wb, rows, today):
+    """부록-중복 그룹: 관점이 달라 각 Lv0에 유지한 겹치는 위협 묶음과 고유 위협 수(추정)."""
+    ws = wb.create_sheet("부록-중복 그룹")
+    grp = review_group_rows(rows)
+    uniq_n, n_g, n_in = unique_estimate(rows)
+    cols = ["그룹 ID", "그룹명", "대표 위협", "구성 위협 (◆ 대표, 괄호 = 위험도)", "구성 수", "Lv0", "유지 근거"]
+    title(ws, f"부록 — 중복 그룹 {VERSION}: 관점(대상 자산·경로·통제)이 달라 각 Lv0에 유지한 겹치는 위협 {n_g}개 묶음",
+          f"요약 위협 {len(rows)}개 중 {n_in}개가 그룹에 속함 → 고유 위협 수(추정) {uniq_n}개 = 그룹 밖 {len(rows) - n_in}개 + "
+          f"그룹 {n_g}개 | 위험도·우선순위는 그룹으로 합치지 않고 각 Lv0 기준 그대로 | {today}", len(cols))
+    header(ws, 4, cols)
+    for i, v in enumerate(grp, 5):
+        put_row(ws, i, v, 9)
+        ws.cell(i, 1).font = font(9, True)
+        ws.cell(i, 2).font = font(9, True)
+        ws.cell(i, 5).alignment = CENTER
+    ws.freeze_panes = "C5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(grp) + 4}"
+    widths(ws, [8, 22, 30, 52, 7, 16, 70])
+    print_setup(ws, "4:4")
 
 
 def sheet_mapping(wb, maps):
@@ -724,8 +924,9 @@ def sheet_mapping(wb, maps):
 CRITERIA = [
     ("■ 1. 재구성 원칙", None),
     ("단위", "원본 Lv3(AI 124개, 클라우드 고유 기법 126개·154행, OT 고유 기법·항목 118개·141행, 공급망 세부위협 60개, 신원 65개, "
-             "물리·인적 45개)를 공격 메커니즘·대상·통제가 같은 것끼리 묶어 요약 Lv3로 재구성 (AI 61개, 클라우드 52개, OT 50개, "
-             "공급망 33개, 신원 35개, 물리·인적 27개). 원본 Lv2는 요약표에서 생략하고 원본 상세 시트로 추적"),
+             "물리·인적 45개)를 공격 메커니즘·대상·통제가 같은 것끼리 묶어 요약 Lv3로 재구성 (v3: AI 61개, 클라우드 52개, OT 50개, "
+             "공급망 33개, 신원 35개, 물리·인적 27개 = 258개 → v4: Lv0 간 같은 위협 21건 흡수로 AI 60·클라우드 38·OT 50·공급망 30·"
+             "신원 32·물리·인적 27 = 237개). 원본 Lv2는 요약표에서 생략하고 원본 상세 시트로 추적"),
     ("통합 기준", "같은 공격 흐름의 연속 단계이거나, 대상만 다른 같은 기법이거나, 같은 통제로 막히는 위협을 통합. 피해 규모·근거가 뚜렷이 "
                 "다른 위협(예: 코드 저장소·CRM·DB 수집)은 분리 유지"),
     ("클라우드 전술 중복", "ATT&CK에서 여러 전술에 걸친 기법(원본의 중복 행)은 주 전술 1곳에만 배치하고 나머지는 '공격 단계'의 연관 전술로 표기: "
@@ -766,9 +967,8 @@ CRITERIA = [
     ("Lv0 간 비교 유의", "클라우드는 사고 DB(680건), OT·공급망·신원·물리는 각 사고 DB와 ATT&CK 공식 절차 매핑을 근거로 해 실제 사고 근거 "
                        "밀도가 AI(ATLAS 사례·OWASP 인용)와 다르고, 심각도 기준도 원본마다 다름(OT 물리적 결과, 공급망 '상' 포화, "
                        "신원·물리 '상' 제한). 위험도·사고 수·우선순위는 같은 Lv0 안에서 비교하고, Lv0 간 등급을 직접 비교하지 않음"),
-    ("Lv0 간 중복", "신원은 클라우드 계정·자격증명 위협과, 공급망은 AI 공급망·클라우드 공급망 침해와, 물리는 신원 내부자 위협과 겹치는 "
-                  "부분이 있음. 원본 경계 규칙에 따라 관점별로 각 Lv0에 두고 '연계 위협'으로 연결 — Lv0별 위협 수의 합은 고유 "
-                  "위협 수가 아님"),
+    ("Lv0 간 중복", "v4에서 Lv0 간 사실상 같은 위협은 주관 Lv0 항목에 흡수하고(6장), 관점이 다른 겹침은 중복 그룹으로 표시 — "
+                  "Lv0별 위협 수의 합은 고유 위협 수가 아니며, 고유 위협 수(추정)는 개요·부록-중복 그룹 참조"),
     ("공급망 위험도 포화", "공급망 원본은 심각도 '상'이 60개 중 42개라 요약도 대부분 '매우 높음' — 공급망 항목 간 비교는 실제 사고 수·"
                          "최근 사고·우선순위로 함"),
     ("OT 근거 편중", "ATT&CK 공식 절차가 촘촘한 대형 사고 5건(Stuxnet·2015/2016 우크라이나·Triton·2025 폴란드)이 원본 36~46행에 매핑돼 "
@@ -820,7 +1020,32 @@ CRITERIA = [
                 "사용(빌드 검증)"),
     ("[시연]", "신원 전용. Browser & Identity Attacks Matrix(SAT) 등 공개 시연 — 실제 사고로 세지 않음"),
     ("[정부 경보]", "물리 전용. 정부·수사기관의 공개 경보(실제 사례 요지 포함) — 원본 규칙에 따라 실제 사고로 세지 않음"),
-    ("■ 5. 용어", None),
+    ("■ 5. 중복 통합 (v4)", None),
+    ("후보 추출", "요약 위협 쌍마다 ① 연계 위협 표기 ② 구성 원본 ATT&CK 기법 공유 ③ 통합 사고사례 기준 공유 사고 ④ 명칭·핵심 요약 유사도를 "
+              "점수화해 후보 쌍을 뽑고, 같은 주제의 후보를 클러스터로 묶어 문안(설명·구성 원본·대응·사례)을 직접 대조"),
+    ("P1 Lv0 간 통합", "공격 메커니즘·대상·통제가 사실상 같고 한쪽 Lv0의 고유 관점(그 Lv0에만 있는 대상·경로·통제)이 문안에 없거나 미미하면 "
+                     "원본 경계 규칙상 주관 Lv0 항목에 흡수(absorbs). 흡수 위협의 고유 요소는 흡수한 항목 문안에 반영"),
+    ("P2 유지·그룹", "같은 기법이라도 대상 자산·공격 경로·통제가 Lv0마다 다르면(예: OT 제어 장치·AI 서빙 플랫폼·패키지 레지스트리) 각 Lv0에 "
+                   "두고 '중복 그룹'으로 묶음. 그룹마다 대표 위협·유지 근거 기록"),
+    ("P3 포괄 항목", "한 항목이 다른 Lv0의 여러 항목을 포괄하는 진입 관점 항목(예: 클라우드·OT의 공급망 침해)이면 흡수하지 않고 그룹으로 표시"),
+    ("P4 같은 Lv0", "같은 Lv0 안 중복은 v1~v3 재구성에서 이미 통합 — v4는 추가 통합 없이, 단계가 다른 겹침만 그룹으로 표시"),
+    ("P5 영향 단계", "영향(IM·IR) 항목은 피해 유형이 같아도 피해 맥락·복구 통제가 Lv0마다 달라 유지하고 그룹으로 표시"),
+    ("주관 Lv0", "원본 매트릭스의 경계 규칙을 따름 — 신원: 유효 계정·피싱·대입·MFA 우회·토큰·비밀 등 신원 공통 위협(클라우드 콘솔·API 특유 "
+               "경로·메타데이터는 클라우드), 공급망: 서드파티 연계·CI/CD·개발 환경(AI 모델·MCP·에이전트 도구는 AI), 물리·인적: 채용·"
+               "인적 보안이 주 통제인 위협(계정 오남용은 신원), AI: 에이전트 위임·프롬프트·도구 호출 경로"),
+    ("위험 재산정(V3)", "흡수한 항목의 위험도·실제 사고 수·최근 사고·우선순위는 주관 Lv0 구성 원본(members)만으로 산정. 흡수 원본은 그 Lv0 원본 "
+                     "기준 '참고 평가'로만 표기하고, 흡수 원본 참조의 사례는 대표 사례로 쓸 수 있음(빌드 출처 대조 대상에 포함)"),
+    ("ID 처리", "흡수로 폐기한 v3 ID는 재사용하지 않고 번호를 당기지 않음(추적성). 원본 연계 열·문안 links의 폐기 ID는 흡수한 ID로 자동 변환"),
+    ("■ 6. 통합 사고사례 목록", None),
+    ("수록 범위", "① 위험 산정 사고(구성 원본이 실제 사고로 센 사고) ② 참고 사고(흡수 원본이 센 사고) ③ 대표 사례 인용(사고 DB 밖 인용 사례 "
+              "포함 — [공개 취약점]·[ATT&CK 사례]·[실증] 등). AI의 OWASP 인용 사고는 참조에 사례명이 실린 것만 수록(ID 없음)"),
+    ("동일 사고 묶음", "같은 사고가 여러 DB에 실린 경우 한 행으로 묶음 — 신원·물리 DB '다른 DB 사고 ID' 열(자동) + data/incident_aliases.yaml"
+                    "(사례명 고유어·시점 근접 후보를 검토해 확정). 같은 행위자의 다른 공격, 같은 취약점의 다른 피해는 묶지 않음"),
+    ("사례 구분", "묶음 안에 실제 사고로 센 기록이 하나라도 있으면 '실제 사고', 아니면 원본 집계 값(실증·연구·위협인텔·정부 경보·집계 제외) "
+              "또는 대표 사례 유형. 원본 사례 ID 열에 DB별 원본 분류를 함께 표기"),
+    ("대표 기록", "묶음의 사례명·시점·지역·행위자·요약은 별칭 파일의 첫 ID(없으면 국문 사례명이 있는 DB 우선: 공급망·신원·물리·OT·AI·클라우드) "
+              "기록에서 가져옴. 클라우드 DB는 국문 요약만 있고 사례명은 원문(영문)"),
+    ("■ 7. 용어", None),
     ("자격증명", "credential. 비밀번호·액세스 키·토큰·인증서 등 인증 수단 전체 (인증정보·크리덴셜 대신 사용)"),
     ("반출 / 유출", "반출: 공격자가 데이터를 밖으로 빼내는 행위(Exfiltration) / 유출: 데이터가 외부로 새어 나간 결과"),
     ("에이전트", "LLM이 도구 호출·코드 실행·외부 시스템 연동으로 작업을 자율 수행하는 AI 시스템"),
@@ -854,7 +1079,7 @@ def sheet_criteria(wb):
     print_setup(ws, paper="A4")
 
 
-def sheet_overview(wb, rows, src, maps, today, release):
+def sheet_overview(wb, rows, src, maps, today, release, cat):
     ai_src, cl_src, ot_src = src["ai"], src["cloud"], src["ot"]
     sc_src, id_src, ph_src = src["supplychain"], src["identity"], src["physical"]
     ws = wb.create_sheet("개요", 0)
@@ -929,7 +1154,8 @@ def sheet_overview(wb, rows, src, maps, today, release):
                        f"{len(cl_src['rows'])}행({len(cl_src['tech'])}기법) → {n['cloud']}개, OT {len(ot_src['rows'])}행"
                        f"({len(ot_src['tech'])}기법·항목) → {n['ot']}개, 공급망 {len(sc_src['rows'])} → {n['supplychain']}개, "
                        f"신원 {len(id_src['rows'])} → {n['identity']}개, 물리·인적 {len(ph_src['rows'])} → {n['physical']}개, "
-                       f"합계 {sum(n.values())}개")
+                       f"합계 {sum(n.values())}개 (v4: v3 258개 중 Lv0 간 같은 위협 "
+                       f"{sum(len(x['absorbed']) for x in rows)}건을 주관 Lv0 항목에 흡수)")
     line("요약 열", "핵심 요약 · 위협 설명 · 공격 시나리오 · 대표 사례 · 위험 평가(발생가능성·심각도·위험도·근거 수준·실제 사고 수·"
                   "최근 사고·우선순위) · 대응 방안 · 공격 단계 · 관련 기준 · 연계 위협 · 원본 Lv3 ID")
     r += 1
@@ -965,8 +1191,21 @@ def sheet_overview(wb, rows, src, maps, today, release):
     line("공급망 위험도 포화", f"공급망 요약 {len(sc_items)}개 중 {sum(x['ev']['risk'] == '매우 높음' for x in sc_items)}개가 '매우 "
                          "높음' — 원본 심각도 '상'이 60개 중 42개(신원·물리처럼 '상'을 제한하는 기준을 쓰지 않음). 공급망 항목 간 "
                          "비교는 실제 사고 수·최근 사고·우선순위로")
-    line("Lv0 간 중복", "신원↔클라우드(계정·자격증명), 공급망↔AI·클라우드(공급망 침해), 물리↔신원(내부자) 위협은 관점별로 각 Lv0에 두고 "
-                      "'연계 위협'으로 연결 — Lv0별 위협 수의 합은 고유 위협 수가 아님")
+    uniq_n, n_g, n_in = unique_estimate(rows)
+    n_abs = sum(len(x["absorbed"]) for x in rows)
+    moved = collections.Counter(a["kind"] for x in rows for a in x["absorbed"])
+    line("Lv0 간 통합(v4)", f"사실상 같은 위협 {n_abs}건을 원본 경계 규칙상 주관 Lv0 항목에 흡수 — "
+                          + " · ".join(f"{common.LABEL[k]} {moved[k]}" for k in common.KINDS if moved[k])
+                          + "건 이관(신원 경계: 피싱·대입·MFA 우회·토큰·비밀은 신원, 공급망 경계: AI 모델·MCP는 AI 등). 흡수한 항목의 "
+                          "위험도는 주관 Lv0 원본 기준(흡수 원본은 참고 — '부록-Lv0 간 통합'), 폐기한 v3 ID는 매트릭스 뷰·재구성 매핑에서 "
+                          "이관 위치 확인")
+    line("중복 그룹(v4)", f"관점(대상 자산·경로·통제)이 달라 각 Lv0에 남긴 겹치는 위협 {n_in}개를 {n_g}개 그룹으로 표시(요약 매트릭스 "
+                        f"'중복 그룹' 열·'부록-중복 그룹') — 고유 위협 수(추정) {uniq_n}개 = 그룹 밖 {len(rows) - n_in} + 그룹 {n_g}. "
+                        "Lv0별 위협 수의 합은 고유 위협 수가 아님")
+    real = sum(c["category"].startswith("실제 사고") for c in cat)
+    line("통합 사고사례", f"요약 위협이 참조하는 사고·사례 {len(cat)}건(실제 사고 {real}건 · 최근 2025~ "
+                       f"{sum(c['recent'] for c in cat)}건)을 여섯 원본 사고 DB에서 모아 한 목록으로 정리 — 여러 DB에 실린 같은 사고 "
+                       f"{sum(c['multi_db'] for c in cat)}건은 한 행으로 묶음('통합 사고사례 목록' 시트)")
     r += 1
     for kind in LV0:
         if kind != "ai":  # 인쇄 시 표 제목과 본문이 쪽 경계에서 갈라지지 않도록
@@ -1014,6 +1253,8 @@ def sheet_overview(wb, rows, src, maps, today, release):
                  ("통합 요약 매트릭스", "상세 본표(부록용) — 설명·시나리오·사례·위험 평가·대응 방안·교차 매핑 전체"),
                  ("매트릭스 뷰", "Lv0별로 도메인(열)마다 요약 위협을 위험도 색으로 배치한 한눈 보기"),
                  ("도메인 요약", "Lv1 도메인별 원본·요약 항목 수, 위험도 분포, 주요 위협"),
+                 ("통합 사고사례 목록", f"요약 위협이 참조하는 사고·사례 {len(cat)}건 — 원본 사례 ID·참조 위협(위험 산정 반영·대표 사례 "
+                                     "인용·참고)·최근 여부, 교차 DB 동일 사고는 한 행"),
                  ("AI 위협 상세", f"AI 원본 Lv3 {len(ai_src['lv3'])}개 원문 그대로 + 통합 위협 ID 역참조·실제 사고 산정 근거"),
                  ("클라우드 위협 상세", f"클라우드 원본 {len(cl_src['rows'])}행 원문 그대로 + 통합 위협 ID 역참조"
                                    + (" (CSA 열은 이슈 ID만)" if release else "")),
@@ -1023,7 +1264,9 @@ def sheet_overview(wb, rows, src, maps, today, release):
                                  + (" (CSA CCM·CIS Controls 열은 ID만)" if release else "")),
                  ("물리·인적 위협 상세", f"물리·인적 원본 세부위협 {len(ph_src['rows'])}개 원문 그대로 + 통합 위협 ID 역참조 "
                                     "(위협 주체 ● 열은 한 열로)"),
-                 ("부록-재구성 매핑", "원본 Lv3 → 요약 Lv3 대응, 처리 유형, 위험 대표 원본, 통합 근거"),
+                 ("부록-재구성 매핑", "원본 Lv3 → 요약 Lv3 대응, 처리 유형(Lv0 간 통합 포함), 위험 대표 원본, 통합 근거"),
+                 ("부록-Lv0 간 통합", "v4에서 다른 Lv0 항목에 흡수한 v3 위협 — 흡수 위치·참고 평가·통합 근거"),
+                 ("부록-중복 그룹", "관점이 달라 각 Lv0에 유지한 겹치는 위협 묶음·유지 근거·고유 위협 수(추정)"),
                  ("부록-작성·평가 기준", "재구성 원칙, 위험 재산정 규칙, 문안·사례 표기 기준, 용어")]:
         line(k, v)
     r += 1
@@ -1076,6 +1319,8 @@ def sheet_overview(wb, rows, src, maps, today, release):
               "물리·인적은 공개 사고 기준이라 기소·판결로 드러나는 기술 유출·내부자 사건이 높게 나오고 은닉 감시·물리 침입은 "
               "과소평가될 수 있음. 방어 자료로 한정해 실행 방법은 싣지 않고, 드론은 탐지·식별·신고·차폐만 권고",
               "요약 위험도는 구성 원본에서 재산정한 값(규칙: 부록-작성·평가 기준). 원본 개별 값은 원본 상세 시트에 그대로 유지",
+              "v4 Lv0 간 통합 항목의 위험도·실제 사고 수는 주관 Lv0 원본 기준 — 흡수한 다른 Lv0 원본의 사고는 참고로만 표시('Lv0 간 통합 "
+              "흡수' 열·부록-Lv0 간 통합)하고, 대표 사례로는 쓸 수 있음. 흡수 원본의 등급이 더 높아도 주관 Lv0 등급을 따름",
               "AI 실제 사고 수 = ATLAS 사례 ID(중복 제거) + OWASP 인용 사고 — OWASP 인용 사고는 ID가 없어 참조의 사례명(시점)으로 "
               "원본 간 중복을 걸러냄",
               "대표 사례는 구성 원본 참조에 수록된 사례만 사용(빌드 시 자동 대조) — 새로운 사실을 추가하지 않음. OT는 근거가 "
@@ -1098,6 +1343,11 @@ def write_markdown(path, rows, src):
         items = [x for x in rows if x["kind"] == kind]
         dist = collections.Counter(x["ev"]["risk"] for x in items)
         out.append(f"| {LV0[kind]} | {len(items)} | " + " | ".join(str(dist[k]) for k in common.RISK_ORDER) + " |")
+    uniq_n, n_g, n_in = unique_estimate(rows)
+    n_abs = sum(len(x["absorbed"]) for x in rows)
+    out += ["", f"- v4 중복 통합: Lv0 간 같은 위협 {n_abs}건 흡수(v3 258 → {len(rows)}개), 중복 그룹 {n_g}개(구성 {n_in}개) — "
+                f"고유 위협 수(추정) {uniq_n}개. 상세는 `통합_중복검토_{VERSION}.md`",
+            f"- 통합 사고사례 목록: 워크북 '통합 사고사례 목록' 시트 · `통합_사고사례목록_{VERSION}.csv`"]
     for kind in LV0:
         out += ["", f"## 우선 위협 Top 10 — {LV0[kind]}", "",
                 "| 순위 | 위협 ID | 세부 위협(Lv3) | 핵심 요약 | 위험도 | 실제 사고 | 최근 사고(2025~) |",
@@ -1110,23 +1360,58 @@ def write_markdown(path, rows, src):
         for code, label in common.domains_of(kind, src[kind]).items():
             items = [x for x in rows if x["kind"] == kind and x["domain"] == code]
             out += ["", f"### {label} ({len(items)})", "",
-                    "| 위협 ID | 세부 위협(Lv3) | 핵심 요약 | 위험도 | 우선순위 | 실제 사고 | 근거 수준 | 원본 Lv3 |",
-                    "|---|---|---|---|---:|---:|---|---|"]
+                    "| 위협 ID | 세부 위협(Lv3) | 핵심 요약 | 위험도 | 우선순위 | 실제 사고 | 근거 수준 | 원본 Lv3 | 중복 그룹 · 흡수 |",
+                    "|---|---|---|---|---:|---:|---|---|---|"]
             for x in items:
                 origin = ", ".join(x["members"])
+                extra = ([x["group"]["id"]] if x["group"] else []) + [f"+{a['id']}" for a in x["absorbed"]]
                 out.append(f"| {x['id']} | {x['name']} | {x['summary']} | {x['ev']['risk']} | {x['rank']} | "
-                           f"{x['ev']['incidents']} | {x['ev']['evidence']} | {origin} |")
+                           f"{x['ev']['incidents']} | {x['ev']['evidence']} | {origin} | {' '.join(extra)} |")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(out) + "\n")
+
+
+def write_review_markdown(path, rows, cat):
+    """중복 검토 결과(Lv0 간 통합·중복 그룹)와 통합 사고사례 집계 — 저장소에서 바로 보는 검토표."""
+    uniq_n, n_g, n_in = unique_estimate(rows)
+    absorb = review_absorb_rows(rows)
+    out = [f"# 통합 보안위협 매트릭스 {VERSION} — 중복 검토표", "",
+           "> 빌드 산출물(`build_integrated_matrix.py`가 생성) — 판정은 `integrated/data/`의 문안 `absorbs`와 `dup_groups.yaml`을 고친 뒤 "
+           "다시 빌드. 판정 원칙·근거는 `integrated/docs/v4_중복통합_작업방향.md`", "",
+           f"- 요약 위협: v3 258개 → v4 {len(rows)}개 (Lv0 간 통합 {len(absorb)}건)",
+           f"- 중복 그룹: {n_g}개, 구성 위협 {n_in}개 → 고유 위협 수(추정) {uniq_n}개 = 그룹 밖 {len(rows) - n_in} + 그룹 {n_g}",
+           f"- 통합 사고사례: {len(cat)}건 (실제 사고 {sum(c['category'].startswith('실제 사고') for c in cat)}건, "
+           f"여러 DB에 실린 같은 사고 {sum(c['multi_db'] for c in cat)}건 묶음)", "",
+           f"## 1. Lv0 간 통합 ({len(absorb)}건)", "",
+           "참고 위험도·실제 사고 = 흡수한 v3 위협을 원래 Lv0 원본으로 평가한 값 — v4 위험 산정에는 넣지 않음(결정 V3)", "",
+           "| 흡수 v3 ID | v3 세부 위협 | 원 Lv0 | 참고 위험도 · 사고 | → v4 위협 | v4 Lv0 | v4 위험도 · 사고 | 통합 근거 |",
+           "|---|---|---|---|---|---|---|---|"]
+    for v in absorb:
+        out.append(f"| {v[0]} | {v[1]} | {v[2]} | {v[3]} · {v[4]} | {v[5]} {v[6]} | {v[7]} | {v[8]} · {v[9]} | {v[10]} |")
+    out += ["", f"## 2. 중복 그룹 ({n_g}개)", "",
+            "| 그룹 | 그룹명 | 대표 | 구성 위협 | 유지 근거 |", "|---|---|---|---|---|"]
+    for v in review_group_rows(rows):
+        members = v[3].replace("\n", "<br>")
+        out.append(f"| {v[0]} | {v[1]} | {v[2]} | {members} | {v[6]} |")
+    cats = collections.Counter(c["category"] for c in cat)
+    out += ["", "## 3. 통합 사고사례 목록 집계", "", "| 사례 구분 | 건수 |", "|---|---:|"]
+    out += [f"| {k} | {v} |" for k, v in cats.most_common()]
+    kinds = collections.Counter(k for c in cat for k in {common.kind_of_id(i) for i in c["counted"] | c["cited"] | c["ref"]})
+    out += ["", "| 참조 Lv0 | 사례 수 |", "|---|---:|"] + [f"| {common.LABEL[k]} | {kinds[k]} |" for k in common.KINDS]
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(out) + "\n")
 
 
 # ---------------------------------------------------------------- 산출물 재검증
-def verify(path, rows, n_detail, n_maps, release):
+SHEETS = ["개요", "보고서용 간략 매트릭스", "통합 요약 매트릭스", "매트릭스 뷰", "도메인 요약", "통합 사고사례 목록"] + \
+    [DETAIL_SHEET[k] for k in common.KINDS] + ["부록-재구성 매핑", "부록-Lv0 간 통합", "부록-중복 그룹", "부록-작성·평가 기준"]
+
+
+def verify(path, rows, n_detail, n_maps, release, cat):
     """저장한 워크북을 다시 열어 시트·행 수·역참조·값 유효성을 확인."""
     import openpyxl
     wb = openpyxl.load_workbook(path)
-    expect = ["개요", "보고서용 간략 매트릭스", "통합 요약 매트릭스", "매트릭스 뷰", "도메인 요약"] + \
-        [DETAIL_SHEET[k] for k in common.KINDS] + ["부록-재구성 매핑", "부록-작성·평가 기준"]
+    expect = SHEETS
     assert wb.sheetnames == expect, wb.sheetnames
     ids = {r["id"] for r in rows}
 
@@ -1151,6 +1436,32 @@ def verify(path, rows, n_detail, n_maps, release):
     maps = body("부록-재구성 매핑", 12)
     assert len(maps) == n_maps and all(v[6] in ids for v in maps)
     assert sorted({v[6] for v in maps if v[10] == "●"}) == sorted(ids)  # 요약 항목마다 위험 대표 원본 표시
+    # v4 Lv0 간 통합: 흡수 원본 행은 처리 유형 'Lv0 간 통합(v3→v4)'이고 위험 대표가 아님, 흡수 v3 ID는 요약에 없음
+    absorbed = {a["id"]: r["id"] for r in rows for a in r["absorbed"]}
+    for v in maps:
+        if v[9].startswith("Lv0 간 통합"):
+            old, new = re.match(r"Lv0 간 통합\((\S+)→(\S+)\)", v[9]).groups()
+            assert absorbed.get(old) == new == v[6] and not v[10], v
+    assert not set(absorbed) & ids
+    group_col = SUMMARY_COLS.index("중복 그룹")
+    gids = {g["id"] for g in common.load_groups()}
+    assert all(not v[group_col] or v[group_col].split()[0] in gids for v in summ)
+    assert len(body("부록-Lv0 간 통합", 11)) == len(absorbed)
+    assert len(body("부록-중복 그룹", 7)) == len(gids)
+    # 통합 사고사례 목록: 행 수·ID 유일·참조 위협 ID 유효, 실제 사고 수가 있는 클라우드·OT·공급망·신원·물리 항목은 목록에서 1건 이상 참조
+    cl = body("통합 사고사례 목록", len(CATALOG_COLS))
+    assert len(cl) == len(cat) and len({v[0] for v in cl}) == len(cl)
+    refd = collections.Counter()
+    for v in cl:
+        for col in (10, 11, 12):
+            for i in str(v[col] or "").split(", "):
+                if i:
+                    assert i in ids, (v[0], i)
+                    if col == 10:
+                        refd[i] += 1
+    for r in rows:
+        if r["kind"] != "ai" and r["ev"]["incidents"]:
+            assert 0 < refd[r["id"]] <= r["ev"]["incidents"], (r["id"], refd[r["id"]], r["ev"]["incidents"])
     csa_col = 15 + CLOUD_SRC_TAIL.index("CSA Top Threats 2026")
     csa = [v for v in (wb["클라우드 위협 상세"].cell(i, csa_col + 1).value for i in range(5, n_detail["cloud"] + 5)) if v]
     assert csa and all(re.fullmatch(r"SI-\d+( · SI-\d+)*", v) for v in csa) == release, "CSA 열 표기"
@@ -1185,6 +1496,12 @@ def main():
     n_detail = {k: len(src[k]["lv3"]) if k == "ai" else len(src[k]["rows"]) for k in common.KINDS}
     for kind in common.KINDS:
         assert len([m for m in maps if m[0] == LV0[kind]]) == n_detail[kind], f"재구성 매핑 행 수: {kind}"
+    every = [e for k in common.KINDS for e in summ[k]]
+    back = {k: {} for k in common.KINDS}  # 원본 키 → 요약 ID (Lv0 간 통합 원본은 흡수한 항목)
+    for e in every:
+        for k, m, _ in common.entry_sources(e):
+            back[k][m] = e["id"]
+    cat = incidents.build_catalog(every, src)
 
     today = datetime.date.today().isoformat()
     wb = Workbook()
@@ -1193,15 +1510,19 @@ def main():
     sheet_summary(wb, rows, today)
     sheet_matrix_view(wb, rows, src)
     sheet_domain_summary(wb, rows, src)
-    sheet_ai_detail(wb, src["ai"], summ["ai"])
-    sheet_cloud_detail(wb, src["cloud"], summ["cloud"], args.release)
-    sheet_ot_detail(wb, src["ot"], summ["ot"])
+    sheet_catalog(wb, cat, rows, today)
+    sheet_ai_detail(wb, src["ai"], back["ai"])
+    sheet_cloud_detail(wb, src["cloud"], back["cloud"], args.release)
+    sheet_ot_detail(wb, src["ot"], back["ot"])
     for kind in common.TAXO:
-        sheet_taxo_detail(wb, kind, src[kind], summ[kind], args.release)
+        sheet_taxo_detail(wb, kind, src[kind], back[kind], args.release)
     sheet_mapping(wb, maps)
+    sheet_review(wb, rows, today)
+    sheet_groups(wb, rows, today)
     sheet_criteria(wb)
-    sheet_overview(wb, rows, src, maps, today, args.release)
-    tabs = ["1F3864", "117A65", "C0392B", "E67E22", "2E5496"] + [LV0_BAND[k] for k in common.KINDS] + ["7F8C8D", "7F8C8D"]
+    sheet_overview(wb, rows, src, maps, today, args.release, cat)
+    tabs = ["1F3864", "117A65", "C0392B", "E67E22", "2E5496", "1E8449"] + [LV0_BAND[k] for k in common.KINDS] + \
+        ["7F8C8D"] * 4
     for ws, color in zip(wb.worksheets, tabs):
         ws.sheet_properties.tabColor = color
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -1213,23 +1534,42 @@ def main():
             w.writerow(SUMMARY_COLS)
             for r in rows:
                 w.writerow(summary_values(r))
+        order = {r["id"]: i for i, r in enumerate(rows)}
+        with open(CATALOG_CSV, "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(CATALOG_COLS)
+            for c in cat:
+                w.writerow(catalog_values(c, order))
         write_markdown(MD, rows, src)
-    n = verify(path, rows, n_detail, len(maps), args.release)
-    print(f"저장: {os.path.relpath(path, common.ROOT)} (재검증 통과: 요약 {n}행)")
+        write_review_markdown(REVIEW_MD, rows, cat)
+    n = verify(path, rows, n_detail, len(maps), args.release, cat)
+    print(f"저장: {os.path.relpath(path, common.ROOT)} (재검증 통과: 요약 {n}행 · 시트 {len(SHEETS)}개)")
     for kind in LV0:
         items = [x for x in rows if x["kind"] == kind]
         dist = collections.Counter(x["ev"]["risk"] for x in items)
         lvl = collections.Counter(x["ev"]["evidence"] for x in items)
         print(f"  {LV0[kind]} {len(items)}개 | " + " · ".join(f"{k} {dist[k]}" for k in common.RISK_ORDER)
               + " | " + " · ".join(f"{k} {lvl[k]}" for k in common.EVIDENCE_ORDER))
+    uniq_n, n_g, n_in = unique_estimate(rows)
     print(f"  재구성 매핑 {len(maps)}행 | 연계 위협이 있는 항목 {sum(bool(x['links_text']) for x in rows)}개")
+    print(f"  Lv0 간 통합 {sum(len(x['absorbed']) for x in rows)}건 | 중복 그룹 {n_g}개(구성 {n_in}) → 고유 위협 수(추정) {uniq_n}")
+    print(f"  통합 사고사례 {len(cat)}건 | " + " · ".join(f"{k} {v}" for k, v in
+                                                     collections.Counter(c['category'] for c in cat).most_common())
+          + f" | 여러 DB 묶음 {sum(c['multi_db'] for c in cat)}")
     if skipped:  # 요약 ID로 바로 옮길 수 없는 원본 연계 참조 → 문안 links로 대체했는지 확인
-        manual = {e["id"]: list(e.get("links") or []) for k in common.KINDS for e in summ[k]}
+        by_id = {e["id"]: e for e in every}
         prefix = {"cloud": "CL-", "ai": "AI-", "AI": "AI-", "CL": "CL-", "OT": "OT-", "OTC": "OT-",
                   "SCT": "SC-", "IDT": "ID-", "PHT": "PH-"}
+        target_kind = {v: common.kind_of_id(v + "X") for v in set(prefix.values())}
+
+        def covers(t, kind):
+            """수동 연계 대상이 그 Lv0 항목이거나, 그 Lv0 원본을 흡수한 항목이면 대체로 인정(v4)."""
+            k = target_kind[prefix[kind]]
+            return t.startswith(prefix[kind]) or k in by_id.get(t, {}).get("xmembers", {})
+
         covered, missing = [], []
         for k, (sid, kind) in skipped.items():
-            subs = [t for t in manual.get(sid, []) if t.startswith(prefix[kind])]
+            subs = [t for t in by_id[sid].get("links") or [] if covers(t, kind)]
             (covered if subs else missing).append(f"{k}({sid}→{'·'.join(subs)})" if subs else f"{k}({sid})")
         if covered:
             print(f"  원본 연계 중 요약 ID로 바로 옮길 수 없는 참조 {len(covered)}건 — 문안 links로 대체: " + ", ".join(covered))

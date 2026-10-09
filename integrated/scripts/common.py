@@ -99,10 +99,24 @@ SOURCE_TAG_ALIAS = {"실증·연구": "실증"}
 PHYSICAL_BANNED_CONTROLS = ["재밍", "전파 교란", "전파 차단", "격추", "기체 무력화", "드론 무력화"]
 PHYSICAL_BANNED_ANY = ["출신", "종교", "인종", "성별", "성적 지향"]
 RECENT_FROM = "2025"  # 최근 사고 기준 연도(이 해 1월 1일 이후)
+GROUPS_YAML = os.path.join(DATA_DIR, "dup_groups.yaml")
+# 요약 ID 접두어 → Lv0 (v4 Lv0 간 통합의 흡수 ID·연계 ID 해석)
+KIND_OF_PREFIX = {"AI": "ai", "CL": "cloud", "OT": "ot", "SC": "supplychain", "ID": "identity", "PH": "physical"}
 
 
 def risk_of(likelihood, severity):
     return RISK.get((likelihood, severity), "낮음")
+
+
+def kind_of_id(sid):
+    """요약 위협 ID → Lv0 ('CL-IA-03' → 'cloud')."""
+    return KIND_OF_PREFIX[sid.split("-")[0]]
+
+
+def domain_of_id(sid):
+    """요약 위협 ID → Lv1 도메인 코드 ('AI-01-07' → 'D01', 'CL-IA-03' → 'IA')."""
+    head, dom = sid.split("-")[:2]
+    return f"D{dom}" if head == "AI" else dom
 
 
 # ---------------------------------------------------------------- 원본 로더
@@ -296,7 +310,9 @@ def member_row(src, key, domain):
 
 # ---------------------------------------------------------------- 요약 문안 로더
 def load_summary():
-    """요약 문안 {Lv0: [항목]} — data/<Lv0>/<도메인>.yaml을 도메인 순서로 읽고 항목에 domain 키를 붙인다."""
+    """요약 문안 {Lv0: [항목]} — data/<Lv0>/<도메인>.yaml을 도메인 순서로 읽고 항목에 kind·domain 키를 붙인다.
+    v4 Lv0 간 통합: 항목의 absorbs(흡수한 v3 위협 ID·명칭·구성 원본)마다 kind·domain을 붙이고,
+    xmembers {Lv0: [원본 키]}로도 모아 둔다 — 흡수 원본은 위험 산정에 넣지 않음(결정 V3)."""
     out = {}
     for kind in KINDS:
         out[kind] = []
@@ -304,9 +320,43 @@ def load_summary():
             p = os.path.join(DATA_DIR, kind, f"{dom}.yaml")
             if os.path.exists(p):
                 for e in yaml.safe_load(open(p, encoding="utf-8")) or []:
-                    e["domain"] = dom
+                    e["kind"], e["domain"] = kind, dom
+                    e["absorbs"] = [dict(a, kind=kind_of_id(a["id"]), domain=domain_of_id(a["id"]))
+                                    for a in e.get("absorbs") or []]
+                    e["xmembers"] = collections.OrderedDict()
+                    for a in e["absorbs"]:
+                        e["xmembers"].setdefault(a["kind"], []).extend(a["members"])
                     out[kind].append(e)
     return out
+
+
+def load_groups():
+    """중복 그룹 [{id, name, lead, items, basis}] (data/dup_groups.yaml)."""
+    if not os.path.exists(GROUPS_YAML):
+        return []
+    return yaml.safe_load(open(GROUPS_YAML, encoding="utf-8")) or []
+
+
+def retired_map(summ):
+    """흡수로 폐기한 v3 위협 ID → 흡수한 v4 위협 ID."""
+    return {a["id"]: e["id"] for kind in KINDS for e in summ[kind] for a in e["absorbs"]}
+
+
+def entry_sources(e):
+    """요약 항목의 원본 (Lv0, 키, 흡수 여부) — 구성 원본 + Lv0 간 통합 원본."""
+    return [(e["kind"], m, False) for m in e["members"]] + \
+           [(xk, m, True) for xk, keys in e["xmembers"].items() for m in keys]
+
+
+def entry_refs(e, src):
+    """대표 사례 대조용 참조 문자열 목록 — 흡수 원본의 참조도 포함(흡수 위협의 사례를 대표 사례로 쓸 수 있음)."""
+    return [source_refs(k, src[k], m) for k, m, _ in entry_sources(e)]
+
+
+def evaluate_absorbed(a, src):
+    """흡수한 v3 위협의 참고 평가(그 Lv0 원본 기준) — 위험 산정에는 쓰지 않고 '부록-중복 검토'에 참고로 표기."""
+    pseudo = dict(id=a["id"], domain=a["domain"], members=a["members"])
+    return EVALUATE[a["kind"]](pseudo, src[a["kind"]])
 
 
 # ---------------------------------------------------------------- 근거 재산정
@@ -485,10 +535,10 @@ def case_incidents(cases, refs):
 def check_all(src, summ):
     """src·summ: {Lv0: 원본} · {Lv0: [요약 항목]}."""
     errs, warns = [], []
-    # 1) 원본 전수 배정 (누락·중복 0)
+    # 1) 원본 전수 배정 (누락·중복 0) — Lv0 간 통합으로 다른 Lv0 항목에 흡수된 원본(xmembers)도 배정으로 셈
     for kind in KINDS:
         keys = source_keys(kind, src[kind])
-        used = collections.Counter(m for e in summ[kind] for m in e["members"])
+        used = collections.Counter(m for k2 in KINDS for e in summ[k2] for xk, m, _ in entry_sources(e) if xk == kind)
         missing = [k for k in keys if k not in used]
         dup = [k for k, v in used.items() if v > 1]
         unknown = [k for k in used if k not in keys]
@@ -500,12 +550,38 @@ def check_all(src, summ):
     for k, v in collections.Counter(ids).items():
         if v > 1:
             errs.append(f"위협 ID 중복: {k}")
+    # 1-1) Lv0 간 통합(absorbs): 다른 Lv0의 v3 위협만 흡수(같은 Lv0 통합은 members로), 흡수 ID는 현행 ID와 겹치지 않고 한 번만
+    live = set(ids)
+    absorbed = collections.Counter(a["id"] for kind in KINDS for e in summ[kind] for a in e["absorbs"])
+    for kind in KINDS:
+        for e in summ[kind]:
+            for a in e["absorbs"]:
+                if a["kind"] == kind:
+                    errs.append(f"{e['id']}: 같은 Lv0 위협 {a['id']}는 absorbs가 아니라 members로 통합")
+                if a["id"] in live:
+                    errs.append(f"{e['id']}: 흡수한 {a['id']}가 아직 요약 항목으로 남아 있음")
+                if absorbed[a["id"]] > 1:
+                    errs.append(f"{a['id']}: 여러 항목에 흡수됨")
+                if not a.get("name") or not a.get("members") or not a.get("reason"):
+                    errs.append(f"{e['id']}: 흡수 {a['id']}의 name·members·reason 누락")
+    # 1-2) 중복 그룹: 구성 위협이 현행 ID이고 한 그룹에만 속하며 대표가 구성에 포함
+    seen = {}
+    for g in load_groups():
+        items = g.get("items") or []
+        if len(items) < 2 or g.get("lead") not in items or not g.get("basis") or not g.get("name"):
+            errs.append(f"중복 그룹 {g.get('id')}: 구성 2개 이상·대표 포함·name·basis 필요")
+        for i in items:
+            if i not in live:
+                errs.append(f"중복 그룹 {g.get('id')}: 없는 위협 ID {i}")
+            if i in seen:
+                errs.append(f"중복 그룹: {i}가 {seen[i]}·{g.get('id')}에 중복 소속")
+            seen[i] = g.get("id")
     # 2) 항목별 문안·사례 검증
-    valid = {kind: [e for e in summ[kind] if all(m in source_keys(kind, src[kind]) for m in e.get("members", []))]
+    valid = {kind: [e for e in summ[kind] if all(m in source_keys(k, src[k]) for k, m, _ in entry_sources(e))]
              for kind in KINDS}
     for kind in KINDS:
         for e in valid[kind]:
-            refs = [source_refs(kind, src[kind], m) for m in e["members"]]
+            refs = entry_refs(e, src)
             a, b = check_entry(e, refs, kind)
             errs += a
             warns += b
@@ -521,7 +597,7 @@ def check_all(src, summ):
             if EVALUATE[kind](e, src[kind])["evidence"] == "실제 사고 확인" and "[실제 사고]" not in cases:
                 warns.append(f"{e['id']}: 근거 수준 '실제 사고 확인'이나 대표 사례에 [실제 사고] 없음")
             if "[EMB3D]" in cases:
-                refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+                refs = "\n".join(entry_refs(e, src))
                 if re.search(r"^\s*- \[(실제 사고|실증|실증·연구)\]", refs, re.M):
                     warns.append(f"{e['id']}: [EMB3D] 사례는 구성 원본에 실제 사고·실증 사례가 없을 때만 사용")
     # 4) 물리·인적 작성 제약(결정 D9): 금지 표현
@@ -540,7 +616,7 @@ def check_all(src, summ):
             continue
         seen, labels = collections.defaultdict(list), collections.defaultdict(list)
         for e in valid[kind]:
-            refs = "\n".join(source_refs(kind, src[kind], m) for m in e["members"])
+            refs = "\n".join(entry_refs(e, src))
             for label, incs in case_incidents(e.get("cases"), refs):
                 for key in incs or [label]:
                     if e["id"] not in seen[key]:

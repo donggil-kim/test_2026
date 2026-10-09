@@ -1,4 +1,4 @@
-"""통합 보안위협 매트릭스 v3 — 공급망·신원·물리 재구성안 진행 점검·문안 골격 생성.
+"""통합 보안위협 매트릭스 v3 — 공급망·신원·물리 재구성안 진행 점검·문안 골격 생성 (v4 Lv0 간 통합 흡수 항목은 'v4 흡수'로 표시).
 
 재구성안(integrated/docs/v3_재구성안.yaml)과 작성된 문안(integrated/data/<kind>/*.yaml)을 대조한다.
 
@@ -77,12 +77,14 @@ def report(plan, src, summ):
                 errs += 1
                 print(f"  [오류] {label}: {lst}")
         done = [it for it in items if it["id"] in written]
-        todo = [it for it in items if it["id"] not in written]
+        retired = common.retired_map(summ)  # v4 Lv0 간 통합으로 다른 Lv0 항목에 흡수된 재구성안 항목(작성 완료로 봄)
+        todo = [it for it in items if it["id"] not in written and it["id"] not in retired]
         for it in done:
             if written[it["id"]]["members"] != it["members"]:
                 errs += 1
                 print(f"  [오류] {it['id']}: 문안 members가 재구성안과 다름")
-        print(f"  요약 {len(planned_ids)}개 계획 · 문안 작성 {len(written)}개 · 미작성 {len(todo)}개")
+        n_ret = sum(it["id"] in retired for it in items)
+        print(f"  요약 {len(planned_ids)}개 계획 · 문안 작성 {len(written)}개 · v4 흡수 {n_ret}개 · 미작성 {len(todo)}개")
         used = used_incidents(kind, sk, summ[kind])
         planned_use = collections.defaultdict(list)
         for it in todo:
@@ -103,7 +105,7 @@ def report(plan, src, summ):
         for dom, lst in by_dom.items():
             for it in lst:
                 ev = common.evaluate_attack(dict(it, domain=dom), sk)
-                mark = "작성" if it["id"] in written else "미작성"
+                mark = "작성" if it["id"] in written else (f"v4 흡수→{retired[it['id']]}" if it["id"] in retired else "미작성")
                 print(f"  {it['id']} [{mark}] {it['name']} | {ev['likelihood']}×{ev['severity']}={ev['risk']} · "
                       f"실제 사고 {ev['incidents']} · 최근 {ev['recent']} · {ev['evidence']}")
     return errs

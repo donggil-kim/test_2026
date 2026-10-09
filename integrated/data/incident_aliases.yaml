@@ -1,0 +1,88 @@
+# 교차 DB 동일 사고 — 통합 사고사례 목록에서 한 행으로 묶는 원본 사례 ID 그룹
+#
+# 원본 사고 DB는 Lv0마다 따로 만들어져 같은 사고가 여러 DB에 다른 ID로 실려 있다.
+# 신원·물리 DB의 '다른 DB 사고 ID' 열(17쌍)은 빌드가 자동으로 묶고, 여기에는 그 밖의 동일 사고를 적는다.
+#   - 후보 추출: 사례명 고유어(제품·조직·행위자명) 공유 + 시점(연·월) 근접, 같은 달·공통 브랜드명 공유 쌍
+#   - 확정 기준: 같은 피해 조직·같은 공격(같은 캠페인의 같은 시기 보고 포함). 같은 행위자의 다른 공격,
+#     같은 취약점의 다른 피해(예: Ivanti 2024-01 대량 악용 vs MITRE 침해), 연구와 실제 악용은 묶지 않음
+#   - ID 표기: 클라우드 DB `CL/INC-0001` · OT DB `OT/INC-001`(두 DB가 INC- 접두사를 같이 씀) · SCI-·IDI-·PHI- ·
+#     ATLAS `AML.CS0000` · ID 없는 OWASP 인용 사고 `OWASP:사례명(시점)`
+#   - 첫 ID가 대표 기록(목록의 사례명·시점·지역·행위자·요약·출처를 가져올 기록)
+# 원본 DB의 사고 수 집계(위험 재산정)에는 영향이 없다 — 목록 표시용 묶음
+- {ids: [SCI-052, IDI-027, CL/INC-0062], note: SolarWinds Orion 빌드 침해와 이후 클라우드 장악(2020-12)}
+- {ids: [OT/INC-016, SCI-019, IDI-097], note: NotPetya(2017-06)}
+- {ids: [OT/INC-011, SCI-008], note: Flame(2012-05)}
+- {ids: [OT/INC-013, SCI-012], note: Dragonfly·Havex(2014-06)}
+- {ids: [OT/INC-063, IDI-095], note: Volt Typhoon 기반시설 사전 침투(2024-02)}
+- {ids: [SCI-006, CL/INC-0002], note: kernel.org 인프라 침해(2011-08)}
+- {ids: [IDI-081, CL/INC-0013], note: OneLogin(2017-05)}
+- {ids: [IDI-111, CL/INC-0010], note: Uber 2016 정보 유출}
+- {ids: [IDI-112, CL/INC-0027], note: Capital One(2019-07)}
+- {ids: [SCI-042, CL/INC-0028], note: Webmin 빌드 서버 백도어(2019-08)}
+- {ids: [IDI-101, CL/INC-0033, CL/INC-0071], note: Ubiquiti 내부자 데이터 탈취·갈취(2020-12, 2021 공개)}
+- {ids: [SCI-055, CL/INC-0075], note: Codecov Bash Uploader 변조(2021-01~04)}
+- {ids: [IDI-001, CL/INC-0094], note: LAPSUS$ 연쇄 침해(2022-03)}
+- {ids: [IDI-004, CL/INC-0112], note: 0ktapus SMS 피싱·Twilio 침해(2022-08)}
+- {ids: [IDI-002, CL/INC-0116], note: Uber 내부망 침해(2022-09)}
+- {ids: [IDI-018, CL/INC-0121], note: Medibank(2022-10)}
+- {ids: [SCI-078, IDI-074, CL/INC-0126], note: Dropbox GitHub 저장소 탈취(2022-10)}
+- {ids: [IDI-071, SCI-079, CL/INC-0129], note: LastPass 개발 환경·고객 금고 백업 탈취(2022-08~12)}
+- {ids: [SCI-080, CL/INC-0135], note: Okta GitHub 소스 코드 탈취(2022-12)}
+- {ids: [SCI-081, CL/INC-0137, AML.CS0015], note: PyTorch torchtriton 의존성 혼동(2022-12)}
+- {ids: [IDI-073, SCI-091, CL/INC-0141], note: CircleCI 고객 비밀 유출(2023-01)}
+- {ids: [SCI-090, CL/INC-0159], note: 3CX 이중 공급망 침해(2023-03)}
+- {ids: [SCI-099, CL/INC-0181], note: bignum S3 버킷 재점유(2023-06)}
+- {ids: [IDI-026, CL/INC-0192], note: Storm-0558 서명 키 탈취·토큰 위조(2023-07)}
+- {ids: [SCI-092, IDI-083, CL/INC-0194], note: JumpCloud 침해(2023-06~07)}
+- {ids: [IDI-072, SCI-104, CL/INC-0211], note: Retool SMS 피싱(2023-08)}
+- {ids: [IDI-035, CL/INC-0219], note: Peach Sandstorm 비밀번호 스프레이(2023-09)}
+- {ids: [IDI-019, CL/INC-0229], note: Okta 지원 시스템 침해(2023-10)}
+- {ids: [IDI-020, CL/INC-0275], note: Cloudflare 내부 Atlassian 침해(2023-11, 2024-02 공개)}
+- {ids: [IDI-034, CL/INC-0243], note: OAuth 앱 악용 암호화폐 채굴(Storm-1283, 2023-12)}
+- {ids: [SCI-109, CL/INC-0244], note: APT29 TeamCity 취약점 악용(2023-12)}
+- {ids: [IDI-087, CL/INC-0254], note: Ivanti Connect Secure 제로데이 대량 악용(2024-01)}
+- {ids: [SCI-125, CL/INC-0256], note: PyTorch 자체 호스팅 러너 공격 실증(2024-01)}
+- {ids: [IDI-017, CL/INC-0264], note: Microsoft 기업 메일 침해(Midnight Blizzard, 2024-01)}
+- {ids: [SCI-126, CL/INC-0311], note: top.gg 기여자 쿠키 재사용(2024-03)}
+- {ids: [SCI-111, CL/INC-0313], note: xz utils 백도어(2024-03)}
+- {ids: [IDI-039, CL/INC-0320], note: Sisense 침해(2024-04)}
+- {ids: [IDI-038, CL/INC-0330], note: Dropbox Sign 침해(2024-04~05)}
+- {ids: [IDI-116, CL/INC-0337, AML.CS0030], note: LLMjacking(2024-05)}
+- {ids: [IDI-016, CL/INC-0341], note: Snowflake 고객 인스턴스 데이터 탈취(2024-05)}
+- {ids: [IDI-114, "OWASP:Hugging Face Spaces(2024)"], note: Hugging Face Spaces 비밀 무단 접근(2024-05)}
+- {ids: [SCI-124, IDI-124, CL/INC-0366], note: Python·PyPI 관리자 GitHub 토큰 노출(2024-06~07)}
+- {ids: [IDI-070, CL/INC-0369], note: Disney 사내 Slack 유출(2024-07)}
+- {ids: [IDI-022, CL/INC-0395], note: Storm-0501 하이브리드 환경 랜섬웨어(2024-09)}
+- {ids: [IDI-084, CL/INC-0426], note: BeyondTrust 원격 지원 SaaS API 키 탈취(2024-12)}
+- {ids: [SCI-120, CL/INC-0430], note: "@solana/web3.js 악성 버전(2024-12)"}
+- {ids: [SCI-119, CL/INC-0432, "OWASP:Ultralytics(2024)"], note: Ultralytics PyPI 침해(2024-12)}
+- {ids: [IDI-115, AML.CS0057], note: Storm-2139 생성형 AI 서비스 탈취·재판매(2024-12~2025-02)}
+- {ids: [SCI-132, CL/INC-0460, CL/INC-0470], note: "Bybit 해킹(Safe{Wallet}, 2025-02)"}
+- {ids: [SCI-135, CL/INC-0463, AML.CS0031], note: nullifAI 탐지 회피형 악성 모델(Hugging Face, 2025-02)}
+- {ids: [SCI-133, CL/INC-0481], note: tj-actions/changed-files 연쇄 침해(2025-03)}
+- {ids: [SCI-134, AML.CS0041], note: Rules File Backdoor(2025-03)}
+- {ids: [SCI-138, CL/INC-0514], note: SimpleHelp RMM 경유 랜섬웨어(DragonForce, 2025-05)}
+- {ids: ["OWASP:ToolShell(2025-07)", CL/INC-0537], note: ToolShell SharePoint 제로데이 악용(2025-07)}
+- {ids: [SCI-140, AML.CS0047], note: Amazon Q Developer 확장 파괴 지시 주입(2025-07)}
+- {ids: [SCI-144, IDI-037, CL/INC-0549, CL/INC-0555], note: Salesloft Drift OAuth 토큰 탈취(2025-08)}
+- {ids: [SCI-145, CL/INC-0556], note: GhostAction(2025-09)}
+- {ids: [SCI-147, CL/INC-0558], note: Shai-Hulud 1차(2025-09)}
+- {ids: [SCI-148, AML.CS0053], note: postmark-mcp 악성 MCP 서버(2025-09)}
+- {ids: [SCI-150, CL/INC-0580], note: Shai-Hulud 2차(2025-11)}
+- {ids: [SCI-151, CL/INC-0592], note: Notepad++ 업데이트 경로 가로채기(2025-06~, 2026-02 공개)}
+- {ids: [SCI-153, CL/INC-0596], note: Trivy 침해(TeamPCP, 2026-03)}
+- {ids: [SCI-154, CL/INC-0604], note: Checkmarx KICS 침해(TeamPCP, 2026-03)}
+- {ids: [SCI-155, CL/INC-0605], note: LiteLLM PyPI 악성 버전(2026-03)}
+- {ids: [SCI-158, CL/INC-0608], note: axios 메인테이너 계정 탈취(2026-03)}
+- {ids: [SCI-160, CL/INC-0618], note: Bitwarden CLI npm 악성 버전(2026-04)}
+- {ids: [SCI-162, CL/INC-0628], note: TanStack 침해(2026-05)}
+- {ids: [SCI-165, CL/INC-0632], note: Megalodon 악성 워크플로 주입(2026-05)}
+- {ids: [AML.CS0068, CL/INC-0651], note: 자율 평가 에이전트의 Hugging Face 인프라 침해(2026-07)}
+- {ids: [SCI-166, CL/INC-0668], note: ChainDrop(keyv·cacheable, 2026-08)}
+# 사고 DB ID 없이 대표 사례로 인용한 실제 사고(클라우드 원본 참조의 CSA Top Threats 2026 인용 줄) — 같은 사고의 사고 DB 기록에 묶음.
+# 키는 'CITE:[유형] 사례명(시점)'(요약 문안의 대표 사례 표기 그대로). 문안에서 사례를 바꾸면 해당 줄은 무시됨
+- {ids: [IDI-010, "CITE:[실제 사고] Marks & Spencer 침해(2025-02~04)"], note: Marks & Spencer 랜섬웨어(2025-04)}
+- {ids: [CL/INC-0600, "CITE:[실제 사고] LexisNexis 침해(2026-02~03)"], note: LexisNexis 침해(2026-03)}
+- {ids: [SCI-144, "CITE:[실제 사고] Salesloft Drift 통합 침해(2025-08)"], note: Salesloft Drift(CSA 인용)}
+- {ids: [SCI-155, "CITE:[실제 사고] LiteLLM 공급망 침해(2026-03)"], note: LiteLLM(CSA 인용)}
+- {ids: [SCI-162, "CITE:[실제 사고] TanStack 등 npm 100여 개 버전 침해(2026-05)"], note: TanStack(CSA 인용)}
