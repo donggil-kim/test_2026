@@ -352,8 +352,8 @@ OWASP 인용: Ultralytics(2024) — OWASP 인용 사고",AI · 클라우드 · �
 Wiz
 OWASP LLM04:2026 시나리오 #7"
 UC-0254,TinaCloud,2024-12,실제 사고,,,자원 탈취,TinaCloud의 JS 파일에 자격증명이 노출되어 SES가 피싱 발송에 악용되었다.,INC-0425(클라우드 DB) — 사고 · 집계 Y,클라우드 · 신원,"CL-IA-07, CL-IM-07",,ID-CR-02,,ramimac
-UC-0255,Stolen or compromised credentials,2024-12,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 공격자 계정이 수임 가능한 신규 역할을 만들고 SES를 노렸다(Datadog 사례).,INC-0424(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
-UC-0256,Stolen or compromised credentials,2024-12,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 신규 사용자와 액세스 키를 만들고 LLMjacking을 수행했다(Wiz 사례).,INC-0427(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
+UC-0255,Stolen or compromised credentials,2024-12,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 신규 사용자와 액세스 키를 만들고 LLMjacking을 수행했다(Wiz 사례).,INC-0427(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
+UC-0256,Stolen or compromised credentials,2024-12,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 공격자 계정이 수임 가능한 신규 역할을 만들고 SES를 노렸다(Datadog 사례).,INC-0424(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
 UC-0257,Rspack npm 패키지 탈취 토큰 게시(채굴기),2024-12,실제 사고,글로벌,미상,"크립토재킹, 자격증명·비밀 탈취","탈취된 npm 토큰으로 @rspack/core·@rspack/cli 1.1.7이 게시되어, 설치 후 스크립트(postinstall)로 리눅스 호스트에 XMRig 채굴기를 내려받고 클라우드 자격증명 등 설정 정보를 외부로 보냈다.",SCI-121 — 사고 · 실제 사고,공급망,"SC-DP-03, SC-SC-02, SC-PB-01, SC-IM-04",SC-SC-02,,,The Hacker News(2024) Rspack npm Packages Compromised with Crypto Mining Malware in Supply Chain Attack | https://thehackernews.com/2024/12/rspack-npm-packages-compromised-with.html
 UC-0258,PowerSchool 고객 지원 포털 침해(탈취 자격증명으로 원격 유지보수 도구 악용),2024-12,실제 사고,미국,미상,"데이터 반출, 금전 탈취","CrowdStrike 조사 보고서에 따르면 공격자가 탈취된 자격증명으로 고객 지원 포털(PowerSource)에 들어가, 원격 유지보수 도구로 고객 학교의 DB에 접속해 학생·교직원 정보를 빼냈다. 같은 자격증명으로 2024-08·09에도 접근한 흔적이 확인됐다.",IDI-086 — 사고 · 실제 사고,공급망 · 신원,"ID-AU-01, ID-IM-03",,SC-CS-03,,"BleepingComputer(2025) PowerSchool previously hacked in August, months before data breach | https://www.bleepingcomputer.com/news/security/powerschool-previously-hacked-in-august-months-before-data-breach/"
 UC-0259,IoT·OT 기기 대상 IOCONTROL 악성코드,2024-12,실제 사고,이스라엘·미국,CyberAv3ngers(IRGC 연계),기기 탈취,"라우터·PLC·HMI·IP 카메라·연료 관리 시스템 등 리눅스 기반 IoT·OT 기기를 노린 맞춤형 악성코드로, MQTT로 명령을 받고 이스라엘·미국의 연료 관리 시스템 침해에 쓰였다.",INC-067(OT DB) — 캠페인 · 실제 사고,OT,"OT-IA-01, OT-C2-01",OT-C2-01,,,Claroty Team82(2024-12) IOCONTROL
@@ -455,8 +455,8 @@ UC-0332,Operation Veles,2024-06-04,실제 사고,,UTG-Q-008,자원 탈취,Wiz가
 UC-0333,Muhstik,2024-06-04,실제 사고,,,,Apache RocketMQ의 원격 코드 실행 취약점(CVE-2023-33246)을 악용해 Muhstik 악성코드를 내려받아 실행한 캠페인이다.,INC-0347(클라우드 DB) — 캠페인 · 집계 Y,클라우드,CL-IA-01,,,,Wiz
 UC-0334,유학생들의 해군기지·정박 항공모함 드론 반복 촬영,2024-06,실제 사고,한국,중국인 유학생 3명,국가기밀·군사정보 유출,"중국인 유학생 3명이 2023-03부터 2024-06까지 부산 해군작전사령부 일대에서 드론을 띄워 해군기지 내부와 한미일 훈련차 정박한 미 핵추진 항공모함을 촬영해 사진 약 170장·영상 22개(12GB)를 남겼고, 2024-06-25 적발됐다. 검찰은 주범에게 외국인 최초로 일반이적 혐의를 적용했고 2026-06 1심에서 징역 1년 6개월이 선고됐다.",PHI-049 — 사고 · 실제 사고,물리·인적,PH-SV-01,PH-SV-01,,,"데일리안(2025) 美 해군 항공모함 드론 불법촬영 중국 유학생들…구속기소 | https://www.dailian.co.kr/news/view/1528023/
 TWIG24(2026) 부산 해군기지, 미 항모 촬영한 중국인 유학생 1심서 징역형 | https://www.twig24.com/news/local_bs/2026/06/10/20260610500074"
-UC-0335,Stolen or compromised credentials,2024-06,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 LLMjacking이 이루어졌다(Datadog 사례).,INC-0345(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
-UC-0336,Stolen or compromised credentials,2024-06,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 신규 콘솔 사용자를 만들고 LLMjacking을 수행했다(Lacework 사례).,INC-0346(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
+UC-0335,Stolen or compromised credentials,2024-06,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 신규 콘솔 사용자를 만들고 LLMjacking을 수행했다(Lacework 사례).,INC-0346(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
+UC-0336,Stolen or compromised credentials,2024-06,실제 사고,,,자원 탈취,탈취 또는 침해된 자격증명으로 LLMjacking이 이루어졌다(Datadog 사례).,INC-0345(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,"CL-IA-07, CL-IM-07",,,,ramimac
 UC-0337,Polyfill.io 도메인 인수 후 악성 스크립트 배포,2024-06,실제 사고,글로벌,"도메인 인수 업체(중국계, 귀속 논의)",백도어·원격 제어,널리 쓰이던 polyfill.io 도메인과 저장소를 인수한 업체가 CDN 스크립트에 모바일 사용자를 사기 사이트로 보내는 코드를 넣었다. 이 스크립트를 불러오던 10만 개 이상 사이트에 영향을 줬고 Cloudflare·Fastly 등이 대체 경로를 제공했다.,SCI-112 — 사고 · 실제 사고,공급망,"SC-PB-02, SC-CS-04",SC-CS-04,,,Sansec(2024) Polyfill supply chain attack hits 100K+ sites | https://sansec.io/research/polyfill-supply-chain-attack
 UC-0338,Compromised vulnerable application (k8s Pod),2024-06,실제 사고,,,"랜섬·갈취, 데이터 유출","취약한 애플리케이션(Kubernetes 파드)이 침해되었다. 공격자는 과도한 시크릿 접근 권한으로 IdP 관련 자격증명을 획득해 S3 데이터를 유출했고, ""랜섬웨어""형 피해를 입혔다(Wiz 사례).",INC-0344(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,CL-CO-01,,,,ramimac
 UC-0339,Kinsing targeting cloud servers,2024-05-16,실제 사고,,,자원 탈취,주로 Linux 기반 클라우드 인프라를 노리는 Kinsing 악성코드의 최근 활동이다. 다양한 취약점으로 무단 접근한 뒤 백도어와 채굴기를 배포한다.,INC-0340(클라우드 DB) — 캠페인 · 집계 Y,클라우드,CL-IM-06,,,,Wiz
@@ -584,8 +584,8 @@ UC-0426,Microsoft 기업 메일 침해(레거시 테스트 테넌트 비밀번�
 INC-0264(클라우드 DB) — 사고 · 집계 Y",클라우드 · 신원,"CL-CO-05, ID-AU-01, ID-AU-03, ID-NH-03, ID-IM-03",ID-AU-01,,,"Microsoft(2024) Midnight Blizzard — Guidance for responders on nation-state attack | https://www.microsoft.com/en-us/security/blog/2024/01/25/midnight-blizzard-guidance-for-responders-on-nation-state-attack/
 Wiz"
 UC-0427,Mandiant X 계정 무차별 대입 탈취(2단계 인증 미적용),2024-01,실제 사고,미국,암호화폐 탈취 서비스(Drainer-as-a-Service) 조직,"계정 탈취, 금전 탈취","Mandiant의 X 계정이 무차별 대입으로 탈취되어 암호화폐 지갑 사칭 사기 홍보에 쓰였다. 팀 이관 과정에서 2단계 인증이 제대로 걸려 있지 않았고, 이 캠페인으로 공격자는 최소 90만 달러를 챙겼다.",IDI-059 — 사고 · 실제 사고,신원,"ID-AU-01, ID-AU-03, ID-IM-01",,,,BleepingComputer(2024) Mandiant's X account hacked by crypto Drainer-as-a-Service gang | https://www.bleepingcomputer.com/news/security/mandiants-x-account-hacked-by-crypto-drainer-as-a-service-gang/
-UC-0428,Leaked IAM User Key,2024-01,실제 사고,,,"자원 탈취, 데이터 유출","유출된 IAM 사용자 키로 관리자 IAM 사용자를 생성하고, S3 데이터를 유출했으며 암호화폐 채굴을 시도했다(Datadog 사례 1).",INC-0250(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드 · 신원,"CL-CO-01, CL-IM-06",,ID-PE-02,,ramimac
-UC-0429,Leaked IAM User Key,2024-01,실제 사고,,,자원 탈취,유출된 IAM 사용자 키로 ECS Fargate에서 XMRig 채굴을 수행했다(Datadog 사례 2).,INC-0251(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,CL-IM-06,,,,ramimac
+UC-0428,Leaked IAM User Key,2024-01,실제 사고,,,자원 탈취,유출된 IAM 사용자 키로 ECS Fargate에서 XMRig 채굴을 수행했다(Datadog 사례 2).,INC-0251(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드,CL-IM-06,,,,ramimac
+UC-0429,Leaked IAM User Key,2024-01,실제 사고,,,"자원 탈취, 데이터 유출","유출된 IAM 사용자 키로 관리자 IAM 사용자를 생성하고, S3 데이터를 유출했으며 암호화폐 채굴을 시도했다(Datadog 사례 1).",INC-0250(클라우드 DB) — 사례연구(익명) · 집계 Y,클라우드 · 신원,"CL-CO-01, CL-IM-06",,ID-PE-02,,ramimac
 UC-0430,Kimsuky 보안 프로그램 설치 파일 위장(TrollAgent),2024-01,실제 사고,한국,Kimsuky(G0094),자격증명·비밀 탈취,"건설 관련 협회 웹사이트를 침해해, 로그인 전에 설치해야 하는 보안 프로그램을 내려받을 때 정보탈취 악성코드(TrollAgent)가 함께 설치되게 했다. 악성코드는 국내 방산업체의 유효한 인증서로 서명돼 있었다. 국가사이버안보센터가 경보했다.",SCI-114 — 캠페인 · 실제 사고,공급망,"SC-PB-02, SC-PB-03",,,,"The Hacker News(2024) Kimsuky's New Golang Stealer Troll and GoBear | https://thehackernews.com/2024/02/kimsukys-new-golang-stealer-troll-and.html
 BleepingComputer(2024) North Korean hackers exploit VPN update flaw to install malware | https://www.bleepingcomputer.com/news/security/north-korean-hackers-exploit-vpn-update-flaw-to-install-malware/"
 UC-0431,Ivanti Connect Secure 인증 우회 제로데이 대량 악용,2024-01,실제 사고,글로벌,중국 연계(UNC5221) 등,"자격증명·토큰 탈취, 테넌트·도메인 장악",인증 우회(CVE-2023-46805)와 명령 주입(CVE-2024-21887)을 연결해 인증 없이 VPN 게이트웨이를 장악하는 공격이 확산되자 CISA는 첫 긴급 지시(ED 24-01)를 내려 연방기관에 장비 분리를 명령했다. Mandiant는 게이트웨이에 웹셸과 자격증명 수집 코드가 심어졌다고 분석했다.,"IDI-087 — 정부 경보 · 실제 사고
@@ -1260,22 +1260,22 @@ UC-0891,Storm-0501,,ATT&CK 사례,,,,elevateAccess·roleAssignments/write로 피
 UC-0892,Shai-Hulud,,ATT&CK 사례,,,,저장소 비밀을 webhook.site로 반출,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-EF-02,,,ATT&CK S9008
 UC-0893,Scattered Spider,,ATT&CK 사례,,,,AWS S3 버킷 등 클라우드 환경을 열거해 백업·DB·스토리지 인프라 식별,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,"CL-DS-02, CL-CO-02",,,ATT&CK G1015
 UC-0894,Ruler,,ATT&CK 사례,,,,Outlook 양식·홈페이지·규칙 악용을 자동화해 지속성 확보,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-PE-04,,,ATT&CK S0358
-UC-0895,Rockwell Logix,CVE-2021-22681,공개 취약점,,,,엔지니어링 소프트웨어와 제어기 사이 인증 키가 노출돼 원격에서 제어기 인증을 우회 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-LM-03,,,
+UC-0895,Rockwell Logix(CVE-2021-22681),,공개 취약점,,,,엔지니어링 소프트웨어와 제어기 사이 인증 키가 노출돼 원격에서 제어기 인증을 우회 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-LM-03,,,
 UC-0896,Qdrant CVE-2024-3584·CVE-2024-3829,,공개 취약점,,,,스냅숏 업로드의 경로 조작과 임의 파일 업로드로 원격 코드 실행 가능,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-03-08,,,OWASP DSGAI13
 UC-0897,Pacu,,ATT&CK 사례,,,,IAM 사용자·역할·그룹 열거,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-DS-01,,,ATT&CK S1091
 UC-0898,Mini Shai-Hulud,,ATT&CK 사례,,,,SSM Send-Command로 AWS EC2 인스턴스에 접근·전파,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-LM-01,,,ATT&CK S9043
-UC-0899,Milvus CVE-2025-64513,CVSS 9.3,공개 취약점,,,,sourceID 헤더 위조로 인증 우회,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-03-08,,,OWASP LLM09:2026
+UC-0899,Milvus CVE-2025-64513(CVSS 9.3),,공개 취약점,,,,sourceID 헤더 위조로 인증 우회,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-03-08,,,OWASP LLM09:2026
 UC-0900,MailSniper,,ATT&CK 사례,,,,Get-GlobalAddressList로 Exchange·O365 계정명 수집,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-DS-01,,,ATT&CK S0413
 UC-0901,LAPSUS$,,ATT&CK 사례,,,,O365 테넌트 수준 전송 규칙으로 조직 입출 메일을 신규 계정으로 전달,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-CO-05,,,ATT&CK G1004
 UC-0902,Kali365,,ATT&CK 사례,,,,피해자가 보기 전에 이메일 기반 알림을 삭제하도록 메일 규칙을 수정,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-ST-01,,,ATT&CK S9044
-UC-0903,KNX 연결 인증,CVE-2023-4346,공개 취약점,,,,인증 키 설정을 악용해 빌딩 자동화 장치 소유자를 잠그는 취약점 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-IR-06,,,
+UC-0903,KNX 연결 인증(CVE-2023-4346),,공개 취약점,,,,인증 키 설정을 악용해 빌딩 자동화 장치 소유자를 잠그는 취약점 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-IR-06,,,
 UC-0904,HAFNIUM,,ATT&CK 사례,,,,MSGraph로 메일·OneDrive·SharePoint 데이터를 자동 수집·반출,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-CO-06,,,ATT&CK G0125
-UC-0905,Delta DOPSoft,CVE-2021-38406,공개 취약점,,,,HMI 편집 소프트웨어가 조작된 프로젝트 파일을 열 때 범위 밖 쓰기로 코드가 실행됨 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-EX-04,,,
-UC-0906,CVE-2026-22708,Cursor,공개 취약점,,,,환경변수를 이용해 터미널 도구 허용 목록 우회,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-09-06,,,OWASP DSGAI01
-UC-0907,CVE-2025-6515,oatpp-mcp,공개 취약점,,,,MCP SSE 엔드포인트가 인스턴스 포인터를 세션 ID로 반환해 세션 가로채기 가능,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-03-07,,,OWASP DSGAI11
-UC-0908,CVE-2025-6514,mcp-remote,공개 취약점,,,,신뢰할 수 없는 MCP 서버가 돌려준 authorization_endpoint URL로 클라이언트 PC에 OS 명령 주입,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-06-04,,,OWASP DSGAI06
-UC-0909,CVE-2025-24357,vLLM,공개 취약점,,,,Hub에서 체크포인트를 받을 때 torch.load를 안전하지 않게 써서 악성 모델 파일로 원격 코드 실행,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-06-05,,,OWASP DSGAI04
-UC-0910,CVE-2024-8309,LangChain GraphCypherQAChain,공개 취약점,,,,인젝션으로 악성 Cypher 질의를 생성해 Neo4j 데이터 무단 조회·변경,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-05-01,,,OWASP DSGAI12
+UC-0905,Delta DOPSoft(CVE-2021-38406),,공개 취약점,,,,HMI 편집 소프트웨어가 조작된 프로젝트 파일을 열 때 범위 밖 쓰기로 코드가 실행됨 — KEV 등재,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-EX-04,,,
+UC-0906,CVE-2026-22708(Cursor),,공개 취약점,,,,환경변수를 이용해 터미널 도구 허용 목록 우회,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-09-06,,,OWASP DSGAI01
+UC-0907,CVE-2025-6515(oatpp-mcp),,공개 취약점,,,,MCP SSE 엔드포인트가 인스턴스 포인터를 세션 ID로 반환해 세션 가로채기 가능,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-03-07,,,OWASP DSGAI11
+UC-0908,CVE-2025-6514(mcp-remote),,공개 취약점,,,,신뢰할 수 없는 MCP 서버가 돌려준 authorization_endpoint URL로 클라이언트 PC에 OS 명령 주입,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-06-04,,,OWASP DSGAI06
+UC-0909,CVE-2025-24357(vLLM),,공개 취약점,,,,Hub에서 체크포인트를 받을 때 torch.load를 안전하지 않게 써서 악성 모델 파일로 원격 코드 실행,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-06-05,,,OWASP DSGAI04
+UC-0910,CVE-2024-8309(LangChain GraphCypherQAChain),,공개 취약점,,,,인젝션으로 악성 Cypher 질의를 생성해 Neo4j 데이터 무단 조회·변경,사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],AI,,AI-05-01,,,OWASP DSGAI12
 UC-0911,CISA ICS 권고,,공개 취약점,,,,"무결성 검증 없이 코드·펌웨어를 받아들이는 취약점(CWE-494·347·1277) 44건, 2025년 이후 20건",사고 DB 외(대표 사례 인용) — 대표 사례 [공개 취약점],OT,,OT-IR-05,,,
 UC-0912,Akira,,ATT&CK 사례,,,,SharePoint에 접근해 데이터 수집·반출,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,CL-CO-02,,,ATT&CK G1024
 UC-0913,APT29,,ATT&CK 사례,,,,침해한 전역 관리자 계정으로 ApplicationImpersonation 권한을 가진 서비스 주체를 백도어화해 대상 사서함 메일 수집,사고 DB 외(대표 사례 인용) — 대표 사례 [ATT&CK 사례],클라우드,,"CL-PE-04, CL-LM-01",,,ATT&CK G0016

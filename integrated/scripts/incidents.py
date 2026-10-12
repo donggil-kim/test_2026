@@ -34,6 +34,7 @@ CATEGORY_ORDER = ["실제 사고", "실제 사고(사고 DB 밖 인용)", "정�
 TAG_CATEGORY = {"실제 사고": "실제 사고(사고 DB 밖 인용)", "실증": "실증·연구", "공개 취약점": "공개 취약점",
                 "ATT&CK 사례": "ATT&CK 사례", "위협인텔": "위협인텔", "시연": "시연", "정부 경보": "정부 경보",
                 "EMB3D": "EMB3D"}
+DATE_LIKE_RE = re.compile(r"^\d{4}(?:-\d{2})?")  # 시점: 2025 · 2025-02 · 2025-02~04 · 2024-05-06
 SOURCE_NOTE_RE = re.compile(r"\(([^()]*(?:\([^()]*\)[^()]*)*)\)\s*$")
 
 
@@ -179,8 +180,10 @@ def case_refs(entry, src, recs):
             out.append((ids, None))
             continue
         _, note = _split_note(hit.strip()) if hit else (None, None)
-        cite = _rec("cite", f"[{tag}] {label}", name, n.group("date"), TAG_CATEGORY.get(tag, tag), f"대표 사례 [{tag}]",
-                    False, summary=n.group("gist").strip(), source=note)
+        # 괄호 값이 날짜가 아니면(CVE ID·제품명·CVSS 등) 사례명의 일부로 두고 시점은 비움
+        date = n.group("date") if n.group("date") and DATE_LIKE_RE.match(n.group("date")) else None
+        cite = _rec("cite", f"[{tag}] {label}", name if date or not n.group("date") else label, date,
+                    TAG_CATEGORY.get(tag, tag), f"대표 사례 [{tag}]", False, summary=n.group("gist").strip(), source=note)
         cite["qid"] = f"CITE:[{tag}] {label}"
         out.append(([cite["qid"]], cite))
     return out
@@ -260,7 +263,8 @@ def build_catalog(entries, src):
             origin="\n".join(f"{display_id(recs[q])} — {recs[q]['raw_type']}" for q in qs),
             qids=qs, dbs=dbs, counted=t_counted, ref=t_ref, cited=t_cited, rep=rep["qid"],
             multi_db=len({d for d in dbs if d != "cite"}) > 1))
-    rows.sort(key=lambda r: (_date_key(r["date"]), r["name"]), reverse=True)
+    # 동률(같은 시점·사례명)은 대표 기록 ID로 정렬 — 빌드마다 UC-ID가 바뀌지 않게
+    rows.sort(key=lambda r: (_date_key(r["date"]), r["name"], r["rep"]), reverse=True)
     for i, r in enumerate(rows, 1):
         r["uid"] = f"UC-{i:04d}"
         r["recent"] = r["category"].startswith("실제 사고") and _date_key(r["date"])[0] >= int(common.RECENT_FROM)
