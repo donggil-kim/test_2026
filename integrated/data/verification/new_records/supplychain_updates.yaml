@@ -1,0 +1,49 @@
+# 공급망 DB 보강 변경안 — 기존 기록에 넣을 변경 목록 {id, field, 현재, 제안, 근거}
+# 원본 DB·YAML은 수정하지 않음 (Phase 5에서 반영)
+
+# NC-034 (UC-0455 → SCI-110 보강)
+- id: SCI-110
+  field: summary
+  현재: >-
+    채용 담당자를 사칭해 개발자에게 코딩 과제·프로젝트를 실행시키거나 악성 npm 패키지를 설치하게 해 BeaverTail 등 정보탈취 악성코드를
+    감염시키는 북한 연계 캠페인이다. 개발자 단말의 지갑·자격증명이 주된 표적이다.
+  제안: >-
+    채용 담당자를 사칭해 개발자에게 코딩 과제·프로젝트를 실행시키거나 악성 npm 패키지를 설치하게 해 BeaverTail 등 정보탈취 악성코드를
+    감염시키는 북한 연계 캠페인이다. 개발자 단말의 지갑·자격증명이 주된 표적이다. 2025-12~2026-07에는 WaterPlum으로 추적되는 같은
+    계열이 SNS·구인 사이트·프리랜서 플랫폼에서 AI·가상자산·NFT 기업을 사칭해 개발자에게 접근하고, 코딩 과제나 화상회의 문제 해결로 위장한
+    악성코드(BeaverTail·InvisibleFerret·OtterCookie 등)를 실행시켜 100여 개국 최소 3만 대를 감염시켰다. 7천여 개
+    가상자산 지갑에서 자금 또는 자격증명을 빼내 약 1,070만 달러(17억 엔)를 북한으로 옮긴 사실이 일본·미국·호주·독일 7개 기관의 합동
+    경보(2026-09-18)로 공개됐다.
+  근거: >-
+    BleepingComputer(2026-09-19)·Infosecurity Magazine(2026-09-22) 열람: 합동 경보의 3만 대·100여
+    개국·지갑 7천여 개·1.7억 엔(1,071만 달러)·활동 기간 2025-12~2026-07·7개 기관 확인. 합동 경보 원문(경찰청·FBI)은
+    미열람이라 수치는 보도 인용. 2025~2026 최근 사고 공백 보완(후보 NC-034).
+- id: SCI-110
+  field: actor
+  현재: Contagious Interview(G1052, 북한 연계)
+  제안: Contagious Interview(G1052, 북한 연계) — 2025-12 이후 활동은 WaterPlum으로 추적(일본·미국·호주·독일 합동 경보)
+  근거: 두 보도 모두 WaterPlum을 Contagious Interview와 같은 장기 캠페인으로 설명. 후보 NC-034.
+- id: SCI-110
+  field: sct
+  현재:
+    - SCT-DE-01.2
+    - SCT-DP-03.1
+  제안:
+    - SCT-DE-01.2
+    - SCT-DP-03.1
+    - SCT-DE-01.1
+    - SCT-IM-04
+  근거: >-
+    SCT-DE-01.1: 주 표적이 웹 디자이너·엔지니어·Web3 전문가의 개발자 단말이고 인포스틸러·RAT로 브라우저 자격증명·키 입력·지갑 개인 키를
+    탈취하고 고용주 침투 경로가 됨(Infosecurity). SCT-IM-04: 7천여 개 지갑에서 가상자산을 빼 약 1,070만 달러를 북한으로
+    이전(BleepingComputer). 후보의 SC-DE-01·SC-IM-04와 일치(ID-CR-01은 신원 DB 몫). 매핑 추가는 요약 위협의 실제
+    사고 수에 반영되므로 검토 필요.
+- id: SCI-110
+  field: sources
+  현재:
+    - MITRE ATT&CK G1052 Contagious Interview | https://attack.mitre.org/groups/G1052/
+  제안:
+    - MITRE ATT&CK G1052 Contagious Interview | https://attack.mitre.org/groups/G1052/
+    - BleepingComputer(2026) North Korean WaterPlum hackers infected 30,000 devices worldwide | https://www.bleepingcomputer.com/news/security/north-korean-waterplum-hackers-infected-30-000-devices-worldwide/
+    - Infosecurity Magazine(2026) North Korean Attackers Hit 30,000 Devices and Steal $10.7m | https://www.infosecurity-magazine.com/news/north-korean-waterplum-30000/
+  근거: 보강 근거 URL 두 건(열람 확인). 후보 NC-034. date는 최초 공개월 2023-11 유지.

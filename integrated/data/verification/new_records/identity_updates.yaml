@@ -1,0 +1,30 @@
+# 신원 DB 보강 변경안 — 기존 기록에 넣을 변경 목록 {id, field, 현재, 제안, 근거}
+# 원본 DB·YAML은 수정하지 않음 (Phase 5에서 반영)
+
+# NC-040 (UC-0168 → IDI-036 보강)
+- id: IDI-036
+  field: summary
+  현재: >-
+    IT 지원 인력을 사칭한 전화로 직원이 Salesforce 연결 앱 설정 화면에서 공격자가 변조한 Data Loader 앱을 승인하게 만들어, 조직의
+    Salesforce 데이터를 API로 대량 조회·반출한 뒤 갈취에 썼다. 일부 사례에서는 탈취 자격증명으로 Okta·Microsoft 365 등 다른
+    클라우드로 이동했다.
+  제안: >-
+    IT 지원 인력을 사칭한 전화로 직원이 Salesforce 연결 앱 설정 화면에서 공격자가 변조한 Data Loader 앱을 승인하게 만들어, 조직의
+    Salesforce 데이터를 API로 대량 조회·반출한 뒤 갈취에 썼다. 일부 사례에서는 탈취 자격증명으로 Okta·Microsoft 365 등 다른
+    클라우드로 이동했다. 이 캠페인의 금융권(보험) 피해 사례로, 미국 보험사 Allianz Life가 2025-07 사회공학 수법으로 클라우드
+    CRM(Salesforce 호스팅) 데이터가 탈취됐다고 밝혔고 Have I Been Pwned 분석 기준 고유 약 110만 명의
+    이름·성별·생년월일·전화번호·주소가 유출됐다. 보안 연구자들은 이를 ShinyHunters의 Salesforce 대상 캠페인과 연결했으며(귀속은 연구자
+    수준, SSN 포함 여부는 출처 간 차이), 자세한 침투 수법은 Allianz가 공개하지 않았다.
+  근거: >-
+    Infosecurity Magazine(2025-08-19)과 Have I Been Pwned(Allianz Life 항목) 원문 열람: 2025-07
+    사회공학, Salesforce 호스팅 클라우드 CRM, 고유 이메일 110만 개 등. 기존 매핑(IDT-SE-02.2·NH-03.2·IM-03)은
+    유지하며 Allianz 사례가 음성 피싱·악성 Data Loader였는지는 출처에 없어 요약에 연구자 연결로만 적음. 후보 NC-040.
+- id: IDI-036
+  field: sources
+  현재:
+    - Google Cloud(2025) The Cost of a Call — From Voice Phishing to Data Extortion | https://cloud.google.com/blog/topics/threat-intelligence/voice-phishing-data-extortion
+  제안:
+    - Google Cloud(2025) The Cost of a Call — From Voice Phishing to Data Extortion | https://cloud.google.com/blog/topics/threat-intelligence/voice-phishing-data-extortion
+    - Infosecurity Magazine(2025) Allianz Life Data Breach Exposes Personal Data of 1.1 Million | https://www.infosecurity-magazine.com/news/allianz-life-breach-exposes/
+    - Have I Been Pwned(2025) Allianz Life Data Breach | https://haveibeenpwned.com/breach/AllianzLife
+  근거: 보강 사례의 근거 URL 두 건(모두 열람 확인). 후보 NC-040.
