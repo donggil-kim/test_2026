@@ -1,0 +1,205 @@
+# OT 사고 DB 신규 기록 초안 (ot/data/incidents.yaml 형식) — 승인된 신규 사고 후보 중 OT DB 담당분
+# 원본 DB에는 아직 넣지 않은 초안. id는 기존 최대 INC-085 다음부터(INC-086~). date는 최초 공개월(결정 F2).
+# 매핑 근거: ics/ent는 기존 기록처럼 근거 있는 기법만. 후보 CSV의 '제안 요약 위협 ID'와 다른 점은 각 기록 주석에 적음.
+# NC-044(Asahi)는 기존 INC-071과 같은 사건이라 신규 기록으로 만들지 않고 ot_updates.yaml에 보강안으로 둠.
+
+# NC-002 — 제안 요약 위협 ID OT-IA-01 · OT-IM-03 · OT-IM-01 → ics T0883(OT-IA-01) · T0826(OT-IM-01). OT-IM-03(제어 상실·조작)은 보도에 조작 내용이 없어 제외
+- id: INC-086
+  title: 영국 소규모 발전소 4일간 가동 중단(이란 연계 해커 추정)
+  date: 2026-08
+  kind: 사고
+  verification: 언론 보도
+  relevance: OT 직접
+  country: 영국
+  sector: 전력
+  actor: 이란 연계(보도)
+  impact: [운영 중단]
+  summary: >-
+    The Telegraph가 2026-08-22 보도한 사건으로, 이란 연계 해커가 영국의 소규모 발전소를 멈춰 직원들이 4일 동안 복구했다.
+    정부는 발전소명을 밝히지 않았고 광역 전력망에는 영향이 없었다고 했으며, NCSC는 개별 사건에 논평하지 않았다.
+    같은 시기 미국 여러 주의 수도 시설 공격과 함께 인터넷에 노출된 PLC가 공통 약점이라는 분석(CSA)이 나왔으나, 영국 사건의 침입 경로는 공식 확인되지 않았고 이란 귀속도 정부 발표가 아니다.
+  ics: [T0883, T0826]   # T0883은 CSA 분석 기준(영국 사건의 노출 PLC 경로는 공식 미확인) — 분석 매핑
+  sources:
+    - Security Affairs(2026) UK Power Plant Disabled for Four Days by Iran-Linked Hackers, Concurrent with US Water Attacks | https://securityaffairs.com/197734/cyber-warfare-2/uk-power-plant-disabled-for-four-days-by-iran-linked-hackers-concurrent-with-us-water-attacks.html
+    - Cloud Security Alliance(2026) Iran-Linked Actors Hit UK Power and US Water Systems | https://labs.cloudsecurityalliance.org/research/csa-research-note-iran-linked-uk-power-us-water-critical-inf/
+
+# NC-003 — 제안 OT-IM-01 · OT-IM-02 → ics T0828 · ent T1486
+- id: INC-087
+  title: fairlife(코카콜라 유제품 자회사) 랜섬웨어로 미국 내 생산 중단
+  date: 2026-07
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 식품·음료
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    코카콜라는 2026-07-16 Form 8-K로 자회사 fairlife의 생산 관련 시스템을 포함한 일부 시스템에 무단 접근이 있었고 랜섬웨어 사건으로 미국 내 생산이 일시 중단됐다고 공시했다.
+    캐나다 생산은 영향이 없었고 제품 품질·안전에도 문제가 없다고 했다. 행위자, 데이터 탈취 여부, 재가동 시점은 공개되지 않았다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - Help Net Security(2026) Ransomware attack halts Coca-Cola's Fairlife US milk production | https://www.helpnetsecurity.com/?p=378264
+    - The Next Web(2026) Coca-Cola halted fairlife's US production after a ransomware attack | https://thenextweb.com/news/coca-cola-fairlife-ransomware-us-production-suspended
+    - RISI The Database(2026) Fairlife LLC (Coca-Cola) ransomware attack halts all US dairy production | https://www.risidata.com/Database/Detail/fairlife-coca-cola-ransomware-2026
+
+# NC-005 — 제안 OT-IA-01 · OT-IM-03 → ics T0883 · T0827. 접근 방식은 주 기관이 비공개 — T0883은 같은 시기 FBI·EPA 경고(인터넷 노출 PLC)와 SecureWorld의 연계 서술에 근거한 분석 매핑
+- id: INC-088
+  title: 미국 미네소타 30여 개 수도 시설 OT 동시 공격
+  date: 2026-07
+  kind: 사고
+  verification: 정부·사법 확인
+  relevance: OT 직접
+  country: 미국
+  sector: 수처리
+  actor: 미상(이란 연계 추정, 귀속 미확정)
+  impact: [운영 중단, 제어 상실·조작]
+  summary: >-
+    2026-07-26~27 미국 미네소타주 지역 수도·하수 시설 30곳 이상의 운영기술(OT)이 동시에 공격받았다. Braham 정수장은 2시간 미만 가동이 멈췄고 Plymouth 등은 수동으로 운전했으며,
+    주 기관(MNIT)은 시점·접근 방식·대상 설비가 같아 조율된 활동으로 보고 CISA·FBI·EPA와 대응했다. 수질 영향은 없었다고 보도됐고, 접근 방법과 행위자는 공식 확인되지 않았다.
+    같은 시기 FBI·EPA는 7개 주에서 인터넷 노출 Rockwell MicroLogix PLC 대상 유사 사고를 경고했으나 미네소타 사건과의 연결은 공식 발표되지 않았다.
+  ics: [T0883, T0827]
+  sources:
+    - The Hacker News(2026) Coordinated Cyberattack Targets 30+ Minnesota Water Systems as One Plant Goes Offline | https://thehackernews.com/2026/07/coordinated-cyberattack-targets-30.html
+    - SecureWorld(2026) Coordinated Cyberattack Taps into Minnesota's Water Systems | https://www.secureworld.io/industry-news/cyberattack-taps-minnesota-water
+
+# NC-036 — 제안 OT-IM-01 · CL-IM-03 → ics T0828 (CL-IM-03은 클라우드 DB 쪽 매핑이라 여기선 제외)
+- id: INC-089
+  title: Boston Scientific 사이버 공격으로 전 세계 제조·주문 처리·출하 차질
+  date: 2026-08
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    Boston Scientific은 2026-08-25 사이버 공격을 식별했고, 8-K에서 IT 네트워크와 주요 업무 앱이 영향을 받아 전 세계 운영과 고객 주문 처리·출하가 차질을 빚는다고 공시했다.
+    이후 공시에서 제조도 일시 영향을 받았으며 대부분의 운영을 복구했으나 3분기와 연간 실적에 '중대한 영향'이 있다고 밝혔다. 침입 경로와 행위자는 공개되지 않았다.
+  ics: [T0828]
+  sources:
+    - Cybersecurity Dive(2026) Boston Scientific says cyberattack disrupted order processing, shipping | https://www.cybersecuritydive.com/news/boston-scientific-cyberattack-disrupted-order-processing-shipping/828816/
+    - The Stack(2026) Boston Scientific cyberattack has "material" financial impact | https://www.thestack.technology/boston-scientific-cyberattack-material-impact-income/
+
+# NC-063 — 제안 OT-IM-01 · OT-IM-02 · CL-IM-01 → ics T0828 · ent T1486. 공급망 DB 대안은 이 담당 범위 밖
+- id: INC-090
+  title: 반도체 장비 부품사 MKS Instruments 랜섬웨어로 주문·출하 중단
+  date: 2023-02
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    반도체 장비용 진공·광학 부품 업체 MKS Instruments는 2023-02-03 랜섬웨어를 발견했고, 일부 시설 운영을 복구하는 동안 Vacuum Solutions·Photonics Solutions 사업부의 주문 처리·출하·서비스에 '중대한 영향'이 있다고 공시하며 실적 발표를 연기했다.
+    Applied Materials는 공급사 한 곳의 사이버 사건으로 다음 분기 매출이 약 2억 5천만 달러 줄 것이라 밝혔고, 업계 분석가들은 이 공급사를 MKS로 지목했다(양사 미확인). 랜섬웨어 조직은 공개되지 않았다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - The Record(2023) Semiconductor industry giant says ransomware attack on supplier will cost it $250 million | https://therecord.media/applied-materials-supply-chain-mks-ransomware-attack/
+    - ThreatDown(2023) Chip Company Loses 250M After Ransomware | https://www.threatdown.com/blog/chip-company-loses-250m-after-ransomware-hits-supply-chain/
+
+# NC-064 — 제안 OT-IM-01 · OT-IM-02 · CL-IM-01 → ics T0828만. 랜섬웨어 암호화는 Play 조직의 유출 사이트 주장뿐이라 ent T1486 제외
+- id: INC-091
+  title: Microchip Technology 사이버 공격으로 복수 제조 시설 가동률 저하·주문 처리 차질
+  date: 2024-08
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: Play 랜섬웨어 조직(주장)
+  impact: [운영 중단]
+  summary: >-
+    Microchip Technology는 2024-08-17 IT 시스템의 의심 활동을 탐지했고, 8-K(8-20)에서 무단 행위자가 일부 서버와 사업 운영을 방해했으며 여러 제조 시설이 평소보다 낮은 수준으로 가동돼 주문 이행 능력이 영향받는다고 공시했다.
+    9월 후속 공시에서 핵심 IT 시스템을 복구했고 직원 연락처와 암호화·해시된 비밀번호 등이 탈취됐으나 고객·공급사 데이터는 확인되지 않았다고 밝혔다.
+    Play 랜섬웨어 조직이 8-29 유출 사이트에 올리고 자료 일부를 공개했으며, 회사는 이 주장을 검증 중이라고 했다.
+  ics: [T0828]
+  sources:
+    - Infosecurity Magazine(2024) Microchip Technology Says IT Incident Impacted Operations | https://www.infosecurity-magazine.com/news/microchip-technology-it-incident
+    - BleepingComputer(2024) Microchip Technology confirms data was stolen in cyberattack | https://www.bleepingcomputer.com/news/security/microchip-technology-confirms-data-was-stolen-in-cyberattack/
+    - The Record(2024) Microchip Technology says employee contact info stolen by hackers during cyberattack | https://therecord.media/microchip-technology-data-breach-sec-filing
+
+# NC-072 — 제안 OT-IM-01 · CL-IM-02 · CL-IM-03 → ics T0828만. 삭제(와이퍼) 규모는 Handala 주장이고 회사는 랜섬웨어·악성코드 미탐지로 설명 → T0809·T1486 제외
+- id: INC-092
+  title: Stryker(의료기기 제조) Microsoft 환경 공격으로 전 세계 주문·제조·출하 중단
+  date: 2026-03
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: Handala(이란 연계 알려짐, 주장)
+  impact: [운영 중단]
+  summary: >-
+    Stryker는 2026-03-11 사이버 공격으로 내부 Microsoft 환경에 전 세계 네트워크 장애가 생겨 주문 처리·제조·출하가 중단됐다고 발표했고, 랜섬웨어나 악성코드는 탐지되지 않았다고 설명했다.
+    약 2주 뒤 대부분의 제조 사이트와 핵심 라인, 전자 주문 시스템을 복구했으며 3월 16일 주간 수술 일정 일부가 출하 지연으로 미뤄졌다.
+    이란 연계로 알려진 Handala가 서버·기기 삭제와 데이터 탈취를 주장했으나 검증되지 않았다.
+  ics: [T0828]
+  sources:
+    - Cybersecurity Dive(2026) Stryker's manufacturing, shipping disrupted after cyberattack | https://www.cybersecuritydive.com/news/strykers-manufacturing-shipping-disrupted-cyberattack/814693/
+    - MedTech Dive(2026) Stryker restores most manufacturing after cyberattack | https://www.medtechdive.com/news/stryker-restores-most-manufacturing-after-cyberattack/815972/
+    - teiss(2026) U.S. MedTech giant Stryker targeted by Iranian hackers | https://www.teiss.co.uk/news/us-medtech-giant-stryker-targeted-by-iranian-hackers-17212
+
+# NC-073 — 제안 OT-IM-02 · OT-IM-01 · CL-CO-04 → ics T0828 · ent T1486 (CL-CO-04는 클라우드 DB 쪽 매핑)
+- id: INC-093
+  title: Sensata Technologies 랜섬웨어로 출하·입고·제조 일시 중단과 개인정보 탈취
+  date: 2025-04
+  kind: 공시
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: 미상(랜섬웨어 조직 미확인)
+  impact: [운영 중단]
+  summary: >-
+    Sensata는 2025-04-06 랜섬웨어로 네트워크 일부 기기가 암호화됐다고 Form 8-K로 공시했으며, 출하·입고·제조·지원 기능이 일시 영향을 받았다.
+    이후 조사에서 공격자가 2025-03-28 네트워크에 침입해 암호화 전에 파일을 가져간 것으로 확인됐고, 직원과 가족의 개인정보(주민번호·금융계좌·의료 정보 등)가 유출 통지 대상이 됐다.
+  ics: [T0828]
+  ent: [T1486]
+  sources:
+    - BleepingComputer(2025) Sensata Technologies says personal data stolen by ransomware gang | https://www.bleepingcomputer.com/news/security/sensata-technologies-says-personal-data-stolen-by-ransomware-gang/
+    - Comparitech(2025) Sensata notifies victims of ransomware data breach that compromised SSNs, financial and medical info | https://comparitech.com/news/sensata-notifies-victims-of-ransomware-data-breach-that-compromised-ssns-financial-and-medical-info
+
+# NC-074 — 제안 OT-IM-01 → ics T0828. 기존 INC-053(2022-02 Bridgestone 랜섬웨어)과 별건(재피해)
+- id: INC-094
+  title: Bridgestone Americas 사이버 공격으로 북미·중남미 타이어 제조·재생 시설 일부 가동 차질
+  date: 2025-09
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국 외
+  sector: 제조
+  actor: 미상
+  impact: [운영 중단]
+  summary: >-
+    Bridgestone Americas는 2025-09 초 제조·재생 시설 일부에 영향을 준 '제한적' 사이버 사고를 확인했다. 사우스캐롤라이나 에이컨 카운티의 공장 2곳이 영향을 받았다고 현지에서 보도됐다.
+    회사는 고객 정보에 접근되기 전에 사고를 차단했다고 밝혔고, 9월 16일 영향 시설을 네트워크에 다시 연결해 생산을 사고 전 수준으로 끌어올리는 중이라고 발표했다. 공격 수법과 행위자는 공개되지 않았다.
+  ics: [T0828]
+  sources:
+    - Plant Services(2025) Bridgestone North America hit by limited cyberattack | https://plantservices.com/industry-news/news/55317076/bridgestone-north-america-hit-by-limited-cyberattack
+    - WRDW(2025) Bridgestone Americas confirms cyber attack at some facilities | https://www.wrdw.com/2025/09/01/local-company-investigating-cyber-incident
+
+# NC-077 — 제안 OT-IM-02 · OT-IM-01 · CL-IM-05 → ics T0828만. Nitrogen 랜섬웨어는 언론 보도·조직 주장 수준이라 ent T1486 제외
+- id: INC-095
+  title: Foxconn(Hon Hai) 북미 공장 사이버 공격으로 일부 생산 라인 일시 중단
+  date: 2026-05
+  kind: 사고
+  verification: 피해기관 확인
+  relevance: IT 경유 OT 영향
+  country: 미국
+  sector: 제조
+  actor: Nitrogen 랜섬웨어 조직(주장)
+  impact: [운영 중단]
+  summary: >-
+    Hon Hai(Foxconn)는 2026-05-12 북미 일부 공장이 사이버 공격을 받았음을 확인했고, 영향받은 공장이 정상 생산을 재개하고 있다고 발표했다.
+    위스콘신 공장의 대규모 IT 장애로 여러 생산 라인이 일시 중단됐다는 보도가 앞서 나왔고, 회사는 처음에는 '기술적 문제'라고 설명했다.
+    Nitrogen 랜섬웨어 조직은 8TB·1,100만 건 이상의 내부 문서를 탈취했다고 주장하며 샘플을 올렸으나, 회사는 피해 범위를 밝히지 않았다.
+  ics: [T0828]
+  sources:
+    - Focus Taiwan(2026) Foxconn confirms cyberattack on North American facilities | https://focustaiwan.tw/sci-tech/202605130008
+    - SQ Magazine(2026) Foxconn Hit by Cyberattack as Hackers Claim 8TB Data Theft | https://sqmagazine.co.uk/foxconn-cyberattack-8tb-data-theft/

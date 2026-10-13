@@ -1,0 +1,74 @@
+# 클라우드 DB 기존 기록 보강 변경안 — 원본 xlsx는 수정하지 않음. 형식: {id, field, 현재, 제안, 근거}
+# 대상: INC-0670(NC-017), INC-0679(NC-025)
+- id: INC-0670
+  후보: NC-017
+  field: 사건 요약(국문)
+  현재: GTIG에 따르면 UNC6671은 BlackFile 브랜드 은퇴 발표 이후에도 Redact, Pink, Helix, Falcon 등 여러 갈취 브랜드로 활동을 이어갔다. IT 헬프데스크를 사칭한 비싱으로 직원을 가짜 로그인 포털로 유도하고, AiTM 인프라로 자격증명과 MFA 토큰을 가로챈 뒤 Microsoft 365와 Okta 등 기업 클라우드 환경에서 데이터를 유출했다.
+  제안: GTIG에 따르면 UNC6671은 BlackFile 브랜드 은퇴 발표 이후에도 Redact, Pink, Helix, Falcon 등 여러 갈취 브랜드로 활동을 이어갔다. IT 헬프데스크를 사칭한 비싱으로 직원을 가짜 로그인 포털로 유도하고, AiTM 인프라로 자격증명과 MFA 토큰을 가로챈 뒤 Microsoft 365와 Okta 등 기업 클라우드 환경에서 데이터를 유출했다. 피해 기관 중 Apollo Global Management는 캘리포니아 검찰총장실 유출 신고(2026-08-21)에서 2026-07-06~10 클라우드 시스템에 무단 접근이 있었고 이름·생년월일·주소·SSN이 탈취됐음을 확인했다(피해 인원 미공개, 데이터 공개·신원 도용 증거는 아직 없다고 밝힘).
+  근거: CyberScoop 2026-08-21(Apollo 유출 신고 인용·Google의 BlackFile 귀속 언급), Insurance Business, OODAloop. 소셜 엔지니어링 파상 공격 중 처음으로 데이터 탈취를 공식 인정한 피해 기관이라 위협인텔 보고서 행에 '실제 피해 기관 확인' 근거가 됨(후보 NC-017)
+- id: INC-0670
+  후보: NC-017
+  field: 출처 구분
+  현재: GTI
+  제안: GTI, CyberScoop, Insurance Business, OODAloop
+  근거: Apollo 피해 확인 근거로 쓴 매체 추가(집계기관명이 아닌 실제 출처 매체명 원칙)
+- id: INC-0670
+  후보: NC-017
+  field: 영향(원문)
+  현재: null
+  제안: 'Apollo Global Management: cloud systems accessed 2026-07-06 to 07-10; names, dates of birth, contact information, home addresses and SSNs compromised (California AG breach notice, 2026-08-21)'
+  근거: CyberScoop 2026-08-21. 해당 열은 현재 비어 있고 신규 행들도 비워 두고 있어, 반영 여부는 편집자 판단(요약 열 보강만으로 충분하면 생략 가능)
+- id: INC-0670
+  후보: NC-017
+  field: ATT&CK 초안 ID
+  현재: T1557, T1566
+  제안: T1557, T1566, T1657
+  근거: 'CyberScoop: BlackFile 계열은 피해 기관에 몸값 요구(통상 300만 달러에서 시작, 협상 후 100만 달러 미만)를 한다고 보도 — 금전 갈취 기법 T1657 근거. 위협 매핑 쪽에서는 CL-IM-05 행에 걸림. 신원 DB 쪽 ID-SE-03·ID-AU-02는 이 담당 범위 밖'
+- id: INC-0679
+  후보: NC-025
+  field: 사건 요약(국문)
+  현재: Microsoft가 JADEPUFFER 연계 활동을 Storm-3168로 분류해 공개했다. 공격자는 침해된 서비스 주체를 이용해 Azure 정찰, 리소스 삭제, 자격증명 접근을 수행했으며, 에이전트 기반(agentic) 클라우드 공격으로 소개되었다.
+  제안: Microsoft가 JADEPUFFER 연계 활동을 Storm-3168로 분류해 공개했다. 공격자는 침해된 서비스 주체를 이용해 Azure 정찰, 리소스 삭제, 자격증명 접근을 수행했으며, 에이전트 기반(agentic) 클라우드 공격으로 소개되었다. Sysdig는 JadePuffer 운영이 자율 LLM 에이전트로 정찰·자격증명 탈취·내부 이동·지속성·권한 상승·데이터 암호화까지 수행한 랜섬웨어 침해를 분석했다. Langflow의 미인증 RCE(CVE-2025-3248)로 초기 접근한 뒤 PostgreSQL DB와 환경변수를 확보하고 MinIO 저장소를 열거했으며, cron 작업으로 지속성을 만들고 Alibaba Nacos 서버로 이동해 설정 항목 1,342개를 암호화한 뒤 원본 테이블을 삭제하고 비트코인 주소가 든 협박 테이블을 남겼다. 피해 기관은 공개되지 않았다.
+  근거: BleepingComputer 2026-07-04(Sysdig 분석 보도), INCYBER 2026-07-08. Sysdig 원문은 미열람. Microsoft의 Storm-3168(Azure 서비스 주체 악용)과 Sysdig의 Langflow·Nacos 침해가 같은 사건인지는 확인되지 않음 — 같은 JadePuffer 계열 활동으로 묶었으므로 별건 분리 여부는 편집자 판단
+- id: INC-0679
+  후보: NC-025
+  field: 출처 구분
+  현재: MS
+  제안: MS, BleepingComputer, INCYBER
+  근거: Sysdig 분석을 보도한 매체 추가(Sysdig 원문 미열람이라 Sysdig는 직접 출처로 넣지 않음)
+- id: INC-0679
+  후보: NC-025
+  field: 근본원인(1차)
+  현재: 자격증명 탈취(경로 미상)
+  제안: 취약점 악용
+  근거: Sysdig 사례의 초기 접근이 Langflow CVE-2025-3248 미인증 RCE로 확인됨(BleepingComputer). Microsoft 사례는 침해된 서비스 주체라 전체 열에는 기존 값을 유지
+- id: INC-0679
+  후보: NC-025
+  field: 근본원인(전체)
+  현재: 자격증명 탈취(경로 미상)
+  제안: 취약점 악용, 자격증명 탈취(경로 미상)
+  근거: 위와 같음
+- id: INC-0679
+  후보: NC-025
+  field: 영향유형(1차)
+  현재: null
+  제안: 랜섬·갈취
+  근거: 'Sysdig 사례: 협박 테이블(README_RANSOM)에 요구 사항·비트코인 주소·연락처가 있고 설정 항목을 암호화'
+- id: INC-0679
+  후보: NC-025
+  field: 영향유형(전체)
+  현재: null
+  제안: 랜섬·갈취, 파괴·중단
+  근거: 'Sysdig 사례: 원본 config_info·history 테이블을 삭제. Microsoft 사례의 ''리소스 삭제''와도 일치'
+- id: INC-0679
+  후보: NC-025
+  field: 서비스 계층 태그
+  현재: IaaS·PaaS, IdP·인증, AI·LLM
+  제안: IaaS·PaaS, IdP·인증, AI·LLM, 노출 워크로드(서버·DB·미들웨어)
+  근거: Sysdig 사례의 진입점이 인터넷 노출 Langflow 인스턴스(노출 워크로드)
+- id: INC-0679
+  후보: NC-025
+  field: ATT&CK 초안 ID
+  현재: null
+  제안: T1190, T1053, T1486, T1485, T1657
+  근거: Langflow RCE 초기 접근(T1190), cron 지속성(T1053), AES_ENCRYPT 암호화(T1486), 원본 테이블 삭제(T1485), 협박 테이블·비트코인 요구(T1657) — 모두 BleepingComputer 보도의 서술에 근거. 위협 매핑은 CL-IA-01·CL-IM-01·CL-IM-02·CL-IM-05·CL-PE-05 행

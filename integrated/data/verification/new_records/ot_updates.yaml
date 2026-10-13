@@ -1,0 +1,18 @@
+# OT DB 기존 기록 보강 변경안 — ot/data/incidents.yaml은 수정하지 않음. 형식: {id, field, 현재, 제안, 근거}
+# 대상: INC-071(NC-044 — 신규 후보가 기존 기록과 같은 사건이라 보강안으로 전환)
+- id: INC-071
+  후보: NC-044
+  field: summary
+  현재: 랜섬웨어 공격으로 수주·출하 시스템이 멈추면서 아사히의 일본 내 공장 대부분이 생산을 중단했다.
+  제안: 2025-09-29 공개된 랜섬웨어 공격으로 수주·출하 시스템이 멈추면서 아사히의 일본 내 공장 대부분이 생산을 중단했다. 생산 시스템 자체는 직접 감염되지 않았다고 보도됐고, 이후 일부 품목의 생산이 재개됐으나 주문은 한동안 팩스·수기로 처리됐다. 회사는 10월 3일 개인정보 유출 가능성을 밝혔고, Qilin이 유출 사이트에 약 9,300개 파일(약 27GB)을 탈취했다고 주장했다.
+  근거: Silicon UK 2025-10-08, inside.beer 2025-10. 후보 NC-044는 이 INC-071과 같은 사건(아사히그룹 2025-09 랜섬웨어)이라 신규 기록을 만들지 않고 보강안으로 대체. 기존 ics T0828·ent T1486, actor '미상(Qilin 주장)'은 그대로 맞음
+- id: INC-071
+  후보: NC-044
+  field: sources
+  현재:
+  - 아사히그룹홀딩스 발표(2025-10)
+  제안:
+  - 아사히그룹홀딩스 발표(2025-10)
+  - Silicon UK(2025) Russian Qilin Group Takes Credit For Asahi Hack | https://www.silicon.co.uk/security/cyberwar/qilin-asahi-hack-626891
+  - 'inside.beer(2025) Japan: Asahi Confirms Ransomware Attack and Possible Data Breach | https://www.inside.beer/news/detail/japan-asahi-confirms-ransomware-attack-and-possible-data-breach'
+  근거: 기존 출처에 URL이 없어 확인 가능한 보도 2건을 추가
