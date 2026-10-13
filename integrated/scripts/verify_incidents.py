@@ -118,7 +118,7 @@ def build_rows():
         for x in rnd.sample(grp, n):
             x["우선순위"] = "P2 표본"
     # 배치: 우선순위·웹 여부 순, 최근 사건 먼저
-    order = {"P0": 0, "P1": 1, "P2 표본": 2, "P2": 3}
+    order = {"P0": 0, "P1": 1, "P2 표본": 2, "P2 확대": 3, "P2": 4}
     out.sort(key=lambda x: (order[x["우선순위"]], x["웹 검증"] != "Y", incidents._date_key(x["시점"])), reverse=False)
     out.sort(key=lambda x: (order[x["우선순위"]], x["웹 검증"] != "Y"))
     seq = collections.Counter()
@@ -204,7 +204,35 @@ def cmd_stats():
             print(f"  {k}: {dict(v)}")
 
 
+def _stratum(x):
+    h = x["원장 키"]
+    db = ("cloud" if h.startswith("CL/") else "ot" if h.startswith("OT/") else "supplychain" if h.startswith("SCI")
+          else "identity" if h.startswith("IDI") else "physical" if h.startswith("PHI") else "other")
+    m = re.match(r"(\d{4})", x["시점"])
+    y = int(m.group(1)) if m else 0
+    return db, ("~2019" if y <= 2019 else "2020-2022" if y <= 2022 else "2023-2024" if y <= 2024 else "2025~")
+
+
+def cmd_expand(threshold=0.05):
+    """P2 표본 결과로 확대 규칙(작업 방향서 6.3) 적용 — 오류율 기준 이상 층의 비표본 P2 행을 'P2 확대'로 배치 배정."""
+    rows = read_csv(LEDGER)
+    bad = lambda x: x["종합 판정"] in ("수정 필요", "확인 불가")
+    st = collections.defaultdict(list)
+    for x in rows:
+        if x["우선순위"] == "P2 표본":
+            st[_stratum(x)].append(x)
+    hot = {k for k, v in st.items() if v and sum(map(bad, v)) / len(v) >= threshold}
+    seq = 0
+    for x in sorted(rows, key=lambda x: x["원장 키"]):
+        if x["우선순위"] == "P2" and _stratum(x) in hot:
+            x["우선순위"] = "P2 확대"
+            x["배치"] = f"P2X-{seq // BATCH_SIZE + 1:02d}"
+            seq += 1
+    write_csv(LEDGER, rows, COLS)
+    print(f"확대 층 {len(hot)}개: {sorted(hot)} → {seq}행")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "stats"
-    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
+    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats, "expand": cmd_expand}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
         if cmd != "batch" else cmd_batch(sys.argv[2])
