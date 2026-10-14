@@ -318,7 +318,7 @@ def attach_verification(rows):
             status = VERDICT_STATUS[v]
         else:
             a = applied.get(k, {})
-            status = "확인 · 정정 반영" if a.get("반영") else "확인 · 정정 보류(외부 원본)" if a.get("보류") else "확인 · 정정 대상"
+            status = "확인 · 정정 반영" if a.get("반영") or (a.get("해당 없음") and not a.get("보류")) else "확인 · 정정 보류(외부 원본)" if a.get("보류") else "확인 · 정정 대상"
         memo = x["제안 정정"] if status != "확인" else ""
         r["ver"] = (status, memo[:300], x["검색일"], x["근거 URL"].replace(" | ", "\n"))
     return rows

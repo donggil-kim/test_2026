@@ -293,3 +293,4 @@ CL/INC-0439,사례유형,캠페인,연구·노출,반영,D 제안 — 악용 시
 CL/INC-0439,사건 요약(국문),Apache Struts 2 파일 업로드 로직의 경로 탐색 취약점 CVE-2024-53677(CVSS 9.5)이 공개 PoC를 이용해 실제로 악용되었다. 악성 파일 업로드로 원격 코드 실행이 가능하다.,Apache Struts 2 파일 업로드 로직의 경로 탐색 취약점 CVE-2024-53677(CVSS 9.5)에 대해 공개 PoC와 일치하는 악용 시도·취약 서버 탐색이 관측되었다(침해 피해는 확인되지 않음). 악성 파일 업로드로 원격 코드 실행이 가능하다.,반영,BleepingComputer 2024-12-17(ISC SANS 인용) https://www.bleepingcomputer.com/news/security/new-critical-apache-struts-flaw-exploited-to-find-vulnerable-servers/
 SCI-162,threat_text_override.csv·integrated/cloud/IA.yaml CL-IA-05 사례명,TanStack 등 npm 100여 개 버전 침해(2026-05),TanStack 등 npm 패키지 42개·악성 버전 84개 침해(2026-05),반영,공급망 DB 정정(SCI-162) 동기화 — TanStack 패키지 42개·84개 버전
 SCI-155,CL-IA-05 인용 문안,50여 종 비밀,유지,보류,G 메모: 원문 확인 못함
+CL/INC-0060,행위자(Wiz 요약 추출)·사건 요약(국문),Abcbot operator,미상(Abcbot 연계 추정),반영,교차 검수 XC-02 — 귀속 근거(Tencent) 열람 불가
