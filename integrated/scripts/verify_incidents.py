@@ -169,6 +169,7 @@ def cmd_batch(name):
 
 def cmd_merge():
     ledger = read_csv(LEDGER)
+    extra = [c for c in (ledger[0].keys() if ledger else []) if c not in COLS]
     idx = {r["원장 키"]: r for r in ledger}
     n, bad = 0, []
     for path in sorted(glob.glob(os.path.join(BATCH_DIR, "*.csv"))):
@@ -181,7 +182,7 @@ def cmd_merge():
                 if b.get(c, "").strip():
                     idx[k][c] = b[c].strip()
             n += 1
-    write_csv(LEDGER, ledger, COLS)
+    write_csv(LEDGER, ledger, COLS + extra)
     print(f"병합 {n}행" + (f" · 알 수 없는 키 {len(bad)}: {bad[:5]}" if bad else ""))
     cmd_stats()
 
@@ -232,7 +233,32 @@ def cmd_expand(threshold=0.05):
     print(f"확대 층 {len(hot)}개: {sorted(hot)} → {seq}행")
 
 
+def cmd_normalize():
+    """판정 기준 정렬(검증자 지침) — '최종 판정' 열에 기록, 원 판정('종합 판정')은 보존."""
+    rows = read_csv(LEDGER)
+    cols = COLS + [c for c in ("최종 판정", "정렬 사유") if c not in COLS]
+    n = collections.Counter()
+    for x in rows:
+        v, why = x["종합 판정"], ""
+        if x["B 시점"] == "둘 다 아님" and v in ("통과", "경미 수정"):
+            v, why = "수정 필요", "B 둘 다 아님"
+        elif x["B 시점"] == "발생월 일치" and v == "통과":
+            v, why = "경미 수정", "시점 → 최초 공개월(F2)"
+        elif x["G 문안"] == "수정 필요" and v == "경미 수정":
+            g = x["G 메모"] + " " + x["제안 정정"]
+            datey = re.search(r"\(\d{4}(-\d{2})?\)\s*[→>-]+\s*\(?\d{4}", g) or "시점" in g
+            fact = re.search(r"수치|기간|약 \d|행위자|구분|라벨|\[실증\]|서술|요약:", x["G 메모"])
+            if fact and not datey:
+                v, why = "수정 필요", "G 문안 사실 정정"
+        if x.get("최종 판정") and x.get("정렬 사유", "").startswith("교차 검수"):
+            continue  # 교차 검수로 확정한 값은 유지
+        x["최종 판정"], x["정렬 사유"] = (v if x["종합 판정"] else ""), why
+        n[why] += bool(why)
+    write_csv(LEDGER, rows, cols)
+    print("정렬:", dict(n))
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "stats"
-    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats, "expand": cmd_expand}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
+    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats, "expand": cmd_expand, "normalize": cmd_normalize}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
         if cmd != "batch" else cmd_batch(sys.argv[2])
