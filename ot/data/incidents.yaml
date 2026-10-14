@@ -1395,6 +1395,7 @@
   sources:
     - Notebookcheck(2019-12-16) 여러 Ring 가정용 카메라 침해, 재사용 암호 유력 | https://www.notebookcheck.net/Several-Ring-home-cameras-breached-recycled-passwords-likely-to-blame.447272.0.html
     - Gulf News(2019-12-16) 해커가 가정용 보안 카메라 침해 | https://gulfnews.com/technology/consumer-electronics/somebodys-watching-hackers-breach-home-security-cameras-1.1576504691067
+    - EFF(2019-12-19) Ring Throws Customers Under the Bus After Data Breach | https://www.eff.org/deeplinks/2019/12/ring-throws-customers-under-bus-after-data-breach
 
 - id: INC-076
   title: 텔벤트 SCADA 공급업체 침해
