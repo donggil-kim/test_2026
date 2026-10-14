@@ -33,7 +33,7 @@ import taxonomy_rules as R  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 REF = ROOT / "reference"
-VERSION = "v2"
+VERSION = "v2.1"
 OUT = ROOT / "output" / f"통합_공급망보안위협_매트릭스_{VERSION}.xlsx"
 CSV_OUT = ROOT / "output" / f"통합_공급망보안위협_매트릭스_{VERSION}.csv"
 

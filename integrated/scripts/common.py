@@ -2,11 +2,11 @@
 
 원본
   - AI: sources/ai_v3.2 (통합 AI 보안위협 매트릭스 v3.2, Lv3 124개)
-  - 클라우드: output/통합_클라우드보안위협_매트릭스_v5.xlsx (Lv3 154행, 고유 기법 126개)
-  - OT: ot/output/통합_OT보안위협_매트릭스_v5.xlsx (Lv3 141행, 고유 기법·항목 118개)
-  - 공급망: supplychain/output/통합_공급망보안위협_매트릭스_v2.xlsx (세부위협 60개)
-  - 신원: identity/output/통합_신원보안위협_매트릭스_v2.xlsx (세부위협 65개)
-  - 물리·인적: physical/output/통합_물리인적보안위협_매트릭스_v2.xlsx (세부위협 45개)
+  - 클라우드: output/통합_클라우드보안위협_매트릭스_v5.1.xlsx (Lv3 154행, 고유 기법 126개)
+  - OT: ot/output/통합_OT보안위협_매트릭스_v5.1.xlsx (Lv3 141행, 고유 기법·항목 118개)
+  - 공급망: supplychain/output/통합_공급망보안위협_매트릭스_v2.1.xlsx (세부위협 60개)
+  - 신원: identity/output/통합_신원보안위협_매트릭스_v2.1.xlsx (세부위협 65개)
+  - 물리·인적: physical/output/통합_물리인적보안위협_매트릭스_v2.1.xlsx (세부위협 45개)
 요약(재구성 Lv3) 문안: integrated/data/<Lv0>/<도메인·전술>.yaml (ai · cloud · ot · supplychain · identity · physical)
 """
 import collections
@@ -20,11 +20,11 @@ import yaml
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 AI_DIR = os.path.join(ROOT, "sources", "ai_v3.2")
 AI_XLSX = os.path.join(AI_DIR, "output", "통합_AI보안위협_매트릭스_v3.2_LITE.xlsx")
-CLOUD_XLSX = os.path.join(ROOT, "output", "통합_클라우드보안위협_매트릭스_v5.xlsx")
-OT_XLSX = os.path.join(ROOT, "ot", "output", "통합_OT보안위협_매트릭스_v5.xlsx")
-SC_XLSX = os.path.join(ROOT, "supplychain", "output", "통합_공급망보안위협_매트릭스_v2.xlsx")
-ID_XLSX = os.path.join(ROOT, "identity", "output", "통합_신원보안위협_매트릭스_v2.xlsx")
-PH_XLSX = os.path.join(ROOT, "physical", "output", "통합_물리인적보안위협_매트릭스_v2.xlsx")
+CLOUD_XLSX = os.path.join(ROOT, "output", "통합_클라우드보안위협_매트릭스_v5.1.xlsx")
+OT_XLSX = os.path.join(ROOT, "ot", "output", "통합_OT보안위협_매트릭스_v5.1.xlsx")
+SC_XLSX = os.path.join(ROOT, "supplychain", "output", "통합_공급망보안위협_매트릭스_v2.1.xlsx")
+ID_XLSX = os.path.join(ROOT, "identity", "output", "통합_신원보안위협_매트릭스_v2.1.xlsx")
+PH_XLSX = os.path.join(ROOT, "physical", "output", "통합_물리인적보안위협_매트릭스_v2.1.xlsx")
 DATA_DIR = os.path.join(ROOT, "integrated", "data")
 
 LEVEL = {"상": 3, "중": 2, "하": 1}

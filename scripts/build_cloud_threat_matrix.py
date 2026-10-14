@@ -19,7 +19,7 @@ from taxonomy_rules import (TACTIC_CODE, CSA_NAMES, CSA_MAP, CSA_NOTE, AI_UT_MAP
                             TACTIC_SEVERITY, DEPRECATED, DROP, MERGE, NAME_OVERRIDE, KEYWORD_RULES)
 import csv
 
-VERSION = "v5"
+VERSION = "v5.1"
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_MATRIX = os.path.join(HERE, "data", "Cloud_ATTACK_Matrix_Integrated_v19.2.xlsx")
 SRC_INC = os.path.join(HERE, "data", "Cloud_IncidentDB_v2_LITE.xlsx")

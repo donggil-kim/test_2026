@@ -37,7 +37,7 @@ import taxonomy_rules as R  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 REF = ROOT / "reference"
-VERSION = "v2"
+VERSION = "v2.1"
 NAME = "통합_물리인적보안위협_매트릭스"
 
 

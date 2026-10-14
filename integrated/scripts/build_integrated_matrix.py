@@ -3,15 +3,15 @@
 입력
   - 요약(재구성 Lv3) 문안: integrated/data/<Lv0>/<도메인·전술>.yaml (ai · cloud · ot · supplychain · identity · physical)
     v4: 항목의 absorbs(Lv0 간 통합으로 흡수한 v3 위협) · data/dup_groups.yaml(중복 그룹) · data/incident_aliases.yaml(동일 사고)
-  - 원본: sources/ai_v3.2 (AI v3.2 LITE, Lv3 124), output/통합_클라우드보안위협_매트릭스_v5.xlsx (154행),
-          ot/output/통합_OT보안위협_매트릭스_v5.xlsx (141행), supplychain/output/통합_공급망보안위협_매트릭스_v2.xlsx (60),
-          identity/output/통합_신원보안위협_매트릭스_v2.xlsx (65), physical/output/통합_물리인적보안위협_매트릭스_v2.xlsx (45)
+  - 원본: sources/ai_v3.2 (AI v3.2 LITE, Lv3 124), output/통합_클라우드보안위협_매트릭스_v5.1.xlsx (154행),
+          ot/output/통합_OT보안위협_매트릭스_v5.1.xlsx (141행), supplychain/output/통합_공급망보안위협_매트릭스_v2.1.xlsx (60),
+          identity/output/통합_신원보안위협_매트릭스_v2.1.xlsx (65), physical/output/통합_물리인적보안위협_매트릭스_v2.1.xlsx (45)
 출력
-  - integrated/output/통합_보안위협_매트릭스_v4.xlsx
-  - integrated/output/통합_요약매트릭스_v4.csv (요약 매트릭스 검토·diff용)
-  - integrated/output/통합_사고사례목록_v4.csv (통합 사고사례 목록)
-  - integrated/output/통합_요약목록_v4.md (도메인별 요약 위협 목록) · 통합_중복검토_v4.md (Lv0 간 통합·중복 그룹)
-  - --release: integrated/output/통합_보안위협_매트릭스_v4_배포본.xlsx
+  - integrated/output/통합_보안위협_매트릭스_v4.1.xlsx
+  - integrated/output/통합_요약매트릭스_v4.1.csv (요약 매트릭스 검토·diff용)
+  - integrated/output/통합_사고사례목록_v4.1.csv (통합 사고사례 목록)
+  - integrated/output/통합_요약목록_v4.1.md (도메인별 요약 위협 목록) · 통합_중복검토_v4.1.md (Lv0 간 통합·중복 그룹)
+  - --release: integrated/output/통합_보안위협_매트릭스_v4.1_배포본.xlsx
     (고객 배포본 — 클라우드 상세 시트의 CSA Top Threats 열, 신원 상세 시트의 CSA CCM·CIS Controls 열을 ID만 남김)
 
 사용: python3 integrated/scripts/build_integrated_matrix.py [--release]
