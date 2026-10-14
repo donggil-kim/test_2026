@@ -316,7 +316,7 @@
     약 100만 파운드 피해를 냈고, 추가 공격을 위해 다른 업체 두 곳의 정찰도 조직했다. 영국 국가안보법 2023으로 처음 유죄가 선고된 사건이다.
   pht: [PHT-HU-01.3, PHT-RC-02, PHT-IM-02]
   sources:
-    - 영국 대테러경찰(2025) Group convicted after Russian-ordered arson attack in London | https://www.counterterrorism.police.uk/group-convicted-after-russian-ordered-arson-attack-in-london/
+    - Al Jazeera(2025) 영국 법원, 와그너 연계 창고 방화 3명 유죄 보도 | https://www.aljazeera.com/news/2025/7/9/uk-court-convicts-3-men-of-arson-in-attack-linked-to-russias-wagner-group
     - Euromaidan Press(2025) Six Britons get up to 23 years for Russia's Wagner Group arson attack on Ukraine aid warehouse | https://euromaidanpress.com/2025/10/25/six-britons-get-up-to-23-years-for-russias-wagner-group-arson-attack-on-ukraine-aid-warehouse/
 
 # ---------------------------------------------------------------------------
@@ -469,7 +469,7 @@
 
 - id: PHI-023
   title: 무전기 업체가 경쟁사 엔지니어를 영입해 문서 수천 건 반출(배상 평결·형사 기소)
-  date: "2020-02"
+  date: "2017-03"
   kind: 사고
   verification: 정부·사법 확인
   legal: 민사 판결·합의
@@ -479,13 +479,14 @@
   actor_type: [외부자, 내부자(악의)]
   impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
   summary: >-
-    중국 업체가 높은 연봉을 제시해 모토로라 솔루션스 말레이시아 직원들을 영입했고, 이들은 이직 전 모토로라 문서 7,000건 이상에 접근해 소스코드·기술
-    문서를 몰래 내려받았다. 2020-02 시카고 연방 배심원단이 7억 6,460만 달러 배상을 평결했고, 미 법무부는 2022-02 이 업체를 영업비밀 절도 공모
-    등 21개 혐의로 기소했다.
+    중국 업체가 2008년부터 높은 연봉을 제시해 모토로라 솔루션스 말레이시아 직원들을 영입했고, 이들은 이직 전 소스코드·기술 문서를 몰래
+    내려받았다. 모토로라가 2017-03 소송을 냈고 2020-02 시카고 연방 배심원단이 7억 6,460만 달러 배상을 평결했으며, 미 법무부는
+    2022-02 이 업체를 영업비밀 절도 공모 등으로 기소했다(date는 최초 공개인 소송 제기 기준).
   pht: [PHT-HU-02, PHT-IN-03.1, PHT-IM-05]
   sources:
     - World IP Review(2022) DoJ indicts Hytera over conspiracy to steal Motorola secrets | https://www.worldipreview.com/doj-indicts-hytera-over-conspiracy-to-steal-motorola-secrets-22091
     - BNN Bloomberg(2020) Motorola wins $765 million verdict against Chinese company | https://www.bnnbloomberg.ca/motorola-wins-765-million-verdict-against-chinese-company-1.1390586
+    - ARRL(2017) 모토로라 솔루션스, 하이테라를 특허·영업비밀 절취 혐의로 제소 | https://www.arrl.org/news/motorola-solutions-sues-hytera-communications-alleging-patent-trade-secrets-theft
 
 - id: PHI-024
   title: 메모리 기업 대만 법인 전 임원·엔지니어의 D램 기술 이전(대만 파운드리·중국 국영 업체 기소)
@@ -613,13 +614,14 @@
   actor_type: [내부자(악의), 공모]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    대우조선해양(현 한화오션) 전 직원 2명이 재직 중 독자 개발 잠수함 설계도면(약 2,000쪽)을 빼돌려 잠수함 개발 컨설팅 업체로 이직한 뒤 대만에
-    넘긴 혐의로 경남경찰청에 입건됐고, 대만은 이 도면을 첫 자체 잠수함 개발에 쓴 것으로 알려졌다. 방산업체 대표는 1심에서 징역 2년 6개월과
-    법인 추징 약 950억 원을 선고받았다.
+    대우조선해양(현 한화오션) 전 직원 2명이 재직 중 독자 개발 잠수함 설계도면(약 2,000쪽)을 빼돌려 잠수함 개발 컨설팅 업체로 이직한 뒤
+    대만에 넘긴 혐의로 경남경찰청에 입건됐고, 대만은 이 도면을 첫 자체 잠수함 개발에 쓴 것으로 알려졌다. 방산업체 대표는 1심에서 징역 2년
+    6개월과 법인 추징 약 950억 원을 선고받았다(한화오션은 유출 도면이 자사 DSME1400 도면이 아니라고 반박).
   pht: [PHT-IN-03.1, PHT-IN-03.2, PHT-IM-01]
   sources:
     - 세계일보(2024) 대우조선 잠수함 설계도, 대만에 넘겨져…경찰 수사 | https://www.segye.com/newsView/20240104517487
     - 비즈한국(2024) 대우조선해양 잠수함 도면 대만 유출 | https://www.bizhankook.com/bk/article/26992
+    - 한국경제(2025) 잠수함 설계도면 대만 유출 방산업체 대표 1심 징역 2년 6개월 보도 | https://www.hankyung.com/article/2025121675201
 
 - id: PHI-030
   title: 반도체 장비 자회사 퇴직 연구원들의 초임계 세정장비 기술 중국 연구소 제공
@@ -633,13 +635,15 @@
   actor_type: [내부자(악의), 공모, 제3자]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    삼성전자 자회사 세메스의 퇴직 연구원 2명이 2018년 개발된 초임계 세정장비 제조 기술을 빼내 중국 연구소와 접촉해 여러 차례 총 800억 원을 받고
-    장비를 만들어 넘겼다. 수원지검이 퇴직 연구원과 협력사 직원을 구속 기소했고, 1심에서 전 연구원은 징역 5년, 브로커·협력사 대표 등 4명은
-    징역 2~4년을 선고받았다.
+    삼성전자 자회사 세메스의 퇴직 연구원 2명이 2018년 개발된 초임계 세정장비 제조 기술을 빼내 중국 연구소와 접촉해 여러 차례 수원지검 발표
+    기준 800억 원(구속기소 보도는 710억 원, 일부 보도는 1,200억 원)을 받고 장비를 만들어 넘겼다. 수원지검이 퇴직 연구원과 협력사
+    직원을 구속 기소했고, 1심에서 전 연구원은 징역 5년, 브로커·협력사 대표 등 4명은 징역 2~4년을 선고받았다.
   pht: [PHT-IN-03.2, PHT-IN-04, PHT-IM-01]
   sources:
     - 보안뉴스(2022) 삼성전자 자회사 세메스의 반도체 국가핵심기술, 중국으로 통째 유출됐다 | https://m.boannews.com/html/detail.html?idx=106787
     - 뉴시스(2023) 법원 연구개발 위해 투자한 막대한 시간 비용 헛되이 해...중대 범죄 | https://mobile.newsis.com/view/NISX20230711_0002372226
+    - 아이뉴스24(2022) 세메스 퇴직 연구원 초임계 세정장비 기술 중국 유출 구속 보도 | https://www.inews24.com/view/1481217
+    - 바이라인네트워크(2022) 수원지검 발표 세메스 초임계 장비 기술 중국 유출 | https://byline.network/2022/05/17-192
 
 - id: PHI-031
   title: 반도체 협력사 임직원의 세정 레시피·HKMG 기술 중국 경쟁사 유출
@@ -674,12 +678,14 @@
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
     수원지검은 삼성디스플레이 장비 협력사가 플렉시블 OLED 패널 3D 라미네이션 설비 사양서·패널 도면 등을 중국 수출을 위해 위장 설립한 회사로
-    넘겨 약 155억 원의 이득을 얻었다며 사장 등 임원 3명을 구속 기소했다(2018-11). 삼성이 6년간 엔지니어 38명·1,500억 원을 들인 기술로,
-    2023-11 1심에서 전 영업부장 징역 3년 등 실형이 선고됐다.
+    넘겨 약 155억 원의 이득을 얻었다며 사장 등 임원 3명을 구속 기소했다(2018-11). 삼성이 6년간 엔지니어 38명·1,500억 원을
+    들인 기술로, 수원지검이 기소한 이 건은 1심 무죄, 2심 유죄(전 대표 징역 3년)를 거쳐 2023-07 대법원에서 확정됐다(2023-11
+    천안지원의 전 영업부장 징역 3년 선고는 2019-01 기소된 별건).
   pht: [PHT-IN-04, PHT-HU-05.2, PHT-IM-01]
   sources:
     - 이투데이(2018) 검찰, 삼성 엣지패널 기술 중국 유출 일당 11명 기소 | https://www.etoday.co.kr/news/view/1693403
     - 주간경향(2018) 톱텍은 배신자인가 배고픈 자인가 | https://weekly.khan.co.kr/article/201812101538331
+    - Korea Times(2023) 삼성 엣지 패널 기술 중국 유출 전 대표 징역 3년 확정 보도 | https://www.koreatimes.co.kr/amp/southkorea/law-crime/20230713/3-year-imprisonment-finalized-for-man-for-leaking-samsungs-edge-panel-technology-to-china
 
 - id: PHI-033
   title: 국방 연구기관 퇴직 연구원들의 기술 자료 대량 반출 의혹 수사(대용량 저장장치)
@@ -915,9 +921,9 @@
   actor_type: [외부자]
   impact: [영향 없음(사전 차단)]
   summary: >-
-    중국인 방문자가 마러라고 클럽 검문소에서 처음에는 회원이라며 수영장에 간다고 했다가 존재하지 않는 미중 친선 행사에 참석한다고 말을 바꿔
-    들어갔고, 비밀경호국은 휴대폰 4대·노트북·외장 하드·USB를 압수했다(USB의 악성코드 판정은 이후 오탐 가능성이 제기됨).
-    무단 침입과 허위 진술로 유죄 평결을 받고 징역 8개월 뒤 추방됐다.
+    중국인 방문자가 마러라고 클럽 검문소에서 처음에는 회원이라며 수영장에 간다고 했다가 취소된 미중 친선 행사에 참석한다고 말을 바꿔 들어갔고,
+    비밀경호국은 휴대폰 4대·노트북·외장 하드·USB를 압수했다(USB의 악성코드 판정은 이후 오탐 가능성이 제기됨). 무단 침입과 허위 진술로
+    유죄 평결을 받고 징역 8개월 뒤 추방됐다.
   pht: [PHT-PA-02]
   sources:
     - Al Jazeera(2019) Chinese businesswoman convicted in Mar-a-Lago trespass case | https://www.aljazeera.com/amp/news/2019/9/11/chinese-businesswoman-convicted-in-mar-a-lago-trespass-case
@@ -1044,11 +1050,10 @@
   pht: [PHT-SV-01.1]
   sources:
     - 시대일보(2024) 국정원 건물을 드론 촬영한 중국인 경찰조사 진술 | https://www.sidae.com/article/2024111113285546461
-    - 코리아헤럴드(2024) 국정원 청사 드론 촬영 중국인 체포 보도 | https://www.koreaherald.com/article/10880119
 
 - id: PHI-051
   title: 유학생의 군함 건조 조선소 드론 촬영(나무에 걸린 드론으로 발각)
-  date: "2024-01"
+  date: "2024-05"
   kind: 사고
   verification: 정부·사법 확인
   legal: 유죄 판결
@@ -1058,12 +1063,15 @@
   actor_type: [외부자]
   impact: [시설 정보 노출]
   summary: >-
-    중국인 대학원생이 2024-01-06 새로 산 드론으로 항공모함·잠수함을 건조하는 버지니아주 뉴포트뉴스 조선소 상공에서 건조 중인 해군 함정을 촬영했다.
-    드론이 나무에 걸리며 경찰이 출동했지만 그는 현장을 떠나 출국하려다 1-18 체포됐고, 지정 시설 무단 촬영 2건을 인정해 징역 6개월을 받았다.
+    중국인 대학원생이 2024-01-06 새로 산 드론으로 항공모함·잠수함을 건조하는 버지니아주 뉴포트뉴스 조선소 상공에서 건조 중인 해군 함정을
+    촬영했다. 드론이 나무에 걸리며 경찰이 출동했지만 그는 현장을 떠나 출국하려다 1-18 체포됐고, 2024-05 기소로 처음
+    알려졌으며(date는 최초 공개 기준) 지정 시설 무단 촬영 2건을 인정해 2024-10 징역 6개월을 받았다.
   pht: [PHT-SV-01.1]
   sources:
     - DroneXL(2024) Chinese Grad Student Jailed for Drone Photography of US Naval Shipyard | https://dronexl.co/2024/10/15/chinese-student-jailed-drone-photography-us-naval-shipyard
     - Virginia Mercury(2025) FOIA Friday — Espionage case in Virginia ends with prosecution | https://virginiamercury.com/2025/01/03/foia-friday-espionage-case-in-virginia-ends-with-prosecution/
+    - DroneXL(2024) 중국인 대학원생, 미 해군 조선소 상공 드론 촬영 혐의 기소 | https://dronexl.co/2024/05/30/chinese-grad-student-espionage-drone-us-navy-shipyards
+    - WAVY(2024) 뉴포트뉴스 조선소 드론 촬영 중국인 유학생 선고 보도 | https://digital-release.wavy.com/?p=2464368
 
 - id: PHI-052
   title: 해군기지 정박 호위함 드론 촬영 영상의 중국 동영상 사이트 게시(국방성 '진짜일 가능성 높음')
@@ -1114,13 +1122,15 @@
   actor_type: [외부자]
   impact: [운영 중단]
   summary: >-
-    2025-09-22 저녁 코펜하겐 공항 인근에 대형 드론 2~3대가 나타나 운항이 중단되고 약 35편이 회항했으며, 같은 시각 오슬로 공항도 약 3시간 폐쇄됐다.
-    덴마크 경찰은 의도와 장비를 갖춘 숙련된 조종자의 비행으로 봤으나 기체를 회수하지 못했고, 덴마크 총리는 덴마크 기반시설에 대한 지금까지 가장
-    심각한 공격이라고 밝혔다.
+    2025-09-22 저녁 코펜하겐 공항 인근에 대형 드론 2~3대가 나타나 운항이 중단되고 수십 편이 회항·결항했으며(보도별 집계 상이, 초기
+    AFP 보도는 약 15편), 같은 시각 오슬로 공항도 약 3시간 폐쇄됐다. 덴마크 경찰은 의도와 장비를 갖춘 숙련된 조종자의 비행으로 봤으나
+    기체를 회수하지 못했고, 덴마크 총리는 덴마크 기반시설에 대한 지금까지 가장 심각한 공격이라고 밝혔다.
   pht: [PHT-SV-01.2, PHT-IM-03]
   sources:
     - CBS News(2025) Copenhagen Airport shut down for hours by large, unidentified drones flying nearby | https://www.cbsnews.com/amp/news/copenhagen-airport-drones-interference-amid-russia-nato-incursions
     - Malay Mail(2025) Copenhagen airport shut due to unidentified drones in airspace | https://www.malaymail.com/amp/news/world/2025/09/23/copenhagen-airport-shut-due-to-unidentified-drones-in-airspace/192052
+    - Canberra Times(2025) 숙련된 조종자가 코펜하겐 공항 상공에서 드론 운용 | https://www.canberratimes.com.au/story/9072319/capable-operator-flew-drones-at-copenhagen-airport/
+    - The Local(2025) 코펜하겐·오슬로 공항 드론 혼란, 현재까지 알려진 사실 | https://www.thelocal.dk/20250923/what-we-know-so-far-about-drone-disruption-at-copenhagen-and-oslo-airports
 
 - id: PHI-055
   title: 이틀 연속 드론 목격으로 국제공항 활주로 폐쇄(승객 약 1만 명 영향)
@@ -1172,12 +1182,14 @@
   actor_type: [외부자]
   impact: [영향 미상]
   summary: >-
-    2014-10-05부터 11-02 사이 프랑스 원전 13곳의 경비원이 소형 민간 드론의 비행을 목격했다. 정부 관계자는 드론이 원전 사진·영상을 찍는 것을 우려했고,
-    운영사 EDF는 사건마다 원전 상공 불법 진입으로 신원 미상자를 고발했다. 환경단체는 관여를 부인했다.
+    2014-10-05부터 11-02 사이 프랑스 원전 13곳(정부 집계, EDF 집계는 7곳)의 경비원이 소형 민간 드론의 비행을 목격했다. 정부
+    관계자는 드론이 원전 사진·영상을 찍는 것을 우려했고, 운영사 EDF는 사건마다 원전 상공 불법 진입으로 신원 미상자를 고발했다. 환경단체는
+    관여를 부인했다.
   pht: [PHT-SV-01.2]
   sources:
     - The Tech(2014) Drones flew over French nuclear power plants | https://thetech.com/2014/11/04/long2-v134-n52
     - Global Voices(2014) Drones flying over nuclear power stations in France raise concerns | https://globalvoices.org/2014/12/09/drones-flying-over-nuclear-power-stations-in-france-raise-concerns/
+    - Journal du Geek(2014) EDF 원전 상공 드론 비행 우려와 사법 당국 고발 보도 | https://www.journaldugeek.com/2014/10/31/edf-sinquiete-de-vols-de-drones-au-dessus-de-ses-centrales/
 
 - id: PHI-058
   title: 원전 3곳 상공 드론 출현으로 국가 보안기관 수사 착수
@@ -1228,13 +1240,17 @@
   actor_type: [외부자]
   impact: [영향 미상]
   summary: >-
-    노르트스트림 가스관 손상 뒤 노르웨이 석유·가스 시설 인근에 드론 목격이 잇따르자 경계를 높였고, 2022-10 러시아인이 드론 2대와 사진·영상을
-    지닌 채 국경에서 체포되는 등 러시아 국적자들이 드론 비행으로 연이어 붙잡혔다. 한 명은 취미용 드론 비행이 제재 규정 대상이 아니라는 이유로
-    무죄를 받아 법적 대응의 한계도 드러났다.
+    노르트스트림 가스관 손상 뒤 노르웨이 석유·가스 시설 인근에 드론 목격이 잇따르자 경계를 높였고, 2022-10 러시아인이 드론 2대와
+    사진·영상을 지닌 채 국경에서 체포되는 등 러시아 국적자들이 드론 비행으로 연이어 붙잡혔다. 2022-08 스발바르 드론 비행으로 기소된 한
+    명은 2022-12 지방법원에서 취미용 드론 비행이 제재 규정 대상이 아니라는 이유로 무죄를 받았으나, 2023-06 대법원이 러시아 국적자의
+    드론 비행도 영공 비행 금지에 포함된다며 파기 환송했다.
   pht: [PHT-SV-01.1, PHT-SV-01.2]
   sources:
     - CBS News(2022) Norway detains Russian at border with drones after reports of mystery drones near oil and gas facilities | https://www.cbsnews.com/news/norway-detains-russia-national-mysterious-drones-oil-gas-facilities
     - Arctic Today(2022) Norwegian police loses case against Russian charged with flying drone in Svalbard | https://www.arctictoday.com/?p=56248
+    - The Local(2022) 노르웨이 당국, 드론을 소지한 러시아인 구금(AFP 기사) | https://www.thelocal.no/20221014/norwegian-authorities-detain-drone-carrying-russian-headed-for-home/
+    - Barents Observer(2022) 노르웨이 경찰, 러시아인 드론 비행 사건에서 패소 | https://thebarentsobserver.com/en/life-and-public/2022/12/norwegian-police-loses-case-against-yakunin
+    - Barents Observer(2023) 대법원, 러시아인 무죄 파기 — 러시아인은 드론 비행 불가 | https://thebarentsobserver.com/en/life-and-public/2023/06/supreme-court-cancels-yakunin-acquittal-russians-are-not-allowed-fly-drones
 
 - id: PHI-061
   title: 산불 진화 비행 제한 구역의 취미 드론이 소방 항공기와 충돌
@@ -1416,14 +1432,16 @@
   actor_type: [외부자]
   impact: [개인정보 유출, 국가기밀·군사정보 유출]
   summary: >-
-    영국에 사는 불가리아 국적자들이 러시아를 위해 탐사 언론인 등 표적 인물과 장소를 감시하다 2025-03 공무상 비밀법 위반으로 유죄 판결을 받았다.
-    압수품에는 녹화 장치 55개·드론 11대·IMSI 캐처 3대·Wi-Fi 도청 장치 4대 등이 있었고, 병·가짜 돌·새집으로 위장한 은닉 카메라를 만들었으며,
-    한 명은 카메라가 숨겨진 선글라스로 기내 옆자리 표적의 휴대폰 PIN을 녹화했다. 독일 슈투트가르트 미군 기지 주변을 돌며 촬영하고 IMSI 캐처로
-    기지 안 휴대폰 신호를 가로채기도 했다.
+    영국에 사는 불가리아 국적자들이 러시아를 위해 탐사 언론인 등 표적 인물과 장소를 감시하다 2025-03 공무상 비밀법 위반으로 유죄 판결을
+    받았다. 압수품에는 녹화 장치 55개·드론 11대·IMSI 캐처 3대·Wi-Fi 도청 장치 4대 등이 있었고, 가짜 물병·돌·장난감 등으로
+    위장한 은닉 카메라를 만들었으며, 한 명은 어깨끈에 숨긴 카메라로 기내 옆자리 표적의 휴대폰 PIN을 녹화했다. 독일 슈투트가르트 미군 기지
+    주변을 돌며 촬영하고 IMSI 캐처로 기지 안 휴대폰 신호를 가로채기도 했다.
   pht: [PHT-RC-02, PHT-SV-02.1, PHT-SV-02.2, PHT-SV-03.1]
   sources:
     - Euronews(2025) UK court convicts three Bulgarians of spying for Russia | https://www.euronews.com/2025/03/07/uk-court-convicts-three-bulgarians-of-spying-for-russia
     - 영국 검찰청 CPS(2025) How prosecutors brought a Russian spy ring operating in the UK to justice | https://www.cps.gov.uk/node/26051
+    - 영국 경찰(2025-03-07) 러시아 스파이 활동에 가담한 불가리아인 일당 유죄 평결 | https://news.met.police.uk/news/group-convicted-of-being-part-of-russian-spying-operation-494869
+    - AOL·Independent(2025-03-07) 영국 거주 불가리아 스파이망 유죄 보도 | https://www.aol.com/news/uk-based-bulgarian-spy-ring-145303637.html
 
 - id: PHI-070
   title: 러시아 정보기관과 연계한 거주자의 군 시설·지원 물자 수송로 정찰과 사보타주 준비
@@ -1458,7 +1476,7 @@
   impact: [영향 미상]
   summary: >-
     우크라이나 총참모부는 2023-12-17 정기 점검에서 총사령관과 참모가 쓸 예정이던 사무실에서 정보 수집 장비 부품을 발견했다고 확인했다.
-    보안국(SBU)은 특수 기술 수단 불법 사용 혐의로 수사에 착수했고, 장비는 작동 상태가 아니었으며 원격 전송 수단도 발견되지 않았다.
+    보안국(SBU)은 형사 절차를 개시했고, SBU는 장비가 작동하지 않았다고 밝혔다.
   pht: [PHT-SV-02.1]
   sources:
     - Ukrinform(2023) General Staff confirms bugs planted in offices of CinC Zaluzhnyi, staff members | https://ukrinform.net/rubric-ato/3801593-general-staff-confirms-bugs-planted-in-offices-of-cinc-zaluzhnyi-staff-members.html
@@ -1642,16 +1660,18 @@
   actor_type: [외부자]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    대만 법무부 조사국은 2025-03-28 중국 최대 파운드리 SMIC 등 중국 기업 11곳이 대만 인력을 불법으로 빼간 혐의로 34곳을 동시 압수수색하고 90명을
-    조사했다. SMIC는 사모아 법인으로 위장한 대만 지사를 세워 현지 인력을 채용하려 한 것으로 조사됐으며, 대만은 승인 없는 중국 기업의 현지 채용을
-    금지한다.
+    대만 법무부 조사국은 2025-03-28 중국 최대 파운드리 SMIC 등 중국 기업 11곳이 대만 인력을 불법으로 빼간 혐의로 3월 중 34곳을
+    압수수색하고 90명을 조사했다고 발표했다. SMIC는 사모아 법인으로 위장한 대만 지사를 세워 현지 인력을 채용하려 한 것으로 조사됐으며,
+    대만은 승인 없는 중국 기업의 현지 채용을 금지한다.
   pht: [PHT-HU-02]
   sources:
     - GIGAZINE(2025) Taiwan investigates China's largest semiconductor maker for illegal poaching of tech talent | https://www.gigazine.net/gsc_news/en/20250401-taiwan-china-smic-staff-poaching
     - TechRepublic(2025) Taiwan Investigates Chinese Firms for Poaching Tech Talent | https://www.techrepublic.com/article/news-apac-taiwan-china-tech-talent-poaching/
+    - Taipei Times(2025-03-29) 법무부 조사국, SMIC 위장 지사 인력 채용 혐의 발표 | https://taipeitimes.com/News/front/archives/2025/03/29/2003834254
+    - 로이터·야후(2025-03-28) 대만, 중국 SMIC 불법 인력 채용 혐의 조사 | https://www.yahoo.com/news/taiwan-says-chinas-smic-suspected-053937118.html
 
 - id: PHI-081
-  title: 중국 자본 기업 17곳의 위장 사무소·현지 법인을 통한 반도체·AI·방산 인력 불법 채용 수사
+  title: 중국 자본 기업 17곳의 위장 사무소·현지 법인을 통한 반도체·IC 설계·배터리·첨단소재 인력 불법 채용 수사
   date: "2026-08"
   kind: 캠페인
   verification: 정부·사법 확인
@@ -1660,11 +1680,11 @@
   sector: [반도체·디스플레이, IT·소프트웨어, 이차전지·소재·화학, 방산·항공우주]
   actor: 중국 자본 기업 17곳
   actor_type: [외부자]
-  impact: [국가핵심기술·영업비밀 유출]
+  impact: [영향 미상]
   summary: >-
-    대만 당국은 2026-07-13부터 8-04까지 반도체·AI·배터리·방산 분야 엔지니어를 불법 채용한 혐의가 있는 중국 자본 기업 17곳을 수사해 64곳을 수색하고
-    114명을 조사했다. 숨은 중국 지분, 미승인 사무소, 채용용 현지 위장 법인이 수사 대상이며, 조사국은 2020년 전담반 구성 이후 이런 사건 100건 이상을
-    수사했다.
+    대만 당국은 2026-07-13부터 8-04까지 반도체·IC 설계·디스플레이 칩·배터리·첨단소재 분야 인력을 불법 채용한 혐의가 있는 중국 자본
+    기업 17곳을 수사해 64곳을 수색하고 114명을 조사했다. 숨은 중국 지분, 미승인 사무소, 채용용 현지 위장 법인이 수사 대상이며, 조사국은
+    2020년 전담반 구성 이후 이런 사건 100건 이상을 수사했다. 이번 수사에서 기술 유출이 확인됐다는 보도는 없다.
   pht: [PHT-HU-02]
   sources:
     - The Next Web(2026) Taiwan is investigating 17 Chinese firms for poaching its chip talent | https://thenextweb.com/news/taiwan-probe-17-chinese-firms-chip-talent-poaching
@@ -1906,7 +1926,7 @@
     - SecurityWeek(2019) Undercover agents target cybersecurity watchdog | https://www.securityweek.com/undercover-agents-target-cybersecurity-watchdog/amp/
 
 - id: PHI-094
-  title: 재외공관 영사들과 부적절한 관계를 맺은 여성이 공관 자료·주요 인사 연락처를 USB로 확보
+  title: 재외공관 영사들과 부적절한 관계를 맺은 여성이 공관 자료·주요 인사 연락처를 컴퓨터 파일로 보관
   date: "2011-03"
   kind: 사고
   verification: 정부·사법 확인
@@ -1917,10 +1937,10 @@
   actor_type: [외부자, 내부자(비의도)]
   impact: [개인정보 유출]
   summary: >-
-    주상하이 총영사관 영사들이 30대 중국 여성과 부적절한 관계를 맺고 비자 발급 권한까지 내준 사이, 이 여성은 공관의 비자 발급 현황·통계·신청 정보와
-    정부 내부망 인사 기록, 공관 비상연락망, 여권 핵심 인사 등 정·관계 인사 약 200명의 연락처를 자신의 USB에 담았다. 국무총리실 조사는 간첩 사건은
-    아니라고 결론지었고 관련 공관 인력 다수가 징계·교체됐다.
-  pht: [PHT-HU-01.2, PHT-EX-01]
+    주상하이 총영사관 영사들이 30대 중국 여성과 부적절한 관계를 맺고 비자 발급 권한까지 내준 사이, 이 여성은 공관의 비자 발급 현황·통계·신청
+    정보와 정부 내부망 인사 기록, 공관 비상연락망, 여권 핵심 인사 등 정·관계 인사 약 200명의 연락처를 컴퓨터 파일(사진 포함)로 보관했다.
+    국무총리실 조사는 간첩 사건은 아니라고 결론지었고 관련 공관 인력 다수가 징계·교체됐다.
+  pht: [PHT-HU-01.2]
   sources:
     - 경향신문(2011) 상하이 총영사관 스캔들 | https://www.khan.co.kr/article/201103082214115/amp
     - 이투데이(2011) 상하이영사, 中 내연녀에 국가기밀 유출 의혹 제기 | https://www.etoday.co.kr/news/view/413451

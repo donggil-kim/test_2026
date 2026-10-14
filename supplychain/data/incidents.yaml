@@ -76,7 +76,7 @@
   actor: 중국 연계 APT
   impact: [소스 코드 유출]
   summary: >-
-    구글 등 수십 개 기업이 침해된 캠페인으로, 공격자가 소스 코드 관리 시스템(SCM)을 집중적으로 노려 지적 재산과 소스를
+    구글 등 수십 개 기업이 침해된 캠페인으로(발생 2009 중반), 공격자가 소스 코드 관리 시스템(SCM)을 집중적으로 노려 지적 재산과 소스를
     가져갔다. 소스 저장소의 접근 통제·감사가 허술하다는 점이 공급망 위험으로 처음 크게 부각됐다.
   sct: [SCT-SR-03, SCT-IM-03]
   sources:
@@ -358,7 +358,7 @@
   actor: Axiom/BARIUM(APT41 계열) 연계(귀속 논의)
   impact: [백도어·원격 제어]
   summary: >-
-    공격자가 TeamViewer로 Piriform 개발망에 들어가 빌드 환경을 장악, 정식 서명된 CCleaner 5.33에 백도어를 넣었다.
+    공격자가 TeamViewer로 Piriform 개발망에 들어가(발생 2017-03) 빌드 환경을 장악, 정식 서명된 CCleaner 5.33에 백도어를 넣었다.
     약 227만 대에 설치됐고 2단계 페이로드는 대형 IT 기업 등 일부 표적에만 전달됐다.
   sct: [SCT-BD-02.1, SCT-PB-03.1, SCT-IM-01.1]
   attack_ref: [S0222]
@@ -473,8 +473,8 @@
   actor: 미상
   impact: [크립토재킹]
   summary: >-
-    BitTorrent 클라이언트 MediaGet의 업데이트 경로가 변조되어 악성 버전이 배포됐고, 이를 통해 Dofoil 백도어가 퍼져
-    감염 PC 수십만 대에 암호화폐 채굴기가 설치됐다.
+    BitTorrent 클라이언트 MediaGet의 업데이트 경로가 변조되어 악성 버전이 배포됐고, 이를 통해 Dofoil 백도어가 퍼졌다.
+    Microsoft 분석에 따르면 몇 시간 만에 40만 대 이상 PC에 감염을 시도해 암호화폐 채굴기를 확산하려 했다(실제 감염 수는 미확인).
   sct: [SCT-PB-02.2, SCT-IM-04]
   sources:
     - ZDNet(2018) Windows attack — Poisoned BitTorrent client set off huge Dofoil outbreak, says Microsoft | https://www.zdnet.com/article/windows-attack-poisoned-bittorrent-client-set-off-huge-dofoil-outbreak-says-microsoft/
@@ -522,8 +522,9 @@
   actor: 미상
   impact: [데이터 반출]
   summary: >-
-    Arch Linux 사용자 저장소(AUR)에서 관리자가 없는 패키지를 인수한 사용자가 설치 스크립트에 시스템 정보를 외부로 보내는
-    코드를 넣었다. 방치된 패키지 인계 절차의 허점을 보여 줬다.
+    Arch Linux 사용자 저장소(AUR)에서 관리자가 없는 패키지를 인수한 사용자가 설치 스크립트에 원격 스크립트를 내려받아 실행하고 systemd 타이머로
+    주기 실행하는 코드를 넣었다(같은 사용자가 패키지 3종 수정, LWN 보고에서 정보 전송은 확인되지 않음). 방치된 패키지 인계 절차의
+    허점을 보여 줬다.
   sct: [SCT-SR-01.3, SCT-DP-02.2]
   sources:
     - LWN(2018) Malware found in the Arch Linux AUR repository | https://lwn.net/Articles/759461/
@@ -567,7 +568,7 @@
   verification: 보안업체·연구기관 분석
   ecosystem: [상용 소프트웨어]
   region: 한국
-  actor: 북한 연계(추정)
+  actor: 미상(Trend Micro는 귀속하지 않음)
   impact: [백도어·원격 제어]
   summary: >-
     국내 원격 지원 솔루션 업체에서 탈취한 코드 서명 인증서로 악성코드에 서명하고, 해당 솔루션의 업데이트 경로를 악용해
@@ -653,7 +654,7 @@
   actor: 미상(ShadowPad 계열 연계 추정)
   impact: [백도어·원격 제어]
   summary: >-
-    ASUS Live Update가 ASUS 정식 인증서로 서명된 백도어 버전을 업데이트 서버로 배포했다. 약 50만 대 이상이 수신한 것으로
+    ASUS Live Update가 ASUS 정식 인증서로 서명된 백도어 버전을 업데이트 서버로 배포했다(발생 2018-06). 약 50만 대 이상이 수신한 것으로
     추정(Motherboard 2019-03-25 인용 Kaspersky)되지만 실제 2단계 공격은 미리 정한 약 600개 MAC 주소 장비에만 실행됐다. 2025년 KEV에 등재됐다.
   sct: [SCT-PB-02.2, SCT-PB-03.1, SCT-IM-01.1]
   kev: [CVE-2025-59374]
@@ -671,7 +672,7 @@
   actor: 미상
   impact: [백도어·원격 제어]
   summary: >-
-    탈취한 RubyGems 계정으로 bootstrap-sass 3.2.0.3에 원격 코드 실행 백도어(쿠키 값을 실행)를 넣어 게시했다. GitHub
+    메인테이너의 RubyGems 게시 자격증명을 얻은 것으로 추정되는 공격자(Snyk 보고 시점 공식 미확인)가 bootstrap-sass 3.2.0.3에 원격 코드 실행 백도어(쿠키 값을 실행)를 넣어 게시했다. GitHub
     저장소에는 없는 버전이라 소스와 게시물의 불일치로 발견됐다.
   sct: [SCT-SC-03.2, SCT-PB-01]
   sources:
@@ -679,7 +680,7 @@
 
 - id: SCI-041
   title: strong_password·rest-client RubyGems 계정 탈취
-  date: 2019-08
+  date: 2019-07
   kind: 사고
   verification: 피해기관 확인
   ecosystem: [RubyGems]
@@ -713,7 +714,7 @@
 
 - id: SCI-043
   title: ROS 빌드팜 침해
-  date: 2019-06
+  date: 2019-05
   kind: 사고
   verification: 피해기관 확인
   ecosystem: [오픈소스 프로젝트 인프라]
@@ -725,7 +726,7 @@
     빌드·서명 인프라가 함께 위험에 놓였다.
   sct: [SCT-BD-02.1, SCT-PB-03.1]
   sources:
-    - ROS Discourse(2019) Security issue on ROS build farm | https://discourse.ros.org/t/security-issue-on-ros-build-farm/9342/8
+    - ROS Discourse(2019) Security issue on ROS build farm | https://discourse.ros.org/t/security-issue-on-ros-build-farm/9342
 
 - id: SCI-044
   title: Monero CLI 바이너리 교체
@@ -824,7 +825,7 @@
 
 - id: SCI-050
   title: twilio-npm 브랜드 사칭 패키지
-  date: 2020-10
+  date: 2020-11
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [npm]
@@ -840,7 +841,7 @@
 
 - id: SCI-051
   title: 노출된 SonarQube에서 소스 코드 탈취(FBI 경보)
-  date: 2020-10
+  date: 2020-11
   kind: 정부 경보
   verification: 정부·사법 확인
   ecosystem: [CI/CD·개발 SaaS]
@@ -849,7 +850,7 @@
   impact: [소스 코드 유출]
   summary: >-
     FBI는 기본 설정으로 인터넷에 노출된 코드 품질 점검 서버 SonarQube를 통해 미국 정부기관과 기업의 소스 코드를 빼내
-    공개한 사례를 경보로 알렸다. 개발 도구 서버의 설정 미흡이 소스 유출 경로가 됐다.
+    공개한 사례를 경보로 알렸다. 개발 도구 서버의 설정 미흡이 소스 유출 경로가 됐다(발생 2020-04).
   sct: [SCT-BD-03.1, SCT-IM-03]
   sources:
     - FBI(2020) FLASH — Hackers exploit misconfigured SonarQube instances | https://www.ic3.gov/Media/News/2020/201103-3.pdf
@@ -865,7 +866,7 @@
   impact: [백도어·원격 제어, 데이터 반출]
   summary: >-
     빌드 서버에 심은 SUNSPOT이 Orion 빌드 과정에서만 소스를 바꿔치기해, 정식 서명된 업데이트에 SUNBURST 백도어가
-    실렸다. 고객 약 1만 8천 곳이 악성 업데이트를 설치했고 공격자는 그중 정부기관·IT 기업 일부를 골라 후속 침투했다.
+    실렸다(발생 2019-09). 고객 약 1만 8천 곳이 악성 업데이트를 설치했고 공격자는 그중 정부기관·IT 기업 일부를 골라 후속 침투했다.
   sct: [SCT-BD-02.1, SCT-IM-01.1, SCT-PB-03.1]
   attack_ref: [C0024, S0562, S0559]
   sources:
@@ -1610,7 +1611,7 @@
   verification: 보안업체·연구기관 분석
   ecosystem: [상용 소프트웨어]
   region: 아시아
-  actor: Carderbee(중국 연계)
+  actor: Carderbee(Symantec 신규 명명, 기존 그룹과 확정 연결 불가)
   impact: [백도어·원격 제어]
   summary: >-
     문서 보안 소프트웨어 Cobra DocGuard의 업데이트 경로로 PlugX 등 백도어를 표적 단말에만 배포했고, 일부 악성코드는
@@ -1807,15 +1808,21 @@
   verification: 보안업체·연구기관 분석
   ecosystem: [npm, 개발 도구·툴체인]
   region: 글로벌
-  actor: Contagious Interview(G1052, 북한 연계)
+  actor: Contagious Interview(G1052, 북한 연계) — 2025-12 이후 활동은 WaterPlum으로 추적(일본·미국·호주·독일 합동 경보)
   impact: [자격증명·비밀 탈취, 금전 탈취]
   summary: >-
     채용 담당자를 사칭해 개발자에게 코딩 과제·프로젝트를 실행시키거나 악성 npm 패키지를 설치하게 해 BeaverTail 등
-    정보탈취 악성코드를 감염시키는 북한 연계 캠페인이다. 개발자 단말의 지갑·자격증명이 주된 표적이다.
-  sct: [SCT-DE-01.2, SCT-DP-03.1]
+    정보탈취 악성코드를 감염시키는 북한 연계 캠페인이다. 개발자 단말의 지갑·자격증명이 주된 표적이다. 2025-12~2026-07에는
+    WaterPlum으로 추적되는 같은 계열이 SNS·구인 사이트·프리랜서 플랫폼에서 AI·가상자산·NFT 기업을 사칭해 개발자에게 접근하고,
+    코딩 과제나 화상회의 문제 해결로 위장한 악성코드(BeaverTail·InvisibleFerret·OtterCookie 등)를 실행시켜 100여 개국 최소 3만
+    대를 감염시켰다. 7천여 개 가상자산 지갑에서 자금 또는 자격증명을 빼내 약 1,070만 달러(17억 엔)를 북한으로 옮긴 사실이
+    일본·미국·호주·독일 7개 기관의 합동 경보(2026-09-18)로 공개됐다.
+  sct: [SCT-DE-01.2, SCT-DP-03.1, SCT-DE-01.1, SCT-IM-04]
   attack_ref: [G1052, S1246]
   sources:
     - MITRE ATT&CK G1052 Contagious Interview | https://attack.mitre.org/groups/G1052/
+    - BleepingComputer(2026) North Korean WaterPlum hackers infected 30,000 devices worldwide | https://www.bleepingcomputer.com/news/security/north-korean-waterplum-hackers-infected-30-000-devices-worldwide/
+    - Infosecurity Magazine(2026) North Korean Attackers Hit 30,000 Devices and Steal $10.7m | https://www.infosecurity-magazine.com/news/north-korean-waterplum-30000/
 
 - id: SCI-111
   title: xz utils 백도어(CVE-2024-3094)
@@ -1869,7 +1876,7 @@
 
 - id: SCI-114
   title: Kimsuky 보안 프로그램 설치 파일 위장(TrollAgent)
-  date: 2024-01
+  date: 2024-02
   kind: 캠페인
   verification: 정부·사법 확인
   ecosystem: [상용 소프트웨어]
@@ -1878,16 +1885,17 @@
   impact: [자격증명·비밀 탈취]
   summary: >-
     건설 관련 협회 웹사이트를 침해해, 로그인 전에 설치해야 하는 보안 프로그램을 내려받을 때 정보탈취 악성코드(TrollAgent)가
-    함께 설치되게 했다. 악성코드는 국내 방산업체의 유효한 인증서로 서명돼 있었다. 국가사이버안보센터가 경보했다.
+    함께 설치되게 했다. 악성코드는 국내 방산업체의 유효한 인증서로 서명돼 있었다. 국가사이버안보센터가 경보했다(발생 2023-12).
   sct: [SCT-PB-02.1, SCT-PB-03.1]
   attack_ref: [G0094]
   sources:
     - The Hacker News(2024) Kimsuky's New Golang Stealer Troll and GoBear | https://thehackernews.com/2024/02/kimsukys-new-golang-stealer-troll-and.html
+    - AhnLab ASEC(2024) Kimsuky TrollAgent(NX_PRNMAN) 설치 파일 위장 유포 분석 | https://asec.ahnlab.com/en/61934/
     - BleepingComputer(2024) North Korean hackers exploit VPN update flaw to install malware | https://www.bleepingcomputer.com/news/security/north-korean-hackers-exploit-vpn-update-flaw-to-install-malware/
 
 - id: SCI-115
   title: Andariel 국내 VPN 업데이트 통신 조작(DoraRAT)
-  date: 2024-04
+  date: 2024-08
   kind: 정부 경보
   verification: 정부·사법 확인
   ecosystem: [상용 소프트웨어]
@@ -1896,7 +1904,7 @@
   impact: [백도어·원격 제어]
   summary: >-
     국내 VPN·서버 보안 소프트웨어의 업데이트 취약점을 악용해, 클라이언트-서버 통신을 조작하고 악성 파일을 정상 업데이트로
-    위장해 원격 제어 악성코드(DoraRAT)를 배포했다. 건설사·공공기관·지자체가 피해를 입었다고 국가사이버안보센터가 경보했다.
+    위장해 원격 제어 악성코드(DoraRAT)를 배포했다(발생 2024-04). 건설·기계 업체가 표적이 됐다고 국가사이버안보센터가 경보했다.
   sct: [SCT-PB-02.3, SCT-CS-01]
   sources:
     - BleepingComputer(2024) North Korean hackers exploit VPN update flaw to install malware | https://www.bleepingcomputer.com/news/security/north-korean-hackers-exploit-vpn-update-flaw-to-install-malware/
@@ -2074,7 +2082,7 @@
   impact: [자격증명·비밀 탈취]
   summary: >-
     탈취한 브라우저 쿠키로 추정되는 방법으로 인기 디스코드 봇 프로젝트(top.gg) 기여자 계정에 들어가 악성 커밋을 넣고, PyPI
-    미러처럼 보이는 도메인으로 의존성을 바꿔 정보탈취 악성코드를 퍼뜨렸다. 17만 명 이상 규모의 커뮤니티가 영향권에 들었으나
+    미러처럼 보이는 도메인으로 의존성을 바꿔 정보탈취 악성코드를 퍼뜨렸다(발생 2022-11). 17만 명 이상 규모의 커뮤니티가 영향권에 들었으나
     실제 감염자 수는 알 수 없다.
   sct: [SCT-SC-03.2, SCT-DP-01.2, SCT-PB-02.3, SCT-IM-03]
   sources:
@@ -2248,7 +2256,7 @@
 
 - id: SCI-137
   title: Operation SyncHole(국내 소프트웨어 취약점 연쇄 악용)
-  date: 2024-11
+  date: 2025-04
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [상용 소프트웨어]
@@ -2257,7 +2265,7 @@
   impact: [백도어·원격 제어]
   summary: >-
     2024년 11월~2025년 2월 언론 사이트 워터링홀과 국내에서 널리 쓰이는 보안·파일 전송 소프트웨어(Cross EX, Innorix Agent)
-    취약점을 연쇄로 악용해 소프트웨어·IT·금융·반도체·통신 기업 최소 6곳을 침해했다. Innorix Agent 제로데이가 함께 발견됐다.
+    취약점을 연쇄로 악용해 소프트웨어·IT·금융·반도체·통신 기업 최소 6곳을 침해했다. Innorix Agent 제로데이가 함께 발견됐고 Kaspersky가 2025-04 공개했다.
   sct: [SCT-CS-04]
   attack_ref: [G0032]
   sources:

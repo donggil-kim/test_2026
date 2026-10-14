@@ -46,7 +46,7 @@ SCI-155,text/DP.yaml:SC-DP-03 인용 줄,파이썬 프로세스가 시작될 때
 SCI-155,integrated/DP.yaml 대표 사례,같음,같음(1.82.8 한정 표기),반영,인용 문안 동기화
 SCI-155,CL-IA-05 인용 문안,Trivy의 Actions 설정 오류·50여 종 비밀,수정하지 않음,해당 없음,클라우드 매트릭스 문구는 공급망 DB 편집 범위 밖(G 메모: 원문 확인 못함 — 해당 DB 작업자 몫)
 SCI-004,sources,McAfee(2010) ... | wired.com/…/operationaurora_wp_0310_fnl.pdf (HTTP 404),Computerworld(2010-03-04) Source code management a weak spot in Aurora attacks | https://www.computerworld.com/article/1444666/source-code-management-a-weak-spot-in-aurora-attacks.html,반영,제안 정정: 열람 불가(404) 백서 URL을 열람 확인된 대체 출처로 교체
-SCI-004,date,2010-01,2010-01,해당 없음,공개월 2010-01-12와 일치(발생 2009 중반~12월은 요약에 이미 서술하지 않으나 크게 앞선 활동기간 — 시점은 공개월 유지)
+SCI-004,date,2010-01,2010-01,해당 없음,공개월 2010-01-12와 일치(발생 2009 중반은 요약에 병기)
 SCI-004,text/SR.yaml 인용 줄,변경 없음,변경 없음,해당 없음,G 문안 일치
 SCI-006,sources,LWN(2011) The cracking of kernel.org | lwn.net/Articles/461237/,LWN(2011-08-31) kernel.org compromised | https://lwn.net/Articles/457142/,반영,제안 정정: 461237은 점검 요령 글이라 제목·내용 불일치 — 1차 공지(457142)로 교체
 SCI-006,text/PB.yaml 인용 줄,변경 없음,변경 없음,해당 없음,G 문안 해당 없음; 시점 2011-08 일치
@@ -128,3 +128,47 @@ SCI-020,summary,빌드 단계 주입이라 소스·배포 서버 점검만으로
 SCI-020,sources,MITRE ATT&CK S0596(소프트웨어 항목),"+ The Register(2017) …, + The Hacker News(2017) …",반영,"제안 정정: 사건 보고 출처 보강(MITRE 항목은 유지, 제목은 URL 기준 표기); Kaspersky Securelist URL은 근거 URL에 없어 추가하지 않음"
 SCI-020,sct,SCT-BD-02.1 등,변경 없음,보류,"""빌드 단계 주입""이 미확인이라 BD-02.1(빌드 침해) 매핑 재검토 필요하나 규칙 7에 따라 유지"
 SCI-020,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-028,summary,감염 PC 수십만 대에 암호화폐 채굴기가 설치됐다,몇 시간 만에 40만 대 이상 PC에 감염을 시도해 암호화폐 채굴기를 확산하려 했다(실제 감염 수는 미확인),반영,"C 차이·제안 정정: ZDNet(2018-03-14) Microsoft 분석 — attempted to infect over 400,000 PCs within hours"
+SCI-028,date·text,—,변경 없음,해당 없음,공개월 2018-03-13 일치; 이 사고를 인용하는 문구 줄 없음
+SCI-031,summary,설치 스크립트에 시스템 정보를 외부로 보내는 코드,"설치 스크립트에 원격 스크립트를 내려받아 실행하고 systemd 타이머로 주기 실행하는 코드(패키지 3종 수정, 정보 전송은 확인되지 않음)",반영,"C 차이·제안 정정: LWN(2018-07-10) 요약 기준; 나머지 패키지 2종 이름은 근거 URL에 없어 ""3종""으로만 병기"
+SCI-031,impact,데이터 반출,변경 없음,보류,정보 전송이 LWN에서 확인되지 않아 영향 유형(데이터 반출) 재검토 필요하나 제안 정정에 impact 변경 없음
+SCI-031,text/DP.yaml:SCT-DP-02.2·SR.yaml:SCT-SR-01.3 인용 줄 2건,정보 전송 코드를 넣음,원격 스크립트 실행·systemd 주기 실행 코드를 넣음,반영,제안 정정 동기화
+SCI-034,actor,북한 연계(추정),미상(Trend Micro는 귀속하지 않음),반영,C 차이·제안 정정: Trend Micro(2018-08-21) 보고서에 국가 귀속 없음(9002 RAT 사용)
+SCI-034,date,2018-08,2018-08,해당 없음,제안 정정: 유지(최초 보도 2018-08-06 = 공개월)
+SCI-034,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-040,summary,탈취한 RubyGems 계정으로,메인테이너의 RubyGems 게시 자격증명을 얻은 것으로 추정되는 공격자(Snyk 보고 시점 공식 미확인)가,반영,"C 차이·제안 정정: Snyk(2019-04-03) ""not officially confirmed"""
+SCI-040,title,bootstrap-sass RubyGems 계정 탈취,변경 없음,보류,"제목의 ""계정 탈취""도 추정이나 제안 정정에 제목 변경 없음"
+SCI-040,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-043,date,2019-06,2019-05,반영,제안 정정: ROS Discourse 최초 글 2019-05-30(gerkey); 2019-06-04 글은 후속
+SCI-043,sources,…/security-issue-on-ros-build-farm/9342/8,…/security-issue-on-ros-build-farm/9342,반영,제안 정정: 스레드 첫 글(post #1)로 변경
+SCI-043,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-041,date,2019-08,2019-07,반영,제안 정정: 2건 중 최초 공개 strong_password 2019-07-03(withatwist.dev); rest-client는 2019-08-20
+SCI-041,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-051,date,2020-10,2020-11,반영,"제안 정정: FBI FLASH 문서일 10-14는 비공개 배포 추정, 공개는 IC3 게시 2020-11-03; 유출 시작 2020-04는 요약에 (발생 2020-04) 병기"
+SCI-051,text/BD.yaml:SC-BD-03 인용 줄,(2020-10),(2020-11),반영,사례명(시점) 동기화
+SCI-050,date,2020-10,2020-11,반영,제안 정정: 최초 공개 Sonatype 2020-11-02(패키지 게시 2020-10-30)
+SCI-050,text/DP.yaml:SCT-DP-01.2 인용 줄,(2020-10),(2020-11),반영,사례명(시점) 동기화
+SCI-098,actor,Carderbee(중국 연계),"Carderbee(Symantec 신규 명명, 기존 그룹과 확정 연결 불가)",반영,C 차이·제안 정정: Symantec(2023-08)은 중국 귀속을 서술하지 않음
+SCI-098,date,2023-08,2023-08,해당 없음,공개월 2023-08 일치
+SCI-098,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-114,date,2024-01,2024-02,반영,제안 정정: 최초 공개 ASEC·S2W 2024-02; 유포 시작 2023-12(TrustPKI)는 요약에 (발생 2023-12) 병기
+SCI-114,sources,"THN·BleepingComputer(2024-08 NCSC 권고 기사, SCI-115와 동일 URL)",+ AhnLab ASEC(2024) … | https://asec.ahnlab.com/en/61934/,반영,"제안 정정: Kimsuky 사례는 ASEC 링크로 보강(영문 블로그 2024-02-15, 열람 확인; 제목은 내용 기준 표기); BleepingComputer 항목은 NCSC 경보 근거라 유지"
+SCI-114,text/PB.yaml:SCT-PB-02.1 인용 줄,(2024-01),(2024-02),반영,사례명(시점) 동기화
+SCI-115,date,2024-04,2024-08,반영,제안 정정: 최초 공개 NCSC 권고 2024-08-05(BleepingComputer); 발생 2024-04는 요약에 (발생 2024-04) 병기
+SCI-115,summary,건설사·공공기관·지자체가 피해를 입었다고,건설·기계 업체가 표적이 됐다고,반영,C 차이·제안 정정: 건설사·공공기관·지자체는 Kimsuky 2024-01 사례의 피해
+SCI-115,text/PB.yaml:SC-PB-02 인용 줄,(2024-04),(2024-08),반영,사례명(시점) 동기화
+SCI-137,date,2024-11,2025-04,반영,제안 정정: 최초 공개 Kaspersky 2025-04-24; 침해 집중 기간 2024-11~2025-02는 요약에 이미 서술
+SCI-137,text/CS.yaml:SC-CS-05 인용 줄,(2024-11),(2025-04),반영,사례명(시점) 동기화
+SCI-110,summary,채용 담당자를 사칭 … 주된 표적이다.,"+ 2025-12~2026-07 WaterPlum 활동(3만 대·100여 개국·지갑 7천여 개·약 1,070만 달러·합동 경보 2026-09-18) 문장 추가",반영,"supplychain_updates.yaml 승인안(후보 NC-034): BleepingComputer(2026-09-19)·Infosecurity(2026-09-22) 열람, 합동 경보 원문은 미열람이라 수치는 보도 인용"
+SCI-110,actor,"Contagious Interview(G1052, 북한 연계)","Contagious Interview(G1052, 북한 연계) — 2025-12 이후 활동은 WaterPlum으로 추적(일본·미국·호주·독일 합동 경보)",반영,updates.yaml 승인안
+SCI-110,sct,"SCT-DE-01.2, SCT-DP-03.1","SCT-DE-01.2, SCT-DP-03.1, SCT-DE-01.1, SCT-IM-04",반영,updates.yaml 승인안(SC-DE-01·SC-IM-04 일치); 실제 사고 수 반영 여부는 validate로 점검
+SCI-110,sources,MITRE ATT&CK G1052,"+ BleepingComputer(2026) …, + Infosecurity Magazine(2026) …",반영,updates.yaml 승인안
+SCI-110,date,2023-11,2023-11,해당 없음,updates.yaml 근거: date는 최초 공개월 2023-11 유지
+SCI-110 문구,text/DE.yaml:SCT-DE-01.2 인용 줄,…정보탈취 악성코드를 감염시킴,…감염시켰고 2025-12~2026-07 WaterPlum 활동으로 최소 3만 대가 감염됨,반영,updates.yaml 승인 보강 내용을 대표 사례 문안에 동기화(시점 2023-11 유지)
+SCI-110 문구,integrated/DE.yaml 대표 사례,…정보탈취 악성코드를 감염시킴,…감염시켰고 2025-12~2026-07 WaterPlum 활동으로 최소 3만 대가 감염됨,반영,통합 대표 사례 문안 동기화
+SCI-110 문구,text/DE.yaml:SCT-DE-01.1·IM.yaml:SCT-IM-04 사례 줄,기존 사례 줄 유지,SCI-110 인용 줄 추가 안 함,해당 없음,두 행에 이미 [실제 사고] 사례가 있어 근거 수준 변동 없음; 매핑 추가만 반영
+SCI-021,summary,—,공격자가 … 개발망에 들어가(발생 2017-03) …,반영,규칙 1: 발생월(2017-03-11)이 공개월(2017-09)보다 크게 앞서 요약에 병기
+SCI-052,summary,—,… SUNBURST 백도어가 실렸다(발생 2019-09).,반영,규칙 1: 발생월 2019-09가 공개월 2020-12보다 크게 앞서 병기
+SCI-126,summary,—,… 퍼뜨렸다(발생 2022-11).,반영,규칙 1: 발생월 2022-11이 공개월 2024-03보다 크게 앞서 병기
+SCI-039,summary,—,… 배포했다(발생 2018-06).,반영,규칙 1: 발생월 2018-06이 공개월 2019-03보다 크게 앞서 병기
+SCI-004,summary,—,"… 캠페인으로(발생 2009 중반), …",반영,규칙 1: 발생 2009 중반~12월(Wikipedia)이 공개 2010-01보다 앞서 병기

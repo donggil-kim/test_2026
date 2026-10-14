@@ -34,7 +34,7 @@
   sources:
     - MITRE ATT&CK C0020 | https://attack.mitre.org/campaigns/C0020/
     - MITRE(Abrams·Weiss, 2008) Malicious Control System Cyber Security Attack Case Study | https://www.mitre.org/sites/default/files/pdf/08_1145.pdf
-    - RISI 사건 DB(2000) Maroochy Shire sewage spill | https://www.risidata.com/Database/Detail/maroochy-shire-sewage-spill
+    - RISI 사건 DB(2000) 마루치 하수 유출 | https://www.risidata.com/Database/Detail/maroochy-shire-sewage-spill
 
 - id: INC-002
   title: 2015 우크라이나 배전망 공격
@@ -148,7 +148,7 @@
   sources:
     - MITRE ATT&CK C0041 | https://attack.mitre.org/campaigns/C0041/
     - Dragos(2024) FROSTYGOOP ICS Malware | https://hub.dragos.com/hubfs/Reports/Dragos-FrostyGoop-ICS-Malware-Intel-Brief-0724_r2.pdf
-    - SecurityWeek(2024-07-23) FrostyGoop ICS malware left Ukrainian city's residents without heating | https://www.securityweek.com/frostygoop-ics-malware-left-ukrainian-citys-residents-without-heating/
+    - SecurityWeek(2024-07-23) FrostyGoop 악성코드로 우크라이나 도시 주민의 난방 중단 보도 | https://www.securityweek.com/frostygoop-ics-malware-left-ukrainian-citys-residents-without-heating/
 
 - id: INC-008
   title: 2025 폴란드 에너지 시설 와이퍼 공격
@@ -467,7 +467,7 @@
   ics: [T0866, T0829]
   sources:
     - 미국 원자력규제위원회(NRC) Information Notice 2003-14
-    - The Register(2003-08-20) Slammer worm crashed Ohio nuke plant network | https://www.theregister.com/2003/08/20/slammer_worm_crashed_ohio_nuke/
+    - The Register(2003-08-20) 슬래머 웜의 오하이오 원전 네트워크 마비 최초 보도 | https://www.theregister.com/2003/08/20/slammer_worm_crashed_ohio_nuke/
     - The Register(2003-09-03) 미 원자력규제위원회 통지 보도 | https://www.theregister.com/2003/09/03/us_warns_nuke_plants/
     - ISN 메일링 리스트(2003-09) SecurityFocus 보도 사본 | https://seclists.org/isn/2003/Sep/14
 
@@ -486,7 +486,7 @@
   ics: [T0863, T0826]
   sources:
     - CSX 발표(2003-08-20)
-    - RISI 사건 DB(2003) Sobig virus strikes CSX train signalling system | https://www.risidata.com/Database/Detail/sobig-virus-strikes-csx-train-signalling-system
+    - RISI 사건 DB(2003) CSX 열차 신호 시스템 Sobig 감염 | https://www.risidata.com/Database/Detail/sobig-virus-strikes-csx-train-signalling-system
 
 - id: INC-027
   title: 폴란드 우치 트램 선로 전환기 무단 조작
@@ -503,8 +503,8 @@
   ics: [T0860, T1692.001, T0879]
   sources:
     - The Telegraph(2008-01) 등 언론 보도(Telegraph 원문은 페이월)
-    - The Register(2008-01-11) Polish teen hacks tram system | https://www.theregister.com/2008/01/11/tram_hack/
-    - Wired(2008-01-11) Polish teen hacks into city tram system | https://www.wired.com/2008/01/polish-teen-hac/
+    - The Register(2008-01-11) 폴란드 청소년의 트램 시스템 해킹 보도 | https://www.theregister.com/2008/01/11/tram_hack/
+    - Wired(2008-01-11) 폴란드 청소년의 시내 트램 시스템 해킹 보도 | https://www.wired.com/2008/01/polish-teen-hac/
 
 - id: INC-028
   title: 미국 보먼 애비뉴 댐 SCADA 무단 접속
@@ -522,9 +522,9 @@
   ics: [T0883, T0801]
   sources:
     - 미국 법무부 기소 발표(2016-03)
-    - PBS NewsHour/AP(2016-03-24) Bowman Avenue Dam targeted by Iranian hackers, U.S. says | https://www.pbs.org/newshour/nation/banks-dam-targeted-by-iranian-hackers-u-s-says-7-charged
+    - PBS NewsHour/AP(2016-03-24) 이란 해커의 댐 표적 공격과 7명 기소 보도 | https://www.pbs.org/newshour/nation/banks-dam-targeted-by-iranian-hackers-u-s-says-7-charged
     - eWeek(2016-03-24) DOJ 이란 해커 기소 보도 | https://www.eweek.com/security/doj-charges-iran-hackers-for-hitting-new-york-dam/
-    - Bangor Daily News/Reuters(2015-12-21) Iranian hackers infiltrated computers of small dam in New York | https://www.bangordailynews.com/2015/12/21/news/iranian-hackers-infiltrated-computers-of-small-dam-in-ny/
+    - Bangor Daily News/Reuters(2015-12-21) 이란 해커의 뉴욕 소형 댐 컴퓨터 침입 보도 | https://www.bangordailynews.com/2015/12/21/news/iranian-hackers-infiltrated-computers-of-small-dam-in-ny/
 
 - id: INC-029
   title: 독일 제철소 용광로 손상
@@ -581,7 +581,7 @@
   sources:
     - Verizon(2016-03) 2016 Data Breach Digest
     - IT Jungle(2016-03-16) Verizon Data Breach Digest의 Kemuri Water Company 사례 소개 | https://itjungle.com/newsletter/tfh-volume-26-issue-13-tfh-volume-26-tfh-tfh
-    - RISI 사건 DB(2016) Kemuri Water Company breach | https://www.risidata.com/Database/Detail/kemuri-water-company-breach
+    - RISI 사건 DB(2016) Kemuri Water Company 침해 | https://www.risidata.com/Database/Detail/kemuri-water-company-breach
 
 - id: INC-032
   title: Mirai IoT 봇넷과 대규모 DDoS
@@ -599,9 +599,9 @@
   ent: [T1496.002]
   sources:
     - 미국 법무부 발표(2017-12)
-    - iTWire(2017-12-13) Three men plead guilty to operating Mirai botnet | https://itwire.com/security/81186-three-men-plead-guilty-to-operating-mirai-botnet.html
-    - TechTarget(2017-12-13) Mirai creators and operators plead guilty to federal charges | https://www.techtarget.com/searchsecurity/news/450431879/Mirai-creators-and-operators-plead-guilty-to-federal-charges
-    - KrebsOnSecurity(2016-10-21) Hacked cameras DVRs powered today's massive internet outage | https://krebsonsecurity.com/2016/10/hacked-cameras-dvrs-powered-todays-massive-internet-outage/
+    - iTWire(2017-12-13) 3인의 Mirai 봇넷 운영 유죄 인정 보도(DOJ 발표 인용) | https://itwire.com/security/81186-three-men-plead-guilty-to-operating-mirai-botnet.html
+    - TechTarget(2017-12-13) Mirai 제작자·운영자의 연방 혐의 유죄 인정 보도(DOJ 발표 인용) | https://www.techtarget.com/searchsecurity/news/450431879/Mirai-creators-and-operators-plead-guilty-to-federal-charges
+    - KrebsOnSecurity(2016-10-21) 해킹된 카메라·DVR이 일으킨 대규모 인터넷 장애 | https://krebsonsecurity.com/2016/10/hacked-cameras-dvrs-powered-todays-massive-internet-outage/
 
 - id: INC-033
   title: 핀란드 아파트 난방 제어 시스템 DDoS
@@ -641,7 +641,7 @@
     - ZDNet(2017-04) Experts think they know how Dallas emergency sirens were hacked | https://www.zdnet.com/article/experts-think-they-know-how-dallas-emergency-sirens-were-hacked/
     - MITRE EMB3D TID-407 Missing Message Replay Protection | https://emb3d.mitre.org/threats/TID-407.html
     - 댈러스시(2017-04-10) 사이렌 침해 공지 | https://content.govdelivery.com/bulletins/gd/TXDALLAS-1936de1
-    - StateTech(2017-04-13) Dallas reveals radio signals, not network hack, triggered emergency sirens | https://statetechmagazine.com/article/2017/04/dallas-reveals-radio-signals-not-network-hack-triggered-emergency-sirens
+    - StateTech(2017-04-13) 댈러스시의 무선 신호 침해 발표 보도 | https://statetechmagazine.com/article/2017/04/dallas-reveals-radio-signals-not-network-hack-triggered-emergency-sirens
 
 - id: INC-035
   title: IoT 기기 파괴 악성코드(BrickerBot)
@@ -747,6 +747,8 @@
   ics: [T0883, T0836]
   sources:
     - 이스라엘 국가사이버국(INCD) 경보(2020-04)
+    - Kaspersky ICS CERT(2020-04-29) 이스라엘 상하수도 시설 사이버 공격 | https://ics-cert.kaspersky.com/publications/israel-water-cyberattacks/
+    - Security Affairs(2020-04-27) 이스라엘 수도 시설 공격 보도 | https://securityaffairs.com/102361/hacking/israeli-water-facilities-attacked.html
 
 - id: INC-041
   title: 올즈마 정수장 수산화나트륨 설정값 변경
@@ -799,7 +801,7 @@
   ics: [T0822, T0859, T0831]
   sources:
     - 미국 법무부 발표(2021-03)
-    - CyberScoop(2021-04-01) Kansas man charged with tampering with water district systems | https://cyberscoop.com/kansas-ellsworth-water-district-hack-travnichek/
+    - CyberScoop(2021-04-01) 캔자스 수도조합 침입 혐의 기소 보도 | https://cyberscoop.com/kansas-ellsworth-water-district-hack-travnichek/
     - Security Affairs(2021-04-02) 미국 상수도 시설 해킹 기소 보도 | https://securityaffairs.com/116238/cyber-crime/public-water-system-hack.html
 
 - id: INC-044
@@ -821,7 +823,7 @@
     - 미국 상원 국토안보위원회 청문회 증언(2021-06)
     - FBI 성명(2021-05)
     - Cybersecurity Dive(2021-06-09) 콜로니얼 CEO 상원 청문회 증언 보도 | https://www.cybersecuritydive.com/news/colonial-Joseph-Blount-ransomware-legacy-vpn/601523/
-    - Bloomberg 전재 Al Jazeera(2021-06-04) Hackers breached Colonial Pipeline using compromised password | https://www.aljazeera.com/economy/2021/6/4/hackers-breached-colonial-pipeline-with-one-compromised-password
+    - Bloomberg 전재 Al Jazeera(2021-06-04) 유출된 암호 하나로 Colonial Pipeline 침해 | https://www.aljazeera.com/economy/2021/6/4/hackers-breached-colonial-pipeline-with-one-compromised-password
 
 - id: INC-045
   title: JBS 식육 가공 공장 랜섬웨어(REvil)
@@ -842,7 +844,7 @@
     - JBS USA 발표(2021-06)
     - FBI 성명(2021-06)
     - TechTarget(2021-06) JBS USA paid $11M ransom to REvil hackers | https://www.techtarget.com/cybersecurity/news/252502288/JBS-USA-paid-11M-ransom-to-REvil-hackers
-    - Business Insurance/Reuters(2021-06-10) Meatpacker JBS says it paid $11 million in ransomware attack | https://www.businessinsurance.com/meatpacker-jbs-says-it-paid-11-million-in-ransomware-attack-cryptocurrency-bitc/
+    - Business Insurance/Reuters(2021-06-10) JBS의 1,100만 달러 몸값 지급 보도 | https://www.businessinsurance.com/meatpacker-jbs-says-it-paid-11-million-in-ransomware-attack-cryptocurrency-bitc/
 
 - id: INC-046
   title: 몰슨 쿠어스 양조 운영 차질
@@ -869,13 +871,15 @@
   relevance: IT 경유 OT 영향
   country: 이란
   sector: 교통
-  actor: Predatory Sparrow
+  actor: 미상(Indra 자칭; 후속 분석에서 Predatory Sparrow와 연계 서술)
   impact: [운영 중단]
   summary: >-
     와이퍼(Meteor)로 이란 철도 시스템을 파괴해 열차 지연·취소가 잇따랐고, 역 전광판에는 문의처로 최고지도자실 번호가 떴다.
   ics: [T0809, T0828]
   sources:
-    - SentinelOne(2021-07) MeteorExpress
+    - SentinelOne(2021-07-29) MeteorExpress | https://www.sentinelone.com/labs/meteorexpress-mysterious-wiper-paralyzes-iranian-trains-with-epic-troll/
+    - Check Point Research(2021-08-14) Indra — Hackers Behind Recent Attacks on Iran | https://research.checkpoint.com/2021/indra-hackers-behind-recent-attacks-on-iran/
+    - Check Point Research(2022-07-04) 4th July Threat Intelligence Report | https://research.checkpoint.com/2022/4th-july-threat-intelligence-report/
 
 - id: INC-048
   title: 이란 주유소 연료 배급 시스템 마비(2021)
@@ -894,7 +898,7 @@
     - 이란 정부 발표·언론 보도(2021-10)
     - Wikipedia(2021) 2021 Iranian fuel cyberattack | https://en.wikipedia.org/wiki/2021_Iranian_fuel_cyberattack
     - Al Jazeera(2023-12-18) Iran says cyberattack disrupts petrol stations across country | https://www.aljazeera.com/news/2023/12/18/iran-says-cyberattack-disrupts-petrol-stations-across-country
-    - RISI 사건 DB(2021) Iran fuel stations Predatory Sparrow | https://www.risidata.com/Database/Detail/iran-fuel-stations-predatory-sparrow-2021
+    - RISI 사건 DB(2021) 이란 주유소 마비 | https://www.risidata.com/Database/Detail/iran-fuel-stations-predatory-sparrow-2021
 
 - id: INC-049
   title: 이란 제철소 생산 중단(Predatory Sparrow)
@@ -907,11 +911,13 @@
   actor: Predatory Sparrow
   impact: [운영 중단]
   summary: >-
-    이란 철강사 3곳이 공격을 받아 생산을 멈췄다. 공격 그룹은 쇳물이 쏟아지며 불이 난 영상을 공개했으나 물리적 피해의 규모는 확인되지 않았다.
+    공격 그룹은 이란 철강사 3곳을 공격했다고 주장했고, 그중 Khuzestan이 작업을 멈춘 것으로 보도됐다(사측은 피해 부인). 공격 그룹은
+    쇳물이 쏟아지며 불이 난 영상을 공개했으나 물리적 피해의 규모는 확인되지 않았다.
   ics: [T0828]
   sources:
-    - Check Point Research(2022-07)
-    - 언론 보도(2022-06)
+    - Check Point Research(2022-07-04) 4th July Threat Intelligence Report | https://research.checkpoint.com/2022/4th-july-threat-intelligence-report/
+    - Iran International(2022-06-27) Predatory Sparrow의 이란 철강사 해킹 주장 보도 | https://cdn.iranintl.com/en/202206274256
+    - BBC(2022-07-10) 이란 제철소 쇳물 분출·화재 영상 보도 | https://bbc.in/3PgDcZU
 
 - id: INC-050
   title: 위성 모뎀 파괴에 따른 풍력 발전기 원격 감시 상실(AcidRain)
@@ -928,7 +934,7 @@
     Enercon 풍력 발전기 약 5,800기의 원격 감시가 끊겼다(발전은 계속됨).
   ics: [T0809, T0829]
   sources:
-    - SentinelOne(2022-03-31) AcidRain, A Modem Wiper Rains Down on Europe | https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/
+    - SentinelOne(2022-03-31) AcidRain | https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/
     - EU 이사회 성명(2022-05)
     - 영국 정부(2022-05-10) Russia behind cyber attack with Europe-wide impact an hour before Ukraine invasion | https://www.gov.uk/government/news/russia-behind-cyber-attack-with-europe-wide-impact-an-hour-before-ukraine-invasion
     - pv magazine(2022-03-01) 위성 통신 공격으로 독일 풍력 발전기 원격 감시 마비(통신 두절 시 자동 운전) | https://pv-magazine.com/2022/03/01/satellite-cyber-attack-paralyzes-11gw-of-german-wind-turbines
@@ -950,7 +956,7 @@
   sources:
     - Oiltanking·Mabanaft 성명(2022-01-31) | https://www.mbenergy.com/en/press-releases/statement-from-oiltanking-gmbh-group-and-mabanaft-gmbh-co-kg-group
     - Industrial Cyber(2022-02-04) 유럽 전역 사이버 공격, BlackCat 랜섬웨어 연루 가능성 | https://industrialcyber.co/news/cyberattacks-continue-to-extend-across-europe-blackcat-ransomware-may-be-involved/
-    - CyberScoop(2022-02-01) Major German fuel storage provider hit with cyberattack, working under limited operations | https://cyberscoop.com/major-german-fuel-storage-provider-hit-with-cyberattack-working-under-limited-operations/
+    - CyberScoop(2022-02-01) 독일 연료 저장업체 사이버 공격과 제한 운영 보도 | https://cyberscoop.com/major-german-fuel-storage-provider-hit-with-cyberattack-working-under-limited-operations/
 
 - id: INC-052
   title: 협력업체 공격에 따른 도요타 일본 공장 전면 중단
@@ -989,7 +995,7 @@
     - Bridgestone Americas 발표(2022-02)
     - BleepingComputer(2022-03-11) Bridgestone Americas confirms ransomware attack, LockBit leaks data | https://www.bleepingcomputer.com/news/security/bridgestone-americas-confirms-ransomware-attack-lockbit-leaks-data/
     - Security Affairs(2022-03-13) 브리지스톤 아메리카스 랜섬웨어 피해와 LockBit 유출 시한 보도 | https://securityaffairs.com/?p=128957
-    - Modern Tire Dealer(2022-03-16) Bridgestone data hacked in attack | https://www.moderntiredealer.com/articles/33137-bridgestone-data-hacked-in-attack
+    - Modern Tire Dealer(2022-03-16) 브리지스톤 공격 후 가동 복구 보도 | https://www.moderntiredealer.com/articles/33137-bridgestone-data-hacked-in-attack
 
 - id: INC-054
   title: 돌(Dole) 랜섬웨어에 따른 생산·출하 중단
@@ -1008,7 +1014,7 @@
   sources:
     - Dole plc 발표(2023-02)
     - The Register(2023-02-23) Dole 랜섬웨어 사고 보도 | https://www.theregister.com/2023/02/23/dole_ransomware_attack/
-    - Bitdefender(2023-02-23) Food giant Dole hit by ransomware, halts North American production temporarily | https://www.bitdefender.com/en-us/blog/hotforsecurity/food-giant-dole-hit-by-ransomware-halts-north-american-production-temporarily/
+    - Bitdefender(2023-02-23) Dole 랜섬웨어 피해와 북미 생산 일시 중단 보도 | https://www.bitdefender.com/en-us/blog/hotforsecurity/food-giant-dole-hit-by-ransomware-halts-north-american-production-temporarily/
 
 - id: INC-055
   title: 덴마크 에너지 기업 22곳 경계 방화벽 침해
@@ -1065,7 +1071,7 @@
   ics: [T0860, T1692.001, T0826]
   sources:
     - 폴란드 정부·철도 당국 발표(2023-08)
-    - The Record(2023-08-29) Two arrested in Poland over railway radio-stop attack | https://therecord.media/two-arrested-poland-railway-hack
+    - The Record(2023-08-29) 폴란드 철도 무선 정지 신호 공격 용의자 2명 체포 보도 | https://therecord.media/two-arrested-poland-railway-hack
     - AP(KSAT 게재, 2023-08-28) 폴란드, 무단 무선 신호에 따른 열차 운행 차질 조사 | https://www.ksat.com/business/2023/08/28/poland-is-investigating-disruptions-to-train-traffic-from-unauthorized-radio-signals/
 
 - id: INC-058
@@ -1079,10 +1085,15 @@
   actor: 미상
   impact: [운영 중단]
   summary: >-
-    사이버 공격으로 일부 시스템이 손상돼 수작업 운영으로 전환하면서 생산과 주문 처리가 크게 줄었다고 SEC 공시(8-K)로 밝혔다.
+    사이버 공격으로 일부 시스템이 손상돼 수작업 운영으로 전환하면서 생산과 주문 처리가 크게 줄었다. 2023-08-14 8-K는 비인가 활동
+    탐지와 일부 시스템 오프라인·우회 운영까지만 밝혔고, 생산·주문 처리 차질과 IT 시스템 손상은 2023-09-18 8-K에서
+    공시했다(수작업 주문 처리는 2023-08-17 사업연속성 계획 가동 이후). 최초 침입은 2023-08-11로 추정된다.
   ics: [T0828]
   sources:
-    - Clorox SEC 8-K(2023-08)
+    - Clorox SEC 8-K(2023-08-14; 후속 2023-09-18)
+    - CFO Dive(2023-09-18) Clorox, 사이버 공격 후 공급 부족 경고 보도 | https://www.cfodive.com/news/clorox-warns-shortages-cyberattack/694066/
+    - National CIO Review(2023-10-02) Clorox 사이버 공격 경과 정리 | https://nationalcioreview.com/articles-insights/news/a-bleach-breach-timeline-of-the-clorox-cyberattack/
+    - Board Cybersecurity(2023-08-14) Clorox 사이버 사고 공시 | https://www.board-cybersecurity.com/incidents/tracker/20230814-clorox-co-de-cybersecurity-incident
 
 - id: INC-059
   title: DP World 호주 항만 운영 중단
@@ -1099,6 +1110,8 @@
   ics: [T0828]
   sources:
     - DP World 호주 발표(2023-11)
+    - Expeditors(2023-11-13) DP World Australia 운영 영향 공지 | https://info.expeditors.com/operational-impact/australia-dpworld-111323
+    - Security Affairs(2023-11-14) DP World 호주 항만 운영 중단 보도 | https://securityaffairs.com/154145/cyber-crime/dp-world-australian-ports-blocked.html
 
 - id: INC-060
   title: 이란 주유소 시스템 마비(2023)
@@ -1287,8 +1300,8 @@
     - JLR 발표(2025-09)
     - 영국 정부 발표(2025-09)
     - Infosecurity Magazine(2025-09-02) JLR 사이버 사고로 생산·판매 차질 보도 | https://www.infosecurity-magazine.com/news/jaguar-cyber-incident-disrupts/
-    - BleepingComputer(2025-09-29) UK govt backs JLR with 1.5 billion pound loan guarantee after cyberattack | https://www.bleepingcomputer.com/news/security/uk-govt-backs-jlr-with-15-billion-loan-guarantee-after-cyberattack/
-    - The Record(2025-10-07) Jaguar Land Rover restarting production after cyberattack | https://therecord.media/jaguar-land-rover-restarting-production-after-cyberattack
+    - BleepingComputer(2025-09-29) 영국 정부의 JLR 15억 파운드 대출 보증 보도 | https://www.bleepingcomputer.com/news/security/uk-govt-backs-jlr-with-15-billion-loan-guarantee-after-cyberattack/
+    - The Record(2025-10-07) JLR 생산 재가동 보도 | https://therecord.media/jaguar-land-rover-restarting-production-after-cyberattack
 
 - id: INC-071
   title: 아사히그룹 랜섬웨어에 따른 맥주 공장 가동 중단
@@ -1301,11 +1314,15 @@
   actor: 미상(Qilin 주장)
   impact: [운영 중단]
   summary: >-
-    랜섬웨어 공격으로 수주·출하 시스템이 멈추면서 아사히의 일본 내 공장 대부분이 생산을 중단했다.
+    2025-09-29 공개된 랜섬웨어 공격으로 수주·출하 시스템이 멈추면서 아사히의 일본 내 공장 대부분이 생산을 중단했다. 생산 시스템
+    자체는 직접 감염되지 않았다고 보도됐고, 이후 일부 품목의 생산이 재개됐으나 주문은 한동안 팩스·수기로 처리됐다. 회사는 10월 3일
+    개인정보 유출 가능성을 밝혔고, Qilin이 유출 사이트에 약 9,300개 파일(약 27GB)을 탈취했다고 주장했다.
   ics: [T0828]
   ent: [T1486]
   sources:
     - 아사히그룹홀딩스 발표(2025-10)
+    - Silicon UK(2025) Russian Qilin Group Takes Credit For Asahi Hack | https://www.silicon.co.uk/security/cyberwar/qilin-asahi-hack-626891
+    - 'inside.beer(2025) Japan: Asahi Confirms Ransomware Attack and Possible Data Breach | https://www.inside.beer/news/detail/japan-asahi-confirms-ransomware-attack-and-possible-data-breach'
 
 - id: INC-072
   title: 캐나다 인터넷 노출 ICS 핵티비스트 조작
@@ -1354,10 +1371,12 @@
   actor: 핵티비스트 집단
   impact: [운영 정보 탈취]
   summary: >-
-    인터넷에 노출된 서버에서 찾은 관리자 계정으로 Verkada의 클라우드 관리 플랫폼에 접속해 병원·공장·교도소 등 고객사 카메라 약 15만 대의 영상을 열람했다.
+    인터넷에 노출된 서버에서 찾은 관리자 계정으로 Verkada의 클라우드 관리 플랫폼에 접속했다. 해커는 병원·공장·교도소 등 고객사 카메라
+    약 15만 대 접근 권한을 주장했으나, Verkada 조사 결과 고객사 97곳 카메라 4,530대에서 영상·이미지가 열람됐다.
   ics: [T0859, T0882]
   sources:
-    - Verkada 발표(2021-03)
+    - Verkada(2021-03) 사고 보고서 | https://verkada.com/security-update/report
+    - IPVM(2021-03-09) Verkada hack 보도 | https://ipvm.com/reports/verkada-hack
 
 - id: INC-075
   title: Ring 가정용 카메라 계정 탈취
@@ -1431,7 +1450,7 @@
   ics: [T0843, T0889]
   sources:
     - Biham 외(2019) Rogue7, Black Hat USA | https://infocondb.org/con/black-hat/black-hat-usa-2019/rogue7-rogue-engineering-station-attacks-on-s7-simatic-plcs
-    - eeNews Europe(2019-08-09) Researchers compromise secure Siemens PLC | https://www.eenewseurope.com/news/researchers-compromise-secure-siemens-plc-cyberattack
+    - eeNews Europe(2019-08-09) 연구진의 보안 Siemens PLC 공략 보도 | https://www.eenewseurope.com/news/researchers-compromise-secure-siemens-plc-cyberattack
 
 - id: INC-079
   title: S7-1500 펌웨어 무결성 검증 우회 시연
