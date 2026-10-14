@@ -258,7 +258,57 @@ def cmd_normalize():
     print("정렬:", dict(n))
 
 
+XC_DIR = os.path.join(VDIR, "crosscheck")
+SEVERITY = {"통과": "정정 없음", "경미 수정": "정정 없음", "수정 필요": "정정", "확인 불가": "정정", "구조적 검증 불가": "구조"}
+
+
+def cmd_crosscheck():
+    """블라인드 교차 검수(crosscheck/XC-*.csv)를 원장 '최종 판정'과 비교 — XC_compare.csv와 일치율."""
+    led = {x["원장 키"]: x for x in read_csv(LEDGER)}
+    out, n = [], collections.Counter()
+    for f in sorted(glob.glob(os.path.join(XC_DIR, "XC-[0-9]*.csv"))):
+        if f.endswith("_input.csv"):
+            continue
+        for y in read_csv(f):
+            x = led.get(y["원장 키"])
+            if not x or not y.get("종합 판정"):
+                continue
+            a, b = x["최종 판정"] or x["종합 판정"], y["종합 판정"]
+            exact, sev = a == b, SEVERITY.get(a) == SEVERITY.get(b)
+            n["행"] += 1; n["판정 일치"] += exact; n["정정 여부 일치"] += sev
+            n["B 일치"] += x["B 시점"] == y["B 시점"]
+            out.append({"원장 키": x["원장 키"], "사례명": x["사례명"], "원장 판정": a, "교차 판정": b,
+                        "일치": "일치" if exact else ("정정 여부 일치" if sev else "불일치"),
+                        "원장 B": x["B 시점"], "교차 B": y["B 시점"], "원장 공개월": x["공개월"], "교차 공개월": y["공개월"],
+                        "원장 제안 정정": x["제안 정정"], "교차 제안 정정": y["제안 정정"],
+                        "교차 근거 URL": y["근거 URL"], "교차 검증자": y["검증자"]})
+    write_csv(os.path.join(XC_DIR, "XC_compare.csv"), out, list(out[0]) if out else ["원장 키"])
+    t = n["행"] or 1
+    print(f"비교 {n['행']}행 · 판정 일치 {n['판정 일치']} ({n['판정 일치']/t:.0%}) · 정정 여부 일치 {n['정정 여부 일치']} ({n['정정 여부 일치']/t:.0%}) · B 일치 {n['B 일치']} ({n['B 일치']/t:.0%})")
+    print(collections.Counter((r["원장 판정"], r["교차 판정"]) for r in out if r["일치"] != "일치"))
+
+
+CORR_DIR = os.path.join(VDIR, "corrections")
+DB_OF_KEY = [("CL/", "cloud"), ("OT/", "ot"), ("SCI-", "supplychain"), ("IDI-", "identity"), ("PHI-", "physical")]
+WL_COLS = ["원장 키", "원본 사례 ID", "사례명", "시점", "최종 판정", "B 시점", "공개월", "발생월", "C 차이", "D 제안",
+           "E 메모", "F 묶음", "G 문안", "G 메모", "제안 정정", "근거 URL", "대표 사례 인용 위협", "인용 문안"]
+
+
+def cmd_worklist():
+    """Phase 5 정정 작업 목록 — 원본 DB별 corrections/<db>_worklist.csv (최종 판정 경미 수정·수정 필요)."""
+    os.makedirs(CORR_DIR, exist_ok=True)
+    by = collections.defaultdict(list)
+    for x in read_csv(LEDGER):
+        if x["최종 판정"] not in ("경미 수정", "수정 필요"):
+            continue
+        db = next((d for p, d in DB_OF_KEY if x["원장 키"].startswith(p)), "external")
+        by[db].append({c: x.get(c, "") for c in WL_COLS})
+    for db, rs in sorted(by.items()):
+        write_csv(os.path.join(CORR_DIR, f"{db}_worklist.csv"), rs, WL_COLS)
+        print(db, len(rs), collections.Counter(r["최종 판정"] for r in rs))
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "stats"
-    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats, "expand": cmd_expand, "normalize": cmd_normalize}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
+    {"init": cmd_init, "merge": cmd_merge, "stats": cmd_stats, "expand": cmd_expand, "normalize": cmd_normalize, "crosscheck": cmd_crosscheck, "worklist": cmd_worklist}.get(cmd, lambda: cmd_batch(cmd if cmd != "batch" else sys.argv[2]))() \
         if cmd != "batch" else cmd_batch(sys.argv[2])

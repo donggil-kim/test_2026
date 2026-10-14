@@ -27,6 +27,9 @@ OUT = os.path.join(HERE, "output", f"통합_클라우드보안위협_매트릭�
 SRC_ATTACK = os.path.join(HERE, "data", "enterprise-attack-v19.2-techniques.xlsx")
 OVERRIDE = os.path.join(HERE, "data", "threat_text_override.csv")
 TEMPLATE = os.path.join(HERE, "output", "threat_text_template.csv")
+# 사고 DB 정정·추가(통합 v4 사고사례 검증, F4) — 원본 xlsx는 그대로 두고 로더가 적용
+INC_CORR = os.path.join(HERE, "data", "incident_corrections.csv")
+INC_ADD = os.path.join(HERE, "data", "incident_additions.csv")
 OV_COLS = ["ATT&CK ID", "ATT&CK 기법명", "Cloud 범위", "현재 요약설명(참고용)",
            "세부위협명(입력)", "요약설명(입력)", "참조(입력)", "탐지·대응(입력)"]
 
@@ -104,10 +107,29 @@ def load_skeleton():
 # ---------------------------------------------------------------------------
 # 2) 사고 DB → 기법 매핑 (초안 ID + 키워드/근본원인 규칙)
 # ---------------------------------------------------------------------------
-def load_incidents(valid_tids):
+def load_incident_rows():
+    """사고 DB 행(리스트) — xlsx 원본 + 추가 CSV, 정정 CSV(사건ID·필드·정정값) 적용."""
     wb = openpyxl.load_workbook(SRC_INC, read_only=True)
+    it = wb.worksheets[0].iter_rows(values_only=True)
+    head = list(next(it))
+    rows = [list(r) for r in it if r[0]]
+    if os.path.exists(INC_ADD):
+        with open(INC_ADD, encoding="utf-8-sig") as f:
+            rows += [[d.get(h) or None for h in head] for d in csv.DictReader(f) if d.get("사건ID")]
+    if os.path.exists(INC_CORR):
+        idx = {r[0]: r for r in rows}
+        with open(INC_CORR, encoding="utf-8-sig") as f:
+            for c in csv.DictReader(f):
+                r, fld = idx.get(c["사건ID"]), c["필드"]
+                if r is None or fld not in head:
+                    raise SystemExit(f"정정 CSV 오류: {c['사건ID']} {fld}")
+                r[head.index(fld)] = c["정정값"]
+    return rows
+
+
+def load_incidents(valid_tids):
     incs = []
-    for r in wb.worksheets[0].iter_rows(min_row=2, values_only=True):
+    for r in load_incident_rows():
         e = dict(id=r[0], title=r[1] or "", summary=r[2] or "", kind=r[3] or "",
                  src=r[4] or "", org=r[5] or "", actor=r[6] or "", date=str(r[7] or ""),
                  rel=r[8] or "", layer=r[9] or "", root=r[11] or r[10] or "",

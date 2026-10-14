@@ -2755,3 +2755,173 @@
   sct: [SCT-DE-03.2, SCT-DP-03.1, SCT-IM-03]
   sources:
     - The Hacker News(2026) Researchers find 341 malicious ClawHub skills | https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html
+
+# ── 통합 v4 사고사례 검증 W2 — 신규 사고(2026-10, 후보 NC-xxx는 integrated/data/verification/new_incident_candidates.csv) ──
+# NC-008
+# 매핑: 후보의 SC-CS-03(공급업체 위임 권한·연동 토큰 경유)은 침입 경로 미공개라 근거 없음 → 가용성 훼손(IM-05)과 다수 공항 동시 피해(IM-01.1)만 매핑 / 랜섬웨어 변종·체포 보도는 단일 출처 요약 단계라 미기재 / 공격 대상이 IT(SaaS)라 OT DB 대신 공급망 DB
+- id: SCI-168
+  title: Collins Aerospace MUSE 탑승 수속 시스템 랜섬웨어(유럽 공항 수속 마비)
+  date: 2025-09
+  kind: 사고
+  verification: 정부·사법 확인
+  ecosystem: [상용 소프트웨어]
+  region: 유럽
+  actor: 미상(랜섬웨어 조직 미공개)
+  impact: [서비스 중단]
+  summary: >-
+    2025-09-19~20 RTX 자회사 Collins Aerospace의 공용 탑승 수속 소프트웨어 MUSE가 사이버 공격으로 멈춰
+    히스로·브뤼셀·베를린 등 유럽 공항에서 수동 수속으로 전환되고 지연·결항이 이어졌다. EU 사이버보안청 ENISA는 서드파티 서비스 공급자가 랜섬웨어
+    사고를 겪었다고 확인했고 법 집행기관이 수사에 나섰다. 한 공급업체 소프트웨어의 마비가 여러 공항의 운영 중단으로 번진 사례다. 침입 경로는 공개되지
+    않았다.
+  sct: [SCT-IM-05, SCT-IM-01.1]
+  sources:
+    - Security Affairs(2025) EU agency ENISA says ransomware attack behind airport disruptions | https://securityaffairs.com/182440/security/eu-agency-enisa-says-ransomware-attack-behind-airport-disruptions.html
+    - Information Age(2025) Ransomware causes mayhem at European airports | https://ia.acs.org.au/article/2025/ransomware-causes-mayhem-at-european-airports.html
+    - GRC Report(2025) Ransomware Attack Disrupts Airport Check-In Systems Across Europe | https://www.grcreport.com/post/ransomware-attack-disrupts-airport-check-in-systems-across-europe
+
+# NC-011
+# 매핑 약함: 침입 경로·행위자 미공개라 후보의 SC-CS-03(공급업체 계정·연동 토큰 경유)은 근거 없음 → 공급업체 침해의 다수 고객사 피해(IM-01.1)로 잠정 매핑 / ING는 배송 정보만 영향
+- id: SCI-169
+  title: CEVA Logistics 유럽 창고 8곳 침해와 고객사 연쇄 유출(Valve·ING·Bol 등)
+  date: 2026-08
+  kind: 사고
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 유럽
+  actor: 미상
+  impact: [데이터 반출, 서비스 중단]
+  summary: >-
+    CMA CGM 자회사 CEVA Logistics의 계약 물류 시스템이 2026-07-29~08-01 침해돼 유럽 창고 8곳의 운영에 차질이 생겼다.
+    CEVA는 영향받은 고객사에 8월 1일 통지했다고 밝혔고, Valve·Bol·De Bijenkorf·Ajax·ING 등 고객사가 배송 고객의
+    이름·주소·전화번호·이메일이 유출됐을 수 있다며 각자 고객에게 알렸다. 침입 경로와 행위자는 공개되지 않았다.
+  sct: [SCT-IM-01.1]
+  sources:
+    - TechCrunch(2026) A data breach at shipping giant Ceva Logistics is rippling across banks, retailers, Steam gamers, and beyond | https://techcrunch.com/?p=3151452
+    - Infosecurity Magazine(2026) Logistics Giant Ceva Suffers Data Breach Impacting European Clients | https://www.infosecurity-magazine.com/news/logistics-ceva-data-breach/
+
+# NC-015
+# 개발자 PC 악성코드 감염·GA 14개사 접속 정보 유출, 유퍼스트 349명·하나금융파인드 199명은 원문 미확인이라 미기재(후보 메모) / 신원 측 ID-AU-01은 공급망 DB 범위 밖
+- id: SCI-170
+  title: 보험영업지원 IT업체(지넥슨) 관리자 계정 정보 노출로 GA 고객정보 유출(유퍼스트·하나금융파인드)
+  date: 2025-04
+  kind: 사고
+  verification: 정부·사법 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 한국
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    GA(법인보험대리점) 업계에 영업지원 전산 솔루션을 제공하는 IT업체 지넥슨의 영업지원시스템 관리자 계정 로그인 정보가 2025-04-22
+    노출·도용되면서 이 시스템을 쓰는 유퍼스트보험마케팅과 하나금융파인드의 고객정보가 유출된 정황이 확인됐다. 대부분의 GA가 같은 IT업체의 시스템을 쓰고
+    있어 금융감독원은 보험사에 다른 GA도 자체 점검하도록 요청했다. 개인정보보호위원회는 2025-05-08 두 GA의 유출 신고를 접수해 조사에 착수하고
+    보험사-GA 통합 솔루션 실태점검을 예고했다.
+  sct: [SCT-CS-02.3, SCT-IM-01.1]
+  sources:
+    - 파이낸셜뉴스(2025) GA 전산망 뚫렸다…금감원, GA업계 자체 보안 점검 요청 | https://www.fnnews.com/news/202504281617119268
+    - 뉴스서울(2025) 개인정보위, ′법인보험대리점(GA)′ 영업지원시스템 개인정보 유출조사 착수 | https://www.newsseoul.co.kr/news/view/1065586819772162
+    - 청년일보(2025) ‘해킹’ 당한 보험대리점 "고객정보 유출"…GA업계 전방위 조사 '촉각' | https://www.youthdaily.co.kr/news/article.html?no=184697
+
+# NC-027
+# 매핑 약함: 공급업체명·침입 경로 미공개(수백 개 기업 영향 가능성 보도) — 같은 시기 Metabase 제로데이(SCI-172)와의 관련은 확인되지 않아 추정하지 않음 / 피해 약 20만 명은 보도 수치
+- id: SCI-171
+  title: 이스라엘 최대 가상자산 브로커 Bits of Gold 제3자 분석 시스템 경유 고객정보 노출
+  date: 2026-08
+  kind: 사고
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 이스라엘
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    Bits of Gold는 2026-08-16 고객 지원·데이터 분석에 쓰는 제3자 시스템에 무단 접근이 있어 이름·신분증
+    번호·이메일·전화번호·IP·은행 계좌 정보가 노출됐을 수 있다고 고객에게 알렸다. 회사는 자금·가상자산·비밀번호·신분증 사본·카드 전체 정보는 영향받지
+    않았다고 밝혔다. 피해 규모 약 20만 명은 보도 수치이며 회사가 확인한 것이 아니다. 공급업체명과 침입 경로는 공개되지 않았다.
+  sct: [SCT-IM-01.1]
+  sources:
+    - crypto.news(2026) Israel crypto broker Bits of Gold probes customer data breach | https://crypto.news/bits-of-gold-probes-customer-data-breach/
+    - Crypto Briefing(2026) Bits of Gold reported to have suffered data breach affecting 200,000 customers | https://cryptobriefing.com/bits-of-gold-data-breach-200000-customers/
+
+# NC-030
+# 공개 시 CVE 없음(KEV 해당 없음) / 전체 피해 기관 수 미공개 / 금융기관 피해는 확인되지 않음(NC-027·NC-029와의 연관 미확인)
+- id: SCI-172
+  title: Metabase Cloud SQL 인젝션 제로데이(CVSS 10) 악용으로 고객사 데이터 탈취(Framework·Tally·Kilo Code)
+  date: 2026-08
+  kind: 캠페인
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 글로벌
+  actor: 미상
+  impact: [데이터 반출, 자격증명·비밀 탈취]
+  summary: >-
+    BI 도구 Metabase의 미인증 SQL 인젝션 제로데이(CVSS 10, 1.58 이상 버전)가 Metabase Cloud를 겨냥해 실제로 악용됐다.
+    공격자는 관리자 권한을 얻어 설정을 바꾸고 연결된 데이터베이스 자격증명을 훔쳐 데이터를 반출할 수 있었다. Metabase가 2026-08-06 위협을
+    공개하고 고객에게 알렸으며, Framework는 자사 클라우드 인스턴스 접근으로 이름·이메일·전화번호·주소·로그인 IP가 유출됐다고 고객에게 통지했다.
+    Tally(이메일·비밀번호 해시)와 AI 코딩 플랫폼 Kilo Code(이름·이메일·Slack 토큰)도 피해를 공개했고, 공개 시점에 CVE는 부여되지
+    않았다.
+  sct: [SCT-CS-04, SCT-IM-01.1]
+  sources:
+    - Help Net Security(2026) Metabase zero-day exploited to access Framework customer data | https://www.helpnetsecurity.com/2026/08/10/metabase-zero-day-framework-tally-kilo-code/
+    - Security Affairs(2026) Metabase Zero-Day Exploited in the Wild, Exposing Admin Access and Sensitive Data | https://securityaffairs.com/196874/hacking/metabase-zero-day-exploited-in-the-wild-exposing-admin-access-and-sensitive-data.html
+
+# NC-035
+# 매핑 약함: 후보의 SC-CS-03(공급업체 계정·연동 토큰 경유)보다 공급자 SSO 결함 악용(CS-04)과 다수 고객 계정·구독자 피해(IM-01.1)가 근거에 맞음 / Trezor 수신자 약 34.7만 명·클릭 약 2,500명은 원문 미확인이라 미기재 / 금전 피해 규모 미공개
+- id: SCI-173
+  title: Brevo SAML SSO 결함으로 138개 고객 계정 장악 → Trezor·BitBox·CoinTracking 명의 피싱 메일 발송
+  date: 2026-09
+  kind: 사고
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 글로벌
+  actor: 미상
+  impact: [데이터 반출]
+  summary: >-
+    이메일 마케팅 업체 Brevo는 사후 분석에서 2026-09-10 SAML SSO 처리 결함을 악용한 공격자가 고객 계정 138개에 접근했다고
+    밝혔다(처음에는 120개로 공지). 6개 계정으로 저장된 연락처에 피싱 메일을 보냈고 43개 계정에서는 연락처를 반출했다.
+    Trezor·BitBox·CoinTracking이 자사 이름으로 보안 경고를 위장한 피싱 메일을 고객에게 경고했고, CoinTracking은 발송
+    출처가 Brevo라고 밝혔다. 금전 피해 규모는 공개되지 않았다.
+  sct: [SCT-CS-04, SCT-IM-01.1]
+  sources:
+    - Malwarebytes(2026) Crypto customers targeted by scammers after email marketing provider breach | https://www.malwarebytes.com/blog/news/2026/09/crypto-customers-targeted-by-scammers-after-email-marketing-provider-breach
+    - The Record(2026) Multiple crypto companies warn customers of phishing emails after alleged provider breach | https://therecord.media/trezor-bitbox-cointracking-phishing-crypto-holders
+
+# NC-057
+# 매핑 약함: 후보의 SC-CS-03 중 공급업체 경유 접근(CS-02.3)만 매핑 — 근거 URL에는 탈취된 로그인 자격증명 언급이 없어(후보 요지에는 있음) 침입 수법은 미기재 / CM Alliance 집계의 1억 2,300만 달러는 오기(실제 약 1,230만 달러) / Everest는 유출 사이트 미등재(보도 시점)
+- id: SCI-174
+  title: Stadler Rail 협력사 데이터 교환 플랫폼 침해와 Everest의 1,000만 스위스프랑 몸값 요구(지급 거부)
+  date: 2026-07
+  kind: 사고
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 스위스
+  actor: Everest 랜섬웨어 조직(몸값 요구서 기준)
+  impact: [데이터 반출]
+  summary: >-
+    스위스 철도차량 제조사 Stadler는 2026-07 중순 공급업체와 데이터를 주고받는 플랫폼이 침해됐고 Everest 랜섬웨어 조직이 약 1,000만
+    스위스프랑(약 1,230만 달러)을 요구하는 협박 서한을 보냈다고 발표했다. 회사는 어떤 경우에도 지급하지 않겠다며 투르가우 주 경찰에 고소했다.
+    회사는 공급업체에서 보안과 무관한 기술 정보만 유출됐고 개인정보 유출은 없으며 IT·생산은 정상이라고 설명했다.
+  sct: [SCT-CS-02.3]
+  sources:
+    - BleepingComputer(2026) Swiss rail giant Stadler rejects $12.3M ransom demand after cyberattack | https://www.bleepingcomputer.com/news/security/swiss-rail-giant-stadler-rejects-123m-ransom-demand-after-cyberattack/
+    - ThaiCERT(2026) Stadler Rail Refuses to Pay USD 12.3 Million Ransom After Cyberattack | https://www.thaicert.or.th/en/2026/07/24/stadler-rail-refuses-to-pay-usd-12-3-million-ransom-after-cyberattack/
+
+# NC-062
+# 매핑 약함: TSMC 본사 침해는 부인 — 사건 주체는 IT 하드웨어 공급사 Kinmax이고 유출물은 고객 제공 기본 설치 구성 자료(탈취 범위는 행위자 주장 수준). 공급업체 침해의 고객사 노출(IM-01.1)로 잠정 매핑 / Kinmax 소재지는 보도마다 다름(대만·중국)
+- id: SCI-175
+  title: TSMC IT 하드웨어 공급사(Kinmax) 침해와 LockBit 계열의 7,000만 달러 몸값 요구
+  date: 2023-06
+  kind: 사고
+  verification: 피해기관 확인
+  ecosystem: [서드파티 SaaS·MSP]
+  region: 대만
+  actor: LockBit 계열 National Hazard Agency
+  impact: [데이터 반출]
+  summary: >-
+    LockBit 계열 National Hazard Agency가 2023-06 말 TSMC를 유출 사이트에 올리고 7,000만 달러를 요구하며 네트워크
+    진입점·비밀번호·로그인 정보를 공개하겠다고 위협했다. TSMC는 자사가 아니라 IT 하드웨어 공급사 Kinmax Technology가 침해돼 서버 초기
+    설정·구성 정보가 유출됐고 영업·고객 정보에는 영향이 없다며, 해당 공급사와의 데이터 교환을 즉시 중단했다고 발표했다. Kinmax는 6월 29일 내부
+    테스트 환경 침해를 발견했고 유출물은 고객에게 제공하는 기본 설치 구성 자료라고 밝혔다.
+  sct: [SCT-IM-01.1]
+  sources:
+    - Security Affairs(2023) LockBit gang demands a $70 million ransom to the Semiconductor Manufacturing giant TSMC | https://securityaffairs.com/148022/cyber-crime/tsmc-lockbit-ransomware.html
+    - TechTarget(2023) TSMC partner breached by LockBit ransomware gang | https://www.techtarget.com/cybersecurity/news/366543219/TSMC-partner-breached-by-LockBit-ransomware-gang
+    - IT Pro(2023) TSMC faces $70 million LockBit ransom demand following hardware supplier breach | https://itpro.com/security/ransomware/tsmc-faces-dollar70-million-lockbit-ransom-demand-following-hardware-supplier-breach
