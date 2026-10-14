@@ -86,3 +86,8 @@
 - {ids: [SCI-144, "CITE:[실제 사고] Salesloft Drift 통합 침해(2025-08)"], note: Salesloft Drift(CSA 인용)}
 - {ids: [SCI-155, "CITE:[실제 사고] LiteLLM 공급망 침해(2026-03)"], note: LiteLLM(CSA 인용)}
 - {ids: [SCI-162, "CITE:[실제 사고] TanStack 등 npm 100여 개 버전 침해(2026-05)"], note: TanStack(CSA 인용)}
+# 통합 v4 사고사례 검증 Phase 4 중복 검토(crosscheck/DUP.csv)로 추가 — 2026-10-14
+- {ids: [SCI-122, CL/INC-0414], note: lottie-player 악성 버전 게시(2024-10)}
+- {ids: [SCI-164, CL/INC-0631], note: GitHub 내부 저장소 유출(2026-05)}
+- {ids: [IDI-009, OT/INC-058], note: Clorox(2023-08)}
+- {ids: [OT/INC-044, IDI-014], note: Colonial Pipeline(2021-05)}

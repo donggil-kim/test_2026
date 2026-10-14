@@ -118,12 +118,23 @@ def load_incident_rows():
             rows += [[d.get(h) or None for h in head] for d in csv.DictReader(f) if d.get("사건ID")]
     if os.path.exists(INC_CORR):
         idx = {r[0]: r for r in rows}
+        drop = {}
         with open(INC_CORR, encoding="utf-8-sig") as f:
             for c in csv.DictReader(f):
                 r, fld = idx.get(c["사건ID"]), c["필드"]
+                if fld == "중복 삭제":  # 같은 DB 중복 — 정정값 = 남길 사건ID(초안 ATT&CK ID를 합침)
+                    if r is None or c["정정값"] not in idx:
+                        raise SystemExit(f"정정 CSV 오류: {c['사건ID']} {fld} {c['정정값']}")
+                    drop[c["사건ID"]] = c["정정값"]
+                    continue
                 if r is None or fld not in head:
                     raise SystemExit(f"정정 CSV 오류: {c['사건ID']} {fld}")
                 r[head.index(fld)] = c["정정값"]
+        k = head.index("ATT&CK 초안 ID")
+        for a, b in drop.items():
+            ids = re.findall(r"T\d{4}(?:\.\d{3})?", f"{idx[b][k] or ''} {idx[a][k] or ''}")
+            idx[b][k] = ", ".join(dict.fromkeys(ids)) or None
+        rows = [r for r in rows if r[0] not in drop]
     return rows
 
 
