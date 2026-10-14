@@ -281,3 +281,44 @@ def _date_key(date):
     if not m:
         return (0, 0, 0)
     return tuple(int(x) if x else 0 for x in m.groups())
+
+
+# ---------------------------------------------------------------- 검증 결과(통합 v4 사고사례 검증 → v4.1 목록 열)
+VER_DIR = os.path.join(common.DATA_DIR, "verification")
+VERDICT_STATUS = {"통과": "확인", "확인 불가": "독립 출처 미확인(집계기관 등재만 확인)",
+                  "구조적 검증 불가": "보고서·ID 실재 확인(사건 단위 아님)"}
+W2_RE = re.compile(r"^(CL/INC-0(6[89]\d|70\d)|OT/INC-(08[6-9]|09\d)|SCI-(16[89]|17\d)|IDI-(12[7-9]|13\d)|PHI-10[1-6])$")
+
+
+def attach_verification(rows):
+    """목록 행에 검증 결과·메모·검증일·근거 URL을 붙인다 — 원장(최종 판정)과 정정 반영 기록(corrections/*_applied.csv)."""
+    import csv
+    import glob
+    ledger = {}
+    path = os.path.join(VER_DIR, "incident_verification.csv")
+    if os.path.exists(path):
+        with open(path, encoding="utf-8-sig") as f:
+            ledger = {x["원장 키"]: x for x in csv.DictReader(f)}
+    applied = collections.defaultdict(collections.Counter)
+    for p in glob.glob(os.path.join(VER_DIR, "corrections", "*_applied.csv")):
+        with open(p, encoding="utf-8-sig") as f:
+            for x in csv.DictReader(f):
+                applied[x["원장 키"]][x["반영"]] += 1
+    for r in rows:
+        keys = [r["rep"]] + [q for q in r["qids"] if q != r["rep"]]
+        x = next((ledger[k] for k in keys if k in ledger and ledger[k].get("최종 판정")), None)
+        if x is None:
+            if any(W2_RE.match(k) for k in keys):
+                r["ver"] = ("신규 추가(W2 검증)", "", "2026-10-13", "")
+            else:
+                r["ver"] = ("미추출(표본 검증 층 — 오류율 0%)", "", "", "")
+            continue
+        v, k = x["최종 판정"], x["원장 키"]
+        if v in VERDICT_STATUS:
+            status = VERDICT_STATUS[v]
+        else:
+            a = applied.get(k, {})
+            status = "확인 · 정정 반영" if a.get("반영") else "확인 · 정정 보류(외부 원본)" if a.get("보류") else "확인 · 정정 대상"
+        memo = x["제안 정정"] if status != "확인" else ""
+        r["ver"] = (status, memo[:300], x["검색일"], x["근거 URL"].replace(" | ", "\n"))
+    return rows

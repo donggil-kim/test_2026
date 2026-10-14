@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
 import incidents  # noqa: E402
 
-VERSION = "v4"
+VERSION = "v4.1"
 TITLE = "통합 보안위협 매트릭스"
 OUT_DIR = os.path.join(common.ROOT, "integrated", "output")
 XLSX = os.path.join(OUT_DIR, f"통합_보안위협_매트릭스_{VERSION}.xlsx")
@@ -775,7 +775,8 @@ def sheet_taxo_detail(wb, kind, sk, back, release):
 
 
 CATALOG_COLS = ["통합 사례 ID", "사례명", "시점", "사례 구분", "지역", "행위자", "영향·대상", "요약", "원본 사례 ID(DB · 원본 분류)",
-                "참조 Lv0", "위험 산정 반영 위협", "대표 사례 인용 위협", "참고 위협(Lv0 간 통합 흡수)", "최근(2025~)", "출처"]
+                "참조 Lv0", "위험 산정 반영 위협", "대표 사례 인용 위협", "참고 위협(Lv0 간 통합 흡수)", "최근(2025~)", "출처",
+                "검증 결과", "검증 메모(제안 정정)", "검증일", "검증 근거 URL"]
 CATEGORY_COLOR = {"실제 사고": "D5F5E3", "실제 사고(사고 DB 밖 인용)": "D5F5E3", "실증·연구": "FCF3CF", "공개 취약점": "FDEBD0",
                   "ATT&CK 사례": "D6EAF8", "위협인텔": "EBDEF0", "시연": "FCF3CF", "정부 경보": "F2D7D5", "EMB3D": "EAECEE",
                   "집계 제외": "EAECEE"}
@@ -788,7 +789,7 @@ def catalog_values(c, order):
     kinds = {common.kind_of_id(i) for i in c["counted"] | c["cited"] | c["ref"]}
     return [c["uid"], c["name"], c["date"], c["category"], c["region"], c["actor"], c["impact"], c["summary"], c["origin"],
             " · ".join(common.LABEL[k] for k in common.KINDS if k in kinds), ids(c["counted"]), ids(c["cited"]),
-            ids(c["ref"]), "Y" if c["recent"] else "", c["source"]]
+            ids(c["ref"]), "Y" if c["recent"] else "", c["source"], *c.get("ver", ("", "", "", ""))]
 
 
 def sheet_catalog(wb, cat, rows, today):
@@ -800,7 +801,7 @@ def sheet_catalog(wb, cat, rows, today):
           "위험 산정 반영 = 구성 원본이 실제 사고로 센 사고 | 대표 사례 인용 = 요약 '대표 사례'에 쓴 사례(사고 DB 밖 인용 포함) | "
           "참고 위협 = Lv0 간 통합으로 흡수한 다른 Lv0 원본이 센 사고(위험 산정 제외) | "
           f"여러 DB에 실린 같은 사고 {multi}건은 한 행으로 묶음(원본 사례 ID 열) | {today}", len(CATALOG_COLS))
-    groups(ws, 3, [("사례", 8, "117A65"), ("원본 추적", 1, "2E5496"), ("요약 위협 참조", 4, "7B241C"), ("기타", 2, "7F8C8D")])
+    groups(ws, 3, [("사례", 8, "117A65"), ("원본 추적", 1, "2E5496"), ("요약 위협 참조", 4, "7B241C"), ("기타", 2, "7F8C8D"), ("검증(v4.1)", 4, "B9770E")])
     header(ws, 4, CATALOG_COLS)
     for i, c in enumerate(cat, 5):
         put_row(ws, i, catalog_values(c, order), 9)
@@ -811,7 +812,7 @@ def sheet_catalog(wb, cat, rows, today):
             ws.cell(i, col).alignment = CENTER
     ws.freeze_panes = "C5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(CATALOG_COLS))}{len(cat) + 4}"
-    widths(ws, [10, 34, 10, 12, 10, 16, 16, 60, 30, 14, 22, 18, 16, 7, 34])
+    widths(ws, [10, 34, 10, 12, 10, 16, 16, 60, 30, 14, 22, 18, 16, 7, 34, 18, 40, 10, 40])
     print_setup(ws, "3:4")
 
 
@@ -1501,7 +1502,7 @@ def main():
     for e in every:
         for k, m, _ in common.entry_sources(e):
             back[k][m] = e["id"]
-    cat = incidents.build_catalog(every, src)
+    cat = incidents.attach_verification(incidents.build_catalog(every, src))
 
     today = datetime.date.today().isoformat()
     wb = Workbook()
