@@ -289,7 +289,7 @@
   impact: [파괴·사보타주]
   summary: >-
     소프트웨어 배포 사이트 FossHub가 침해되어 Audacity·Classic Shell 설치 파일이 부트 영역(MBR)을 덮어쓰는 악성코드로
-    바뀌었다. 몇 시간 만에 복구됐지만 그 사이 내려받은 사용자가 피해를 입었다.
+    바뀌었다. 몇 시간 만에 복구됐지만 그 사이 주로 Classic Shell에서 약 300건의 내려받기가 있었다(Audacity는 내려받기 전 차단).
   sct: [SCT-PB-02.1, SCT-IM-05]
   sources:
     - gHacks(2016) Attention, FossHub downloads compromised | https://www.ghacks.net/2016/08/03/attention-fosshub-downloads-compromised/
@@ -1433,7 +1433,7 @@
   actor: 미상
   impact: [데이터 반출]
   summary: >-
-    Azure·Uber·Airbnb 등의 내부 패키지명·스코프를 흉내 낸 400여 개 패키지가 설치 환경 정보를 외부로 보냈다. 의존성 혼동과
+    Azure·Uber·Airbnb 등의 내부 패키지명·스코프를 흉내 낸 400여 개 패키지가 올라왔고, 상당수는 골격 코드였으며 일부가 DNS로 IP·환경 정보를 외부로 보냈다. 의존성 혼동과
     브랜드 사칭을 대량 자동화한 형태다.
   sct: [SCT-DP-02.1, SCT-DP-01.2]
   sources:
@@ -2535,7 +2535,7 @@
   actor: TeamPCP(G1056)
   impact: [자격증명·비밀 탈취]
   summary: >-
-    2월 침해 뒤 교체에서 빠진 토큰으로 3월 19일 Trivy v0.69.4 악성 릴리스를 올리고 trivy-action 태그 77개 중 76개와
+    2월 침해 뒤 교체에서 빠진 토큰으로 3월 19일 Trivy v0.69.4 악성 릴리스를 올리고 trivy-action 태그 대부분(Kaspersky·CSA 기준 77개 중 76개, Wiz 기준 76개 중 75개)과
     setup-trivy 태그 전부를 자격증명 탈취 커밋으로 옮겼다. 보안 스캐너를 돌리는 모든 파이프라인의 토큰·키가 노출됐고 KEV에
     등재됐다.
   sct: [SCT-BD-04, SCT-SR-02.2, SCT-PB-01, SCT-SC-02.3, SCT-SC-02.1, SCT-IM-01.2]
@@ -2544,6 +2544,7 @@
   sources:
     - Kaspersky(2026) Trojanization of Trivy, Checkmarx, and LiteLLM solutions | https://www.kaspersky.co.uk/blog/critical-supply-chain-attack-trivy-litellm-checkmarx-teampcp/30159/
     - CSA(2026) TeamPCP — CI/CD Security Tool Supply Chain Compromise | https://labs.cloudsecurityalliance.org/research/csa-research-note-teampcp-cicd-supply-chain-20260325-csa-sty/
+    - Wiz(2026) Trivy Compromised by TeamPCP | https://wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack
 
 - id: SCI-154
   title: Checkmarx KICS·AST 액션과 Open VSX 확장 침해(TeamPCP)
