@@ -1,7 +1,7 @@
 # 물리·인적 보안사고 DB — 공개 출처 기반(정부·사법 발표, 기소·판결, 피해 기관 발표, 보안업체 분석, 공신력 있는 보도)
 #
 # 필드
-#   date          사고 인지·공개 시점 YYYY-MM (경위가 크게 앞서면 요약에 적음)
+#   date          최초 공개 시점 YYYY-MM(통합 v4 검증 F2) (경위가 크게 앞서면 요약에 적음)
 #   kind          사고 · 캠페인 · 공시 · 사례연구(익명) · 정부 경보 · 위협인텔 · 연구·시연
 #   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
 #   legal         (선택) 법적 처리 — 수사·조사 · 기소 · 유죄 판결 · 무죄·불기소 · 민사 판결·합의 · 행정 처분 · 해당 없음
@@ -137,8 +137,9 @@
   actor_type: [외부자]
   impact: [영향 없음(사전 차단)]
   summary: >-
-    러시아인이 미국에 입국해 네바다 기가팩토리 직원에게 100만 달러를 제시하며 공장 내부망에 악성코드를 설치하도록 포섭하려 했다. 자료를 빼내
-    공개를 빌미로 400만 달러를 요구할 계획이었으나, 직원이 제안을 회사와 FBI에 알려 2020-08 체포됐고 징역 10개월을 선고받았다.
+    러시아인이 미국에 입국해 네바다 기가팩토리 직원에게 100만 달러(공소장 기준, 선고 보도는 50만 달러)를 제시하며 공장 내부망에 악성코드를
+    설치하도록 포섭하려 했다. 자료를 빼내 공개를 빌미로 수백만 달러대 몸값을 요구할 계획이었으나, 직원이 제안을 회사와 FBI에 알려
+    2020-08 체포됐고 징역 10개월을 선고받았다.
   pht: [PHT-HU-01.1]
   sources:
     - The Record(2021) Russian who tried to hack Tesla last summer pleads guilty | https://therecord.media/russian-who-tried-to-hack-tesla-last-summer-pleads-guilty/
@@ -333,9 +334,10 @@
   actor_type: [내부자(악의), 공모]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    삼성전자·하이닉스에서 약 30년 일한 전 임원과 수석연구원이 중국 지방정부 투자로 세운 D램 업체에 삼성의 20나노 D램 공정 기술을 넘긴 혐의로
-    구속 송치·기소됐다. 이 업체는 공장 준공 1년 3개월 만인 2022-04 시범 웨이퍼 생산에 성공했고(통상 4~5년), 경찰은 피해 기술의 경제적 가치를
-    4조 3천억 원으로 추산했다.
+    삼성전자·하이닉스에서 약 30년 일한 전 임원과 수석연구원이 중국 지방정부 투자로 세운 D램 업체에 삼성의 20나노 D램 공정 기술을 넘긴
+    혐의로 구속 송치·기소됐다. 경찰은 이 업체가 1년 3개월 만에 20나노급 D램을 시범 개발했다고 발표했고(통상 4~5년) 검찰은 1년 6개월
+    만에 개발해 중국 두 번째 시범 웨이퍼를 생산했다고 발표했다. 경찰은 피해 기술의 경제적 가치(개발비)를 4조 3천억 원으로 추산했고 검찰은
+    개발비를 4조 원으로 봤다.
   pht: [PHT-IN-03.2, PHT-HU-02, PHT-IM-01]
   sources:
     - YTN(2024) 기술유출 혐의 삼성전자 전 임직원 2명 구속 송치 | https://www.ytn.co.kr/_ln/0103_202409102202394993
@@ -360,6 +362,7 @@
   sources:
     - 헤럴드경제(2024) 삼성 반도체 핵심인력 中에 취업시킨 업체 대표 구속 송치 | https://heraldk.com/?p=2469293
     - SBS Biz(2024) 반도체 핵심인력 中에 빼돌려…삼성 출신 엔지니어 구속 송치 | https://biz.sbs.co.kr/amp/article/20000204858
+    - 이코노미뉴스(2024) 반도체 핵심인력 중국 알선 헤드헌팅 업체 대표 구속 송치 보도 | https://www.m-economynews.com/news/article.html?no=48633
 
 - id: PHI-018
   title: 전 임원의 반도체 공장 설계자료 유출로 중국 '복제 공장' 건설 시도(투자 유치 연계)
@@ -373,9 +376,9 @@
   actor_type: [내부자(악의), 공모]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    삼성전자 전 상무가 2018~2019년 반도체 공장 BED(기본 설계 데이터)·공정 배치도·설계도면을 부정 취득·사용해 중국 시안의 삼성 공장에서
-    1.5km 떨어진 곳에 복제 공장을 지으려 한 혐의로 구속 기소됐고 6명이 함께 기소됐다. 대만 전자제품 업체가 약정한 8조 원 투자가 불발돼 공장은
-    지어지지 않았으며, 검찰은 기술 가치를 최소 3천억 원에서 최대 수조 원으로 봤다.
+    삼성전자 전 상무가 2018~2019년 반도체 공장 BED(기본 설계 데이터)·공정 배치도·설계도면을 부정 취득·사용해 중국 시안의 삼성
+    공장에서 1.5km 떨어진 곳에 복제 공장을 지으려 한 혐의로 구속 기소됐고 6명이 함께 기소됐다. 투자 유치가 끝내 불발돼 공장은 지어지지
+    않았으며, 검찰은 기술 가치를 최소 3천억 원에서 최대 수조 원으로 봤다.
   pht: [PHT-HU-05.2, PHT-IN-03.2, PHT-IM-01]
   sources:
     - 뉴시스(2023) 삼성전자 반도체 기술 빼돌려 중국에 복제 시도...전 임원 구속 기소 | https://www.newsis.com/view/NISX20230612_0002335382
@@ -403,7 +406,7 @@
 
 - id: PHI-020
   title: 배터리 경쟁사의 대규모 인력 채용과 영업비밀 침해(미 ITC 최종 판결·2조 원 합의)
-  date: "2021-02"
+  date: "2019-04"
   kind: 사고
   verification: 정부·사법 확인
   legal: 민사 판결·합의
@@ -414,12 +417,14 @@
   impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
   summary: >-
     LG화학(현 LG에너지솔루션)은 SK이노베이션이 자사 직원들을 대규모로 채용해 전기차 배터리 영업비밀을 침해했다며 2019-04 소송을 냈고,
-    미국 국제무역위원회(ITC)는 2021-02 SK이노베이션 패소를 확정해 미국 내 수입 금지 효력이 생겼다. 양사는 2021-04 현금·로열티 합계 2조 원
-    지급과 국내외 쟁송 취하에 합의했다.
+    미국 국제무역위원회(ITC)는 2021-02 최종 판정에서 SK이노베이션에 10년 수입 금지 명령(포드·폭스바겐 공급분 등 한시 예외, 60일
+    대통령 심의 대상)을 내렸다. 양사는 2021-04 현금·로열티 합계 2조 원 지급과 국내외 쟁송 취하에 합의했다(date는 최초 공개인 소송
+    제기 기준).
   pht: [PHT-HU-02, PHT-IM-05]
   sources:
     - 데일리안(2021) LG-SK 배터리 분쟁 2조원에 합의…10년간 추가 쟁송 없어 | https://www.dailian.co.kr/news/view/981043/
     - 이투데이(2021) D-1 전운 감도는 배터리 업계…ITC, LG·SK 누구 손 들어줄까 | https://www.etoday.co.kr/news/view/1954115
+    - Crowell & Moring(2021) ITC가 SK이노베이션의 영업비밀 침해를 인정하고 예외를 둔 채 전기차 배터리 수입을 금지 | https://www.crowelltradesecretstrends.com/2021/02/itc-finds-trade-secret-misappropriation-and-bars-electric-vehicle-batteries-from-sk-innovation-with-exceptions/
 
 - id: PHI-021
   title: 해외 인재 유치 프로그램 참여 교수의 자율주행 라이다 연구자료 중국 누설
@@ -433,13 +438,15 @@
   actor_type: [내부자(악의)]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    2016-05 중국 대학 교수의 제안으로 중국 '천인계획'에 지원해 이듬해 그 대학과 고용계약을 맺은 국내 대학 교수가 2020-02까지 자율주행차 라이다
-    연구자료 등 72개 파일을 중국 대학 연구원 등에게 누설한 혐의를 국가정보원이 적발했다. 중국 정부로부터 5년간 33억 원을 지원받기로 했으며,
-    2024-05 징역 2년이 확정됐다(date는 확인된 최초 보도 기준).
+    2016-05 중국 대학 교수의 제안으로 중국 '천인계획'에 지원해 이듬해 그 대학과 고용계약을 맺은 국내 대학 교수가 2020-02까지
+    자율주행차 라이다 연구자료 등 72개 파일을 중국 대학 연구원 등에게 누설한 혐의를 국가정보원이 적발했다. 중국 정부로부터 5년간 33억 원을
+    지원받기로 했으며, 2024-02 2심에서 징역 2년 실형이 선고돼 대법원 선고가 2024-05-30으로 지정됐다(1심은 징역 2년·집행유예
+    3년, date는 확인된 최초 보도 기준).
   pht: [PHT-HU-03, PHT-IN-02.1, PHT-IM-01]
   sources:
     - 서울신문(2023) 교수는 자동차·회사원은 반도체 기술 중국에 넘겨 | https://m.seoul.co.kr/news/2023/04/07/20230407500145
     - SBS Biz(2024) 자율주행차 기술 中에 유출한 KAIST 교수 30일 대법 선고 | https://biz.sbs.co.kr/amp/article/20000171595
+    - 다음·연합뉴스(2024) 국정원 적발 교수 자율주행 기술 중국 유출 2심 실형 보도 | https://v.daum.net/v/20240501144957148
 
 - id: PHI-022
   title: 하버드 교수의 중국 인재 유치 프로그램 참여 은폐(허위 진술 유죄)
@@ -503,7 +510,7 @@
 # 재직·퇴직 내부자의 물리 반출(IN-02·03, EX)
 # ---------------------------------------------------------------------------
 - id: PHI-025
-  title: 반도체 기업 직원의 퇴사 전 공정 문서 4천여 쪽 출력·태블릿 촬영 반출(경쟁사 이직)
+  title: 반도체 기업 직원의 퇴사 전 공정 문서 4천여 쪽 출력 반출(경쟁사 이직)
   date: "2024-05"
   kind: 사고
   verification: 정부·사법 확인
@@ -514,13 +521,16 @@
   actor_type: [내부자(악의)]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    2013년 SK하이닉스에 입사해 중국 자회사에서 B2B 고객 담당 팀장을 지낸 중국 국적 직원이 2022-06 퇴사 직후 화웨이로 옮겼다. 퇴사 전 반도체
-    제조 공정 문제 해결 방안 문서 약 4,000쪽과 CIS 기술 영업비밀을 여러 차례 출력하고, 자료 170개(5,900장)를 태블릿으로 촬영해 반출했다.
-    2심에서 징역 1년 6개월을 선고받았다.
-  pht: [PHT-IN-03.1, PHT-EX-02, PHT-EX-03, PHT-IM-01]
+    2013년 SK하이닉스에 입사해 중국 자회사에서 B2B 고객 담당 팀장을 지낸 중국 국적 직원이 2022-06 퇴사 직후 화웨이로 옮겼다.
+    이직을 준비하며 보안상 USB를 쓸 수 없다는 점을 파악해 퇴사 직전 상하이 사무실에서 4일에 걸쳐 반도체 제조 공정 문제 해결 방안 자료를
+    A4 용지 수천 장(최초 보도 3천 장 이상, 항소심 보도 4천여 장·약 4,000쪽) 분량으로 출력해 반출했다. 1심에서 징역 1년
+    6개월·벌금 2천만 원(2024-11)을 받았으나 수원고법이 2025-05-07 항소심에서 이를 파기하고 징역 5년·벌금 3천만 원을 선고했다.
+    대법원 결과는 확인되지 않았다.
+  pht: [PHT-IN-03.1, PHT-EX-02, PHT-IM-01]
   sources:
     - 머니투데이(2024) 중국인 SK하이닉스 직원, 화웨이에 반도체 기술 빼돌렸다 | https://www.mt.co.kr/society/2024/05/28/2024052714332760497
-    - 다음·연합뉴스(2026) SK하이닉스 영업비밀 中회사에 유출…前직원 2심도 징역1년6개월 | https://v.daum.net/v/20260809090332171
+    - 서울경제(2025) 삼성·SK하이닉스 할 것 없이…中으로 기술유출 중 | https://m.sedaily.com/article/14062974
+    - The Register(2024) SK hynix chip engineer gets 1.5 years in prison on IP theft | https://www.theregister.com/2024/11/08/sk_hynix_jailtime/
 
 - id: PHI-026
   title: 10나노급 D램 공정 자료를 손으로 옮겨 적어 중국 업체로 유출
@@ -534,13 +544,23 @@
   actor_type: [내부자(악의), 공모]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    중국 지방정부·설계회사 출자로 2016년 세워진 중국 D램 업체가 삼성전자 부장 출신을 개발실장으로 영입했고, 삼성 연구원 출신은 D램 공정 핵심 자료인
-    공정 레시피 정보를 자필로 옮겨 적은 뒤 이 업체로 이직했다. 서울중앙지검은 2025-12 10명을 기소(5명 구속)했고 피해액을 최소 수십조 원으로 추산했다.
-    전직 연구원 1명은 2026-04 1심에서 징역 7년을 받았다.
-  pht: [PHT-HU-02, PHT-IN-03.1, PHT-EX-02, PHT-IM-01]
+    중국 지방정부·설계회사 출자로 2016년 세워진 중국 D램 업체가 삼성전자 부장 출신을 개발실장으로 영입했고, 삼성 연구원 출신은 D램 공정
+    핵심 자료인 공정 레시피 정보를 자필로 옮겨 적은 뒤 이 업체로 이직했다. 서울중앙지검은 2025-12 10명을 기소(5명 구속)했고 피해액을
+    최소 수십조 원으로 추산했다. 보도에 따르면 검찰은 2024-01부터 2025년 말까지 이 업체 개발 인력 10명을 국가핵심기술 유출 혐의
+    등으로 재판에 넘겼고, 이들이 세후 5억 원 이상을 제시하며 삼성전자와 관계사 기술 인력 20여 명을 빼갔다고 본다. 먼저 재판에 넘겨진 전
+    삼성전자 메모리사업부 부장은 2016년 이 업체로 옮기며 18나노 D램 증착 자료와 7개 핵심 공정 기술 자료를 넘기고 수백억 원대 금품을 받은
+    혐의로 2025-02 1심에서 징역 7년·벌금 2억 원(구형 20년), 2025-07 서울고법 2심에서 징역 6년을 받았고 협력사 직원은 징역
+    2년 6개월이 유지됐다. 1조 6천억 원을 들여 개발한 공정 기술을 넘긴 전직 연구원은 2025-05 구속기소돼 2026-04 1심에서 징역
+    7년을 받은 뒤, 2026-08 다른 피고인의 재판에서 이 업체 CEO·CTO 등이 처음부터 삼성 PRP 정보를 탈취해 D램을 개발하려 했다고
+    증언했다.
+  pht: [PHT-HU-02, PHT-IN-03.1, PHT-EX-02, PHT-IM-01, PHT-IN-03.2]
   sources:
     - 뉴시스(2025) 삼성 최초 반도체 기술 中 빼돌린 10명 기소…피해 수십조 | https://www.newsis.com/view/NISX20251223_0003452474
     - 헤럴드경제(2026) 삼성전자 반도체 기술 넘긴 전직 연구원 징역 7년 | https://www.heraldk.com/article/2026042302160053418
+    - 파이낸셜뉴스(2025) [fn사설] 핵심 기술유출 20년 구형을 7년으로 깎은 법원 | https://www.fnnews.com/news/202502201811001865
+    - 한국경제(2025) 삼성전자 반도체 기술 中 빼돌린 前직원 2심 징역 6년 | https://www.hankyung.com/article/202507237234i
+    - 한국경제(2026) 中 CXMT 설립 때부터 삼성전자 D램 기술 탈취 | https://www.hankyung.com/article/2026081882061
+    - 서울경제(2025) 삼성·SK하이닉스 할 것 없이…中으로 기술유출 중 | https://m.sedaily.com/article/14062974
 
 - id: PHI-027
   title: 디스플레이 기업 직원들의 명절 연휴 OLED 공장 설계도면 촬영 유출(중국 업체 이직)
@@ -763,7 +783,7 @@
 
 - id: PHI-038
   title: 협력사 직원이 시험 로봇 팔을 가방에 넣어 반출·측정(통신사 연구실)
-  date: "2019-01"
+  date: "2014-09"
   kind: 사고
   verification: 정부·사법 확인
   legal: 기소
@@ -773,13 +793,14 @@
   actor_type: [제3자]
   impact: [국가핵심기술·영업비밀 유출, 법적 제재·배상]
   summary: >-
-    T-Mobile 본사 연구실의 휴대폰 시험 로봇 기술을 노려, 협력 관계로 연구실에 출입하던 화웨이 직원이 2013-05 로봇 팔을 노트북 가방에 넣어 가져가
-    중국에서 온 엔지니어와 측정·촬영한 뒤 다음 날 가방에서 '찾았다'며 돌려줬다. 2017년 민사 배심이 480만 달러 배상을 평결했고 2019-01 미 법무부가
-    이 업체를 기소했다.
+    T-Mobile 본사 연구실의 휴대폰 시험 로봇 기술을 노려, 협력 관계로 연구실에 출입하던 화웨이 직원이 2013-05 로봇 팔을 노트북
+    가방에 넣어 가져가 중국에서 온 엔지니어와 측정·촬영한 뒤 다음 날 가방에서 '찾았다'며 돌려줬다. T-Mobile은 2014-09 화웨이를
+    상대로 민사소송을 냈고(date는 최초 공개 보도 기준), 2017년 민사 배심이 480만 달러를 평결했으며(보도에 따라 영업비밀 침해가 아닌
+    계약 위반 몫이라는 서술도 있음) 2019-01 미 법무부가 이 업체를 기소했다.
   pht: [PHT-IN-04, PHT-EX-04, PHT-EX-03]
   sources:
-    - KUOW(2019) A robot named Tappy — Huawei conspired to steal T-Mobile's trade secrets, says DOJ | https://www.kuow.org/stories/a-robot-named-tappy-huawei-conspired-to-steal-t-mobile-s-trade-secrets-says-doj
-    - GeekWire(2019) U.S. prosecutors accuse Chinese smartphone giant Huawei of stealing trade secrets from T-Mobile | https://www.geekwire.com/2019/u-s-prosecutors-accuse-chinese-smartphone-giant-huawei-stealing-trade-secrets-t-mobile-seek-extradition-cfo/
+    - 5G Technology World(2019) 화웨이 상대 미국 소송의 중심에 선 로봇 'Tappy'(AP 기사 전재, 2019-01-29) | https://www.5gtechnologyworld.com/1-us-case-against-huawei-centers-around-a-robot-called-tappy/
+    - KitGuru(2014) T-Mobile이 도난 로봇 기술을 이유로 화웨이를 제소 | https://www.kitguru.net/page/1021/!https:/www.kitguru.net/channel/generaltech/matthew-wilson/t-mobile-files-lawsuit-against-huawei-over-stolen-robot-tech/
 
 - id: PHI-039
   title: 핵잠수함 설계 기밀을 SD 카드에 담아 데드드롭으로 판매 시도(위장 수사로 검거)
@@ -837,6 +858,7 @@
   pht: [PHT-EX-04]
   sources:
     - ABC News 4(2020) Chinese researcher pleads to lying in cancer-smuggling case | https://abcnews4.com/news/nation-world/chinese-researcher-pleads-to-lying-in-cancer-smuggling-case
+    - Harvard Crimson(2021) 암 연구 시료 밀반출 연구원 선고·출국 명령 보도 | https://thecrimson.com/article/2021/1/7/zheng-sentence-order
 
 - id: PHI-042
   title: 종자 기업 시험 재배지에서 비공개 옥수수 종자 반출(중국 기업 임원)
@@ -961,7 +983,7 @@
 
 - id: PHI-048
   title: 외국인 청년들의 공군기지·공항 반복 촬영과 관제 무전 감청 시도
-  date: "2025-03"
+  date: "2025-04"
   kind: 사고
   verification: 정부·사법 확인
   legal: 유죄 판결
@@ -972,19 +994,20 @@
   impact: [국가기밀·군사정보 유출]
   summary: >-
     중국 국적 고교생 등 2명이 2025-03 수원 공군기지 부근에서 이착륙 전투기를 카메라·휴대전화로 촬영하다 적발됐고, 오산·평택·청주 등 한미
-    군사시설 4곳과 인천·김포·제주공항에서 수천 장을 찍은 것으로 드러났다. 중국산 무전기로 관제사·조종사 교신 감청을 두 차례 시도했으나 주파수를
-    맞추지 못했고, 일부 사진을 SNS에 올렸다. 1심에서 외국인에게 일반이적죄를 처음 적용해 실형이 선고됐다.
+    군사시설 4곳과 인천·김포·제주공항에서 수천 장을 찍은 것으로 드러났다. 중국산 무전기로 관제사·조종사 교신 감청을 시도했으나 주파수를 맞추지
+    못했고, 일부 사진을 SNS에 올렸다. 1심에서 외국인에게 일반이적죄를 처음 적용해 실형이 선고됐다.
   pht: [PHT-RC-02, PHT-SV-03.1]
   sources:
     - 세계일보(2025) 지난달 입국 땐 한미군사시설 4곳·국제공항 3곳서 수천장 촬영 | https://www.segye.com/newsView/20250409519308
     - TWIG24(2026) 군기지·전투기 무단촬영 중국인 2명 실형…외국인 일반이적죄 첫 적용 | https://twig24.com/news/world/crime-law/2026/05/14/20260514500059
+    - 디지털타임스(2026) 군기지·공항 무단 촬영 외국인 1심 선고 보도 | https://www.dt.co.kr/article/12062399
 
 # ---------------------------------------------------------------------------
 # 드론 무단 촬영·무단 비행과 운영 방해(SV-01, IM-03·04)
 # ---------------------------------------------------------------------------
 - id: PHI-049
   title: 유학생들의 해군기지·정박 항공모함 드론 반복 촬영
-  date: "2024-06"
+  date: "2024-07"
   kind: 사고
   verification: 정부·사법 확인
   legal: 유죄 판결
@@ -994,13 +1017,15 @@
   actor_type: [외부자]
   impact: [국가기밀·군사정보 유출]
   summary: >-
-    중국인 유학생 3명이 2023-03부터 2024-06까지 부산 해군작전사령부 일대에서 드론을 띄워 해군기지 내부와 한미일 훈련차 정박한 미 핵추진
-    항공모함을 촬영해 사진 약 170장·영상 22개(12GB)를 남겼고, 2024-06-25 적발됐다. 검찰은 주범에게 외국인 최초로 일반이적 혐의를 적용했고
-    2026-06 1심에서 징역 1년 6개월이 선고됐다.
+    중국인 유학생 3명이 2023-03부터 2024-06까지 부산 해군작전사령부 일대에서 드론을 띄워 해군기지 내부와 한미일 훈련차 정박한 미
+    핵추진 항공모함을 촬영해 사진 172장·영상 22개를 남겼고, 2024-06-25 적발돼 2024-07 처음 보도됐다. 경찰은 주범을 외국인
+    최초로 일반이적 혐의로 구속했고(검찰 기소) 2026-06 1심에서 징역 1년 6개월이 선고됐다.
   pht: [PHT-SV-01.1]
   sources:
     - 데일리안(2025) 美 해군 항공모함 드론 불법촬영 중국 유학생들…구속기소 | https://www.dailian.co.kr/news/view/1528023/
     - TWIG24(2026) 부산 해군기지, 미 항모 촬영한 중국인 유학생 1심서 징역형 | https://www.twig24.com/news/local_bs/2026/06/10/20260610500074
+    - TWIG24(2025) 해군기지·미 항모를 드론으로 촬영한 중국인 유학생 일반이적 혐의 구속 보도 | https://www.twig24.com/news/local_bs/2025/06/26/20250626500073
+    - KNN(2024) 해군기지 일대 드론 촬영 중국인 3명 적발 보도 | https://news.knn.co.kr/news/article/160342
 
 - id: PHI-050
   title: 관광객의 국가정보원 청사 드론 촬영(비행금지구역 적발)
@@ -1559,7 +1584,7 @@
 
 - id: PHI-078
   title: 폐기 위탁한 서버·하드디스크가 고객 정보가 남은 채 재판매(감독기관 벌금 3,500만 달러)
-  date: "2022-09"
+  date: "2020-07"
   kind: 사고
   verification: 정부·사법 확인
   legal: 행정 처분
@@ -1569,13 +1594,16 @@
   actor_type: [제3자, 내부자(비의도)]
   impact: [개인정보 유출, 법적 제재·배상]
   summary: >-
-    미 증권거래위원회는 모건스탠리 자산관리 부문이 2015년부터 데이터 파기 경험이 없는 이사·보관 업체에 고객 약 1,500만 명의 개인정보가 담긴 서버·
-    하드디스크 수천 대의 폐기를 맡겼고, 업체가 이를 제3자에게 팔아 온라인에서 재판매됐다며 2022-09 벌금 3,500만 달러를 부과했다. 개인정보가 남은
-    IT 자산 약 4,900대가 팔렸고 일부만 회수됐다.
+    미 증권거래위원회는 모건스탠리 자산관리 부문이 2015년부터(Hunton은 2015~2017) 데이터 파기 경험이 없는 이사·보관 업체에 고객
+    약 1,500만 명의 개인정보가 담긴 서버·하드디스크 수천 대의 폐기를 맡겼고, 업체가 이를 제3자에게 팔아 온라인에서 재판매됐다며
+    2022-09 벌금 3,500만 달러를 부과했다. 서버 42대는 분실됐다. 이 문제는 2016년 데이터센터 폐쇄 뒤 위탁 업체의 삭제 실패(발생
+    2016)가 2020-07 고객 통지와 집단소송(2020-08 보도)으로 먼저 알려졌다(date는 최초 공개 기준).
   pht: [PHT-SV-04.2, PHT-IM-05]
   sources:
     - Hunton(2022) SEC fines Morgan Stanley $35 million for alleged failure to protect customer data | https://www.hunton.com/privacy-and-cybersecurity-law-blog/sec-fines-morgan-stanley-35-million-for-alleged-failure-to-protect-customer-data
     - Sophos(2022) Morgan Stanley fined millions for selling off devices full of customer PII | https://www.sophos.com/en-gb/blog/morgan-stanley-fined-millions-for-selling-off-devices-full-of-customer-pii
+    - CNN(2022) 모건스탠리, 고객 정보 폐기 장비 재판매로 SEC 벌금 보도 | https://edition.cnn.com/2022/09/20/business/morgan-stanley-fine-customer-data
+    - Financial Planning(2020) 모건스탠리 데이터 유출 집단소송 보도 | https://www.financial-planning.com/news/morgan-stanley-lawsuit-data-breach
 
 # ---------------------------------------------------------------------------
 # 해외 기술 유출·인력 영입(대만·일본·유럽)
@@ -1592,13 +1620,15 @@
   actor_type: [내부자(악의), 공모, 제3자]
   impact: [국가핵심기술·영업비밀 유출]
   summary: >-
-    대만 검찰은 TSMC 출신으로 장비 협력사에 옮긴 전 엔지니어가 2023년 하반기~2024년 상반기 현직 엔지니어들에게 2나노 공정 관련 민감 기술 정보를
-    요청했고 자료가 촬영·복제돼 넘어갔다며 2025-08 국가안전법·영업비밀법 위반으로 기소했다. 전 엔지니어는 징역 10년, 현직자들은 징역 2~6년을
-    선고받았고 장비 협력사 법인에는 벌금 1억 5천만 대만달러가 선고됐다.
+    대만 검찰은 TSMC 출신으로 장비 협력사에 옮긴 전 엔지니어가 2023년 하반기~2024년 상반기 현직 엔지니어들에게 2나노 공정 관련 민감
+    기술 정보를 요청했고 자료가 촬영·복제돼 넘어갔다며 2025-08 국가안전법·영업비밀법 위반으로 기소했다. 전 엔지니어는 1심에서 징역
+    10년(2026-07 최고법원 확정), 현직자들은 징역 2~6년을 선고받았고 장비 협력사 법인에는 벌금 1억 5천만 대만달러가 선고됐다.
   pht: [PHT-IN-02.1, PHT-IN-04, PHT-EX-03, PHT-IM-01]
   sources:
     - Tribune India(2025) Taiwan court orders detention of three in TSMC trade secret theft | https://www.tribuneindia.com/news/chip/taiwan-court-orders-detention-of-three-in-tsmc-trade-secret-theft
     - GIGAZINE(2025) Taiwan prosecutors indict Tokyo Electron subsidiary for stealing TSMC trade secrets | https://gigazine.net/gsc_news/en/20251203-tsmc-data-theft-tokyo-electron-charged
+    - Taiwan News(2026) TSMC 2나노 영업비밀 유출 1심 판결 보도(지식재산 및 상업법원) | https://www.taiwannews.com.tw/en/news/6348529
+    - Taiwan News(2026) TSMC 2나노 영업비밀 유출 전 엔지니어 징역 10년 최고법원 확정 보도 | https://www.taiwannews.com.tw/en/news/6411531
 
 - id: PHI-080
   title: 중국 반도체 기업이 제3국 법인으로 위장한 지사로 기술 인력 불법 채용(11개 사 동시 수사)
@@ -1692,8 +1722,9 @@
   actor_type: [외부자]
   impact: [개인정보 유출]
   summary: >-
-    뉴욕타임스·가디언·마더보드 등의 공동 탐사로 신장 지역 육로 국경에서 국경 요원이 외국인 여행자의 안드로이드 휴대폰에 감시 앱을 설치해 일정·문자·연락처·
-    통화 기록을 원격 서버로 보내고 7만 3천여 개 파일을 대조한 사실이 드러났다. 중국 외교부는 앱을 들어 본 적이 없다고 답했다.
+    뉴욕타임스·가디언·마더보드 등의 공동 탐사로 신장 지역 육로 국경에서 국경 요원이 외국인 여행자의 안드로이드 휴대폰에 감시 앱을 설치해
+    일정·문자·연락처· 통화 기록을 검문소에 설치된 서버로 전송하고(MIT Technology Review는 원격 서버로 표현) 7만 3천여 개
+    파일을 대조한 사실이 드러났다. 중국 외교부는 앱을 들어 본 적이 없다고 답했다.
   pht: [PHT-PA-04]
   sources:
     - MIT Technology Review(2019) Chinese border guards are putting a surveillance app on tourists' phones | https://www.technologyreview.com/2019/07/02/134307/chinese-border-guards-are-putting-a-surveillance-app-on-tourists-phones/amp/
@@ -1711,13 +1742,15 @@
   impact: [내부 접근 확보]
   summary: >-
     카스퍼스키는 최소 4년간 아시아태평양 호텔 수십 곳의 네트워크에 침투해, 투숙한 기업 경영진이 방 번호와 성으로 호텔 Wi-Fi에 접속하면 정상 소프트웨어
-    업데이트로 위장한 백도어를 설치하게 한 'Darkhotel' 활동을 공개했다. 피해 조직의 90% 이상이 일본·대만·중국·러시아·홍콩이었고 독일·미국 등
-    출장 경영진도 피해를 입었다.
+    업데이트로 위장한 백도어를 설치하게 한 'Darkhotel' 활동을 공개했다. 공격 활동의 90% 이상이 일본·대만·중국·러시아·한국에
+    집중됐고(Kaspersky 보고서) 독일·미국 등 출장 경영진도 피해를 입었다.
   pht: [PHT-PA-04]
   attack_ref: [G0012]
   sources:
     - Kaspersky(2014) Kaspersky Lab sheds light on Darkhotel, where business executives fall prey to an elite spying crew | https://usa.kaspersky.com/about/press-releases/2014_kaspersky-lab-sheds-light-on--darkhotel--where-business-executives-fall-prey-to-an-elite-spying-crew
     - Dark Reading(2014) Korean-speaking cyberspies targeting corporate execs via hotel networks | https://www.darkreading.com/advanced-threats/korean-speaking-cyberspies-targeting-corporate-execs-via-hotel-networks
+    - Securelist(2014) The Darkhotel APT | https://securelist.com/the-darkhotel-apt/66779/
+    - Kaspersky(2014) The Darkhotel APT 기술 보고서(PDF) | https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/08070903/darkhotel_kl_07.11.pdf
 
 - id: PHI-086
   title: 항만 크레인 부품·서버실에서 주문하지 않은 원격 접속 셀룰러 모뎀 발견(의회 조사)
@@ -1972,7 +2005,7 @@
 
 - id: PHI-099
   title: 해고 통보를 받은 직원이 지게차·망치로 공장 설비 파손(약 50만 달러)
-  date: "2019-08"
+  date: "2019-11"
   kind: 사고
   verification: 정부·사법 확인
   legal: 기소
@@ -1982,8 +2015,9 @@
   actor_type: [내부자(악의)]
   impact: [설비 손상·사보타주]
   summary: >-
-    호주 시드니 킹스그로브의 공장에서 38세 직원이 해고 통보를 받은 직후 지게차로 생산 설비를 부수고 망치로 컴퓨터 장비를 파손해 50만 달러 이상의 피해를
-    냈다. 경찰 도착 전 현장을 떠나 퍼스로 갔다가 송환돼 재물손괴 혐의로 기소됐다.
+    호주 시드니 킹스그로브의 공장에서 38세 직원이 2019-08 해고 통보를 받은 직후 지게차로 생산 설비를 부수고 망치로 컴퓨터 장비를 파손해
+    50만 달러 이상의 피해를 냈다. 경찰 도착 전 현장을 떠나 퍼스로 갔다가 송환돼 2019-11 재물손괴 혐의로 기소됐다(date는 송환·기소
+    보도 기준).
   pht: [PHT-IN-02.2, PHT-IM-02]
   sources:
     - St George & Sutherland Shire Leader(2019) Man extradited after allegedly damaging $500,000 worth of machinery at Kingsgrove | https://www.theleader.com.au/story/6480640/man-charged-with-damaging-machinery-worth-500000-at-kingsgrove/
@@ -2000,13 +2034,15 @@
   actor_type: [내부자(악의)]
   impact: [국가핵심기술·영업비밀 유출, 운영 중단]
   summary: >-
-    테슬라 CEO는 2018-06 사내 메일로 프리몬트 공장 직원이 가짜 사용자 이름으로 제조 운영 시스템 코드를 직접 바꾸고 민감 자료를 외부로 대량 전송하는
-    사보타주를 했다고 알렸고, 회사는 사흘 뒤 전 직원을 상대로 소송을 냈다. 회사에 따르면 그는 수 기가바이트의 자료(사진·영상 포함)를 외부로 보내는
+    테슬라 CEO는 2018-06 사내 메일로 네바다 기가팩토리 직원이 가짜 사용자 이름으로 제조 운영 시스템 코드를 직접 바꾸고 민감 자료를 외부로 대량
+    전송하는 사보타주를 했다고 알렸고, 회사는 사흘 뒤 전 직원을 상대로 소송을 냈다. 회사에 따르면 그는 수 기가바이트의 자료(사진·영상 포함)를 외부로 보내는
     프로그램을 짰다고 인정했으며 동기는 승진 탈락이었다. 당사자는 내부 고발이라고 주장했다.
   pht: [PHT-IN-02.2, PHT-IN-02.1]
   sources:
     - The Washington Times·AP(2018) Tesla sues ex-employee alleging data theft, leaks | https://www.washingtontimes.com/news/2018/jun/20/tesla-sues-ex-employee-alleging-data-theft-leaks-t/
     - CleanTechnica(2018) Elon Musk claims Tesla's manufacturing operating system has been sabotaged by employee | https://cleantechnica.com/2018/06/19/elon-musk-claims-teslas-manufacturing-operating-system-has-been-sabotaged-by-employee
+    - Boston.com·AP(2018) 테슬라 전 직원 상대 소송 보도(AP 기사 전재) | https://www.boston.com/cars/car-news/2018/06/21/tesla-sues-ex-employee/
+    - MIT Technology Review(2018) 테슬라, 전 직원을 자료 유출 혐의로 제소 | https://www.technologyreview.com/2018/06/20/142204/tesla-files-a-lawsuit-against-a-former-employee-for-allegedly-leaking
 
 # ── 통합 v4 사고사례 검증 W2 — 신규 사고(2026-10, 후보 NC-xxx는 integrated/data/verification/new_incident_candidates.csv) ──
 # NC-018

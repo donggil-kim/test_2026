@@ -1,7 +1,7 @@
 # 소프트웨어 공급망 보안사고 DB v1 — 공개 출처 기반(2003~2026)
 #
 # 필드
-#   date          발생(또는 공개) 시점 YYYY-MM — 활동 기간이 길면 시작 시점, 공개 시점은 요약에 적음
+#   date          최초 공개 시점 YYYY-MM(통합 v4 검증 F2) — 발생이 크게 앞서면 요약에 '(발생 YYYY-MM)'로 적음
 #   kind          사고 · 캠페인 · 정부 경보 · 공시 · 사례연구(익명) · 연구·시연 · 위협인텔
 #   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
 #   ecosystem     공격이 일어난 생태계·경로(scripts/taxonomy_rules.py ECOSYSTEMS)
@@ -80,7 +80,7 @@
     가져갔다. 소스 저장소의 접근 통제·감사가 허술하다는 점이 공급망 위험으로 처음 크게 부각됐다.
   sct: [SCT-SR-03, SCT-IM-03]
   sources:
-    - McAfee(2010) Protecting Your Critical Assets — Lessons Learned from Operation Aurora | https://www.wired.com/images_blogs/threatlevel/2010/03/operationaurora_wp_0310_fnl.pdf
+    - Computerworld(2010) Source code management a weak spot in Aurora attacks | https://www.computerworld.com/article/1444666/source-code-management-a-weak-spot-in-aurora-attacks.html
 
 - id: SCI-005
   title: ProFTPD 소스 배포 서버 백도어
@@ -112,7 +112,7 @@
     없음을 검증할 수 있었지만 서비스는 수주간 중단·재구축됐다.
   sct: [SCT-PB-04]
   sources:
-    - LWN(2011) The cracking of kernel.org | https://lwn.net/Articles/461237/
+    - LWN(2011) kernel.org compromised | https://lwn.net/Articles/457142/
 
 - id: SCI-007
   title: 페도라 인프라 침해(기여자 계정 도용)
@@ -352,7 +352,7 @@
   verification: 피해기관 확인
   ecosystem: [상용 소프트웨어]
   region: 글로벌
-  actor: APT41 연계(귀속 논의)
+  actor: Axiom/BARIUM(APT41 계열) 연계(귀속 논의)
   impact: [백도어·원격 제어]
   summary: >-
     공격자가 TeamViewer로 Piriform 개발망에 들어가 빌드 환경을 장악, 정식 서명된 CCleaner 5.33에 백도어를 넣었다.
@@ -362,6 +362,7 @@
   sources:
     - Cisco Talos(2017) CCleanup — A Vast Number of Machines at Risk | https://blog.talosintelligence.com/2017/09/avast-distributes-malware.html
     - Avast(2018) CCleaner attackers entered via TeamViewer | https://blog.avast.com/update-ccleaner-attackers-entered-via-teamviewer
+    - The Hacker News(2018) CCleaner malware attack | https://thehackernews.com/2018/04/ccleaner-malware-attack.html
 
 - id: SCI-022
   title: HandBrake 미러 서버 설치 파일 교체(Proton)
@@ -630,11 +631,13 @@
   actor: 미상
   impact: [백도어·원격 제어]
   summary: >-
-    PHP 패키지 관리자 PEAR의 공식 사이트가 침해되어 설치 도구 go-pear.phar가 리버스 셸을 여는 버전으로 약 6개월간
-    바뀌어 있었다. 사이트는 장기간 중단됐다.
+    PHP 패키지 관리자 PEAR의 공식 사이트가 침해되어 설치 도구 go-pear.phar가 리버스 셸을 여는 버전으로 2018-12-20
+    마지막 정식 릴리스 이후 약 한 달간(2019-01-18 발견까지, 초기 공지는 최소 반년으로 알림) 바뀌어 있었다. 사이트는 장기간
+    중단됐다.
   sct: [SCT-PB-04, SCT-PB-02.1]
   sources:
     - The Hacker News(2019) PHP PEAR Website Hacked | https://thehackernews.com/2019/01/php-pear-hacked.html
+    - GIGAZINE(2019) PEAR server security breach | https://gigazine.net/gsc_news/en/20190124-pear-server-security-breach
 
 - id: SCI-039
   title: ASUS ShadowHammer(Live Update 경유 표적 백도어)
@@ -861,7 +864,7 @@
   sct: [SCT-BD-02.1, SCT-IM-01.1, SCT-PB-03.1]
   attack_ref: [C0024, S0562, S0559]
   sources:
-    - FireEye(2020) Highly Evasive Attacker Leverages SolarWinds Supply Chain to Compromise Multiple Global Victims With SUNBURST Backdoor | https://www.fireeye.com/blog/threat-research/2020/12/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor.html
+    - Google Cloud Blog(2020, 원 게시 FireEye) Highly Evasive Attacker Leverages SolarWinds Supply Chain to Compromise Multiple Global Victims With SUNBURST Backdoor | https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor
     - CrowdStrike(2021) SUNSPOT — An Implant in the Build Process | https://www.crowdstrike.com/blog/sunspot-malware-technical-analysis/
     - MITRE ATT&CK C0024 SolarWinds Compromise | https://attack.mitre.org/campaigns/C0024/
 
@@ -899,7 +902,7 @@
 
 - id: SCI-055
   title: Codecov Bash Uploader 변조
-  date: 2021-01
+  date: 2021-04
   kind: 사고
   verification: 피해기관 확인
   ecosystem: [CI/CD·개발 SaaS]
@@ -908,7 +911,7 @@
   impact: [자격증명·비밀 탈취]
   summary: >-
     Docker 이미지 제작 과정의 실수로 노출된 자격증명으로 공격자가 Codecov의 Bash Uploader 스크립트를 바꿔, 고객 CI
-    환경변수(토큰·키)를 약 두 달간 외부로 보냈다. 내려받은 스크립트의 해시를 대조한 고객 한 곳이 변조를 발견했다.
+    환경변수(토큰·키)를 약 두 달간(발생 2021-01) 외부로 보냈다. 내려받은 스크립트의 해시를 대조한 고객 한 곳이 변조를 발견했다.
   sct: [SCT-PB-02.1, SCT-SC-02.1, SCT-CS-01, SCT-IM-03]
   sources:
     - Codecov(2021) Bash Uploader Security Update | https://about.codecov.io/security-update/
@@ -1005,12 +1008,13 @@
   impact: [파괴·사보타주, 서비스 중단]
   summary: >-
     REvil이 원격 관리(RMM) 소프트웨어 Kaseya VSA의 제로데이(CVE-2021-30116)로 VSA 서버를 장악해 가짜 업데이트로
-    랜섬웨어를 배포했다. 직접 피해 고객은 60곳 미만이었지만 그중 약 30곳이 MSP여서 하위 기업 약 1,500곳이 암호화됐다.
+    랜섬웨어를 배포했다. Kaseya 발표로 직접 피해 고객은 60곳 미만(대부분 MSP)이었고 하위 기업은 최대 약 1,500곳이 영향을 받았다.
   sct: [SCT-CS-02.1, SCT-IM-05, SCT-IM-01.1]
   kev: [CVE-2021-30116]
   sources:
     - Qualys(2021) Kaseya REvil Ransomware Attack | https://threatprotect.qualys.com/2021/07/07/kaseya-revil-ransomware-attack/
     - Security Affairs(2021) CISA, FBI share guidance for MSPs and their customers impacted in Kaseya attack | https://securityaffairs.com/119728/cyber-crime/cisa-fbi-guidance-kaseya-attack.html
+    - TechTarget(2021) Kaseya — 1,500 organizations affected by REvil attacks | https://searchsecurity.techtarget.com/news/252503605/Kaseya-1500-organizations-affected-by-REvil-attacks
 
 - id: SCI-062
   title: Travis CI 포크 빌드 비밀 노출 결함
@@ -1023,7 +1027,7 @@
   impact: [자격증명·비밀 탈취]
   summary: >-
     Travis CI 결함으로 2021년 9월 3~10일 공개 저장소를 포크한 빌드에 원 저장소의 보호된 비밀(환경변수)이 노출됐다.
-    Travis CI는 해당 기간 사용자에게 모든 비밀 교체를 권고했다.
+    Travis CI는 사용자에게 정기적인 비밀 교체를 권고했다(침해 증거는 확인되지 않았다고 설명).
   sct: [SCT-SC-01.2, SCT-BD-03.2]
   sources:
     - Travis CI(2021) Security Bulletin | https://travis-ci.community/t/security-bulletin/12081
@@ -1104,11 +1108,12 @@
   impact: [백도어·원격 제어, 크립토재킹]
   summary: >-
     자바 로깅 라이브러리 Log4j의 원격 코드 실행 취약점(CVE-2021-44228)이 공개 직후 대량 악용됐다. 수많은 제품에 전이
-    의존성으로 들어 있어 영향 범위를 파악하는 데만 수주가 걸렸고, SBOM·구성요소 인벤토리의 필요성을 각인시켰다.
+    의존성으로 들어 있어 영향 범위를 파악하기 어려웠고(Maven Central 패키지 8% 이상 영향), SBOM·구성요소 인벤토리의 필요성을 각인시켰다.
   sct: [SCT-DP-04]
   kev: [CVE-2021-44228, CVE-2021-45046]
   sources:
     - Google Security Blog(2021) Understanding the Impact of Apache Log4j Vulnerability | https://security.googleblog.com/2021/12/understanding-impact-of-apache-log4j.html
+    - Microsoft(2021) Guidance for preventing, detecting, and hunting for CVE-2021-44228 Log4j 2 exploitation | https://www.microsoft.com/en-us/security/blog/2021/12/11/guidance-for-preventing-detecting-and-hunting-for-cve-2021-44228-log4j-2-exploitation/
 
 - id: SCI-068
   title: VS Code 저장소 CI 주입(연구자 시연)
@@ -1272,7 +1277,7 @@
 
 - id: SCI-078
   title: Dropbox GitHub 저장소 130개 탈취
-  date: 2022-10
+  date: 2022-11
   kind: 사고
   verification: 피해기관 확인
   ecosystem: [소스 저장소 플랫폼]
@@ -1281,7 +1286,7 @@
   impact: [소스 코드 유출]
   summary: >-
     CircleCI를 사칭한 피싱으로 개발자의 GitHub 자격증명과 일회용 코드를 빼낸 공격자가 Dropbox 내부 GitHub 저장소 130개를
-    복제했다. 일부 API 키가 포함됐으나 핵심 서비스 코드는 아니었다고 밝혔다.
+    복제했다(발생 2022-10). 일부 API 키가 포함됐으나 핵심 서비스 코드는 아니었다고 밝혔다.
   sct: [SCT-SC-03.1, SCT-IM-03]
   sources:
     - BleepingComputer(2022) Dropbox discloses breach after hacker stole 130 GitHub repositories | https://www.bleepingcomputer.com/news/security/dropbox-discloses-breach-after-hacker-stole-130-github-repositories/
@@ -1497,7 +1502,7 @@
 
 - id: SCI-092
   title: JumpCloud 명령 프레임워크 악용(암호화폐 고객 표적)
-  date: 2023-06
+  date: 2023-07
   kind: 사고
   verification: 피해기관 확인
   ecosystem: [서드파티 SaaS·MSP]
@@ -1510,10 +1515,11 @@
   sct: [SCT-CS-02.3, SCT-IM-04]
   sources:
     - The Hacker News(2023) North Korean nation-state actors exploit JumpCloud breach to target crypto clients | https://thehackernews.com/2023/07/north-korean-nation-state-actors.html
+    - JumpCloud(2023) Security Update — Incident Details | https://jumpcloud.com/blog/security-update-incident-details
 
 - id: SCI-093
   title: MagicLine4NX 취약점 악용(국내 기관·기업 침투)
-  date: 2023-03
+  date: 2023-06
   kind: 사고
   verification: 정부·사법 확인
   ecosystem: [상용 소프트웨어]
@@ -1522,7 +1528,7 @@
   impact: [백도어·원격 제어, 데이터 반출]
   summary: >-
     공공·금융 사이트 로그인에 쓰이는 인증 보안 소프트웨어 MagicLine4NX의 취약점을 언론사 사이트 워터링홀과 결합해 악용,
-    약 50개 공공기관·방산·IT 기업 PC를 감염시켰다. 국정원은 이를 공급망 해킹으로 규정하고 업데이트·삭제를 권고했다.
+    약 50개 공공기관·방산·IT 기업 PC를 감염시켰다(발생 2023-03). 국정원은 이를 공급망 해킹으로 규정하고 업데이트·삭제를 권고했다.
   sct: [SCT-CS-04]
   sources:
     - 보안뉴스(2023) 국정원, MagicLine4NX 대상 보안인증 SW 취약점 악용 해킹 확산 경고 | https://m.boannews.com/html/detail.html?idx=119618
@@ -1578,7 +1584,7 @@
 
 - id: SCI-097
   title: 가짜 Dependabot 커밋(탈취 PAT로 저장소 변조)
-  date: 2023-07
+  date: 2023-09
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [소스 저장소 플랫폼]
@@ -1586,7 +1592,7 @@
   actor: 미상
   impact: [자격증명·비밀 탈취]
   summary: >-
-    탈취한 GitHub PAT로 수백 개 저장소에 Dependabot이 만든 것처럼 위장한 커밋을 넣어, 워크플로에 비밀을 빼내는 코드와 웹
+    탈취한 GitHub PAT로 수백 개 저장소에 Dependabot이 만든 것처럼 위장한 커밋을 넣어(발생 2023-07), 워크플로에 비밀을 빼내는 코드와 웹
     양식 비밀번호를 가로채는 코드를 심었다. 자동화 봇 명의의 커밋은 사람이 잘 검토하지 않는다는 점을 노렸다.
   sct: [SCT-SR-02.2, SCT-SR-02.1, SCT-BD-01.2, SCT-SC-02.1]
   sources:
@@ -1610,7 +1616,7 @@
 
 - id: SCI-099
   title: bignum 방치 S3 버킷 재점유
-  date: 2023-06
+  date: 2023-05
   kind: 사고
   verification: 보안업체·연구기관 분석
   ecosystem: [npm]
@@ -1892,7 +1898,7 @@
 
 - id: SCI-116
   title: Andariel 국내 ERP 업데이트 서버 악용(Xctdoor)
-  date: 2024-05
+  date: 2024-07
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [상용 소프트웨어]
@@ -1901,10 +1907,11 @@
   impact: [백도어·원격 제어]
   summary: >-
     국내 ERP 솔루션의 업데이트 서버를 장악해 업데이트 프로그램에 악성 루틴을 넣고, 방산·제조 기업 시스템에 백도어
-    (Xctdoor)를 설치했다. 2017년 같은 수법(HotCroissant 유포)과 유사하다고 분석됐다.
+    (Xctdoor)를 설치했다(ASEC 탐지, 발생 2024-05). 2017년 같은 수법(HotCroissant 유포)과 유사하다고 분석됐다.
   sct: [SCT-PB-02.2]
   sources:
     - AhnLab ASEC(2024) Xctdoor Malware Used in Attacks Against Korean Companies (Andariel) | https://asec.ahnlab.com/en/67558/
+    - The Hacker News(2024) South Korean ERP vendor's server hacked | https://thehackernews.com/2024/07/south-korean-erp-vendors-server-hacked.html
 
 - id: SCI-117
   title: 국내 공공기관 대상 서명된 위장 설치 파일(Endoor)
@@ -2061,11 +2068,13 @@
   actor: 미상
   impact: [자격증명·비밀 탈취]
   summary: >-
-    탈취한 브라우저 쿠키로 인기 디스코드 봇 프로젝트(top.gg) 기여자 계정에 들어가 악성 커밋을 넣고, PyPI 미러처럼 보이는
-    도메인으로 의존성을 바꿔 정보탈취 악성코드를 퍼뜨렸다. 피해 사용자는 17만 명 이상으로 추정됐다.
+    탈취한 브라우저 쿠키로 추정되는 방법으로 인기 디스코드 봇 프로젝트(top.gg) 기여자 계정에 들어가 악성 커밋을 넣고, PyPI
+    미러처럼 보이는 도메인으로 의존성을 바꿔 정보탈취 악성코드를 퍼뜨렸다. 17만 명 이상 규모의 커뮤니티가 영향권에 들었으나
+    실제 감염자 수는 알 수 없다.
   sct: [SCT-SC-03.2, SCT-DP-01.2, SCT-PB-02.3, SCT-IM-03]
   sources:
     - Checkmarx(2024) Over 170K Users Affected by Attack Using Fake Python Infrastructure | https://zero.checkmarx.com/over-170k-users-affected-by-attack-using-fake-python-infrastructure-05a04b7e058a
+    - The Register(2024) Python package malware via fake PyPI mirror (top.gg) | https://www.theregister.com/2024/03/25/python_package_malware/
 
 - id: SCI-127
   title: GitHub 저장소 혼동 캠페인(감염 저장소 10만 개 이상)
@@ -2290,14 +2299,15 @@
   verification: 피해기관 확인
   ecosystem: [IDE·브라우저 확장, AI 생태계]
   region: 글로벌
-  actor: 미상(외부 기여자 계정)
+  actor: 미상(외부 계정)
   impact: [영향 없음(사전 차단)]
   summary: >-
-    외부 기여자가 오픈소스 저장소에 낸 변경이 반영되어, AI 코딩 도우미 Amazon Q 확장 1.84.0에 로컬 파일과 AWS 자원을 지우라는
-    프롬프트가 실려 공식 배포됐다. 형식 오류로 실행되지 않았고 AWS는 1.85.0으로 교체했다.
+    외부 계정이 범위가 잘못 설정된 GitHub 토큰으로 오픈소스 저장소에 커밋한 코드가, AI 코딩 도우미 Amazon Q 확장 1.84.0에
+    로컬 파일과 AWS 자원을 지우라는 프롬프트로 실려 공식 배포됐다. 형식 오류로 실행되지 않았고 AWS는 1.85.0으로 교체했다.
   sct: [SCT-DE-03.1, SCT-SR-01.1, SCT-IM-05]
   sources:
     - BleepingComputer(2025) Amazon AI coding agent hacked to inject data wiping commands | https://bleepingcomputer.com/news/security/amazon-ai-coding-agent-hacked-to-inject-data-wiping-commands
+    - AWS(2025) Security Bulletin AWS-2025-015 — Amazon Q Developer Extension for Visual Studio Code (Version 1.84.0) | https://aws.amazon.com/security/security-bulletins/AWS-2025-015/
 
 - id: SCI-141
   title: Toptal GitHub 조직 탈취와 파괴형 npm 패키지
@@ -2358,11 +2368,12 @@
   actor: UNC6395
   impact: [데이터 반출, 자격증명·비밀 탈취]
   summary: >-
-    Salesloft Drift 연동에 발급된 OAuth 토큰으로 2025년 8월 8~18일 700곳 이상 조직의 Salesforce 데이터를 대량 조회·반출하고,
+    Salesloft Drift 연동에 발급된 OAuth 토큰으로 2025년 8월 8~18일 700곳 이상으로 추산되는(GTIG) 조직의 Salesforce 데이터를 대량 조회·반출하고,
     그 안의 AWS 키·Snowflake 토큰 같은 비밀을 노렸다. 공급자 한 곳의 연동 토큰이 수백 고객 환경의 열쇠가 됐다.
   sct: [SCT-CS-03.1, SCT-IM-03]
   sources:
     - The Hacker News(2025) Salesloft OAuth breach via Drift AI chat agent exposes Salesforce customer data | https://thehackernews.com/2025/08/salesloft-oauth-breach-via-drift-ai.html
+    - Google Cloud Blog(GTIG, 2025) Widespread Data Theft Targets Salesforce Instances via Salesloft Drift | https://cloud.google.com/blog/topics/threat-intelligence/data-theft-salesforce-instances-via-salesloft-drift
 
 - id: SCI-145
   title: GhostAction(탈취 계정으로 악성 워크플로 대량 커밋)
@@ -2467,7 +2478,7 @@
 
 - id: SCI-151
   title: Notepad++ 업데이트 경로 가로채기(Lotus Blossom)
-  date: 2025-06
+  date: 2025-12
   kind: 캠페인
   verification: 피해기관 확인
   ecosystem: [상용 소프트웨어]
@@ -2476,15 +2487,17 @@
   impact: [백도어·원격 제어]
   summary: >-
     호스팅 업체 수준의 침해로 2025년 6월부터 Notepad++ 업데이트 트래픽이 가로채졌고, 서명 검증을 하지 않던 업데이터
-    (WinGUp)가 7~10월 표적에게 악성 설치 파일을 받아 실행했다. 2026년 2월 공개·수정됐고 KEV에 등재됐다.
+    (WinGUp)가 표적에게 악성 설치 파일을 받아 실행했다. 2025-12 v8.8.9에서 서명 검증을 추가했고 2026-02 침해 경위가
+    공개됐으며 KEV에 등재됐다.
   sct: [SCT-PB-02.3, SCT-PB-02.2, SCT-CS-01]
   kev: [CVE-2025-15556]
   sources:
     - The Hacker News(2026) Notepad++ fixes hijacked update mechanism | https://thehackernews.com/2026/02/notepad-fixes-hijacked-update-mechanism.html
+    - Notepad++(2025) Notepad++ v8.8.9 released | https://notepad-plus-plus.org/news/v889-released/
 
 - id: SCI-152
   title: hackerbot-claw(자율 에이전트의 Actions 워크플로 대량 악용)
-  date: 2026-02
+  date: 2026-03
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [CI/CD 구성요소(Actions 등), AI 생태계]
@@ -2492,9 +2505,9 @@
   actor: 자칭 자율 보안 연구 에이전트(hackerbot-claw)
   impact: [자격증명·비밀 탈취]
   summary: >-
-    2026년 2월 21~28일 AI 에이전트로 보이는 계정이 공개 저장소의 pull_request_target·입력 주입 결함을 자동 탐색해
-    여러 대형 저장소에서 코드를 실행했고, Trivy 저장소에서는 쓰기 권한 토큰을 빼냈다. 이 토큰이 이후 TeamPCP 연쇄 침해의
-    출발점이 됐다.
+    2026-02-21~03-02 AI 에이전트로 보이는 계정이 공개 저장소의 pull_request_target·입력 주입 결함을 자동 탐색해
+    여러 대형 저장소에서 코드를 실행했고, Trivy에서는 pull_request_target 결함으로 서비스 계정 PAT를 탈취해 저장소를 장악했다.
+    이 침해에서 탈취된 자격증명이 이후 TeamPCP 연쇄 침해의 출발점이 됐다.
   sct: [SCT-BD-01.1, SCT-SC-02.3, SCT-IM-01.2]
   sources:
     - StepSecurity(2026) hackerbot-claw — GitHub Actions exploitation | https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation
@@ -2546,13 +2559,14 @@
   actor: TeamPCP(G1056)
   impact: [자격증명·비밀 탈취]
   summary: >-
-    Trivy 침해 때 빼낸 PyPI 게시 토큰으로 LLM 프록시 라이브러리 LiteLLM 1.82.7·1.82.8을 게시했다. 파이썬 프로세스가 시작될
-    때마다 실행되도록 .pth 파일을 써서 클라우드 토큰·DB 자격증명·SSH 키를 수집했다.
+    Trivy 침해 때 빼낸 PyPI 게시 토큰으로 LLM 프록시 라이브러리 LiteLLM 1.82.7·1.82.8을 게시했다(1.82.8은 파이썬 프로세스가 시작될
+    때마다 실행되는 .pth 파일 추가). 클라우드 토큰·DB 자격증명·SSH 키를 수집했다.
   sct: [SCT-SC-02.2, SCT-PB-01, SCT-DP-03.2, SCT-IM-03, SCT-IM-01.2]
   attack_ref: [G1056]
   sources:
     - Cycode(2026) LiteLLM Supply Chain Attack — How to Respond | https://cycode.com/blog/lite-llm-supply-chain-attack/
     - Kaspersky(2026) Trojanization of Trivy, Checkmarx, and LiteLLM solutions | https://www.kaspersky.co.uk/blog/critical-supply-chain-attack-trivy-litellm-checkmarx-teampcp/30159/
+    - Wiz(2026) Three's a Crowd — TeamPCP trojanizes LiteLLM in continuation of campaign | https://www.wiz.io/blog/threes-a-crowd-teampcp-trojanizes-litellm-in-continuation-of-campaign
 
 - id: SCI-156
   title: Telnyx Python SDK 악성 버전(오디오 파일 은닉)
@@ -2581,11 +2595,13 @@
   actor: 미상
   impact: [금전 탈취]
   summary: >-
-    SDK 배포 도메인의 등록 계정이 탈취되어 3월 9~10일 약 14시간 동안 websdk.appsflyer.com이 변조 스크립트를 내보냈다.
+    SDK 배포 도메인의 등록기관 측 사고(분석상 등록 계정 탈취·네임서버 변경)로 3월 9~10일 약 14시간(보고마다 다름) 동안 websdk.appsflyer.com이 변조 스크립트를 내보냈다.
     SDK 기능은 유지한 채 웹 양식·API·클립보드의 암호화폐 지갑 주소를 공격자 주소로 바꿨다.
   sct: [SCT-CS-03.2, SCT-PB-02.3, SCT-IM-04]
   sources:
     - BleepingComputer(2026) AppsFlyer Web SDK used to spread crypto-stealer JavaScript code | https://bleepingcomputer.com/news/security/appsflyer-web-sdk-used-to-spread-crypto-stealer-javascript-code
+    - Cloud Security Alliance Labs(2026) CSA Research Note — AppsFlyer SDK supply chain crypto stealer | https://labs.cloudsecurityalliance.org/research/csa-research-note-appsflyer-sdk-supply-chain-crypto-stealer/
+    - cside(2026) AppsFlyer Web SDK supply chain compromise — polymorphic crypto stealer | https://cside.com/blog/appsflyer-web-sdk-supply-chain-compromise-polymorphic-crypto-stealer
 
 - id: SCI-158
   title: axios 메인테이너 계정 탈취(가짜 의존성으로 원격 제어 악성코드)
@@ -2638,7 +2654,7 @@
 
 - id: SCI-161
   title: DAEMON Tools Lite 정식 서명 설치 파일 트로이목마화
-  date: 2026-04
+  date: 2026-05
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   ecosystem: [상용 소프트웨어]

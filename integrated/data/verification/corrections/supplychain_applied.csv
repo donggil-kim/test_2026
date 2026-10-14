@@ -1,0 +1,94 @@
+﻿원장 키,필드,현재,정정,반영,사유
+DB 머리 주석,supplychain/data/incidents.yaml:date 정의,발생(또는 공개) 시점 — 활동 기간이 길면 시작 시점,최초 공개 시점 YYYY-MM(통합 v4 검증 F2),반영,규칙 1: 머리 주석 date 정의가 다르면 수정
+SCI-021,actor,APT41 연계(귀속 논의),Axiom/BARIUM(APT41 계열) 연계(귀속 논의),반영,"C 차이·제안 정정: Avast는 Axiom(ShadowPad), Microsoft는 BARIUM 귀속(THN 인용); APT41 직접 귀속 원문은 미확인이라 귀속 논의 표기 유지"
+SCI-021,sources,Talos·Avast,+ The Hacker News(2018) CCleaner malware attack | https://thehackernews.com/2018/04/ccleaner-malware-attack.html,반영,BARIUM 귀속 근거 출처 추가(제목은 URL 기준 표기)
+SCI-021,date,2017-09,2017-09,해당 없음,공개월 2017-09-18과 일치
+SCI-021,text/BD.yaml:SC-BD-02,CCleaner 빌드 침해(2017-09) 인용 줄,변경 없음,해당 없음,G 문안 일치; 행위자 정보는 인용 줄에 없음
+SCI-038,summary,약 6개월간 바뀌어 있었다,"2018-12-20 마지막 정식 릴리스 이후 약 한 달간(2019-01-18 발견까지, 초기 공지는 최소 반년으로 알림)",반영,"C 차이·제안 정정·G 메모: PEAR 2019-01-23 트윗·GIGAZINE·THN 업데이트 근거로 기간 정정, 출처 간 차이 병기"
+SCI-038,sources,THN,+ GIGAZINE(2019) PEAR server security breach,반영,후속 분석 근거 URL 추가(제목은 URL 기준 표기)
+SCI-038,text/PB.yaml:SC-PB-04 인용 줄,약 6개월간,약 한 달간(2018-12-20 이후),반영,G 메모
+SCI-038,integrated/PB.yaml 대표 사례,약 6개월간,약 한 달간(2018-12-20 이후),반영,인용 문안 동기화
+SCI-052,sources,FireEye(2020) ... | fireeye.com/blog/...(리디렉트로 원문 소실),"Google Cloud Blog(2020, 원 게시 FireEye) ... | https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor",반영,제안 정정: 같은 글의 Google Cloud 사본으로 교체
+SCI-052,text/BD.yaml:SC-BD-02·IM.yaml:SC-IM-01,SolarWinds 인용 줄,변경 없음,해당 없음,G 문안 일치; 시점 2020-12 유지
+SCI-052,ID-TS-03 인용 문안,SolarWinds 침해 이후 클라우드 장악,변경 없음,해당 없음,클라우드·신원 DB 소관 문구(공급망 DB 파일 아님)
+SCI-055,date,2021-01,2021-04,반영,공개월 2021-04-15(Codecov 1차 공지) 기준 F2; 변조 시작 2021-01-31은 요약에 (발생 2021-01)로 병기
+SCI-055,text/CS.yaml:SC-CS-01·PB.yaml:SCT-PB-02.1·SC.yaml 인용 줄 3건,Codecov Bash Uploader 변조(2021-01),(2021-04),반영,사례명(시점) 동기화
+SCI-055,integrated/SC.yaml 대표 사례,(2021-01),(2021-04),반영,통합 대표 사례 문안 동기화
+SCI-067,summary,영향 범위를 파악하는 데만 수주가 걸렸고,영향 범위를 파악하기 어려웠고(Maven Central 패키지 8% 이상 영향),반영,C 차이·제안 정정·G 메모: 출처에 기간 표현 없음(Google 보안 블로그 2021-12-17)
+SCI-067,summary,SBOM·구성요소 인벤토리의 필요성을 각인시켰다,변경 없음,보류,"C 차이가 출처에 없는 해석이라 지적했으나 제안 정정·G 메모에는 삭제 요구 없음 — 분석가 해석 문장으로 유지, 별도 검토 필요"
+SCI-067,sources,Google 보안 블로그,+ Microsoft(2021-12-11) 악용 분석,반영,제안 정정: 대량 악용 근거 출처 추가
+SCI-067,text/DP.yaml:SC-DP-04 인용 줄,영향 범위 파악에만 수주가 걸림,영향 범위 파악이 어려웠음(Maven Central 패키지 8% 이상 영향),반영,G 메모
+SCI-067,integrated/DP.yaml 대표 사례,영향 범위 파악에만 수주가 걸림,영향 범위 파악이 어려웠음(Maven Central 패키지 8% 이상 영향),반영,인용 문안 동기화
+SCI-093,date,2023-03,2023-06,반영,"공개월 2023-06(국정원 경고, 보안뉴스 — 원문 미열람) 기준 F2; 합동 권고의 최초 침투 2023-03은 요약에 (발생 2023-03)로 병기"
+SCI-093,summary,약 50개 공공기관·방산·IT 기업,변경 없음,보류,"C 차이·제안 정정: 50여 개 기관 수치는 열람 원문으로 직접 확인 못함(보안뉴스 DNS 실패) — 확인된 사실 없이 수치 변경·삭제 불가, 국정원 보도자료 재확인 필요"
+SCI-093,sources,보안뉴스·Security Affairs,변경 없음,보류,제안 정정이 출처 재확인 요구뿐(신규 URL의 1차 출처 없음); 뉴스서울(2023-11-08)은 제목 미확인 2차 보도라 추가 보류
+SCI-093,text/CS.yaml:SC-CS-05 인용 줄,(2023-03),(2023-06),반영,사례명(시점) 동기화
+SCI-093,integrated/CS.yaml 대표 사례,(2023-03),(2023-06),반영,통합 대표 사례 문안 동기화
+SCI-092,date,2023-06,2023-07,반영,공개월 2023-07-12(JumpCloud 사고 상세 공지) 기준 F2; 발생 2023-06-22는 1개월 차이라 요약 병기 생략
+SCI-092,sources,THN,+ JumpCloud(2023) Security Update — Incident Details,반영,"E 보강: 1차 출처(사고 상세 공지, 열람 확인) 추가; 제목은 URL 기준 표기"
+SCI-092,text/CS.yaml:SC-CS-03 인용 줄,(2023-06),(2023-07),반영,사례명(시점) 동기화
+SCI-092,integrated/CS.yaml 대표 사례,(2023-06),(2023-07),반영,통합 대표 사례 문안 동기화
+SCI-116,date,2024-05,2024-07,반영,공개월 2024-07 기준 F2; ASEC 탐지 2024-05는 요약에 (발생 2024-05)로 병기
+SCI-116,sources,"ASEC(en/67558, 열람 429)",+ The Hacker News(2024-07),반영,E 메모: ASEC 열람 불가로 대체 열람한 THN 추가(제목은 URL 기준 표기); ASEC 항목은 유지
+SCI-116,text/PB.yaml:SC-PB-02 인용 줄,(2024-05),(2024-07),반영,사례명(시점) 동기화
+SCI-116,integrated/PB.yaml 대표 사례,(2024-05),(2024-07),반영,통합 대표 사례 문안 동기화
+SCI-140,summary,외부 기여자가 오픈소스 저장소에 낸 변경이 반영되어,외부 계정이 범위가 잘못 설정된 GitHub 토큰으로 오픈소스 저장소에 커밋한 코드가,반영,C 차이·제안 정정: AWS-2025-015·ATLAS AML.CS0047 기준(BleepingComputer는 PR 설정 오류 추정)
+SCI-140,actor,미상(외부 기여자 계정),미상(외부 계정),반영,요약 정정과 일관되게 정리
+SCI-140,sources,BleepingComputer,+ AWS(2025) Security Bulletin AWS-2025-015,반영,E 보강: 1차 출처(열람 확인) 추가
+SCI-140,text/DE.yaml:SCT-DE-03.1 인용 줄,외부 기여로,부적절한 권한의 토큰으로 커밋된,반영,G 메모
+SCI-140,text/SR.yaml 인용 줄,외부 기여자가 낸 변경이 반영되어,외부 계정이 부적절한 권한의 토큰으로 커밋한,반영,같은 사실 오류 동기화
+SCI-140,AI-06-02·AI-08-05·AI-09-06 인용 문안,AI 매트릭스 줄,수정하지 않음,해당 없음,AI 매트릭스 문구는 공급망 DB 편집 범위 밖(AI-08-05 정정은 해당 DB 작업자 몫)
+SCI-148,summary·sources,—,변경 없음,해당 없음,"G 메모·제안 정정은 AI-05-02 인용 문안(AI 매트릭스)의 ""발견사 Koi 추정"" 병기뿐; 공급망 DB 요약과 text/DE.yaml·DP.yaml 인용 줄에는 300개 조직 수치 없음"
+SCI-148,AI-05-02 인용 문안,약 300개 조직 영향 추정,약 300개 조직 영향 추정(발견사 Koi 추정),해당 없음,AI 매트릭스 문구는 공급망 DB 편집 범위 밖
+SCI-155,summary,.pth 파일을 써서 파이썬 프로세스가 시작될 때마다 실행(두 버전 모두),1.82.8은 파이썬 프로세스가 시작될 때마다 실행되는 .pth 파일 추가,반영,"C 차이·제안 정정: 1.82.7은 proxy_server.py 주입(가져올 때 실행), .pth 방식은 1.82.8만(Wiz·Kaspersky·Cycode)"
+SCI-155,sources,Cycode·Kaspersky,+ Wiz(2026) Three's a Crowd — TeamPCP trojanizes LiteLLM,반영,E 보강: 원 출처(열람 확인) 추가; 제목은 URL 기준 표기
+SCI-155,text/DP.yaml:SC-DP-03 인용 줄,파이썬 프로세스가 시작될 때마다 실행되는 방식,1.82.8의 .pth 파일로 파이썬 프로세스가 시작될 때마다 실행되는 방식,반영,제안 정정 동기화
+SCI-155,integrated/DP.yaml 대표 사례,같음,같음(1.82.8 한정 표기),반영,인용 문안 동기화
+SCI-155,CL-IA-05 인용 문안,Trivy의 Actions 설정 오류·50여 종 비밀,수정하지 않음,해당 없음,클라우드 매트릭스 문구는 공급망 DB 편집 범위 밖(G 메모: 원문 확인 못함 — 해당 DB 작업자 몫)
+SCI-004,sources,McAfee(2010) ... | wired.com/…/operationaurora_wp_0310_fnl.pdf (HTTP 404),Computerworld(2010-03-04) Source code management a weak spot in Aurora attacks | https://www.computerworld.com/article/1444666/source-code-management-a-weak-spot-in-aurora-attacks.html,반영,제안 정정: 열람 불가(404) 백서 URL을 열람 확인된 대체 출처로 교체
+SCI-004,date,2010-01,2010-01,해당 없음,공개월 2010-01-12와 일치(발생 2009 중반~12월은 요약에 이미 서술하지 않으나 크게 앞선 활동기간 — 시점은 공개월 유지)
+SCI-004,text/SR.yaml 인용 줄,변경 없음,변경 없음,해당 없음,G 문안 일치
+SCI-006,sources,LWN(2011) The cracking of kernel.org | lwn.net/Articles/461237/,LWN(2011-08-31) kernel.org compromised | https://lwn.net/Articles/457142/,반영,제안 정정: 461237은 점검 요령 글이라 제목·내용 불일치 — 1차 공지(457142)로 교체
+SCI-006,text/PB.yaml 인용 줄,변경 없음,변경 없음,해당 없음,G 문안 해당 없음; 시점 2011-08 일치
+SCI-061,summary,"직접 피해 고객은 60곳 미만이었지만 그중 약 30곳이 MSP여서 하위 기업 약 1,500곳이 암호화됐다","Kaseya 발표로 직접 피해 고객은 60곳 미만(대부분 MSP)이었고 하위 기업은 최대 약 1,500곳이 영향을 받았다",반영,"C 차이·제안 정정·G 메모: ""MSP 약 30곳"" 근거 없음(Qualys·TechTarget·HotHardware)"
+SCI-061,sources,Qualys·Security Affairs,"+ TechTarget(2021-07-06) Kaseya — 1,500 organizations affected by REvil attacks",반영,제안 정정(제목은 URL 기준 표기)
+SCI-061,text/CS.yaml:SC-CS-02 인용 줄,"직접 피해 고객 중 약 30곳이 MSP여서 하위 기업 약 1,500곳이 암호화","직접 피해 고객 60곳 미만(대부분 MSP)을 거쳐 하위 기업 최대 약 1,500곳이 영향을 받음",반영,G 메모
+SCI-061,text/IM.yaml:SC-IM-01 인용 줄,"MSP 약 30곳을 거쳐 하위 기업 약 1,500곳이 암호화","Kaseya 직접 피해 고객 60곳 미만(대부분 MSP)을 거쳐 하위 기업 최대 약 1,500곳이 영향을 받음",반영,G 메모
+SCI-061,integrated/IM.yaml 대표 사례,"MSP 약 30곳을 거쳐 하위 기업 약 1,500곳이 암호화","Kaseya 직접 피해 고객 60곳 미만(대부분 MSP)을 거쳐 하위 기업 최대 약 1,500곳이 영향을 받음",반영,인용 문안 동기화
+SCI-061,supplychain/data/scenarios.yaml:133 행위 문구,"직접 피해 고객 중 약 30곳이 MSP여서 하위 기업 약 1,500곳이 암호화",수정하지 않음,보류,scenarios.yaml은 편집 허용 파일이 아님 — 시나리오 작업자가 같은 정정 필요
+SCI-062,summary,Travis CI는 해당 기간 사용자에게 모든 비밀 교체를 권고했다,Travis CI는 사용자에게 정기적인 비밀 교체를 권고했다(침해 증거는 확인되지 않았다고 설명),반영,"C 차이·제안 정정·G 메모: Travis 공지(2021-09-13)는 일반적 정기 교체 권고, 침해 증거 없음"
+SCI-062,text/BD.yaml:SC-BD-03·SC.yaml 인용 줄 2건,비밀 전체 교체를 권고,정기적인 비밀 교체를 권고,반영,G 메모
+SCI-062,integrated/BD.yaml 대표 사례,비밀 전체 교체를 권고,정기적인 비밀 교체를 권고,반영,인용 문안 동기화
+SCI-078,date,2022-10,2022-11,반영,제안 정정: 최초 공개 Dropbox 공지 2022-11-01(BleepingComputer); 침해 2022-10-13~14는 요약에 (발생 2022-10)로 병기
+SCI-078,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음(SCI-078 매핑 SCT-SC-03.1·IM-03 행에 인용 없음)
+SCI-099,date,2023-06,2023-05,반영,제안 정정·G 메모: GitHub 보안 권고 2023-05-24 최초 공개(2023-06은 Checkmarx 분석·The Register 보도); 발생월 불명
+SCI-099,text/DP.yaml:SC-DP-02 인용 줄,(2023-06),(2023-05),반영,G 메모
+SCI-099,integrated/DP.yaml 대표 사례,(2023-06),(2023-05),반영,통합 대표 사례 문안 동기화
+SCI-097,date,2023-07,2023-09,반영,제안 정정·G 메모: Checkmarx 최초 공개 2023-09-27(2023-07은 침해 기간) — 요약에 (발생 2023-07) 병기
+SCI-097,text/BD.yaml:SC-BD-01·SR.yaml 인용 줄 2건,(2023-07),(2023-09),반영,G 메모
+SCI-097,integrated/SR.yaml 대표 사례,(2023-07),(2023-09),반영,통합 대표 사례 문안 동기화
+SCI-126,summary,탈취한 브라우저 쿠키로 … 피해 사용자는 17만 명 이상으로 추정됐다,탈취한 브라우저 쿠키로 추정되는 방법으로 … 17만 명 이상 규모의 커뮤니티가 영향권에 들었으나 실제 감염자 수는 알 수 없다,반영,"C 차이·제안 정정: The Register(2024-03-25) ""could have been through stolen cookies""·""impossible to know how many users"""
+SCI-126,sources,Checkmarx(403으로 미열람),+ The Register(2024) …,반영,정정 근거로 열람한 출처 추가(제목은 URL·기사 내용 기준 표기); Checkmarx 항목 유지
+SCI-126,text/SC.yaml:SCT-SC-03.2 인용 줄,탈취한 브라우저 쿠키로 … 피해 사용자는 17만 명 이상으로 추정,쿠키 탈취로 추정되는 방법으로 … 17만 명 이상 규모의 커뮤니티가 영향권에 들었음(실제 감염자 수는 불명),반영,제안 정정 동기화
+SCI-126,title,top.gg 기여자 쿠키 재사용과 가짜 PyPI 미러,변경 없음,보류,"제목의 ""쿠키 재사용""도 추정 사항이나 제안 정정에 제목 변경 없음 — 제목 변경 시 연계 줄이 많아 검토 필요"
+SCI-151,date,2025-06,2025-12,반영,제안 정정·G 메모: 2025-12-09 v8.8.9로 하이재킹 보고 공개·서명 검증 추가(Notepad++·SecurityWeek); 침해 시작 2025-06은 요약에 서술
+SCI-151,summary,7~10월 표적에게 … 2026년 2월 공개·수정됐고,표적에게 … 2025-12 v8.8.9에서 서명 검증을 추가했고 2026-02 침해 경위가 공개됐으며,반영,C 차이: 7~10월은 Kaspersky 관측 기간으로 보이나 미열람 → 삭제; 공개·수정 시점 정정
+SCI-151,sources,THN,+ Notepad++(2025) Notepad++ v8.8.9 released,반영,E 보강: 1차 출처(열람 확인) 추가
+SCI-151,text/CS.yaml:SCT-CS-01·PB.yaml:SCT-PB-02.3 인용 줄 2건,(2025-06),(2025-12),반영,G 메모
+SCI-151,integrated/PB.yaml SC-PB-02 대표 사례,(2025-06),(2025-12),반영,G 메모: SC-PB-02 동기화
+SCI-144,summary,700곳 이상 조직의 Salesforce 데이터를 … 반출,700곳 이상으로 추산되는(GTIG) 조직의 Salesforce 데이터를 … 반출,반영,C 차이·제안 정정·G 메모: GTIG는 잠재 피해 조직 700곳 이상을 인지(THN 인용) — 반출 확정 수 아님
+SCI-144,sources,THN,"+ Google Cloud Blog(GTIG, 2025) Widespread Data Theft Targets Salesforce Instances via Salesloft Drift",반영,E 보강: 1차 출처(열람 확인) 추가
+SCI-144,text/CS.yaml:SCT-CS-03.1·IM.yaml 인용 줄 2건,700곳 이상 조직의,700곳 이상으로 추산되는 조직의,반영,G 메모
+SCI-144,integrated/CS.yaml 대표 사례,700곳 이상 조직의,700곳 이상으로 추산되는 조직의,반영,인용 문안 동기화
+SCI-152,date,2026-02,2026-03,반영,제안 정정: 공개월 2026-03-01(StepSecurity) 기준 F2; 발생 2026-02-21은 요약 기간에 서술
+SCI-152,summary,2026년 2월 21~28일 … Trivy 저장소에서는 쓰기 권한 토큰을 빼냈다. 이 토큰이,2026-02-21~03-02 … Trivy에서는 pull_request_target 결함으로 서비스 계정 PAT를 탈취해 저장소를 장악했다. 이 침해에서 탈취된 자격증명이,반영,"C 차이·제안 정정: aqua-bot PAT 탈취(StepSecurity), 기간 표기 2월 21일~3월 2일, 3월 19일 재침해는 이전 사고 자격증명 사용(Snyk·Kaspersky)"
+SCI-152,text/BD.yaml:SC-BD-01·IM.yaml·SC.yaml 인용 줄 3건,(2026-02) … 쓰기 (권한) 토큰,(2026-03) … 서비스 계정 PAT 탈취,반영,사례명(시점)·사실 동기화
+SCI-152,integrated/*.yaml 대표 사례,—,—,해당 없음,통합 대표 사례에 hackerbot-claw 인용 줄 없음
+SCI-157,summary,SDK 배포 도메인의 등록 계정이 탈취되어 … 약 14시간 동안,SDK 배포 도메인의 등록기관 측 사고(분석상 등록 계정 탈취·네임서버 변경)로 … 약 14시간(보고마다 다름) 동안,반영,"C 차이·제안 정정·G 메모: AppsFlyer 공식 표현은 등록기관 사고, 계정 탈취·네임서버 변경은 cside 분석; 노출 시간은 CSA 약 14시간 vs BleepingComputer 더 긴 창"
+SCI-157,sources,BleepingComputer(503으로 미열람),"+ CSA Labs 연구 노트(2026-03-18), cside(2026-03-18)",반영,E 메모: 대체 열람한 출처 추가(제목은 URL 기준 표기)
+SCI-157,text/CS.yaml:SC-CS-04 인용 줄,배포 도메인 등록 계정이 탈취되어 약 14시간 동안,배포 도메인의 등록기관 측 사고(분석상 등록 계정 탈취)로 약 14시간(보고마다 다름) 동안,반영,G 메모
+SCI-157,integrated/CS.yaml 대표 사례,같음,같음,반영,인용 문안 동기화
+SCI-157,title,…(도메인 등록 계정 탈취·지갑 주소 바꿔치기),변경 없음,보류,"제목 속 ""등록 계정 탈취""는 cside 분석 기준 서술로 제안 정정에 제목 변경 없음"
+SCI-161,date,2026-04,2026-05,반영,제안 정정: 공개월 2026-05-05(THN·Kaspersky); 4월 8일 시작은 요약에 서술
+SCI-161,text/PB.yaml:SCT-PB-02.1·SC-PB-02 인용 줄 2건,(2026-04),(2026-05),반영,사례명(시점) 동기화
+SCI-161,integrated/*.yaml 대표 사례,—,—,해당 없음,통합 대표 사례에 DAEMON Tools 인용 줄 없음

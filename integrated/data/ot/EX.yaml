@@ -10,7 +10,7 @@
   scenario: |-
     - 침해한 SCADA 서버에서 VBS가 배치 파일을 실행 → 배치 파일이 MicroSCADA 명령 도구로 SCIL-API 명령 실행 → 변전소 차단기 개방
   cases: |-
-    - [실제 사고] 2022 우크라이나(2022-10): lun.vbs·n.bat이 MicroSCADA scilc.exe로 SCIL-API 명령을 실행해 변전소 차단기를 개방
+    - [실제 사고] 2022 우크라이나(2023-11): lun.vbs·n.bat이 MicroSCADA scilc.exe로 SCIL-API 명령을 실행해 변전소 차단기를 개방
   controls: |-
     - 쓰지 않는 셸·스크립트 엔진 차단과 서명 스크립트·제한 언어 모드, 관리자 셸의 점프 호스트 제한
     - 애플리케이션 허용 목록·DLL 서명 검증과 장비 관리 인터페이스의 관리망 제한·root 직접 로그인 차단

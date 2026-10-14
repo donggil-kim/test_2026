@@ -12,7 +12,7 @@ T0869:
     - 수법(산업·IoT 프로토콜): 안전 제어기 진단 명령에 명령을 숨김(Triton), Modbus로 장치에 명령 전송(FrostyGoop), PLC 데이터 블록의 특정 값으로 명령 전달(Stuxnet), MQTT로 IoT·OT 기기 제어(IOCONTROL)
     - 통합: Enterprise 응용 계층 프로토콜(T1071·.001)·비응용 계층 프로토콜(T1095)·웹 서비스 양방향 통신(T1102.002)·암호화 채널(T1573·.001·.002)
     ■ 실제 사례
-    - [실제 사고] Triton(2017-08): TriStation 'get main processor diagnostic data' 명령에 특수 제작한 패킷을 실어 임플란트에 명령과 인자를 전달 (INC-004, ATT&CK S1009)
+    - [실제 사고] Triton(2017-12): TriStation 'get main processor diagnostic data' 명령에 특수 제작한 패킷을 실어 임플란트에 명령과 인자를 전달 (INC-004, ATT&CK S1009)
     - [실제 사고] 2015 우크라이나(2015-12): BlackEnergy가 감염 호스트와 C2 서버 사이를 HTTP POST로 통신 (INC-002, ATT&CK C0028)
     - [실제 사고] IOCONTROL(2024-12): 리눅스 기반 IoT·OT 기기용 악성코드가 MQTT로 명령을 받으며 연료 관리 시스템 침해에 쓰임 (INC-067)
   detect: |-
@@ -35,7 +35,7 @@ T0884:
     - 통합: Enterprise 프록시(T1090·.001·.003)·프로토콜 터널링(T1572) — 외부 중계 인프라는 네트워크 장비 탈취(OTC-RD-01.1)
     ■ 실제 사례
     - [실제 사고] 2016 우크라이나(2016-12): Industroyer 백도어가 하드코딩된 내부 프록시(TCP 3128)를 거쳐 외부 C2에 HTTP CONNECT 터널로 접속하고 Tor도 사용 (INC-003, ATT&CK S0604)
-    - [실제 사고] 2022 우크라이나(2022-10): GOGETTER 터널링 소프트웨어로 외부 서버와 TLS 기반 Yamux C2 채널을 만듦 (INC-006, ATT&CK C0034)
+    - [실제 사고] 2022 우크라이나(2023-11): GOGETTER 터널링 소프트웨어로 외부 서버와 TLS 기반 Yamux C2 채널을 만듦 (INC-006, ATT&CK C0034)
     - [위협인텔] PIPEDREAM(2022-04): PLCProxy 모듈이 Schneider PLC의 CODESYS 게이트웨이에 경로를 추가해 PLC를 거쳐 다른 장치로 메시지를 보내는 기능을 갖춤 (INC-022, ATT&CK S1045)
   detect: |-
     ■ 탐지
@@ -55,9 +55,9 @@ T0885:
     - 수법: 443·80으로 외부 C2 통신(2015 우크라이나·Stuxnet), TriStation 기본 포트로 장치 통신(Triton), Modbus 표준 포트로 명령(FrostyGoop), HMI에 정상 업데이트처럼 이름 붙인 방화벽 규칙으로 TCP 445 개방(2025 폴란드)
     - 포트와 실제 프로토콜이 다르거나 평소 쓰지 않는 호스트가 그 포트를 쓰는 경우가 핵심 단서 — 표준 응용 계층 프로토콜(OTC-C2-01)과 함께 쓰임
     ■ 실제 사례
-    - [실제 사고] 2025 폴란드(2025-12): Mikronika HMI에 'Microsoft Update'라는 방화벽 규칙을 만들어 TCP 445를 열어 둠 (INC-008, ATT&CK C0063)
-    - [실제 사고] 리비우 지역난방(2024-01): FrostyGoop이 표준 포트 TCP 502로 Modbus 명령을 보냄 (INC-007, ATT&CK S1165)
-    - [실제 사고] Triton(2017-08): TriStation 기본 포트 UDP 1502로 안전 제어기와 통신 (INC-004, ATT&CK S1009)
+    - [실제 사고] 2025 폴란드(2026-01): Mikronika HMI에 'Microsoft Update'라는 방화벽 규칙을 만들어 TCP 445를 열어 둠 (INC-008, ATT&CK C0063)
+    - [실제 사고] 리비우 지역난방(2024-07): FrostyGoop이 표준 포트 TCP 502로 Modbus 명령을 보냄 (INC-007, ATT&CK S1165)
+    - [실제 사고] Triton(2017-12): TriStation 기본 포트 UDP 1502로 안전 제어기와 통신 (INC-004, ATT&CK S1009)
   detect: |-
     ■ 탐지
     - 포트와 실제 프로토콜이 맞지 않는 통신과 평소 그 포트를 쓰지 않는 호스트의 사용을 OT 네트워크 감시로 경보
