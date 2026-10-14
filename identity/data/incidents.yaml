@@ -25,7 +25,7 @@
 # ---------------------------------------------------------------------------
 - id: IDI-001
   title: LAPSUS$ 연쇄 침해(SIM 스와핑·MFA 폭탄·내부자 모집)
-  date: 2022-03
+  date: 2021-12
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   id_env: [클라우드 IdP, SaaS, 원격 접속]
@@ -37,10 +37,12 @@
     Microsoft가 DEV-0537로 추적한 LAPSUS$는 공개 저장소의 자격증명 수집, 다크웹 구매, 직원·협력사 내부자 모집, SIM 스와핑,
     MFA 승인 요청 반복, 헬프데스크 전화로 비밀번호·MFA 재설정을 유도하는 방식으로 Microsoft·Nvidia·Samsung·Okta 등을 침해했다.
     탈취한 계정으로 SSO·VPN·협업 도구에 들어가 소스 코드와 데이터를 반출하고, 일부 피해 조직에서는 관리자 계정을 지워 대응을 방해했다.
+    최초 확인된 공격은 2021-12 브라질 보건부 건이며, Microsoft의 분석은 2022-03-22 공개됐다.
   idt: [IDT-AU-03.1, IDT-AU-03.2, IDT-SE-02.1, IDT-LC-02.2, IDT-AU-01.2, IDT-IM-03, IDT-IM-04]
   attack_ref: [G1004]
   sources:
     - Microsoft(2022) DEV-0537 criminal actor targeting organizations for data exfiltration and destruction | https://www.microsoft.com/en-us/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/
+    - Wikipedia(2022) Lapsus$ — Microsoft·Nvidia·Samsung·Okta 침해 경위 | https://en.wikipedia.org/wiki/Lapsus$
 
 - id: IDI-002
   title: Uber 내부망 침해(협력사 자격증명·MFA 승인 반복·PAM 관리자 자격증명)
@@ -394,7 +396,7 @@
 
 - id: IDI-020
   title: Cloudflare 내부 Atlassian 침해(Okta 침해 때 유출된 토큰 미교체)
-  date: 2023-11
+  date: 2024-02
   kind: 사고
   verification: 피해기관 확인
   id_env: [SaaS]
@@ -405,7 +407,7 @@
   summary: >-
     2023-10 Okta 침해로 유출된 수천 건 가운데 쓰지 않는다고 잘못 판단해 교체하지 않은 서비스 토큰 1개와 서비스 계정 자격증명 3개로
     공격자가 Cloudflare의 Atlassian(Confluence·Jira·Bitbucket)에 접근했다. 2023-11-23 탐지되어 하루 만에 차단됐고 고객 데이터·
-    시스템 피해는 없었다.
+    시스템 피해는 없었다. Cloudflare는 2024-02-01 이 침해를 공개했다(발생·탐지 2023-11).
   idt: [IDT-NH-01.2, IDT-NH-01.1, IDT-IM-05]
   sources:
     - BleepingComputer(2024) Cloudflare hacked using auth tokens stolen in Okta attack | https://www.bleepingcomputer.com/news/security/cloudflare-hacked-using-auth-tokens-stolen-in-okta-attack/
@@ -595,7 +597,7 @@
   impact: [계정 탈취, 금전 탈취]
   summary: >-
     침해한 거래처 계정에서 보낸 피싱으로 은행·금융 조직 직원의 세션을 AiTM으로 가로챈 뒤, 탈취 계정에 새 MFA 방법을 추가하고
-    받은편지함 규칙을 만들어 수백 명에게 2차 피싱을 보내는 BEC로 확산했다.
+    받은편지함 규칙을 만들어 1만 6천 건 이상의 2차 피싱 메일을 보내는 BEC로 확산했다.
   idt: [IDT-SE-01.1, IDT-PE-02.2, IDT-PE-02.3, IDT-IM-01, IDT-IM-05]
   sources:
     - Microsoft(2023) Detecting and mitigating a multi-stage AiTM phishing and BEC campaign | https://www.microsoft.com/en-us/security/blog/2023/06/08/detecting-and-mitigating-a-multi-stage-aitm-phishing-and-bec-campaign/
@@ -702,11 +704,16 @@
   summary: >-
     IT 지원 인력을 사칭한 전화로 직원이 Salesforce 연결 앱 설정 화면에서 공격자가 변조한 Data Loader 앱을 승인하게 만들어,
     조직의 Salesforce 데이터를 API로 대량 조회·반출한 뒤 갈취에 썼다. 일부 사례에서는 탈취 자격증명으로 Okta·Microsoft 365 등
-    다른 클라우드로 이동했다.
+    다른 클라우드로 이동했다. 이 캠페인의 금융권(보험) 피해 사례로, 미국 보험사 Allianz Life가 2025-07 사회공학 수법으로
+    클라우드 CRM(Salesforce 호스팅) 데이터가 탈취됐다고 밝혔고 Have I Been Pwned 분석 기준 고유 약 110만 명의
+    이름·성별·생년월일·전화번호·주소가 유출됐다. 보안 연구자들은 이를 ShinyHunters의 Salesforce 대상 캠페인과 연결했으며(귀속은 연구자
+    수준, SSN 포함 여부는 출처 간 차이), 자세한 침투 수법은 Allianz가 공개하지 않았다.
   idt: [IDT-SE-02.2, IDT-NH-03.2, IDT-IM-03]
   attack_ref: [G1057, C0059]
   sources:
     - Google Cloud(2025) The Cost of a Call — From Voice Phishing to Data Extortion | https://cloud.google.com/blog/topics/threat-intelligence/voice-phishing-data-extortion
+    - Infosecurity Magazine(2025) Allianz Life Data Breach Exposes Personal Data of 1.1 Million | https://www.infosecurity-magazine.com/news/allianz-life-breach-exposes/
+    - Have I Been Pwned(2025) Allianz Life Data Breach | https://haveibeenpwned.com/breach/AllianzLife
 
 - id: IDI-037
   title: Salesloft Drift 연동 OAuth 토큰 탈취로 Salesforce 인스턴스 대량 데이터 반출
@@ -778,11 +785,12 @@
   impact: [자격증명·토큰 탈취, 데이터 반출]
   summary: >-
     과기정통부 민관합동조사단 최종 발표(2025-07)에 따르면 서버 28대에서 악성코드 33종이 발견됐고 유심 정보 25종 2,696만여 건이
-    유출됐으며 최초 침투는 2021-08로 특정됐다. 시스템 관리망 서버 계정 비밀번호를 바꾸지 않고 만료일도 두지 않는 등 계정 관리가
+    유출됐으며 최초 침투는 2021-08로 특정됐다. 서버 계정정보를 다른 서버에 평문으로 저장하는 등 계정 관리가
     부실했고, 2022년 HSS 관리서버의 비정상 로그인 정황을 발견하고도 신고하지 않은 점이 지적됐다.
   idt: [IDT-CI-02, IDT-NH-01.2, IDT-IM-03]
   sources:
     - 뉴시스(2025) 정부, SK텔레콤 해킹 사고 최종 조사결과 발표 | https://www.newsis.com/view/NISX20250704_0003239865
+    - 서울신문(2025) SK텔레콤 해킹 최종 조사결과 보도 | https://m.seoul.co.kr/news/2025/07/04/20250704500152
     - 보안뉴스(2025) 민관조사단, SKT 가입자식별키 유출 확인 | https://m.boannews.com/html/detail.html?idx=137043
 
 - id: IDI-041
@@ -801,6 +809,7 @@
     인증서 유효기간을 10년에서 1개월로 줄이도록 했다.
   idt: [IDT-CI-02, IDT-AU-03.2, IDT-IM-01]
   sources:
+    - 뉴시스(2025) KT 무단 소액결제 민관합동조사단 최종 조사결과 보도 | https://www.newsis.com/view/NISX20251229_0003457704
     - 보안뉴스(2025) KT 무단 소액결제 — 안일한 펨토셀 관리, 해킹 피해 불렀다 | http://m.boannews.com/html/detail.html?idx=140202
     - 네이트 뉴스(2025) KT "소액결제 피해자 368명" | https://news.nate.com/view/20251017n20101
 
@@ -815,8 +824,8 @@
   actor: 전 직원
   impact: [데이터 반출]
   summary: >-
-    정부 조사단 발표(2026-02)에 따르면 퇴사한 백엔드 개발자가 재직 중 확보한 인증 토큰 서명키로 정상 로그인 없이 약 8개월간 고객
-    정보를 조회했다. 이름·이메일 3,367만 건이 유출되고 배송지 목록 페이지가 1억 4천여 회 조회됐다. 퇴사자가 쓰던 서명키를 갱신하지
+    정부 조사단 발표(2026-02)에 따르면 퇴사한 백엔드 개발자가 재직 중 확보한 인증 토큰 서명키로 정상 로그인 없이 2025-04-14~11-08(약 7개월)
+    고객 정보를 대규모로 조회했다(사전 테스트는 2025-01). 이름·이메일 3,367만 건이 유출되고 배송지 목록 페이지가 1억 4천여 회 조회됐다. 퇴사자가 쓰던 서명키를 갱신하지
     않았고 키 발급 이력 관리가 없었으며, 재직 개발자 노트북에도 서명키가 저장된 사실이 확인됐다.
   idt: [IDT-TS-03.3, IDT-LC-01.1, IDT-LC-02.1, IDT-NH-01.2, IDT-IM-03]
   sources:
@@ -836,7 +845,7 @@
   summary: >-
     해커가 불법 거래 사이트에 고객정보를 공개해 드러났다. 개인정보위 조사(2023-07 처분)에서 유출 정보와 가장 일치하는
     고객인증시스템(CAS)의 웹 관리자 계정 비밀번호가 2018-06 이후 기본값 'admin'으로 설정돼 있었고, 2009·2018년 업로드된 웹셸도
-    방치된 것으로 확인됐다. 중복 제거 후 29만 7,117명의 정보가 유출됐고 과징금 68억 원이 부과됐다.
+    방치된 것으로 확인됐다. 중복 제거 후 29만 7,117건의 정보가 유출됐고 과징금 68억 원이 부과됐다.
   idt: [IDT-AU-02, IDT-IM-03]
   sources:
     - 한국경제(2023) LG유플러스, 정보 유출 이유는 고작…'초기 비번 안 바꿔서' | https://www.hankyung.com/article/202304278020i
@@ -909,7 +918,8 @@
   impact: [계정 탈취, 금전 탈취]
   summary: >-
     2021-12~2022-01 KT 가입자 여러 명이 휴대폰이 갑자기 먹통이 된 뒤 가상자산 거래소 계정에서 수천만 원에서 수억 원대의 암호화폐를
-    탈취당했다고 신고해 국내 첫 심스와핑 의심 사례로 수사가 이뤄졌다. KT는 유심 기기변경을 한동안 매장 방문으로만 처리하도록 제한했다.
+    탈취당했다고 신고해 국내 첫 심스와핑 의심 사례로 수사가 이뤄졌다. KT는 타사·자급제 단말의
+    유심 자동기변을 고객센터 경유로 제한했다(KT는 심스와핑과 무관한 시스템 점검이라고 설명).
   idt: [IDT-AU-03.2, IDT-IM-01]
   sources:
     - 보안뉴스(2022) 한국 심스와핑 의심 피해자 "유심 복사로 가상자산 털렸다" | http://www.boannews.com/news/articleView.html?idxno=104063
@@ -994,7 +1004,7 @@
 
 - id: IDI-052
   title: PayPal 크리덴셜 스터핑(3만 4,942 계정)
-  date: 2022-12
+  date: 2023-01
   kind: 사고
   verification: 피해기관 확인
   id_env: [CIAM·고객 서비스]
@@ -1004,7 +1014,7 @@
   impact: [계정 탈취, 데이터 반출]
   summary: >-
     2022-12-06~08 크리덴셜 스터핑으로 3만 4,942개 계정에 무단 로그인해 이름·주소·사회보장번호·거래 내역 등에 접근했다. PayPal은
-    자사 시스템 침해는 아니라고 밝히고 피해자에게 신원 모니터링을 제공했다.
+    자사 시스템 침해는 아니라고 밝히고 피해자에게 신원 모니터링을 제공했다. 피해자 통지는 2023-01-18~19 이뤄졌다(침해는 2022-12-06~08).
   idt: [IDT-CI-01, IDT-IM-03]
   sources:
     - BleepingComputer(2023) PayPal accounts breached in large-scale credential stuffing attack | https://www.bleepingcomputer.com/news/security/paypal-accounts-breached-in-large-scale-credential-stuffing-attack/
@@ -1027,7 +1037,7 @@
     - BleepingComputer(2023) Chick-fil-A confirms accounts hacked in months-long "automated" attack | https://www.bleepingcomputer.com/news/security/chick-fil-a-confirms-accounts-hacked-in-months-long-automated-attack/
 
 - id: IDI-054
-  title: DraftKings 크리덴셜 스터핑(약 6만 8천 계정·30만 달러 미만 피해)
+  title: DraftKings 크리덴셜 스터핑(약 6만 8천 계정·약 30만 달러 피해)
   date: 2022-11
   kind: 사고
   verification: 피해기관 확인
@@ -1037,11 +1047,12 @@
   actor: 미상
   impact: [계정 탈취, 금전 탈취]
   summary: >-
-    2022-11-18 탐지된 크리덴셜 스터핑으로 약 6만 8천 명의 계정이 탈취되어 개인정보가 노출되고, 30만 달러 미만의 고객 자금이 빠져나가
-    회사가 보상했다. 회사 시스템에서 자격증명이 유출된 증거는 없었다.
+    2022-11-18 탐지된 크리덴셜 스터핑으로 약 6만 8천 명의 계정이 탈취되어 개인정보가 노출되고, 약 30만 달러(보도별 표현 차이)의 고객 자금이 빠져나가
+    전액 복구됐다. 회사 시스템에서 자격증명이 유출된 증거는 없었다.
   idt: [IDT-CI-01, IDT-IM-01]
   sources:
-    - SecurityWeek(2022) DraftKings Warns Users of Credential Stuffing Attacks | https://www.securityweek.com/draftkings-warns-users-of-credential-stuffing-attacks/
+    - SecurityWeek(2022) DraftKings Data Breach Impacts Personal Information of 68,000 Customers | https://www.securityweek.com/draftkings-data-breach-impacts-personal-information-68000-customers/
+    - teiss(2022) Hackers stole over $300,000 from 68,000 DraftKings customer accounts via a credential stuffing attack | https://www.teiss.co.uk/news/hackers-stole-over-300000-from-68000-draftkings-customer-accounts-via-a-credential-stuffing-attack-11424
 
 - id: IDI-055
   title: Nintendo Network ID 30만 계정 무단 로그인
@@ -1054,7 +1065,7 @@
   actor: 미상
   impact: [계정 탈취, 금전 탈취]
   summary: >-
-    2020-04부터 다른 곳의 비밀번호를 재사용한 레거시 NNID 계정이 무단 로그인되어 피해가 16만에서 30만 계정으로 늘었다. 연결된 결제
+    2020-04부터 외부에서 유출된 자격증명으로 추정되는 방식으로 레거시 NNID 계정이 무단 로그인되어 피해가 16만에서 30만 계정으로 늘었다. 연결된 결제
     수단으로 부정 구매가 발생했고, Nintendo는 NNID 로그인 기능을 중단하고 2단계 인증을 권고했다.
   idt: [IDT-CI-01, IDT-IM-01]
   sources:
@@ -1092,7 +1103,7 @@
     Gmail·Twitter 계정까지 장악한 뒤 기자의 노트북·휴대폰·태블릿 데이터를 원격 삭제했다. 두 회사는 전화 지원 절차를 바꿨다.
   idt: [IDT-SE-03, IDT-IM-04]
   sources:
-    - CNN Money(2012) Hack of Mat Honan exposes gap in Amazon and Apple security | https://money.cnn.com/2012/08/07/technology/mat-honan-hacked/index.htm
+    - Wired(2012) How Apple and Amazon Security Flaws Led to My Epic Hacking | https://www.wired.com/2012/08/apple-amazon-mat-honan-hacking/
 
 - id: IDI-058
   title: 미 SEC X 계정 장악(SIM 스와핑·2단계 인증 미적용)으로 가짜 비트코인 ETF 승인 게시
@@ -1143,6 +1154,7 @@
     딥페이크로 은행의 생체 본인확인을 통과해 계좌에 접근했다. Group-IB는 얼굴 인식 데이터를 노린 첫 iOS 트로이목마로 분석했다.
   idt: [IDT-CI-03.2, IDT-AU-03.2, IDT-IM-01]
   sources:
+    - Group-IB(2024) Face Off — Group-IB identifies first iOS trojan stealing facial recognition data | https://www.group-ib.com/blog/goldfactory-ios-trojan/
     - Group-IB(2024) GoldPickaxe exposed — How Group-IB analyzed the face-stealing iOS Trojan | https://www.group-ib.com/blog/goldpickaxe-ios-trojan/
 
 - id: IDI-061
@@ -1299,7 +1311,8 @@
   impact: [데이터 반출, 금전 탈취]
   summary: >-
     Hudson Rock은 HELLCAT이 인포스틸러 감염 단말에서 나온 Jira 자격증명으로 Telefónica·Schneider Electric·Orange·Jaguar Land Rover 등의
-    Jira에 들어가 데이터를 빼내고 갈취했다고 분석했다. JLR 사례는 협력사 직원 단말에서 2021년에 유출된 자격증명이 여전히 유효했다.
+    Jira에 들어가 데이터를 빼내고 갈취했다고 분석했다. JLR 사례에서 두 번째 공격자(APTS)는 2021년까지 거슬러 올라가는
+    협력사(LG Electronics) 직원 자격증명으로 접근했다고 주장했고 Hudson Rock이 자사 DB와 일치함을 확인했다.
   idt: [IDT-CR-01.1, IDT-AU-01.2, IDT-NH-01.2, IDT-IM-03]
   sources:
     - Infostealers.com(2025) Jaguar Land Rover Breached by HELLCAT Ransomware Group Using Its Infostealer Playbook | https://www.infostealers.com/article/jaguar-land-rover-breached-by-hellcat-ransomware-using-its-infostealer-playbook-then-a-second-hacker-strikes/
@@ -1324,7 +1337,7 @@
 
 - id: IDI-071
   title: LastPass 고객 금고 백업 탈취(DevOps 엔지니어 개인 PC 키로거로 마스터 비밀번호 탈취)
-  date: 2022-12
+  date: 2022-08
   kind: 사고
   verification: 피해기관 확인
   id_env: [클라우드 인프라]
@@ -1335,15 +1348,17 @@
   summary: >-
     공격자는 패치되지 않은 미디어 서버 소프트웨어로 DevOps 엔지니어의 개인 PC를 장악해 키로거를 심고, 엔지니어가 MFA를 마친 뒤 입력한
     마스터 비밀번호를 가로채 회사 금고에서 클라우드 백업 복호화 키를 얻어 고객 금고 백업을 빼냈다. 이 엔지니어는 키 접근권을 가진 4명 중 1명이었다.
+    개발 환경 침해는 2022-08-25 공개됐고(발생 2022-08), 고객 금고 백업 유출은 2022-12-22 공개됐다.
   idt: [IDT-CR-01.3, IDT-CR-02.2, IDT-IM-03]
   origin: [SCI-079]
   sources:
     - Sophos(2023) LastPass — Keylogger on home PC led to cracked corporate password vault | https://www.sophos.com/en-us/blog/lastpass-the-crooks-used-a-keylogger-to-crack-a-corporatre-password-vault
+    - Help Net Security(2022) LastPass breach — Customer vault backups copied | https://www.helpnetsecurity.com/2022/12/23/lastpass-breach-customer-vault/
     - Help Net Security(2022) LastPass breach — Source code, proprietary tech info stolen | https://www.helpnetsecurity.com/2022/08/26/lastpass-breach/
 
 - id: IDI-072
   title: Retool 고객 계정 27곳 장악(SMS 피싱·딥페이크 음성·인증 앱 클라우드 동기화)
-  date: 2023-08
+  date: 2023-09
   kind: 사고
   verification: 피해기관 확인
   id_env: [클라우드 IdP, SaaS]
@@ -1354,6 +1369,7 @@
   summary: >-
     IT팀을 사칭한 SMS로 직원을 가짜 로그인 페이지로 유도한 뒤, 직원 목소리를 딥페이크로 흉내 낸 전화로 추가 MFA 코드를 받아 공격자 장치를
     Okta에 등록했다. Google 인증 앱의 클라우드 동기화로 MFA 코드가 함께 넘어가 클라우드 고객 27곳의 계정이 장악됐다.
+    침해는 2023-08-27에 일어났고 Retool은 2023-09-13 공개했다.
   idt: [IDT-SE-01.3, IDT-SE-04, IDT-PE-02.2, IDT-IM-05]
   origin: [SCI-104]
   sources:
@@ -1407,7 +1423,7 @@
   impact: [자격증명·토큰 탈취, 계정 탈취]
   summary: >-
     'Google Docs'라는 이름의 악성 OAuth 앱이 정상 Google 동의 화면에서 Gmail·연락처 권한을 승인받은 뒤, 피해자 메일함으로 연락처에
-    같은 메일을 다시 보내 웜처럼 퍼졌다. Google은 약 1시간 만에 차단했으며 사용자의 약 0.1%(약 100만 명)가 영향을 받았다고 밝혔다.
+    같은 메일을 다시 보내 웜처럼 퍼졌다. Google은 약 1시간 만에 차단했으며 Gmail 사용자의 0.1% 미만(최대 약 100만 명)이 영향을 받았다고 밝혔다.
   idt: [IDT-SE-01.2, IDT-IM-05]
   sources:
     - Threatpost(2017) 1 Million Gmail Users Impacted by Google Docs Phishing Attack | https://threatpost.com/1-million-gmail-users-impacted-by-google-docs-phishing-attack/125436/
@@ -1668,7 +1684,7 @@
 
 - id: IDI-090
   title: CitrixBleed 2 세션 토큰 탈취 악용
-  date: 2025-07
+  date: 2025-06
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   id_env: [원격 접속]
@@ -1874,7 +1890,7 @@
 # ---------------------------------------------------------------------------
 - id: IDI-101
   title: Ubiquiti 내부자 데이터 탈취·갈취(관리 권한 악용)
-  date: 2020-12
+  date: 2021-01
   kind: 사고
   verification: 정부·사법 확인
   id_env: [클라우드 인프라, 개발·CI/CD]
@@ -1884,7 +1900,8 @@
   impact: [데이터 반출, 금전 탈취]
   summary: >-
     클라우드 부서 엔지니어가 업무상 가진 AWS·GitHub 관리 권한으로 기밀 데이터를 내려받은 뒤, 익명 해커로 위장해 50비트코인을 요구하고
-    언론에 거짓 정보를 흘렸다. 그는 징역 6년을 선고받았다.
+    언론에 거짓 정보를 흘렸다. Ubiquiti는 2021-01 이를 제3자 클라우드 업체 침해(2020-12)로 공지했으나, 2021-12 체포된 이 엔지니어는
+    징역 6년을 선고받았다.
   idt: [IDT-LC-02.1, IDT-IM-03, IDT-IM-01]
   sources:
     - BleepingComputer(2023) Former Ubiquiti dev who extorted the firm gets six years in prison | https://www.bleepingcomputer.com/news/security/former-ubiquiti-dev-who-extorted-the-firm-gets-six-years-in-prison/
@@ -2053,7 +2070,7 @@
 
 - id: IDI-111
   title: Uber 2016 운전자·이용자 5,700만 명 정보 유출(재사용 비밀번호로 GitHub 접근·AWS 키)
-  date: 2016-11
+  date: 2017-11
   kind: 사고
   verification: 정부·사법 확인
   id_env: [개발·CI/CD, 클라우드 인프라]
@@ -2063,7 +2080,8 @@
   impact: [데이터 반출, 금전 탈취]
   summary: >-
     FTC에 따르면 공격자가 다른 대형 유출에서 나온 비밀번호로 엔지니어의 GitHub 계정에 들어가 비공개 저장소의 평문 AWS 접근 키를 찾아
-    S3 백업을 내려받았다. Uber는 엔지니어가 개인 이메일 계정으로 저장소에 접근하게 하고 비밀번호 재사용 금지·MFA를 요구하지 않았다.
+    S3 백업을 내려받았다. Uber는 엔지니어가 개인 이메일 계정으로 저장소에 접근하게 하고 비밀번호 재사용 금지·MFA를 요구하지 않았다. 침해는 2016-10~11에 일어났고
+    Uber가 2016-11-14 인지했으나, 2017-11-21에야 5,700만 명 규모를 공개했다.
   idt: [IDT-AU-01.2, IDT-AU-03.3, IDT-CR-02.1, IDT-IM-03]
   sources:
     - FTC(2018) Uber Agrees to Expanded Settlement with FTC Related to Privacy, Security Claims | https://www.ftc.gov/news-events/news/press-releases/2018/04/uber-agrees-expanded-settlement-ftc-related-privacy-security-claims
@@ -2125,7 +2143,7 @@
 
 - id: IDI-115
   title: Storm-2139 — 노출된 고객 API 키로 생성형 AI 서비스 탈취·재판매
-  date: 2025-02
+  date: 2025-01
   kind: 사고
   verification: 피해기관 확인
   id_env: [SaaS]
@@ -2135,9 +2153,13 @@
   impact: [자격증명·토큰 탈취, 금전 탈취]
   summary: >-
     Microsoft는 공개된 곳에서 수집한 고객 API 키로 Azure OpenAI 등 생성형 AI 서비스에 접근하고, 안전 필터를 우회하는 도구와 함께 접근권을
-    재판매한 조직을 민사 소송으로 대응하고 핵심 도메인을 압수했다.
+    재판매한 조직을 민사 소송으로 대응하고 핵심 도메인을 압수했다. 소송·사이트 압수는 2025-01-10 발표됐고(소장 제출 2024-12, 키 오용 발견
+    2024-07), 2025-02-27 피고 4명과 Storm-2139 명칭이 공개됐다.
   idt: [IDT-NH-01.1, IDT-CR-02.1]
   sources:
+    - Microsoft(2025) Taking legal action to protect the public from abusive AI-generated content | https://blogs.microsoft.com/on-the-issues/2025/01/10/taking-legal-action-to-protect-the-public-from-abusive-ai-generated-content/
+    - Microsoft(2025) Disrupting cybercrime abusing gen AI | https://blogs.microsoft.com/on-the-issues/2025/02/27/disrupting-cybercrime-abusing-gen-ai/
+    - TechCrunch(2025) Microsoft accuses group of developing tool to abuse its AI service in new lawsuit | https://techcrunch.com/2025/01/10/microsoft-accuses-group-of-developing-tool-to-abuse-its-ai-service-in-new-lawsuit
     - Dark Reading(2025) Microsoft Busts Hackers Selling Illegal Azure AI Access | https://www.darkreading.com/application-security/microsoft-openai-hackers-selling-illicit-access-azure-llm-services
 
 - id: IDI-116
@@ -2169,11 +2191,12 @@
   actor: 해당 없음(결함)
   impact: [데이터 반출]
   summary: >-
-    AI 에이전트 연동용 MCP 서버의 논리 결함으로 한 조직의 MCP 사용자가 다른 조직의 작업·프로젝트·댓글·파일 정보를 볼 수 있는 상태가 됐다.
-    약 1천 고객이 노출 대상이 되어 Asana는 2025-06-05~17 MCP 기능을 중단했다.
+    AI 에이전트 연동용 MCP 서버의 논리 결함으로 한 조직의 MCP 사용자가 다른 조직의 프로젝트·팀·작업 등 Asana 개체 정보를 볼 수 있는 상태가 됐다.
+    약 1천 고객이 노출 대상이 됐고, Asana는 2025-06-04 결함을 발견해 MCP 서버를 내린 뒤 06-17 재개했다.
   idt: [IDT-NH-04, IDT-IM-03]
   sources:
     - BleepingComputer(2025) Asana warns MCP AI feature exposed customer data to other orgs | https://www.bleepingcomputer.com/news/security/asana-warns-mcp-ai-feature-exposed-customer-data-to-other-orgs/
+    - CSO Online(2025) Asana's MCP AI connector could have exposed corporate data, CSOs warned | https://www.csoonline.com/article/4009373/asanas-mcp-ai-connector-could-have-exposed-corporate-data-csos-warned.html
 
 # ---------------------------------------------------------------------------
 # 연구·시연(실증)
@@ -2321,7 +2344,7 @@
 
 - id: IDI-126
   title: Yahoo 계정 관리 도구 악용과 위조 쿠키로 계정 무단 접근
-  date: 2017-03
+  date: 2016-12
   kind: 사고
   verification: 정부·사법 확인
   id_env: [CIAM·고객 서비스]
@@ -2331,9 +2354,11 @@
   impact: [계정 탈취, 데이터 반출]
   summary: >-
     미 법무부 기소에 따르면 2014년 Yahoo에 침투한 공격자가 사용자 DB와 내부 계정 관리 도구에 접근해 관심 대상 계정을 찾아내고, 비밀번호 없이
-    로그인할 수 있는 인증 쿠키를 직접 만들어 최소 6,500개 계정에 무단 접근했다.
+    로그인할 수 있는 인증 쿠키를 직접 만들어 최소 6,500개 계정에 무단 접근했다(발생 2014-11~12, 쿠키 위조 접근은 2015~2016).
+    Yahoo는 2016-09 5억 계정 침해를 공개한 데 이어 2016-12 위조 쿠키 공격을 공개했고, 기소는 2017-03에 이뤄졌다.
   idt: [IDT-TS-03.3, IDT-PE-01.2, IDT-IM-03]
   sources:
+    - Wired(2016) Yahoo hack — billion users | https://www.wired.com/2016/12/yahoo-hack-billion-users/
     - KrebsOnSecurity(2017) Four Men Charged With Hacking 500M Yahoo Accounts | https://krebsonsecurity.com/2017/03/four-men-charged-with-hacking-500m-yahoo-accounts/
 
 # ── 통합 v4 사고사례 검증 W2 — 신규 사고(2026-10, 후보 NC-xxx는 integrated/data/verification/new_incident_candidates.csv) ──

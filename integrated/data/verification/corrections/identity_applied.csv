@@ -9,3 +9,81 @@ IDI-005,"text/DI.yaml·IM.yaml·SE.yaml, integrated/identity/IM.yaml:ID-IM-02","
 IDI-019,summary,HAR 파일에서 세션 토큰을 추출해 … 고객 134곳에 영향,"고객 134곳의 지원 파일에 접근, HAR 세션 토큰으로 BeyondTrust·Cloudflare·1Password 등 5곳의 세션 탈취",반영,Okta 근본 원인 공지(1차) 기준 정정
 IDI-019,sources,The Hacker News·The Record,+ Okta(2023) Support Case Management System Root Cause and Remediation,반영,1차 출처 추가
 IDI-019,"text/DI.yaml·IM.yaml·TS.yaml·NH.yaml, integrated/identity/DI.yaml:ID-DI-04",고객 134곳에 영향,고객 134곳의 지원 파일에 접근(5곳 세션 탈취),반영,요약 정정과 일치
+IDI-108,date,2024-01,2024-06,반영,"F2 최초 공개월(BleepingComputer 2024-06-07). 발생 2024-01은 요약에 ""(발생 2024-01)""로 병기"
+IDI-108,sources,BleepingComputer 1건,+ GitGuardian(2024) The Secrets of the New York Times Source Code Breach,반영,"제안 정정. 비밀 4,000건 이상(요약의 ""비밀 수천 건"")의 근거"
+IDI-108,"text/CR.yaml:IDT-CR-02.1, text/NH.yaml, integrated/identity/CR.yaml:ID-CR-02",사례명(2024-01),사례명(2024-06),반영,사고 DB date와 문구 시점 일치(validate 규칙)
+IDI-087,summary,CISA는 첫 긴급 지시(ED 24-01)를 내려 연방기관에 장비 분리를 명령,"CISA는 긴급 지시 ED 24-01(2024-01-19)로 완화 조치를 지시하고, 보충 지시(2024-01-31)로 연방기관에 전 장비 분리를 명령",반영,C 차이·제안 정정(Tenable·ThreatDown)
+IDI-087,sources,CISA ED 24-01·Google Cloud 2건,+ ThreatDown(2024) CISA — Disconnect vulnerable Ivanti products today,반영,보충 지시(전 인스턴스 분리) 근거 출처. CISA ED 페이지는 403이라 보충 지시 원문 미열람
+IDI-087,"text/AU.yaml:IDT-AU-04.1, integrated/identity/AU.yaml:ID-AU-04",CISA가 첫 긴급 지시로 장비 분리를 명령,CISA가 긴급 지시와 보충 지시로 장비 분리를 명령,반영,제안 정정·G 메모
+IDI-013,date,2024-01,2024-02,반영,F2 최초 공개월(홍콩 경찰 브리핑·CNN 2024-02-02~04). 발생 2024-01은 1개월 차이라 병기 생략
+IDI-013,summary,"약 2,500만 달러","약 2,560만 달러",반영,"CNN(2024-02-04) 기준 2억 홍콩달러≈2,560만 달러(수치는 출처 기준)"
+IDI-013,sources,SCMP 1건(403),"+ CNN(2024-02-04), CNN(2024-05-16/17) 2건",반영,"E 메모: SCMP 열람 불가, CNN으로 사실 확인. SCMP는 오류 근거가 없어 유지. 새 출처 제목은 열람 기사 제목 기준"
+IDI-013,"text/IM.yaml, text/SE.yaml, integrated/identity/SE.yaml:ID-SE-04","사례명(2024-01)·약 2,500만 달러","사례명(2024-02)·약 2,560만 달러(IM.yaml)",반영,시점·수치 정합
+IDI-038,date,2024-04,2024-05,반영,F2 최초 공개월(2024-05-01 공지). 2024-04-24 탐지는 요약에 병기
+IDI-038,"text/NH.yaml:IDT-NH-02.1 계열, integrated/identity/NH.yaml:ID-NH-02",사례명(2024-04),사례명(2024-05),반영,시점 정합
+IDI-016,summary,Snowflake 고객 인스턴스 약 165곳에 로그인해,고객 인스턴스에 로그인해 ... 잠재적으로 노출된 조직 약 165곳에 통보했다,반영,C 차이·G 메모: 165곳은 Mandiant의 잠재 노출 조직 통보 수(침해 확정 수 아님)
+IDI-016,"text/AU.yaml(2줄), text/CR.yaml, text/IM.yaml, integrated/identity/IM.yaml:ID-IM-03",인스턴스 약 165곳에 로그인,인스턴스에 로그인(잠재 노출 조직 약 165곳 통보),반영,G 메모 정밀화 권고 반영
+IDI-114,인용 문안(AI-07-01),…비공개 데이터·학습 저장소에 직접 접근 가능한 경로가 드러남,…Spaces 비밀에 저장된 토큰에 무단 접근이 탐지되어 토큰 폐기·KMS 도입,보류,"AI-07-01 문안은 AI 매트릭스(integrated/data/ai/D07.yaml, sources/ai_v3.2)에 있어 신원 작업자 편집 범위 밖 — AI DB 담당에 전달 필요"
+IDI-114,identity/data/incidents.yaml,요약·시점(2024-05),변경 없음,해당 없음,"신원 DB 요약은 이미 사실 위주(무단 접근 탐지·토큰 폐기·KMS), 시점 공개월 일치"
+IDI-115,date,2025-02,2025-01,반영,F2 최초 공개월(Microsoft 2025-01-10 소송·사이트 압수 발표). 2025-02-27은 피고 실명·Storm-2139 명칭 공개일
+IDI-115,summary,소송·도메인 압수,"+ 2025-01-10 발표(소장 제출 2024-12, 키 오용 발견 2024-07), 2025-02-27 피고 4명·Storm-2139 명칭 공개",반영,C 차이
+IDI-115,sources,Dark Reading 1건(403),"+ Microsoft On the Issues(2025-01-10, 2025-02-27), TechCrunch(2025-01-10)",반영,제안 정정. Dark Reading은 열람 불가일 뿐 오류 근거가 없어 유지. 2025-02-27 글 제목은 URL 기준 요약명
+IDI-115,"text/CR.yaml:IDT-CR-02.1 계열, text/NH.yaml:IDT-NH-01.1 계열",사례명(2025-02),사례명(2025-01),반영,시점 정합
+IDI-115,"인용 문안(AI-01-03, AI-02-01)",Storm-2139(2024-12),Storm-2139(2025-01),보류,AI 매트릭스(integrated/data/ai/D01.yaml·D02.yaml) 문안은 신원 작업자 편집 범위 밖 — AI DB 담당에 전달 필요
+IDI-040,summary,시스템 관리망 서버 계정 비밀번호를 바꾸지 않고 만료일도 두지 않는 등 계정 관리가 부실했고,서버 계정정보를 다른 서버에 평문으로 저장하는 등 계정 관리가 부실했고,반영,"C 차이: 열람 원문(서울신문·디지털데일리·비즈워치)은 평문 저장, 비밀번호 미변경·만료일 미설정은 확인 못함"
+IDI-040,sources,뉴시스·보안뉴스(DNS 실패),+ 서울신문(2025-07-04) 최종 조사결과 기사,반영,제안 정정. 기사 제목은 열람 내용 기준 요약명
+IDI-040,text/NH.yaml:IDT-NH-01.2 계열,시스템 관리망 서버 계정 비밀번호를 바꾸지 않고 만료일도 두지 않는 등,서버 계정정보를 다른 서버에 평문으로 저장하는 등,반영,"요약 정정과 일치(IM.yaml 줄은 ""계정 관리가 부실""로 사실 충돌 없어 유지)"
+IDI-117,summary,작업·프로젝트·댓글·파일 정보 / 2025-06-05~17 MCP 기능 중단,프로젝트·팀·작업 등 Asana 개체 정보 / 2025-06-04 결함 발견해 MCP 서버를 내리고 06-17 재개,반영,C 차이(BleepingComputer·CSO Online)
+IDI-117,sources,BleepingComputer 1건,+ CSO Online(2025-06-18),반영,"""projects, teams, tasks"" 표현의 근거. 기사 제목은 URL 기준 요약명"
+IDI-117,text/NH.yaml:IDT-NH-04 계열,다른 조직의 작업·프로젝트·파일 정보,다른 조직의 프로젝트·팀·작업 등 개체 정보,반영,요약 정정과 일치
+IDI-117,인용 문안(AI-07-03),다른 조직의 작업·프로젝트·파일 정보,프로젝트·팀·작업 등 개체 정보,보류,AI 매트릭스(integrated/data/ai/D07.yaml) 문안은 신원 작업자 편집 범위 밖 — AI DB 담당에 전달 필요
+IDI-057,sources,CNN Money(2012) … money.cnn.com/… (URL 소멸),Wired(2012) How Apple and Amazon Security Flaws Led to My Epic Hacking | https://www.wired.com/2012/08/apple-amazon-mat-honan-hacking/,반영,소멸 출처 교체(제안 정정). 본인 Wired 기사로 사실 확인
+IDI-111,date,2016-11,2017-11,반영,F2 최초 공개월(Uber 2017-11-21 발표). 침해 2016-10~11·인지 2016-11-14는 요약에 병기
+IDI-111,text/CR.yaml:IDT-CR-02.1 계열,사례명(2016-11),사례명(2017-11),반영,"시점 정합(사례명의 ""2016""은 사건 연도라 유지)"
+IDI-126,date,2017-03,2016-12,반영,"F2 최초 공개월: 위조 쿠키 공격 공개 2016-12-14(Wired). 침해 자체 공개 2016-09, 기소 2017-03은 요약에 병기"
+IDI-126,sources,KrebsOnSecurity 1건,+ Wired(2016-12) Yahoo 침해·위조 쿠키 보도,반영,시점 근거 출처. 제목은 URL 기준 요약명
+IDI-126,"text/PE.yaml:IDT-PE-01.2 계열, text/TS.yaml:IDT-TS-03.3 계열, integrated/identity/PE.yaml:ID-PE-01",사례명(2017-03),사례명(2016-12),반영,G 메모: 2017-03은 미 법무부 기소일
+IDI-101,date,2020-12,2021-01,반영,F2 최초 공개월(Ubiquiti 고객 공지 2021-01). 침해월 2020-12는 요약에 병기
+IDI-101,text/LC.yaml:IDT-LC-02.1 계열,사례명(2020-12),사례명(2021-01),반영,시점 정합
+IDI-047,summary,KT는 유심 기기변경을 한동안 매장 방문으로만 처리하도록 제한했다,KT는 타사·자급제 단말의 유심 자동기변을 고객센터 경유로 제한했다(KT는 심스와핑과 무관한 시스템 점검이라고 설명),반영,C 차이(아시아타임즈 2022-01-25)
+IDI-047,"summary(수천만 원~수억 원대 금액, 2021-12 발생)",수천만 원에서 수억 원대의 암호화폐 / 2021-12~2022-01,변경 없음,보류,열람분에서 금액·발생월(2021-12)을 확인 못함(보안뉴스 DNS 실패). 확인 전까지 삭제·수정하지 않고 출처 보강 필요
+IDI-001,date,2022-03,2021-12,반영,F2 최초 공개월(최초 확인 공격 2021-12-10 브라질 보건부). Microsoft 분석 공개 2022-03-22는 요약에 병기
+IDI-001,sources,Microsoft 1건,+ Wikipedia(2022) Lapsus$,반영,Nvidia·Samsung·Okta 피해는 Microsoft 글에서 확인 못해 Wikipedia 보강. 각 사 공지 URL은 근거 URL에 없어 추가하지 않음
+IDI-001,"text/AU.yaml, text/IM.yaml, text/LC.yaml",사례명(2022-03),사례명(2021-12),반영,시점 정합(통합 yaml에는 인용 없음)
+IDI-071,date,2022-12,2022-08,반영,F2 최초 공개월(개발 환경 침해 2022-08-25 공개). 고객 금고 백업 유출 공개 2022-12-22는 요약에 병기
+IDI-071,sources,Sophos(URL 열람 불가)·Help Net Security(2022-08),+ Help Net Security(2022-12-23),반영,"제안 정정. LastPass 공지 URL은 근거 URL에 없어 추가하지 않음, Sophos는 유지"
+IDI-071,summary(키로거·Plex·4명 접근권 세부),DevOps 엔지니어 개인 PC 키로거·4명 중 1명,변경 없음,보류,열람분(Help Net Security)에서 키로거·4명 세부 확인 못함(2023-03 후속 공지 내용). 확인 전까지 유지만 하고 신규 근거 없어 수정 안 함
+IDI-071,"text/CR.yaml:IDT-CR-01.3·IDT-CR-02.2 계열(2줄), integrated/identity/CR.yaml:ID-CR-01",사례명(2022-12),사례명(2022-08),반영,"G 메모: ID-CR-01 (2022-12)→(2022-08), SC-IM-03과 정합"
+IDI-071,"인용 문안(SC-IM-03, 공급망 매트릭스)",(2022-08),변경 없음,해당 없음,이미 2022-08이며 공급망 DB는 본 작업 범위 밖
+IDI-043,summary,"29만 7,117명의 정보","29만 7,117건의 정보(중복 제거)",반영,C 차이: 개인정보위 발표 단위는 건(중복 제거)
+IDI-030,summary,수백 명에게 2차 피싱을 보내는,1만 6천 건 이상의 2차 피싱 메일을 보내는,반영,Microsoft(2023-06-08) 기준
+IDI-030,text/PE.yaml:IDT-PE-02.3 계열(줄 109),수백 명에게 2차 피싱을 보내는 BEC,1만 6천 건 이상의 2차 피싱 메일을 보내는 BEC,반영,요약 정정과 일치
+IDI-072,date,2023-08,2023-09,반영,F2 최초 공개월(Retool 블로그 2023-09-13). 침해 2023-08-27은 요약에 병기
+IDI-072,"text/SE.yaml(2줄), text/PE.yaml, text/IM.yaml, integrated/identity/SE.yaml:ID-SE-04",사례명(2023-08),사례명(2023-09),반영,G 메모: (2023-08)→(2023-09)
+IDI-020,date,2023-11,2024-02,반영,F2 최초 공개월(Cloudflare 공개 2024-02-01). 발생·탐지 2023-11은 요약에 병기
+IDI-020,"text/IM.yaml, text/NH.yaml, integrated/identity/NH.yaml:ID-NH-01",사례명(2023-11),사례명(2024-02),반영,G 메모: (2023-11)→(2024-02)
+IDI-060,sources,Group-IB(2024) GoldPickaxe exposed (후속 기술 분석 2024-06),+ Group-IB(2024-02-15) Face Off — first iOS trojan stealing facial recognition data (최초 보고),반영,제안 정정. 기존 후속 분석 출처는 유지
+IDI-069,summary,JLR 사례는 협력사 직원 단말에서 2021년에 유출된 자격증명이 여전히 유효했다,"JLR 사례에서 두 번째 공격자(APTS)는 2021년까지 거슬러 올라가는 협력사(LG Electronics) 직원 자격증명으로 접근했다고 주장, Hudson Rock이 DB 일치 확인",반영,C 차이·제안 정정
+IDI-069,"text/AU.yaml:IDT-AU-01.2 계열, text/CR.yaml:IDT-CR-01.1 계열, text/NH.yaml:IDT-NH-01.2 계열",협력사 단말에서 2021년에 유출된 자격증명이 여전히 유효,"인포스틸러 감염 단말에서 나온 Jira 자격증명으로 침투, JLR의 2021년 자격증명 접근은 APTS 주장",반영,요약 정정과 일치(통합 yaml에는 인용 없음)
+IDI-090,date,2025-07,2025-06,반영,F2 최초 공개월(SecurityWeek 2025-06-27 악용 정황). KEV 등재 2025-07-10은 요약에 이미 서술
+IDI-090,text/TS.yaml:IDT-TS-01.3 계열,사례명(2025-07),사례명(2025-06),반영,시점 정합
+IDI-041,sources,보안뉴스(DNS 실패)·네이트 뉴스,+ 뉴시스(2025-12-29) 민관합동조사단 최종 조사결과 보도,반영,"제안 정정: 2억 4,300만 원·2만 2,227명·인증서 1개월 수치의 근거. 요약·문구는 이미 이 수치로 일치해 본문 변경 없음. 바이라인네트워크는 피해액 319만 원 표기로 상충해 추가하지 않음"
+IDI-042,summary,약 8개월간 고객 정보를 조회했다,2025-04-14~11-08(약 7개월) 대규모로 조회했다(사전 테스트는 2025-01),반영,"C 차이(ZDNet Korea 2026-02-10, 조사단 발표)"
+IDI-042,"text/LC.yaml(2줄), text/NH.yaml, text/TS.yaml, integrated/identity/TS.yaml:ID-TS-03",약 8개월간,약 7개월간(2025-04~11),반영,G 메모. 배송지 목록 1억 4천여 회는 유지
+IDI-075,summary,사용자의 약 0.1%(약 100만 명),Gmail 사용자의 0.1% 미만(최대 약 100만 명),반영,"C 차이: Google 성명 fewer than 0.1 percent / up to 1 million (Threatpost). 제목의 ""(약 100만 명)""은 사례명이라 유지"
+IDI-075,text/SE.yaml:IDT-SE-01.2 계열,약 100만 명이 영향을 받음,Gmail 사용자의 0.1% 미만(최대 약 100만 명)이 영향을 받음,반영,요약 정정과 일치
+IDI-055,summary,다른 곳의 비밀번호를 재사용한 레거시 NNID 계정이,외부에서 유출된 자격증명으로 추정되는 방식으로 레거시 NNID 계정이,반영,C 차이: CNN 기사는 재사용을 원인으로 명시하지 않음 → 원인 단정 완화(제안 정정의 앞쪽 안). 재사용 근거 보강 출처는 확보하지 못함
+IDI-054,sources,SecurityWeek(2025-10 별건) draftkings-warns-users-of-credential-stuffing-attacks,"SecurityWeek(2022-12-20) DraftKings Data Breach Impacts … 68,000 Customers + teiss(2022-12-22)",반영,오류 출처(2025 별건) 제거 후 2022건 출처로 교체. 제목은 URL 기준 요약명
+IDI-054,summary·title,30만 달러 미만 / 회사가 보상했다,"약 30만 달러(보도별 표현 차이) / 전액 복구됐다. 제목 괄호도 ""약 30만 달러 피해""",반영,"C 차이·제안 정정. ""회사가 보상""은 열람 출처가 ""전액 복구""로만 서술해 맞춤"
+IDI-054,text/CI.yaml:IDT-CI-01 계열,30만 달러 미만의 고객 자금,약 30만 달러(보도별 표현 차이)의 고객 자금,반영,요약 정정과 일치
+IDI-054,summary(2022-11-18 탐지),2022-11-18 탐지된 크리덴셜 스터핑,변경 없음,보류,E 메모: 11-18 발견은 검색 요약 단서일 뿐 원문 미열람 — 확인 전까지 수정하지 않음(유지 항목의 확인 필요)
+IDI-052,date,2022-12,2023-01,반영,"F2 최초 공개월(피해자 통지 2023-01-18, BleepingComputer 2023-01-19). 침해 2022-12-06~08은 요약에 이미 있음"
+IDI-052,text,(인용 줄 없음),변경 없음,해당 없음,문구·통합 yaml에 IDI-052 인용 없음
+IDI-036,summary,Salesforce 음성 피싱 요약(기존),"+ Allianz Life 보험 피해 사례(2025-07, HIBP 기준 고유 약 110만 명, 귀속은 연구자 수준)",반영,identity_updates.yaml(NC-040) 승인안 그대로. 시점(2025-06)·매핑 변경 없음
+IDI-036,sources,Google Cloud 1건,"+ Infosecurity Magazine(2025), Have I Been Pwned(2025)",반영,identity_updates.yaml 승인안
+IDI-002,integrated/identity/AU.yaml:ID-AU-02 scenario,다크웹에서 산 협력사 비밀번호로 로그인 반복,다크웹에서 산 것으로 추정되는 협력사 비밀번호로 로그인 반복,반영,대표 사례 문안과 일치(시나리오 줄)
+IDI-005,integrated/identity/IM.yaml:ID-IM-02 scenario,ESXi 약 100대 암호화 → … 약 1억 달러 영업 손실,ESXi 약 100대 암호화(ALPHV 주장) → … 3분기 실적 약 1억 달러 영향,반영,대표 사례 문안과 일치(시나리오 줄)
+IDI-016,integrated/identity/IM.yaml:ID-IM-03 scenario,인스턴스 약 165곳 로그인,인스턴스 로그인(잠재 노출 조직 약 165곳),반영,대표 사례 문안과 일치(시나리오 줄)
+IDI-030,integrated/identity/PE.yaml:ID-PE-02 scenario,수백 명에게 2차 피싱,1만 6천 건 이상의 2차 피싱 메일,반영,대표 사례 문안과 일치(시나리오 줄)
+IDI-042,integrated/identity/TS.yaml:ID-TS-03 scenario,약 8개월간 고객 정보 조회,약 7개월간(2025-04~11) 고객 정보 조회,반영,대표 사례 문안과 일치(시나리오 줄)
+IDI-019/005/016/069/040/047,identity/data/scenarios.yaml(SCN-01·03·06·08),134곳 영향·약 1억 달러 영업 손실·약 165곳·2021년 유효 자격증명·비밀번호 미변경·매장 방문 제한 등 옛 표현,변경 없음,보류,scenarios.yaml은 편집 허용 범위(incidents·text·integrated/identity) 밖 — 시나리오 행동 문구에 정정 전 표현이 남아 있으므로 별도 작업 필요
