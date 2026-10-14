@@ -1,0 +1,11 @@
+﻿원장 키,필드,현재,정정,반영,사유
+IDI-004,sources,Help Net Security·TechCrunch 2건,+ Twilio(2022) August 2022 Social Engineering Attack 사고 보고,반영,Twilio 1차 사고 보고(고객 209곳 수치 근거) 추가. 요약은 이미 209곳으로 일치
+IDI-004,identity/data/text/*.yaml:ID-SE-01 인용,"(2022-08) 130곳 이상·9,931건",변경 없음,해당 없음,G 문안 일치
+IDI-002,integrated/data/identity/AU.yaml:ID-AU-02 (+ identity/data/text/AU.yaml:IDT-AU-03.1 계열 줄 88),다크웹에서 산 협력사 비밀번호로,다크웹에서 산 것으로 추정되는 협력사 비밀번호로,반영,Uber 발표는 likely purchased(추정). G 메모 반영
+IDI-002,summary,AWS·Google Cloud·Slack·보안 도구 등 여러 내부 시스템에 접근했다,"(Uber는 G-Suite·Slack 등 권한 상승만 확인, AWS·Google Cloud 등은 공격자 공개 화면에 대한 GitGuardian 분석 기준) 병기",반영,C 차이: 공식 확인 범위와 분석 기반 범위 구분. 문구 파일 줄은 G 메모 대상이 아니라 유지
+IDI-005,summary,ESXi 약 100대 암호화했다 / 약 1억 달러의 영업 손실을 공시,"약 100대 암호화는 ALPHV 측 주장(MGM 미확인) / 3분기 실적에 약 1억 달러 영향 공시(8-K, Cybersecurity Dive 보도)",반영,C 차이·제안 정정
+IDI-005,sources,Netwrix·Microsoft 2건,+ Cybersecurity Dive(2023) MGM 1억 달러 영향 보도,반영,8-K 원문은 403으로 열람 불가해 보도로 대체(근거 URL)
+IDI-005,"text/DI.yaml·IM.yaml·SE.yaml, integrated/identity/IM.yaml:ID-IM-02","약 100대 하이퍼바이저 암호화, 약 1억 달러 손실","…암호화했다고 ALPHV가 주장, 3분기 실적에 약 1억 달러 영향 공시(통합 문안은 ALPHV 주장 표기)",반영,G 메모(출처 성격 표기)·C 차이 정합
+IDI-019,summary,HAR 파일에서 세션 토큰을 추출해 … 고객 134곳에 영향,"고객 134곳의 지원 파일에 접근, HAR 세션 토큰으로 BeyondTrust·Cloudflare·1Password 등 5곳의 세션 탈취",반영,Okta 근본 원인 공지(1차) 기준 정정
+IDI-019,sources,The Hacker News·The Record,+ Okta(2023) Support Case Management System Root Cause and Remediation,반영,1차 출처 추가
+IDI-019,"text/DI.yaml·IM.yaml·TS.yaml·NH.yaml, integrated/identity/DI.yaml:ID-DI-04",고객 134곳에 영향,고객 134곳의 지원 파일에 접근(5곳 세션 탈취),반영,요약 정정과 일치
