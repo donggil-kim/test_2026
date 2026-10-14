@@ -32,9 +32,9 @@ T1133,External Remote Services,Cloud 외 연관,"공격자는 외부에 노출�
 - 관리형 Kubernetes API 서버를 공개 엔드포인트로 두고 IP 제한·강한 인증을 생략해도 같은 위험이 생김
 - 침투 후 공격자가 원격 접속 경로를 직접 추가해 지속성을 확보하기도 함 (CTC-PE-06)
 ■ 실제 사례
-- [실제 사고] Tesla Kubernetes 콘솔 노출(2018-02): 인증 없이 공개된 콘솔을 통해 파드 안의 AWS 자격증명이 노출돼 크립토재킹으로 이어짐 (사고DB INC-0018)
+- [실제 사고] Tesla Kubernetes 콘솔 노출(2018-02): 인증 없이 공개된 콘솔로 침입해 크립토재킹을 했고, 파드 안의 AWS 자격증명도 노출돼 S3 접근이 가능했음 (사고DB INC-0018)
 - [실제 사고] TeamPCP 노출 제어 평면 캠페인(2026-02): 인증이 없거나 약한 Docker·Kubernetes API 등 오케스트레이션 관리 인터페이스를 주 진입점으로 사용 (사고DB INC-0593)
-- [실제 사고] AWS 데이터 유출·랜섬 시도(2025-07): 침해된 VPN 자격증명으로 AWS 환경에 진입해 파일 서버 데이터를 유출하고 랜섬웨어 시도 (사고DB INC-0532)","■ 탐지
+- [실제 사고] AWS 데이터 유출·랜섬 시도(2025-07): 침해된 VPN 자격증명으로 AWS 환경에 진입해 파일 서버 데이터의 외부 반출을 시도(일부 차단)하고 랜섬웨어 배포를 노린 것으로 추정 (사고DB INC-0532)","■ 탐지
 - 보안 그룹·NSG의 관리 포트 전체 개방 변경 알림, 외부 출발지의 RDP·SSH 로그인 성공
 - K8s 감사 로그의 익명 요청, kubelet·Docker API에 대한 외부 접근
 ■ 대응
@@ -130,7 +130,7 @@ T1078.004,Cloud Accounts,Cloud 전용,"클라우드 환경의 유효한 계정�
 - 하이브리드 ID: Entra Connect 등 동기화 계정을 장악하면 온프레미스와 클라우드를 오가며 확산하고, 관리형 K8s는 클라우드 자격증명만으로 클러스터 장악 가능 (K8s MS-TA9001)
 - 통합된 상위기법(T1078 Valid Accounts)의 클라우드 사례를 함께 집계
 ■ 실제 사례
-- [실제 사고] Otelier 침해(2025-01): 직원 단말의 인포스틸러로 Jira 자격증명을 얻은 뒤 Jira·Bitbucket에서 S3 자격증명을 찾아 8TB 데이터 유출 (사고DB INC-0453)
+- [실제 사고] Otelier 침해(2025-01): 직원 단말의 인포스틸러로 Jira 자격증명을 얻은 뒤 Jira(Atlassian) 티켓에서 S3 자격증명을 찾아 약 8TB(공격자 주장) 데이터 유출 (사고DB INC-0453)
 - [실제 사고] Beacon(2026-07): 공개 JavaScript 빌드 산출물에 노출된 AWS 액세스 키로 DB 백업에 접근해 고객 DB 전체 사본 유출 (사고DB INC-0652)
 - [실제 사고] 공개 S3 버킷 자격증명 악용(2025-11): 노출 자격증명으로 Lambda 코드 주입·IAM 키 생성·백도어 관리자 생성 후 LLMjacking과 GPU 인스턴스 생성에 악용 (사고DB INC-0573)","■ 탐지
 - 낯선 출발지·ASN의 장기 액세스 키 사용, 계정 단위로 처음 호출되는 API
@@ -422,7 +422,7 @@ T1556.006,Multi-Factor Authentication,혼합,공격자는 침해한 계정에 �
 - 지속성(PE)·방어 무력화(DI)·자격증명 접근(CA) 세 전술에 걸침
 ■ 실제 사례
 - [실제 사고] ByBit/Safe{Wallet}(2025-02): TraderTraitor(UNC4899)가 개발자 노트북을 침해해 AWS 세션 토큰을 가로채 MFA를 우회하고 서버에 무단 접근 (사고DB INC-0470)
-- [실제 사고] BitoPro(2025-05): 클라우드 운영 직원 침해로 탈취한 AWS 세션 토큰으로 MFA를 우회, 약 1,100만 달러 암호화폐 탈취 (사고DB INC-0506)
+- [실제 사고] BitoPro(2025-06): 클라우드 운영 직원 침해로 탈취한 AWS 세션 토큰으로 MFA를 우회, 약 1,100만 달러 암호화폐 탈취 (사고DB INC-0506)
 - [ATT&CK 사례] AADInternals: Set-AADIntUserMFA로 지정 사용자의 MFA 비활성화 (ATT&CK S0677)","■ 탐지
 - MFA 비활성화·조건부 액세스 제외·MFA 수단 변경 이벤트, 같은 세션 토큰의 다른 IP 재사용
 - 'fail open' 구성과 MFA 요구가 사라진 로그인 성공
@@ -841,7 +841,7 @@ T1555.006,Cloud Secrets Management Stores,Cloud 전용,"공격자는 AWS Secrets
 - 일시 삭제(soft-delete) 상태의 Key Vault 객체 복구(AZT704.1)로도 비밀 확보 가능
 - 통합된 상위기법(T1555) 근거 포함, 공급망 악성코드의 주요 수집 대상
 ■ 실제 사례
-- [실제 사고] LexisNexis 침해(2026-03): 미패치 React2Shell 취약점으로 AWS 환경에 접근해 Secrets Manager·Redshift·VPC 내 DB에 접근 (사고DB INC-0600)
+- [실제 사고] LexisNexis 침해(2026-03): 공격자(FulcrumSec) 주장으로는 미패치 React2Shell 취약점으로 AWS 환경에 접근해 Secrets Manager·Redshift·VPC 내 DB에 접근(회사는 제한된 서버와 2020년 이전 레거시 데이터 접근만 확인) (사고DB INC-0600)
 - [실제 사고] 외부 노출 앱 자격증명 침해(2026-06): IAM 사용자 생성·파이프라인 변조와 함께 Secrets Manager·Parameter Store에 접근해 RDS 데이터 유출 후 갈취 (사고DB INC-0637)
 - [ATT&CK 사례] Shai-Hulud: AWS Secrets·GCP Secret Manager·Azure Key Vault에서 비밀 수집 (ATT&CK S9008)","■ 탐지
 - 비밀 저장소 대량 조회(get-secret-value·KeyVault getSecret 등), 평소 접근하지 않던 주체의 비밀 조회
@@ -920,7 +920,7 @@ T1539,Steal Web Session Cookie,혼합,"공격자는 웹 애플리케이션이나
 - 악성 JavaScript 주입·사용자 실행으로도 쿠키 수집
 - 탈취 쿠키로 웹 세션 재사용(CTC-LM-06.2) 시 MFA 우회 — 위조 쿠키(CTC-CA-04.1)와 달리 정상 쿠키를 가로챔
 ■ 실제 사례
-- [실제 사고] BitoPro(2025-05): 사회공학·악성코드로 클라우드 운영 직원을 침해해 탈취한 AWS 세션 토큰으로 MFA를 우회, 1,100만 달러 상당 암호화폐 탈취 (사고DB INC-0506)
+- [실제 사고] BitoPro(2025-06): 사회공학·악성코드로 클라우드 운영 직원을 침해해 탈취한 AWS 세션 토큰으로 MFA를 우회, 1,100만 달러 상당 암호화폐 탈취 (사고DB INC-0506)
 - [실제 사고] 채용 제안 위장 악성코드(2025-07): UNC4899가 세션 쿠키를 탈취하고 CloudFront·S3의 JavaScript를 변조해 암호화폐 탈취 (사고DB INC-0528)
 - [ATT&CK 사례] evilginx2: 피해자와의 각 세션에서 세션 쿠키 등 정보를 수집하는 공격 프레임워크 (ATT&CK S9003)","■ 탐지
 - 같은 세션 쿠키의 다른 IP·장치 재사용, 인포스틸러 감염 징후, AiTM 프록시 도메인 접속
@@ -1224,7 +1224,7 @@ T1530,Data from Cloud Storage,Cloud 전용,공격자는 클라우드 스토리�
 ■ 실제 사례
 - [실제 사고] JetBrains Cadence 침해(2026-09): TeamCity 취약점으로 IAM 자격증명 침해 후 S3 버킷에서 백업·소스코드·고객 자격증명 유출 (사고DB INC-0676)
 - [실제 사고] MobiKwik(2021-03): 침해된 AWS 액세스 키로 S3에 접근해 9,900만 명 데이터·KYC 문서 8.2TB 유출 (사고DB INC-0070)
-- [실제 사고] Otelier(2025-01): Jira·Bitbucket에서 찾은 S3 자격증명으로 S3에서 8TB 유출 (사고DB INC-0453)","■ 탐지
+- [실제 사고] Otelier(2025-01): Jira(Atlassian) 티켓에서 찾은 S3 자격증명으로 S3에서 약 8TB(공격자 주장) 유출 (사고DB INC-0453)","■ 탐지
 - 대량 GetObject·CopyObject, SAS URI 생성·파일 공유 마운트, soft-delete 객체 복구
 - 공개 전환된 버킷·스토리지, 비정상 주체의 대량 다운로드
 ■ 대응
@@ -1398,7 +1398,7 @@ T1567,Exfiltration Over Web Service (일반·상위기법),혼합,"공격자는 
 - Salesforce Data Loader 등 정상 API·도구로 대량 반출(CTC-CO-04.4와 연계)
 - 하위 변형: 웹훅 반출(CTC-EF-02.1), 클라우드 계정 간 전송(CTC-EF-03)
 ■ 실제 사례
-- [실제 사고] AWS 데이터 유출·랜섬 시도(2025-07): 침해된 VPN 자격증명으로 진입해 Rclone으로 AWS 파일 서버의 재무 관련 민감 파일 유출 (사고DB INC-0532)
+- [실제 사고] AWS 데이터 유출·랜섬 시도(2025-07): 침해된 VPN 자격증명으로 진입해 Rclone으로 AWS 파일 서버의 재무 관련 민감 파일을 수집해 외부 반출 시도(일부 차단) (사고DB INC-0532)
 - [ATT&CK 사례] ShinyHunters: 침해한 Salesforce CRM 대시보드로 대량 데이터 반출 (ATT&CK G1057)
 - [ATT&CK 사례] APT28: Google Drive로 데이터 반출 (ATT&CK G0007)","■ 탐지
 - 정상 SaaS(Drive·Salesforce·M365)로의 비정상 대량 업로드, Data Loader 등 대량 반출 도구 사용
@@ -1423,7 +1423,7 @@ T1537,Transfer Data to Cloud Account,Cloud 전용,"공격자는 공유·동기�
 - 같은 제공자 내 공격자 계정으로 스냅샷·백업 복사(AzCopy·Replication, Azure ATRM AZT703) — 외부 네트워크 인터페이스를 거치지 않아 탐지 회피
 - SAS URI·익명 공유 링크(CTC-CO-03 연계)로 인증 없이 반출, 인스턴스 백업을 별도 계정으로 이전
 ■ 실제 사례
-- [실제 사고] DNC 해킹(2016-06): 침해한 테스트 클러스터의 EC2 스냅샷을 공격자 AWS 계정으로 복사 (사고DB INC-0008)
+- [실제 사고] DNC 해킹(2018-07): 침해한 테스트 클러스터의 EC2 스냅샷을 공격자 AWS 계정으로 복사(발생 2016-09) (사고DB INC-0008)
 - [ATT&CK 사례] Storm-0501: AzCopy CLI로 피해 환경 데이터를 공격자 인프라로 복사 (ATT&CK G1053)
 - [ATT&CK 사례] RedCurl: megatools로 Mega 클라우드 스토리지에 데이터 반출 (ATT&CK G1039)","■ 탐지
 - 제공자 내 다른 계정으로의 스냅샷·백업 복사(AzCopy·Replication), SAS URI·익명 공유 링크 생성
@@ -1523,7 +1523,7 @@ T1657,Financial Theft,혼합,"공격자는 피해자가 해당 자원을 쓸 수
 - 침해 환경의 암호화폐 지갑 파일 탐색(TeamPCP Cloud Stealer)으로 직접 탈취
 - 금전 탈취를 데이터 파괴 등 진짜 목적을 가리는 미끼로 쓰기도 함
 ■ 실제 사례
-- [실제 사고] BitoPro(2025-05): 탈취한 AWS 세션 토큰으로 MFA를 우회해 1,100만 달러 상당 암호화폐 탈취 (사고DB INC-0506)
+- [실제 사고] BitoPro(2025-06): 탈취한 AWS 세션 토큰으로 MFA를 우회해 1,100만 달러 상당 암호화폐 탈취 (사고DB INC-0506)
 - [실제 사고] ShinyHunters PeopleSoft 갈취(2026-06): Oracle PeopleSoft 제로데이(CVE-2026-35273)로 100여 개 조직을 침해한 뒤 갈취 (사고DB INC-0641)
 - [ATT&CK 사례] TeamPCP Cloud Stealer: 파일시스템에서 Bitcoin·Monero 등 암호화폐 지갑 탐색 (ATT&CK S9041)","■ 탐지
 - 부정 이체·결제 변경 요청, 사칭 메일·BEC 패턴, 암호화폐 지갑 파일 탐색
