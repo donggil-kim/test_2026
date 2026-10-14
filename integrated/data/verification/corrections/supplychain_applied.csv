@@ -92,3 +92,39 @@ SCI-157,title,…(도메인 등록 계정 탈취·지갑 주소 바꿔치기),�
 SCI-161,date,2026-04,2026-05,반영,제안 정정: 공개월 2026-05-05(THN·Kaspersky); 4월 8일 시작은 요약에 서술
 SCI-161,text/PB.yaml:SCT-PB-02.1·SC-PB-02 인용 줄 2건,(2026-04),(2026-05),반영,사례명(시점) 동기화
 SCI-161,integrated/*.yaml 대표 사례,—,—,해당 없음,통합 대표 사례에 DAEMON Tools 인용 줄 없음
+SCI-162,date·summary·text,—,변경 없음,해당 없음,"공개월 2026-05-11 일치; 제안 정정은 CL-IA-05 인용 문안(클라우드 매트릭스)의 수치뿐 — 공급망 DB의 TanStack 줄은 ""패키지 42개·악성 버전 84개""로 이미 출처와 일치"
+SCI-162,CL-IA-05 인용 문안,TanStack 등 npm 100여 개 버전 침해,TanStack 패키지 42개·84개 버전 등 침해,해당 없음,클라우드 매트릭스 문구는 공급망 DB 편집 범위 밖
+SCI-166,sources,Elastic·BleepingComputer (Wiz 항목 URL 없음),"+ Wiz Blog(2026) keyv and cacheable npm Package Hijacked in Supply Chain Attack | https://wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack, + Expel(2026) ChainDrop …",반영,"제안 정정·E 메모: Wiz 블로그 URL 확정, Expel(러너 메모리 덤프로 게시 토큰 수집 근거) 추가"
+SCI-166,date·text,—,변경 없음,해당 없음,공개월 2026-08-04 일치; G 문안 해당 없음
+SCI-018,summary,Babel·React 등,Babel·Atom 등,반영,"C 차이·제안 정정: npm 공식 글은 babel·atom을 의존 사례로 언급, React는 미확인"
+SCI-018,summary,11줄짜리,변경 없음,보류,"열람한 npm 글에서 근거 확인 못함, 제안 정정은 ""근거 보강""이라 새 출처 없이 삭제·확정 불가 — 근거 보강 필요"
+SCI-018,sources,"npm(2016) kik, left-pad, and npm",+ npm(2016) Changes to npm's unpublish policy,반영,E 메모: 정책 변경 서술의 1차 출처(열람 확인) 추가
+SCI-018,text/DP.yaml 인용 줄,변경 없음,변경 없음,해당 없음,인용 줄에 Babel·React·11줄 표현 없음
+SCI-037,date,2018-06,2018-05,반영,제안 정정: 최초 공개 Fortinet 2018-05-03·Docker 삭제 2018-05-10; 17종 전체 보고는 Kromtech 2018-06-13 — 요약에 (발생 2017-05) 병기
+SCI-037,sources,BleepingComputer,+ Fortinet(2018) Yet Another Crypto Mining Botnet,반영,E 메모: 최초 공개 출처(제목·게시일만 확인) 추가
+SCI-037,text/DP.yaml:SC-DP-03·IM.yaml 인용 줄 2건,(2018-06),(2018-05),반영,사례명(시점) 동기화
+SCI-037,integrated/*.yaml 대표 사례,—,—,해당 없음,통합 대표 사례에 Docker Hub 인용 줄 없음
+SCI-039,summary,설치 규모는 100만 명 이상으로 추정,약 50만 대 이상이 수신한 것으로 추정(Motherboard 2019-03-25 인용 Kaspersky),반영,"C 차이·제안 정정: 100만 명 근거 미확인, 열람한 Motherboard 인용 수치로 교체"
+SCI-039,sources,Kaspersky Securelist,+ Vice Motherboard(2019) Hackers Hijacked ASUS Software Updates …,반영,수치 근거 출처 추가
+SCI-039,text/PB.yaml 인용 줄,변경 없음,변경 없음,해당 없음,인용 줄에 설치 규모 수치 없음
+SCI-070,date,2021-03,2021-04,반영,제안 정정: Sonatype 2021-04-13 최초 공개(3월 언급 없음)
+SCI-070,summary,browserify와 이름이 같은 내부 패키지명을 겨냥한 악성 패키지 … 의존성 혼동과 브랜드 사칭이 결합된 형태,browserify를 사칭한 web-browserify 패키지(브랜드 사칭) … 의존성 혼동 복제 패키지는 별건,반영,C 차이·제안 정정
+SCI-070,sct,"SCT-DP-01.2, SCT-DP-02.1",변경 없음,보류,요약이 브랜드 사칭 단일 건으로 좁혀져 의존성 혼동(DP-02.1) 매핑 재검토 필요하나 규칙 7(매핑은 재분류·updates 요구 시만 변경)에 따라 유지
+SCI-070,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-103,title,Yandex 소스 유출 후 내부 패키지명 선점,Yandex 소스 유출 후 사칭 악성 npm 패키지 게시,반영,제안 정정(요약/사례명): Mend는 내부 패키지명 선점을 서술하지 않음
+SCI-103,summary,유출 소스 속 내부 패키지명으로 공개 npm 패키지 게시,"유출 보도 직후 Yandex 인기 패키지를 흉내 낸 악성 npm 패키지(주로 타이포스쿼팅, 의존성 혼동 시도 포함) 게시, 유출과의 연관은 Mend의 추정",반영,C 차이·제안 정정(Mend 2023-01-30)
+SCI-103,impact,데이터 반출,변경 없음,보류,"C 차이가 ""데이터 반출은 유출 자체의 영향""이라 지적했으나 제안 정정에 impact 변경 없음 — 영향 유형 재검토 필요"
+SCI-103,sources,Mend URL,변경 없음,해당 없음,제안 정정: 기존 URL 유지(본문은 ?p=3688)
+SCI-103,text/DP.yaml:SCT-DP-02.1·IM.yaml 인용 줄 2건,사례명·설명(내부 패키지명 선점),사례명·설명 정정,반영,사례명(제목) 변경 동기화
+SCI-107,sources,blog.phylum.io (인증서 오류로 열람 불가),Phylum(2023) Phylum Discovers NPM Package mathjs-min Contains Credential Stealer | https://www.veracode.com/?p=16771,반영,제안 정정: Phylum 인수 후 Veracode로 이전된 동일 글(2023-03-29)
+SCI-107,date·text,—,변경 없음,해당 없음,공개월 2023-03-29 일치
+SCI-128,date,2024-01,2024-07,반영,"제안 정정: 패키지 게시 2024-07-13, Phylum 공개 2024-07-14"
+SCI-128,sources,blog.phylum.io (SSL 인증서 불일치로 열람 불가),https://www.veracode.com/blog/fake-aws-packages-ship-command-and-control-malware-in-jpeg-files/,반영,제안 정정: Veracode 이전본
+SCI-128,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-005,date,2010-11,2010-12,반영,제안 정정: 공개월 2010-12-02(ZDNet); 침해 2010-11-28은 요약에 (발생 2010-11) 병기
+SCI-005,summary,약 일주일 동안 미러를 통해 배포됐다,2010-11-28~12-02 약 4~5일간 주 서버와 미러에서 배포됐다(발생 2010-11),반영,C 차이·제안 정정(ZDNet 2010-12-02)
+SCI-005,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
+SCI-020,summary,빌드 단계 주입이라 소스·배포 서버 점검만으로는 드러나지 않았다,2017-07-17부터 약 17일간 퍼졌고 Kaspersky 발표(2017-08-15)로 알려졌다,반영,C 차이·제안 정정: 열람한 The Register·THN은 업데이트 메커니즘 침해·서명된 업데이트 전파만 서술 — 미확인 문장 교체
+SCI-020,sources,MITRE ATT&CK S0596(소프트웨어 항목),"+ The Register(2017) …, + The Hacker News(2017) …",반영,"제안 정정: 사건 보고 출처 보강(MITRE 항목은 유지, 제목은 URL 기준 표기); Kaspersky Securelist URL은 근거 URL에 없어 추가하지 않음"
+SCI-020,sct,SCT-BD-02.1 등,변경 없음,보류,"""빌드 단계 주입""이 미확인이라 BD-02.1(빌드 침해) 매핑 재검토 필요하나 규칙 7에 따라 유지"
+SCI-020,text·integrated 인용 줄,—,—,해당 없음,이 사고를 인용하는 문구 줄 없음
