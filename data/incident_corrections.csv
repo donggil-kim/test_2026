@@ -260,3 +260,5 @@ INC-0427,행위자(Wiz 요약 추출),JINX-2401,검증 원장 CL/INC-0427 — �
 INC-0427,사건 요약(국문),Wiz가 2024-11-26 식별해 2024-12-15 보고한 JINX-2401의 AWS Bedrock LLM 하이재킹(LLMjacking)이다. 탈취된 IAM 사용자 액세스 키로 Bedrock 호출을 시도했으나 실패하자 새 IAM 사용자·액세스 키·정책을 만들었다.,검증 원장 CL/INC-0427 — Wiz 블로그 2024-12-15 https://www.wiz.io/blog/jinx-2401-llm-hijacking-aws
 INC-0439,사례유형,연구·노출,검증 원장 CL/INC-0439 — D 제안 — 악용 시도·취약 서버 탐색(스캔) 관측이며 피해 조직·침해 미확인 https://www.bleepingcomputer.com/news/security/new-critical-apache-struts-flaw-exploited-to-find-vulnerable-servers/
 INC-0439,사건 요약(국문),Apache Struts 2 파일 업로드 로직의 경로 탐색 취약점 CVE-2024-53677(CVSS 9.5)에 대해 공개 PoC와 일치하는 악용 시도·취약 서버 탐색이 관측되었다(침해 피해는 확인되지 않음). 악성 파일 업로드로 원격 코드 실행이 가능하다.,검증 원장 CL/INC-0439 — BleepingComputer 2024-12-17(ISC SANS 인용) https://www.bleepingcomputer.com/news/security/new-critical-apache-struts-flaw-exploited-to-find-vulnerable-servers/
+INC-0060,행위자(Wiz 요약 추출),미상(Abcbot 연계 추정),교차 검수 XC-02 — LoggerMiner를 Abcbot 운영자로 귀속한 열람 가능한 출처 없음(Cado 2022-01·BleepingComputer 참조)
+INC-0060,사건 요약(국문),"Wiz가 2020-11-16 보고한 캠페인이다(행위자: 미상, Abcbot 연계 추정 — 귀속 근거인 Tencent 보고서는 열람 불가). 초기 침투 경로는 기재되지 않았다. 영향 유형은 자원 탈취로 분류되었다. 관찰된 도구: Loggerminer.",교차 검수 XC-02 — 행위자 귀속 완화

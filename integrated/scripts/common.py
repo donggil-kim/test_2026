@@ -52,11 +52,11 @@ DOMAINS = {"ai": AI_DOMAINS, "cloud": TACTICS, "ot": OT_TACTICS,
 #   id_col: 원본 세부위협 ID 열 · inc: 사고 DB ID 접두사 · prefix: 요약 ID 접두사 · stage: 공격 단계 열
 TAXO = {
     "supplychain": dict(xlsx=SC_XLSX, id_col="SCT-ID", inc="SCI", prefix="SC", stage="공격 단계(ATT&CK 전술)",
-                        name="통합 소프트웨어 공급망 보안위협 매트릭스 v2"),
+                        name="통합 소프트웨어 공급망 보안위협 매트릭스 v2.1"),
     "identity": dict(xlsx=ID_XLSX, id_col="IDT-ID", inc="IDI", prefix="ID", stage="공격 단계(ATT&CK 전술)",
-                     name="통합 신원·계정 보안위협 매트릭스 v2"),
+                     name="통합 신원·계정 보안위협 매트릭스 v2.1"),
     "physical": dict(xlsx=PH_XLSX, id_col="PHT-ID", inc="PHI", prefix="PH", stage="공격 단계",
-                     name="물리·인적 보안위협 매트릭스 v2"),
+                     name="물리·인적 보안위협 매트릭스 v2.1"),
 }
 TAXO_REAL_STATUS = "실제 사고"  # 세 원본 '역매핑_사고사례' 시트 '집계 상태' 열에서 실제 사고로 세는 값
 INCIDENT_RE = re.compile(r"\b(?:INC|SCI|IDI|PHI)-\d+\b")  # 원본 참조 줄의 사고 ID (OT · 공급망 · 신원 · 물리)
@@ -176,7 +176,7 @@ def owasp_incident_lines(ref):
 
 
 def load_cloud():
-    """클라우드 v5 원본: 행(154), 기법별 대표 행·전술·실제 사고 ID 집합."""
+    """클라우드 v5.1 원본: 행(154), 기법별 대표 행·전술·실제 사고 ID 집합."""
     wb = openpyxl.load_workbook(CLOUD_XLSX, read_only=True, data_only=True)
     m = list(wb["통합 매트릭스"].iter_rows(values_only=True))
     header = m[3]
@@ -205,11 +205,12 @@ def load_cloud():
         tactics.setdefault(r["tactic"], r["도메인(Lv1)"])
     for x in tech.values():
         x["ids"] = x["ctc"]
-    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": CLOUD_XLSX, "inc_dates": inc_dates}
+    return {"rows": rows, "header": header, "tech": tech, "tactics": tactics, "wb": CLOUD_XLSX, "inc_dates": inc_dates,
+            "n_incidents": len(inc) - 1, "n_real": len(real)}
 
 
 def load_ot():
-    """OT v5 원본: 행(141), 키(ATT&CK·EMB3D ID)별 행 목록·전술·실제 사고 ID 집합."""
+    """OT v5.1 원본: 행(141), 키(ATT&CK·EMB3D ID)별 행 목록·전술·실제 사고 ID 집합."""
     wb = openpyxl.load_workbook(OT_XLSX, read_only=True, data_only=True)
     m = list(wb["통합 매트릭스"].iter_rows(values_only=True))
     header = m[3]

@@ -465,8 +465,8 @@ def mapping_rows(src, summ, rows):
 
 # ---------------------------------------------------------------- 시트 작성
 # 시트 부제에 쓰는 원본 목록
-SOURCE_NOTE = ("AI v3.2 LITE(Lv3 124) · 클라우드 v5(154행) · OT v5(141행) · 공급망 v2(세부위협 60) · 신원 v2(65) · "
-               "물리·인적 v2(45)")
+SOURCE_NOTE = ("AI v3.2 LITE(Lv3 124) · 클라우드 v5.1(154행) · OT v5.1(141행) · 공급망 v2.1(세부위협 60) · 신원 v2.1(65) · "
+               "물리·인적 v2.1(45)")
 SUMMARY_COLS = ["구분(Lv0)", "도메인(Lv1)", "위협 ID", "세부 위협(Lv3)", "핵심 요약", "위협 설명", "공격 시나리오", "대표 사례",
                 "발생가능성", "심각도", "위험도", "근거 수준", "실제 사고 수", "최근 사고(2025~)", "우선순위", "대응 방안",
                 "공격 단계", "관련 기준", "연계 위협", "중복 그룹", "Lv0 간 통합 흡수(v3 ID)", "원본 Lv3 ID"]
@@ -572,7 +572,7 @@ def sheet_domain_summary(wb, rows, src):
     ws = wb.create_sheet("도메인 요약")
     cols = ["구분(Lv0)", "도메인(Lv1)", "원본 Lv3 수", "흡수 원본 수", "요약 위협 수", "매우 높음", "높음", "보통", "낮음",
             "실제 사고 확인", "주요 고위험 위협"]
-    title(ws, "도메인 요약 — Lv1 도메인별 요약 위협 수·위험도 분포", "원본 Lv3 수: AI는 Lv3 항목 수, 클라우드·OT는 v5 행 수"
+    title(ws, "도메인 요약 — Lv1 도메인별 요약 위협 수·위험도 분포", "원본 Lv3 수: AI는 Lv3 항목 수, 클라우드·OT는 v5.1 행 수"
           "(전술 중복 행 포함, 전술 이동한 원본은 이동한 도메인에 셈), 공급망·신원·물리는 원본 세부위협 수 — v4 Lv0 간 통합으로 다른 Lv0 "
           "항목에 흡수된 원본은 빠지고 흡수한 도메인의 '흡수 원본 수'(위험 산정 제외)에 셈. 위험도·우선순위는 같은 Lv0 안에서 비교", len(cols))
     header(ws, 4, cols)
@@ -677,7 +677,7 @@ def sheet_cloud_detail(wb, cl_src, back, release):
                 r["실제 사고 수"], r["심각도 근거"]] + tail
         data.append(("cloud", vals, r["위험도"], r["근거 수준"]))
     csa_note = " · CSA 열은 이슈 ID만 표기(배포본)" if release else ""
-    detail_sheet(wb, "클라우드 위협 상세", f"원본 그대로: 통합 클라우드 보안위협 매트릭스 v5 통합 매트릭스 {len(data)}행 "
+    detail_sheet(wb, "클라우드 위협 상세", f"원본 그대로: 통합 클라우드 보안위협 매트릭스 v5.1 통합 매트릭스 {len(data)}행 "
                  f"(전술 중복 행 포함) + 통합 위협 ID 역참조(Lv0 간 통합 원본은 흡수한 위협 ID). Lv2 ID는 ATT&CK 상위기법 ID{csa_note}",
                  CLOUD_DETAIL_COLS, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
@@ -705,7 +705,7 @@ def sheet_ot_detail(wb, ot_src, back):
                 r["세부위협(Lv3)"], r["요약설명"], r["참조"], r["발생가능성"], r["심각도"], r["위험도"], r["근거 수준"],
                 r["실제 사고 수"], r["심각도 근거"]] + tail
         data.append(("ot", vals, r["위험도"], r["근거 수준"]))
-    detail_sheet(wb, "OT 위협 상세", f"원본 그대로: 통합 OT 보안위협 매트릭스 v5 통합 매트릭스 {len(data)}행 "
+    detail_sheet(wb, "OT 위협 상세", f"원본 그대로: 통합 OT 보안위협 매트릭스 v5.1 통합 매트릭스 {len(data)}행 "
                  "(전술 반복 행 포함) + 통합 위협 ID 역참조. Lv2 ID는 원본 OTC Lv2, 적용 프로파일은 원본 ● 6열을 한 열로 표기",
                  OT_DETAIL_COLS, data,
                  [("통합 추적", 2, "7B241C"), ("분류 체계 (원본)", 7, "2E5496"), ("위험 평가 (원본)", 6, "A04000"),
@@ -955,17 +955,17 @@ CRITERIA = [
     ("발생가능성 보정", "구성 원본의 실제 사고 합집합이 2건 이상이면, 사고가 1건 이상 확인된 원본만 발생가능성을 '상'으로 보정"),
     ("발생가능성·심각도", "위험도 최댓값을 낸 원본(대표 원본)의 값을 표시. 대표 원본은 '부록-재구성 매핑'의 '위험 대표' 열에 ● 표시"),
     ("실제 사고 수", "AI: ATLAS Incident 유형 사례 ID(중복 제거) + OWASP 인용 사고 수(원본 건수 합에서, 참조에 같은 사례명(시점)으로 "
-                  "실린 중복분을 뺌). 클라우드: 사고 DB 680건 중 집계 대상 유형(사고·캠페인·사례연구(익명)·규제공시(8-K)·"
-                  "위협인텔 보고서, 집계 포함=Y)의 사고 ID(중복 제거). OT: OT 보안사고 DB 85건 중 '집계 = 실제 사고'(76건)인 사고 ID"
+                  "실린 중복분을 뺌). 클라우드: 사고 DB 687건 중 집계 대상 유형(사고·캠페인·사례연구(익명)·규제공시(8-K)·"
+                  "위협인텔 보고서, 집계 포함=Y)의 사고 ID(중복 제거). OT: OT 보안사고 DB 95건 중 '집계 = 실제 사고'(86건)인 사고 ID"
                   "(중복 제거) — 실증·연구, 위협인텔(배포 전 발견된 공격 도구), 원인 번복 사례는 제외. 공급망·신원·물리: 각 사고 DB"
-                  "(167건·126건·100건) 중 '집계 상태 = 실제 사고'(152건·116건·89건)인 사고 ID(중복 제거) — 실증·연구, 위협인텔, "
+                  "(175건·139건·106건) 중 '집계 상태 = 실제 사고'(160건·129건·95건)인 사고 ID(중복 제거) — 실증·연구, 위협인텔, "
                   "물리의 정부 경보·제외(검증)는 세지 않음"),
     ("최근 사고(2025~)", "실제 사고 중 2025년 이후 사고 수. 클라우드·OT·공급망·신원·물리: 사고 DB 기준일(시점). AI: ATLAS 사례 일자 + "
                        "참조에 시점이 적힌 OWASP 인용 사고(시점이 없는 인용 사고는 제외)"),
     ("우선순위", "같은 Lv0 안에서 위험도 → 실제 사고 수 → 최근 사고(2025~) → 위협 ID 순으로 매긴 순위 (1 = 최우선). 영향(IM) 도메인도 "
               "같은 수식으로 매기고, 공급망·신원·물리는 개요에 영향 도메인을 뺀 '단계 위협 기준' 상위 항목을 함께 표기"),
     ("근거 수준", "구성 원본 중 가장 강한 수준: 실제 사고 확인 > 실사용 기법 포함 > 실증·공개 취약점 > 이론·시나리오"),
-    ("Lv0 간 비교 유의", "클라우드는 사고 DB(680건), OT·공급망·신원·물리는 각 사고 DB와 ATT&CK 공식 절차 매핑을 근거로 해 실제 사고 근거 "
+    ("Lv0 간 비교 유의", "클라우드는 사고 DB(687건), OT·공급망·신원·물리는 각 사고 DB와 ATT&CK 공식 절차 매핑을 근거로 해 실제 사고 근거 "
                        "밀도가 AI(ATLAS 사례·OWASP 인용)와 다르고, 심각도 기준도 원본마다 다름(OT 물리적 결과, 공급망 '상' 포화, "
                        "신원·물리 '상' 제한). 위험도·사고 수·우선순위는 같은 Lv0 안에서 비교하고, Lv0 간 등급을 직접 비교하지 않음"),
     ("Lv0 간 중복", "v4에서 Lv0 간 사실상 같은 위협은 주관 Lv0 항목에 흡수하고(6장), 관점이 다른 겹침은 중복 그룹으로 표시 — "
@@ -1126,21 +1126,21 @@ def sheet_overview(wb, rows, src, maps, today, release, cat):
     section("■ 원본 (각 원본 데이터를 그대로 사용)")
     line("AI 보안위협", f"통합 AI 보안위협 매트릭스 v3.2 LITE — Lv1 도메인 10 · Lv2 36 · Lv3 {len(ai_src['lv3'])} | MITRE ATLAS "
                     "v2026.09 · OWASP LLM Top 10 2026 · Agentic Top 10 2026 · GenAI Data Security 2026 v1.0 · MCP Top 10(2025 beta)")
-    line("클라우드 보안위협", f"통합 클라우드 보안위협 매트릭스 v5 — ATT&CK 전술 14 · Lv3 {len(cl_src['rows'])}행(고유 기법 "
+    line("클라우드 보안위협", f"통합 클라우드 보안위협 매트릭스 v5.1 — ATT&CK 전술 14 · Lv3 {len(cl_src['rows'])}행(고유 기법 "
                        f"{len(cl_src['tech'])}개) | ATT&CK Cloud v19.2 · AWS TTC · Azure ATRM · Kubernetes · CSA Top Threats 2026 · "
-                       "클라우드 보안사고 DB 680건")
-    line("OT 보안위협", f"통합 OT/ICS/IoT 보안위협 매트릭스 v5 — ATT&CK for ICS 전술 12 + 자원 개발 · Lv3 {len(ot_src['rows'])}행"
+                       f"클라우드 보안사고 DB {cl_src['n_incidents']}건")
+    line("OT 보안위협", f"통합 OT/ICS/IoT 보안위협 매트릭스 v5.1 — ATT&CK for ICS 전술 12 + 자원 개발 · Lv3 {len(ot_src['rows'])}행"
                      f"(고유 기법·항목 {len(ot_src['tech'])}개: ICS 기법 · Enterprise 편입 · EMB3D 신설) | ATT&CK for ICS·Enterprise "
                      "v19.2 · MITRE EMB3D · CISA ICS 권고·KEV · IEC 62443·NIST SP 800-53 연계 · OWASP IoT Top 10 · "
                      f"OT 보안사고 DB {ot_src['n_incidents']}건")
-    line("공급망 보안위협", f"통합 소프트웨어 공급망 보안위협 매트릭스 v2 — 공급망 단계 8 · 위협분류 32 · 세부위협 {len(sc_src['rows'])} | "
+    line("공급망 보안위협", f"통합 소프트웨어 공급망 보안위협 매트릭스 v2.1 — 공급망 단계 8 · 위협분류 32 · 세부위협 {len(sc_src['rows'])} | "
                       "ATT&CK v19.2 · SLSA v1.2 · OWASP CI/CD·OSS Top 10 · SAP Risk Explorer · CNCF 침해 유형 · CISA KEV · OSV 악성 "
                       f"패키지 · S2C2F·SSDF·Scorecard·NIST SP 800-53 | 공급망 보안사고 DB {sc_src['n_incidents']}건")
-    line("신원 보안위협", f"통합 신원·계정 보안위협 매트릭스 v2 — 신원 공격면 10 · 위협분류 36 · 세부위협 {len(id_src['rows'])} | "
+    line("신원 보안위협", f"통합 신원·계정 보안위협 매트릭스 v2.1 — 신원 공격면 10 · 위협분류 36 · 세부위협 {len(id_src['rows'])} | "
                      "ATT&CK v19.2 · Browser & Identity Attacks Matrix · OWASP NHI Top 10 · NIST SP 800-63-4 · OWASP ASVS 5.0 · "
                      f"CISA KEV · CSA CCM v4.1·CIS v8.1·NIST SP 800-53·ISMS-P | 신원 보안사고 DB {id_src['n_incidents']}건")
     domestic = sum(1 for x in ph_src["incidents"] if x.get("지역") == "한국")
-    line("물리·인적 보안위협", f"물리·인적 보안위협 매트릭스 v2 — 물리·인적 공격면 7 · 위협분류 31 · 세부위협 {len(ph_src['rows'])} | "
+    line("물리·인적 보안위협", f"물리·인적 보안위협 매트릭스 v2.1 — 물리·인적 공격면 7 · 위협분류 31 · 세부위협 {len(ph_src['rows'])} | "
                         "ATT&CK v19.2 물리·인적 접점 · MITRE CTID 내부자 TTP 지식베이스(ITKB) · NIST SP 800-53 · ISO/IEC 27001:2022 "
                         "부속서 A · ISMS-P · CERT 내부자 가이드 · NPSA·CISA 참고 문헌 | 물리·인적 보안사고 DB "
                         f"{ph_src['n_incidents']}건(국내 {domestic}건)")
@@ -1302,7 +1302,7 @@ def sheet_overview(wb, rows, src, maps, today, release, cat):
                  ("표준·인증기준", "IEC 62443-3-3·4-2, ISO/IEC 27001:2022, ISO 22341은 유료 표준이라 요구사항 번호·제목만 연계(원문 미수록) / "
                                 "NIST SP 800-53 Rev.5·800-63-4 — 공공 영역 / ISMS-P 인증기준 — 항목 번호·명칭"),
                  ("NPSA", "영국 NPSA 지침(물리·인적 참고 문헌) — 서지·URL만 수록하고 요지를 의역, 원문 미수록"),
-                 ("사고 DB", "클라우드 보안사고 DB 680건 — Wiz, ramimac, SEC, GTI 등 공개 출처 종합 / OT 보안사고 DB "
+                 ("사고 DB", f"클라우드 보안사고 DB {cl_src['n_incidents']}건 — Wiz, ramimac, SEC, GTI 등 공개 출처 종합 / OT 보안사고 DB "
                             f"{ot_src['n_incidents']}건 · 공급망 {sc_src['n_incidents']}건 · 신원 {id_src['n_incidents']}건 · 물리·인적 "
                             f"{ph_src['n_incidents']}건 — 정부 발표·수사·판결·보안업체·연구기관 보고서·언론 등 공개 출처 종합"),
                  ("·", "외부 배포 전 각 출처의 이용약관(특히 상업적 이용·변형물 조건)을 확인. EMB3D는 사용 시 EMB3D@mitre.org에 "
