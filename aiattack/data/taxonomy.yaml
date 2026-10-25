@@ -1,0 +1,952 @@
+# AI 활용 공격 보안위협 매트릭스 — 분류 체계(원천)
+#
+# 관점(작업방향 2·3장): 공격자가 AI(LLM·에이전트·생성형·적대적 ML)를 '무기'로 삼아 취약점을 발굴·악용하고
+#   침투·사회공학·악성코드·C2를 가속·자동화·대규모화하는 위협을 '공격자 킬체인'으로 정리한 렌즈 매트릭스.
+#   기존 AI 매트릭스(v3.2)가 '우리 AI를 지키는' 관점이라면, 이 매트릭스는 '공격자의 AI가 (AI든 비-AI든) 대상을 치는' 관점.
+#
+# 구조: Lv1 도메인(공격자 킬체인 7단계) → Lv2 위협분류(AIA-<도메인>-NN) → Lv3 세부위협(AIA-<도메인>-NN.m)
+#       하위 세부위협이 하나뿐인 위협분류는 Lv2 = Lv3 (ID에 '.m' 없음)
+# ID는 고정 — 항목을 없애도 번호를 다시 매기거나 재사용하지 않음(폐지 시 retired 표시)
+# 경계 규칙(작업방향 3.2·5장):
+#   · AI 매트릭스(v3.2) = 방어자의 AI가 공격받는 관점 / 이 매트릭스 = 공격자의 AI가 대상을 치는 관점.
+#   · AI 도구 자체가 오염·위장되는 공급망 위협(모델 허브·MCP·플러그인)은 여기가 아니라 AI 매트릭스 D08·공급망(연계만).
+#   · 겹치는 위협은 재수록하지 않고 통합 v4.1 요약 ID(AI-·CL-·OT-·SC-·ID-·PH-)로 연계만 한다(작업방향 5장).
+#   · 국가배후 여부는 행 속성이 아니라 사고 DB의 actor 필드로만 다룬다(행위자 축과 위협 축을 섞지 않음).
+#
+# Lv3 필드
+#   name / en       세부위협명(국문) / 영문명
+#   stage           킬체인 단계 — frameworks.yaml stages(정찰·역량확보·취약점발굴·초기침투·자율실행·은닉C2·영향)
+#   ai_role         AI 역할·자율성 수준 — frameworks.yaml ai_roles(보조·증강·반자율·완전자율). '사람 속도로 대응 가능한가'를 가름
+#   novelty         AI 고유성 — frameworks.yaml novelty(신규='AI로 새로 생긴 위협' · 증폭='기존 위협의 AI 증폭')
+#   maturity        AI 역량 성숙도(발생가능성 보조 신호, D4) — frameworks.yaml maturity(실사용·실증·연구시연)
+#   actors          주로 쓰는 위협 주체 유형 — frameworks.yaml actor_types(국가배후·사이버범죄·핵티비스트·연구·레드팀)
+#   targets         공격 대상 자산(무엇을 치는가) — frameworks.yaml targets
+#   atlas           MITRE ATLAS 2026.09 기법 ID(공격자 AI 관점). 없으면 atlas_none에 미연계 사유(필수)
+#   attack          AI가 가속하는 ATT&CK v19.2 기존 기법 ID(없으면 [])
+#   owasp           OWASP LLM Top 10(2025)·Agentic 위협 ID — 공격에 '악용되는 제3자 AI' 측 연계(없으면 [])
+#   nist            대응 기준 — NIST SP 800-53 Rev.5 통제(탐지·대응). reference/nist/ 추출본
+#   ai / cl / ot / sc / idn / ph  다른 매트릭스 연계 — 통합 v4.1 요약 ID(AI-·CL-·OT-·SC-·ID-·PH-)
+#   refs            참고 문헌 키(frameworks.yaml references)
+#   severity        심각도(상·중·하) — 기준은 assessment.severity_rule
+#   severity_why    심각도 근거('상'은 피해 범위를 적음)
+
+assessment:
+  severity_rule:
+    상: 성공하면 조직 전반이 장악되거나 대규모 금전·데이터 피해로 이어지고, AI가 공격을 사람이 대응하기 어려운 속도·규모로 밀어붙여 피해 범위를 가늠하기 어려운 위협
+    중: 피해가 개별 자산·단일 조직에 머물거나, 단독 피해는 없고 다른 단계를 키우는 조건(정찰·역량 확보 등)인 위협
+    하: 직접 피해가 제한적·일시적이고 대응이 쉬운 위협
+  likelihood_rule: >-
+    상 = 실제 사고 2건 이상(AI v3.2·클라우드·OT·공급망·신원·물리 매트릭스와 같은 수식),
+    중 = 실제 사고 1건 또는 AI 역량 성숙도가 '실사용/실증'이거나 ATLAS·ATT&CK 사례·위협인텔·정부 경보 중 하나 이상,
+    하 = 근거 없음.
+    단 영역 1은 사고가 적어도 급증·빠른 변화가 특징이라(작업방향 2장) 발생가능성에 'AI 역량 성숙도'(maturity)를 보조 신호로 더해
+    실증된 위험 역량이 사고 건수만으로 과소평가되지 않게 한다(D4).
+  severity_check: "'상' 판정은 피해 범위(조직 전반 장악·대규모 금전/데이터·사람이 못 따라가는 속도·규모)를 severity_why에 적은 경우에만"
+
+domains:
+  # =========================================================================
+  - code: RT
+    ko: 정찰·표적 분석
+    en: Reconnaissance & Target Analysis
+    desc: 공격자가 AI로 공개정보·노출 자산·취약점 정보를 대규모로 수집·분석해 표적과 진입점을 고르는 단계. 사람이 하던 정찰을 AI가 가속·자동화
+    excludes: 수집한 역량을 무기화·도구화 → RD · 발견한 취약점으로 익스플로잇을 만듦 → VE
+    lv2:
+      - id: AIA-RT-01
+        name: AI 기반 정찰·표적 프로파일링
+        lv3:
+          - id: AIA-RT-01.1
+            name: AI 기반 공개정보 수집·인물 프로파일링
+            en: AI-driven OSINT and target profiling
+            stage: [정찰]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [사람·조직, 범용]
+            atlas: [AML.T0087, AML.T0095, AML.T0000, AML.T0003]
+            attack: [T1589, T1591, T1593, T1594]
+            owasp: []
+            nist: [PM-16, AT-2(3), SI-4]
+            ai: [AI-01-01]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: [PH-RC-01]
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 단독 피해는 없으나 AI가 공개정보에서 핵심 인력·관계·약점을 대규모로 추려 후속 사회공학·침투의 표적을 고르는 토대가 됨
+          - id: AIA-RT-01.2
+            name: AI 기반 표적 환경·관계 분석
+            en: AI-assisted analysis of target environment and relationships
+            stage: [정찰]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실증
+            actors: [국가배후, 사이버범죄]
+            targets: [사람·조직, 범용]
+            atlas: [AML.T0003, AML.T0004, AML.T0089]
+            attack: [T1591, T1592]
+            owasp: []
+            nist: [PM-16, SI-4]
+            ai: [AI-01-01]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 수집한 조직 구조·거래 관계를 AI가 엮어 사칭 시나리오·표적 우선순위를 만드는 조건 — 피해는 사회공학·침투에서 커짐
+      - id: AIA-RT-02
+        name: 노출 자산·공격면 자동 식별
+        lv3:
+          - id: AIA-RT-02
+            name: AI 에이전트의 노출 자산·공격면 자동 식별
+            en: Agent-driven identification of exposed assets and attack surface
+            stage: [정찰]
+            ai_role: 반자율
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [범용, 클라우드·인프라]
+            atlas: [AML.T0006, AML.T0116, AML.T0132]
+            attack: [T1595, T1596]
+            owasp: []
+            nist: [RA-5, SC-7, SI-4]
+            ai: [AI-01-01]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [U42-HERMES]
+            severity: 중
+            severity_why: AI 에이전트가 FOFA·인터넷 스캔으로 노출 서비스를 사람보다 빠르게 열거해 공격 가능 진입점 목록을 자동 생성(Hermes 사례)
+      - id: AIA-RT-03
+        name: 취약점 정보·PoC 자동 수집·분석
+        lv3:
+          - id: AIA-RT-03
+            name: AI 기반 취약점 정보·공개 PoC 자동 수집·분류
+            en: AI-driven collection and triage of vulnerability intel and public PoCs
+            stage: [정찰]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [범용]
+            atlas: [AML.T0001, AML.T0095.000]
+            attack: [T1588.005, T1596]
+            owasp: []
+            nist: [RA-5, PM-16]
+            ai: [AI-01-03]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [U42-HERMES]
+            severity: 중
+            severity_why: AI가 GitHub 등에서 최신 CVE PoC를 자동으로 찾아 공격에 쓸 수 있는 형태로 분류 — 공개 즉시 악용되는 빠른 n-day를 가속(Hermes 사례)
+
+  # =========================================================================
+  - code: RD
+    ko: 공격 역량 확보
+    en: Resource Development & Weaponization
+    desc: 공격자가 공세용 AI 역량(다크·탈옥 LLM, AI 생성 도구, 공세 에이전트 하네스)과 인프라를 갖추는 단계
+    excludes: 갖춘 역량으로 취약점을 찾거나 익스플로잇을 만듦 → VE · 에이전트가 실제로 작전을 수행 → AO
+    lv2:
+      - id: AIA-RD-01
+        name: 공세 AI 역량 확보(다크·탈옥 LLM)
+        lv3:
+          - id: AIA-RD-01.1
+            name: 다크 LLM·탈옥 모델 확보
+            en: Acquisition of dark LLMs and jailbroken models
+            stage: [역량확보]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 실사용
+            actors: [사이버범죄, 핵티비스트]
+            targets: [범용]
+            atlas: [AML.T0016.002, AML.T0054]
+            attack: [T1588.002]
+            owasp: []
+            nist: [PM-16, SI-4]
+            ai: [AI-01-03]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 가드레일 없는 공세 특화 LLM이 지하 시장에서 유통되면 역량이 낮은 공격자도 피싱·악성코드 제작에 접근 — 피해는 후속 단계에서 발생
+          - id: AIA-RD-01.2
+            name: 증류·파인튜닝으로 공세 역량 확보
+            en: Distillation and fine-tuning to obtain offensive capability
+            stage: [역량확보]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 연구시연
+            actors: [사이버범죄, 연구·레드팀]
+            targets: [범용]
+            atlas: [AML.T0016.002, AML.T0005]
+            attack: []
+            owasp: []
+            nist: [PM-16]
+            ai: [AI-01-03]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 하
+            severity_why: 상용 모델을 증류·파인튜닝해 가드레일을 제거한 공세 모델을 만드는 정황 — 아직 연구·시연 수준이라 직접 피해는 제한적
+      - id: AIA-RD-02
+        name: AI 기반 공격 도구·스크립트 생성
+        lv3:
+          - id: AIA-RD-02
+            name: AI 기반 공격 도구·스크립트·셸 명령 생성
+            en: AI-generated attack tools, scripts and shell commands
+            stage: [역량확보]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [범용]
+            atlas: [AML.T0016.002, AML.T0017, AML.T0102]
+            attack: [T1587, T1588.002]
+            owasp: []
+            nist: [SI-3, SI-4, PM-16]
+            ai: [AI-01-03]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [U42-HERMES]
+            severity: 중
+            severity_why: AI가 스캐너·셸 명령·HTTP 탐침을 즉석에서 생성해 공격 준비 시간을 단축 — 단독 피해는 없으나 침투·실행을 가속
+      - id: AIA-RD-03
+        name: 공격 인프라·AI 서비스 프록시 확보
+        lv3:
+          - id: AIA-RD-03
+            name: 공격 인프라·AI 서비스 프록시 확보
+            en: Acquisition of attack infrastructure and AI service proxies
+            stage: [역량확보]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실증
+            actors: [사이버범죄, 국가배후]
+            targets: [클라우드·인프라, 범용]
+            atlas: [AML.T0008, AML.T0008.005, AML.T0128]
+            attack: [T1583, T1584, T1583.007]
+            owasp: []
+            nist: [SC-7, SI-4]
+            ai: [AI-09-03]
+            cl: [CL-RD-01]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 탈취·중계 계정으로 AI 서비스를 익명 경유하거나 서버리스 인프라를 확보해 공격의 출처·비용을 숨기는 조건
+      - id: AIA-RD-04
+        name: 공세 AI 에이전트·하네스 구축
+        lv3:
+          - id: AIA-RD-04
+            name: 공세 AI 에이전트·공격 하네스 구축
+            en: Building offensive AI agents and attack harnesses
+            stage: [역량확보]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [범용]
+            atlas: [AML.T0017.002, AML.T0103, AML.T0124]
+            attack: []
+            owasp: [ASI-T01]
+            nist: [SI-4, PM-16, SA-11]
+            ai: [AI-01-05]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ANT-GTG1002, CS-AGENTIC]
+            severity: 상
+            severity_why: 스캐너·브라우저 자동화·침투 도구를 MCP로 엮은 공격 프레임워크(GTG-1002)·탈옥 모델 기반 자율 하네스(Hermes)는 한 번 만들면 사람 감독을 최소화한 반복 공격의 토대가 됨
+
+  # =========================================================================
+  - code: VE
+    ko: 취약점 발굴·익스플로잇 생성
+    en: Vulnerability Discovery & Exploit Generation
+    desc: 공격자가 AI로 취약점을 자율 발굴하고 익스플로잇·악성코드를 자동 생성하는 단계 — 'AI를 활용한 취약점 공격'의 핵심
+    excludes: 만든 익스플로잇으로 실제 침투·실행 → IA·AO · C2·동적 명령 생성 → CC
+    lv2:
+      - id: AIA-VE-01
+        name: AI 자율 취약점 발굴
+        lv3:
+          - id: AIA-VE-01.1
+            name: AI 자율 취약점 발굴(버그 헌팅)
+            en: Autonomous AI vulnerability discovery (bug hunting)
+            stage: [취약점발굴]
+            ai_role: 완전자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [연구·레드팀, 사이버범죄, 국가배후]
+            targets: [범용]
+            atlas: [AML.T0001, AML.T0116, AML.T0117]
+            attack: [T1595]
+            owasp: []
+            nist: [RA-5, SA-11, SI-7]
+            ai: [AI-01-02]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [GOOG-BIGSLEEP, XBOW-2026]
+            severity: 상
+            severity_why: 자율 에이전트가 사람 개입 없이 미공개 취약점을 찾아내므로(Big Sleep SQLite 0-day·XBOW RCE) 방어자가 패치 전 선제 발견·악용 양쪽에 노출됨 — 공격자가 쓰면 대규모 표적에서 0-day를 양산할 수 있음
+          - id: AIA-VE-01.2
+            name: AI 보조 코드 감사·퍼징
+            en: AI-assisted code audit and fuzzing
+            stage: [취약점발굴]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실증
+            actors: [연구·레드팀, 사이버범죄]
+            targets: [범용, 소프트웨어 공급망]
+            atlas: [AML.T0001, AML.T0004]
+            attack: [T1588.005]
+            owasp: []
+            nist: [SA-11, SA-15, RA-5]
+            ai: [AI-01-02]
+            cl: []
+            ot: []
+            sc: [SC-DP-04]
+            idn: []
+            ph: []
+            refs: [XBOW-2026]
+            severity: 중
+            severity_why: AI가 코드 리뷰·퍼징을 가속해 취약점 발견 속도를 높임 — 방어·공격 양용이며 단독 피해보다 발굴 단계를 증폭
+      - id: AIA-VE-02
+        name: AI 익스플로잇 자동 생성
+        lv3:
+          - id: AIA-VE-02
+            name: AI 익스플로잇 자동 생성·개발
+            en: Autonomous AI exploit generation and development
+            stage: [취약점발굴]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [범용]
+            atlas: [AML.T0017.001, AML.T0016.003]
+            attack: [T1588.005, T1587.004]
+            owasp: []
+            nist: [RA-5, SI-7, SA-11]
+            ai: [AI-01-02]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [GTIG-AIEXPLOIT]
+            severity: 상
+            severity_why: 위협 행위자가 AI로 개발한 것으로 판단되는 0-day 익스플로잇이 실제 사용된 첫 사례(GTIG)가 보고됨 — 익스플로잇 개발 병목이 사라지면 공개 취약점이 즉시 무기화됨
+      - id: AIA-VE-03
+        name: AI 연동 악성코드·파괴 스크립트 생성
+        lv3:
+          - id: AIA-VE-03.1
+            name: AI 생성·AI 연동 악성코드
+            en: AI-generated and AI-integrated malware
+            stage: [취약점발굴]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [엔드포인트, 범용]
+            atlas: [AML.T0016.002, AML.T0102]
+            attack: [T1587.001, T1027]
+            owasp: []
+            nist: [SI-3, SI-4, SI-7]
+            ai: [AI-01-06]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [GTIG-AIEXPLOIT]
+            severity: 상
+            severity_why: 금전 목적 행위자가 생성형 AI로 악성코드를 개발한 증거(BREEZE COMET)가 확인됨 — AI가 변종을 양산하면 시그니처 기반 탐지를 빠르게 무력화
+          - id: AIA-VE-03.2
+            name: AI 생성 와이퍼·파괴 스크립트
+            en: AI-generated wiper and destructive scripts
+            stage: [취약점발굴]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [국가배후]
+            targets: [엔드포인트, 클라우드·인프라]
+            atlas: [AML.T0016.002, AML.T0102]
+            attack: [T1485, T1561]
+            owasp: []
+            nist: [SI-3, SI-7, CP-9]
+            ai: [AI-01-06]
+            cl: []
+            ot: [OT-IR-01]
+            sc: []
+            idn: []
+            ph: []
+            refs: [CERTPL-ENERGY]
+            severity: 상
+            severity_why: 국가배후 와이퍼 공격에서 파괴 스크립트가 LLM으로 생성된 것으로 평가됨(폴란드 에너지) — 파괴형 페이로드를 빠르게 맞춤 생성·변형해 복구를 어렵게 함
+
+  # =========================================================================
+  - code: IA
+    ko: 초기 침투·사회공학
+    en: Initial Access & Social Engineering
+    desc: 공격자가 AI 생성 콘텐츠·딥페이크로 사람을 속여 초기 접근을 얻는 단계 — AI가 사회공학의 품질·규모·설득력을 끌어올림
+    excludes: 침투 후 에이전트의 자율 실행·확산 → AO · 생체·본인확인 우회로 계정을 여는 신원 남용 세부는 신원 매트릭스(연계)
+    lv2:
+      - id: AIA-IA-01
+        name: AI 생성 피싱
+        lv3:
+          - id: AIA-IA-01.1
+            name: AI 생성 대량 피싱·미끼
+            en: AI-generated mass phishing and lures
+            stage: [초기침투]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [사람·조직, 신원·계정]
+            atlas: [AML.T0052, AML.T0052.000]
+            attack: [T1566, T1566.001, T1598]
+            owasp: []
+            nist: [AT-2(3), SI-4, SC-7]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-SE-01]
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: AI가 문법·맥락이 자연스러운 미끼를 대량 생성해 기존 피싱 탐지(오탈자·어색한 표현)를 무력화 — 피해는 계정 탈취·BEC 단계에서 커짐
+          - id: AIA-IA-01.2
+            name: AI 기반 표적 스피어피싱·BEC
+            en: AI-driven targeted spear-phishing and BEC
+            stage: [초기침투]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [사람·조직, 신원·계정]
+            atlas: [AML.T0052.000, AML.T0073]
+            attack: [T1566, T1534, T1598]
+            owasp: []
+            nist: [AT-2(3), SI-4]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-SE-01]
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 수집한 표적 정보를 AI가 엮어 맥락에 맞는 사칭 메시지를 만들어 특정 인물을 노림 — 송금·자격증명 탈취로 이어질 수 있음
+      - id: AIA-IA-02
+        name: 딥페이크 사칭
+        lv3:
+          - id: AIA-IA-02.1
+            name: 영상 딥페이크 사칭
+            en: Video deepfake impersonation
+            stage: [초기침투]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [사람·조직]
+            atlas: [AML.T0088, AML.T0073]
+            attack: []
+            owasp: []
+            nist: [AT-2(3), IA-2]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-SE-04]
+            ph: []
+            refs: [HKP-DEEPFAKE]
+            severity: 상
+            severity_why: 다자 화상회의 참석자 전원을 딥페이크로 꾸며 거액 송금을 지시한 사례(Arup 약 2,560만 달러) — 사람의 시각 신뢰를 직접 무너뜨려 고액 피해로 직결
+          - id: AIA-IA-02.2
+            name: 음성 딥페이크 사칭
+            en: Voice deepfake impersonation
+            stage: [초기침투]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [사람·조직, 신원·계정]
+            atlas: [AML.T0088, AML.T0073]
+            attack: [T1598]
+            owasp: []
+            nist: [AT-2(3), IA-2]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-SE-04]
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: 직원 목소리를 딥페이크로 흉내 내 추가 인증·승인을 받아낸 사례(Retool) — 전화 기반 본인확인·헬프데스크 절차를 우회
+      - id: AIA-IA-03
+        name: 딥페이크 생체·본인확인 우회
+        lv3:
+          - id: AIA-IA-03
+            name: 딥페이크 기반 생체·본인확인 우회
+            en: Deepfake-based biometric and identity verification bypass
+            stage: [초기침투]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄]
+            targets: [신원·계정]
+            atlas: [AML.T0088, AML.T0015]
+            attack: []
+            owasp: []
+            nist: [IA-2, AC-2]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-CI-03]
+            ph: []
+            refs: [HKP-DEEPFAKE, GIB-GOLDPICKAXE]
+            severity: 상
+            severity_why: AI 얼굴 바꾸기로 은행 얼굴 인식·KYC를 통과해 계좌를 열거나 장악한 사례(홍콩 대출 사기·GoldPickaxe) — 비대면 본인확인 신뢰 기반을 무너뜨려 금전 피해로 직결
+      - id: AIA-IA-04
+        name: AI 미끼·ClickFix·악성 링크 유도
+        lv3:
+          - id: AIA-IA-04
+            name: AI 미끼·ClickFix·크래프트 링크로 실행 유도
+            en: AI lures, ClickFix and crafted links to induce execution
+            stage: [초기침투]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 실증
+            actors: [사이버범죄, 연구·레드팀]
+            targets: [사람·조직, 엔드포인트]
+            atlas: [AML.T0100, AML.T0131, AML.T0011.003]
+            attack: [T1204, T1204.001]
+            owasp: []
+            nist: [AT-2(3), SI-4]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ETR-CLICKFIX]
+            severity: 중
+            severity_why: AI가 만든 미끼 페이지·링크로 사람 또는 컴퓨터 사용 에이전트가 악성 명령을 실행하도록 유도(AI ClickFix 실증) — 사람·에이전트 양쪽을 속이는 신규 경로
+
+  # =========================================================================
+  - code: AO
+    ko: 자율 실행·확산
+    en: Autonomous Operations & Lateral Movement
+    desc: AI 에이전트가 침투 후 실행·탐색·확산을 사람 감독을 최소화한 채 수행하는 단계 — 공격을 사람 속도 밖으로 끌어냄
+    excludes: 실행에 쓰는 C2·동적 명령 생성·은닉 → CC · 최종 금전·데이터·자원 피해 → IM
+    lv2:
+      - id: AIA-AO-01
+        name: 자율 공격 에이전트 실행
+        lv3:
+          - id: AIA-AO-01
+            name: 단일 자율 공격 에이전트 실행
+            en: Single autonomous attack agent execution
+            stage: [자율실행]
+            ai_role: 완전자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [범용, 클라우드·인프라]
+            atlas: [AML.T0116, AML.T0117, AML.T0050]
+            attack: [T1059]
+            owasp: [ASI-T01]
+            nist: [SI-4, AU-6, CA-7]
+            ai: [AI-01-05]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ANT-GTG1002, U42-HERMES, CS-AGENTIC]
+            severity: 상
+            severity_why: 탈옥 모델·공격 프레임워크로 자율 에이전트가 정찰부터 실행까지 대부분을 수행(GTG-1002는 AI가 80~90% 수행, ~30개 조직 표적) — 사람이 대응하기 어려운 속도·규모로 다수 조직을 동시에 침해
+      - id: AIA-AO-02
+        name: 다중 에이전트 공격 조율
+        lv3:
+          - id: AIA-AO-02
+            name: 다중 에이전트 공격 조율
+            en: Multi-agent attack orchestration
+            stage: [자율실행]
+            ai_role: 완전자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후]
+            targets: [범용, 클라우드·인프라]
+            atlas: [AML.T0118, AML.T0118.000, AML.T0118.001, AML.T0124]
+            attack: []
+            owasp: [ASI-T01]
+            nist: [SI-4, AU-6, CA-7]
+            ai: [AI-01-05]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [DREAM-TAIWAN, ANT-GTG1002]
+            severity: 상
+            severity_why: 상위 오케스트레이터가 다수 하위 에이전트를 조율해 공격 웨이브를 병렬 수행(대만 정부 대상 12개 웨이브·에이전트당 최대 8개) — 공격 규모가 사람 조직의 한계를 벗어남
+      - id: AIA-AO-03
+        name: AI 코딩·개발 도구 공세 악용
+        lv3:
+          - id: AIA-AO-03.1
+            name: 피해 단말의 AI CLI·로컬 에이전트 악용
+            en: Abuse of victim-side AI CLIs and local agents
+            stage: [자율실행]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [엔드포인트, 소프트웨어 공급망]
+            atlas: [AML.T0112.000, AML.T0053, AML.T0101]
+            attack: [T1059]
+            owasp: [LLM06]
+            nist: [SI-4, AC-6, CM-7]
+            ai: [AI-09-05]
+            cl: []
+            ot: []
+            sc: [SC-DE-01]
+            idn: []
+            ph: []
+            refs: [WIZ-S1NGULARITY]
+            severity: 상
+            severity_why: 악성코드가 피해 단말에 설치된 Claude·Gemini·Q 같은 AI CLI를 위험 옵션으로 실행해 비밀을 찾게 함(s1ngularity, 비공개 저장소 5,500개 이상 공개 전환) — 정상 설치된 AI 도구가 공격 실행 엔진이 됨
+          - id: AIA-AO-03.2
+            name: AI 개발 도구 신뢰·설정 악용
+            en: Abuse of trust and configuration in AI development tools
+            stage: [자율실행]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [소프트웨어 공급망, 엔드포인트]
+            atlas: [AML.T0053, AML.T0081]
+            attack: [T1195, T1059]
+            owasp: [LLM06]
+            nist: [SI-4, AC-6, SA-15]
+            ai: [AI-06-04]
+            cl: []
+            ot: []
+            sc: [SC-DE-02]
+            idn: []
+            ph: []
+            refs: [CAI-BUDDYBOSS]
+            severity: 상
+            severity_why: 공격자가 AI 코딩 에이전트(Claude Code 등)를 공격 수행에 직접 사용한 정황이 세션 기록으로 확인됨(BuddyBoss 공급망) — AI 도구의 광범위한 실행 권한이 공격자 손에 들어감
+      - id: AIA-AO-04
+        name: 자율 에이전트의 CI/CD·워크플로 대량 악용
+        lv3:
+          - id: AIA-AO-04
+            name: 자율 에이전트의 CI/CD·워크플로 대량 악용
+            en: Autonomous agent mass-exploitation of CI/CD and workflows
+            stage: [자율실행]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [사이버범죄]
+            targets: [소프트웨어 공급망, 클라우드·인프라]
+            atlas: [AML.T0116, AML.T0119]
+            attack: [T1195, T1195.002]
+            owasp: []
+            nist: [SI-4, CM-7, SA-15]
+            ai: [AI-08-05]
+            cl: []
+            ot: []
+            sc: [SC-BD-01]
+            idn: []
+            ph: []
+            refs: [SS-HACKERBOT]
+            severity: 상
+            severity_why: AI로 보이는 계정이 공개 저장소의 워크플로 결함을 자동 탐색·악용해 다수 대형 저장소에서 코드 실행·토큰 탈취(hackerbot-claw, 이후 연쇄 침해) — 공급망 전반을 자동·대량으로 침해
+      - id: AIA-AO-05
+        name: AI 가속 자격증명 탈취·내부 확산
+        lv3:
+          - id: AIA-AO-05
+            name: AI 가속 자격증명 탈취·내부 확산
+            en: AI-accelerated credential theft and lateral movement
+            stage: [자율실행]
+            ai_role: 반자율
+            novelty: 증폭
+            maturity: 실증
+            actors: [국가배후, 사이버범죄]
+            targets: [클라우드·인프라, 신원·계정]
+            atlas: [AML.T0055, AML.T0089, AML.T0075]
+            attack: [T1078, T1021, T1552]
+            owasp: []
+            nist: [AC-2, AC-6, SI-4]
+            ai: [AI-01-05]
+            cl: [CL-CA-06]
+            ot: []
+            sc: []
+            idn: [ID-CR-01]
+            ph: []
+            refs: [HL-AITHREAT, SYG-AIATTACK]
+            severity: 상
+            severity_why: AI 보조 침입이 개발 환경 침해에서 클라우드 전반 장악까지 72시간 안에 이르고(Sygnia·UNC6426) 수 시간 내 다량의 자격증명을 탈취한 사례가 보고됨 — 확산 속도가 사람 대응 주기를 앞지름
+
+  # =========================================================================
+  - code: CC
+    ko: 은닉·명령제어
+    en: Evasion & Command-and-Control
+    desc: 공격자가 AI 서비스를 C2 채널·동적 명령원으로 쓰거나 AI로 탐지를 회피하는 단계 — 정상 AI 트래픽에 숨어 레거시 탐지를 피함
+    excludes: C2로 전달된 실행 자체 → AO · 최종 피해 → IM
+    lv2:
+      - id: AIA-CC-01
+        name: AI 서비스 경유 은닉 C2
+        lv3:
+          - id: AIA-CC-01
+            name: AI 서비스 API·웹 인터페이스 경유 은닉 C2
+            en: Covert C2 via AI service APIs and web interfaces
+            stage: [은닉C2]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [엔드포인트, 클라우드·인프라]
+            atlas: [AML.T0096, AML.T0114, AML.T0108]
+            attack: [T1071, T1102]
+            owasp: [LLM06]
+            nist: [SC-7, SI-4, AU-6]
+            ai: [AI-01-09]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [CPR-AIMIDDLE]
+            severity: 상
+            severity_why: 정상 AI 서비스(Grok·Copilot 등)의 트래픽에 C2를 숨겨 양방향 채널을 만드는 기법(AI-in-the-Middle 실증)과 AI API 은닉 통신(LAMEHUG) — 정상 서비스라 경계·egress 통제가 걸러내기 어려움
+      - id: AIA-CC-02
+        name: 실행 중 AI 명령 동적 생성
+        lv3:
+          - id: AIA-CC-02
+            name: 실행 중 AI 명령 동적 생성 악성코드
+            en: Malware generating commands dynamically from AI at runtime
+            stage: [은닉C2]
+            ai_role: 반자율
+            novelty: 신규
+            maturity: 실사용
+            actors: [국가배후]
+            targets: [엔드포인트]
+            atlas: [AML.T0102, AML.T0096]
+            attack: [T1059, T1071]
+            owasp: []
+            nist: [SI-3, SI-4, AU-6]
+            ai: [AI-01-06]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [THN-LAMEHUG]
+            severity: 상
+            severity_why: 악성코드가 실행 중 LLM API에 질의해 명령을 매번 새로 생성(LAMEHUG, APT28) — 고정 페이로드·시그니처가 없어 정적 분석·시그니처 탐지가 무력화됨
+      - id: AIA-CC-03
+        name: AI 기반 방어 회피·난독화
+        lv3:
+          - id: AIA-CC-03
+            name: AI 기반 방어 회피·난독화
+            en: AI-driven defense evasion and obfuscation
+            stage: [은닉C2]
+            ai_role: 증강
+            novelty: 증폭
+            maturity: 실증
+            actors: [사이버범죄, 국가배후]
+            targets: [엔드포인트, AI 시스템]
+            atlas: [AML.T0015, AML.T0043, AML.T0123, AML.T0097]
+            attack: [T1027, T1497]
+            owasp: []
+            nist: [SI-3, SI-4, SI-7]
+            ai: [AI-04-04]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [HL-AITHREAT]
+            severity: 중
+            severity_why: AI로 페이로드를 자동 변형·난독화하거나 적대적 입력으로 ML 탐지기를 회피 — 시그니처·정적 탐지를 체계적으로 우회하나 행위 기반 탐지로 일부 포착 가능
+      - id: AIA-CC-04
+        name: AI 도구 설정·규칙 파일 오염
+        lv3:
+          - id: AIA-CC-04
+            name: AI 코딩 도구 규칙·설정 숨은 지시 주입
+            en: Hidden-instruction injection into AI coding tool rules and configs
+            stage: [은닉C2]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 실증
+            actors: [사이버범죄, 연구·레드팀]
+            targets: [소프트웨어 공급망, 엔드포인트]
+            atlas: [AML.T0081, AML.T0110, AML.T0011.002]
+            attack: [T1195]
+            owasp: [LLM01]
+            nist: [SA-15, SI-7, CM-7]
+            ai: [AI-08-05]
+            cl: []
+            ot: []
+            sc: [SC-DE-02]
+            idn: []
+            ph: []
+            refs: [PIL-RULESFILE]
+            severity: 중
+            severity_why: 규칙 파일에 보이지 않는 유니코드로 지시를 숨겨 AI가 생성 코드에 백도어를 넣게 하거나(Rules File Backdoor) AI 코딩 에이전트에 파괴 지시를 주입(Amazon Q) — 사람 리뷰가 알아채기 어려운 은닉 경로
+
+  # =========================================================================
+  - code: IM
+    ko: 영향·규모화
+    en: Impact & Scaling
+    desc: 공격자가 AI로 최종 피해(금전·데이터·자원)를 실현하고 공격 자체를 대규모화하는 단계
+    excludes: 피해에 이르는 실행·확산 → AO · C2 → CC
+    lv2:
+      - id: AIA-IM-01
+        name: 딥페이크·AI 사칭 금전 사기
+        lv3:
+          - id: AIA-IM-01
+            name: 딥페이크·AI 사칭 기반 금전 사기
+            en: Financial fraud via deepfake and AI impersonation
+            stage: [영향]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄]
+            targets: [사람·조직]
+            atlas: [AML.T0048, AML.T0048.000, AML.T0088]
+            attack: []
+            owasp: []
+            nist: [AT-2(3), IA-2]
+            ai: [AI-01-08]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-IM-01]
+            ph: []
+            refs: [HKP-DEEPFAKE]
+            severity: 상
+            severity_why: 딥페이크 사칭으로 대규모 부정 송금이 실제 발생(Arup 약 2,560만 달러) — 한 번의 성공으로 조직에 큰 금전 피해
+      - id: AIA-IM-02
+        name: AI 가속 데이터 탈취·반출
+        lv3:
+          - id: AIA-IM-02
+            name: AI 가속 대규모 데이터 탈취·반출
+            en: AI-accelerated large-scale data theft and exfiltration
+            stage: [영향]
+            ai_role: 반자율
+            novelty: 증폭
+            maturity: 실사용
+            actors: [국가배후, 사이버범죄]
+            targets: [클라우드·인프라, 범용]
+            atlas: [AML.T0024, AML.T0025, AML.T0126]
+            attack: [T1119, T1020, T1567]
+            owasp: []
+            nist: [SI-4, AU-6, SC-7]
+            ai: [AI-01-05]
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-IM-03]
+            ph: []
+            refs: [DREAM-TAIWAN]
+            severity: 상
+            severity_why: 자율 에이전트가 침해 환경에서 민감 데이터를 자동 수집·반출(대만 2,564건 이상 인사 기록) — 수집·분류·반출을 AI가 수행해 대규모 유출을 빠르게 완료
+      - id: AIA-IM-03
+        name: AI 자원 탈취·과금 폭탄
+        lv3:
+          - id: AIA-IM-03.1
+            name: AI 인프라 악용 크립토재킹
+            en: Cryptojacking via abused AI infrastructure
+            stage: [영향]
+            ai_role: 보조
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄]
+            targets: [클라우드·인프라, AI 시스템]
+            atlas: [AML.T0034, AML.T0132]
+            attack: [T1496]
+            owasp: [LLM10]
+            nist: [SI-4, AC-6, CM-7]
+            ai: [AI-09-03]
+            cl: [CL-IM-06]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [OLIGO-SHADOWRAY]
+            severity: 중
+            severity_why: 노출·오설정된 AI 인프라(Ray·Open WebUI)에 AI 생성 페이로드를 올려 크립토마이닝에 악용 — 자원·비용 피해가 크나 데이터 유출·파괴보다는 제한적
+          - id: AIA-IM-03.2
+            name: LLMjacking·AI 과금 폭탄
+            en: LLMjacking and AI cost-harvesting
+            stage: [영향]
+            ai_role: 보조
+            novelty: 신규
+            maturity: 실사용
+            actors: [사이버범죄]
+            targets: [클라우드·인프라, AI 시스템]
+            atlas: [AML.T0034, AML.T0034.000, AML.T0040]
+            attack: [T1496]
+            owasp: [LLM10]
+            nist: [AC-2, AC-6, SI-4]
+            ai: [AI-09-02]
+            cl: [CL-IM-07]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [SYG-AIATTACK]
+            severity: 중
+            severity_why: 탈취한 자격증명으로 피해자 계정의 관리형 LLM·GPU 자원을 무단 사용(S3 노출 자격증명 LLMjacking) — 과금 피해와 추가 공격 역량 확보로 이어짐
+      - id: AIA-IM-04
+        name: AI 활용 공격 규모화
+        lv3:
+          - id: AIA-IM-04
+            name: AI 활용 공격의 규모화·대량화
+            en: Scaling and mass-production of AI-enabled attacks
+            stage: [영향]
+            ai_role: 반자율
+            novelty: 증폭
+            maturity: 실사용
+            actors: [사이버범죄, 국가배후]
+            targets: [범용]
+            atlas: [AML.T0124, AML.T0048]
+            attack: []
+            owasp: []
+            nist: [SI-4, CA-7, PM-16]
+            ai: [AI-01-05]
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [CS-AGENTIC, HL-AITHREAT]
+            severity: 중
+            severity_why: AI가 공격당 비용을 낮춰 캠페인을 대량·병렬로 벌일 수 있게 함(기회주의적 대량 PR·캠페인 규모화) — 개별 피해보다 전체 공격량·빈도를 끌어올림

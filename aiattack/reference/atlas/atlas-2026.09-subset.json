@@ -1,0 +1,1035 @@
+{
+ "notice": "© The MITRE Corporation. ATLAS® is a trademark of The MITRE Corporation. MITRE ATLAS 공개 배포본(https://github.com/mitre-atlas/atlas-data) — ID·명칭만 인용",
+ "source": "MITRE ATLAS 2026.09 (reference/atlas/ATLAS-2026.09.yaml)",
+ "version": "2026.09",
+ "tactics": {
+  "AML.TA0000": "AI Model Access",
+  "AML.TA0001": "AI Attack Adaptation",
+  "AML.TA0002": "Reconnaissance",
+  "AML.TA0003": "Resource Development",
+  "AML.TA0004": "Initial Access",
+  "AML.TA0005": "Execution",
+  "AML.TA0006": "Persistence",
+  "AML.TA0007": "Defense Evasion",
+  "AML.TA0008": "Discovery",
+  "AML.TA0009": "Collection",
+  "AML.TA0010": "Exfiltration",
+  "AML.TA0011": "Impact",
+  "AML.TA0012": "Privilege Escalation",
+  "AML.TA0013": "Credential Access",
+  "AML.TA0014": "Command and Control",
+  "AML.TA0015": "Lateral Movement"
+ },
+ "techniques": {
+  "AML.T0000": {
+   "name": "Search Open Technical Databases",
+   "maturity": "Realized",
+   "attack": "T1596",
+   "parent": ""
+  },
+  "AML.T0001": {
+   "name": "Search Open AI Vulnerability Analysis",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0003": {
+   "name": "Search Victim-Owned Websites",
+   "maturity": "Demonstrated",
+   "attack": "T1594",
+   "parent": ""
+  },
+  "AML.T0004": {
+   "name": "Search Application Repositories",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0005": {
+   "name": "Create Proxy AI Model",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0006": {
+   "name": "Active Scanning",
+   "maturity": "Realized",
+   "attack": "T1595",
+   "parent": ""
+  },
+  "AML.T0008": {
+   "name": "Acquire Infrastructure",
+   "maturity": "Realized",
+   "attack": "T1583",
+   "parent": ""
+  },
+  "AML.T0008.005": {
+   "name": "AI Service Proxies",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0008"
+  },
+  "AML.T0011.002": {
+   "name": "Poisoned AI Agent Tool",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0011"
+  },
+  "AML.T0011.003": {
+   "name": "Malicious Link",
+   "maturity": "Demonstrated",
+   "attack": "T1204",
+   "parent": "AML.T0011"
+  },
+  "AML.T0015": {
+   "name": "Evade AI Model",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0016.002": {
+   "name": "Generative AI",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0016"
+  },
+  "AML.T0016.003": {
+   "name": "Exploits",
+   "maturity": "Realized",
+   "attack": "T1588.005",
+   "parent": "AML.T0016"
+  },
+  "AML.T0017": {
+   "name": "Develop Capabilities",
+   "maturity": "Realized",
+   "attack": "T1587",
+   "parent": ""
+  },
+  "AML.T0017.001": {
+   "name": "Autonomous Exploit Development",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0017"
+  },
+  "AML.T0017.002": {
+   "name": "AI Agent Tools",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0017"
+  },
+  "AML.T0024": {
+   "name": "Exfiltration via AI Inference API",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0025": {
+   "name": "Exfiltration via Cyber Means",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0034": {
+   "name": "Cost Harvesting",
+   "maturity": "Feasible",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0034.000": {
+   "name": "Excessive Queries",
+   "maturity": "Feasible",
+   "attack": "",
+   "parent": "AML.T0034"
+  },
+  "AML.T0040": {
+   "name": "AI Model Inference API Access",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0043": {
+   "name": "Craft Adversarial Data",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0048": {
+   "name": "External Harms",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0048.000": {
+   "name": "Financial Harm",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0048"
+  },
+  "AML.T0050": {
+   "name": "Command and Scripting Interpreter",
+   "maturity": "Realized",
+   "attack": "T1059",
+   "parent": ""
+  },
+  "AML.T0052": {
+   "name": "Phishing",
+   "maturity": "Realized",
+   "attack": "T1566",
+   "parent": ""
+  },
+  "AML.T0052.000": {
+   "name": "Spearphishing via Social Engineering LLM",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": "AML.T0052"
+  },
+  "AML.T0053": {
+   "name": "AI Agent Tool Invocation",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0054": {
+   "name": "LLM Jailbreak",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0055": {
+   "name": "Unsecured Credentials",
+   "maturity": "Realized",
+   "attack": "T1552",
+   "parent": ""
+  },
+  "AML.T0073": {
+   "name": "Impersonation",
+   "maturity": "Realized",
+   "attack": "T1656",
+   "parent": ""
+  },
+  "AML.T0075": {
+   "name": "Enterprise Resource Discovery",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0081": {
+   "name": "Modify AI Agent Configuration",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0087": {
+   "name": "Gather Victim Identity Information",
+   "maturity": "Realized",
+   "attack": "T1589",
+   "parent": ""
+  },
+  "AML.T0088": {
+   "name": "Generate Deepfakes",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0089": {
+   "name": "Enterprise Environment Discovery",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0095": {
+   "name": "Search Open Websites/Domains",
+   "maturity": "Realized",
+   "attack": "T1593",
+   "parent": ""
+  },
+  "AML.T0095.000": {
+   "name": "Code Repositories",
+   "maturity": "Realized",
+   "attack": "T1593.003",
+   "parent": "AML.T0095"
+  },
+  "AML.T0096": {
+   "name": "AI Service API",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0097": {
+   "name": "Virtualization/Sandbox Evasion",
+   "maturity": "Realized",
+   "attack": "T1497",
+   "parent": ""
+  },
+  "AML.T0100": {
+   "name": "AI Agent Clickbait",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0101": {
+   "name": "Data Destruction via AI Agent Tool Invocation",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0102": {
+   "name": "Generate Malicious Commands",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0103": {
+   "name": "Deploy AI Agent",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0108": {
+   "name": "AI Agent",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0110": {
+   "name": "AI Agent Tool Poisoning",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0112.000": {
+   "name": "Local AI Agent",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": "AML.T0112"
+  },
+  "AML.T0114": {
+   "name": "AI Service Web Interface",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0116": {
+   "name": "Autonomous Reconnaissance",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0117": {
+   "name": "Autonomous Attack-Path Adaptation",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0118": {
+   "name": "Autonomous AI Agent Communication",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0118.000": {
+   "name": "Communication via Shared Artifacts",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0118"
+  },
+  "AML.T0118.001": {
+   "name": "Direct Agent Communication",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": "AML.T0118"
+  },
+  "AML.T0119": {
+   "name": "Exploit Automated Artifact Processing Pipeline",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0123": {
+   "name": "Obfuscated Files or Information",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0124": {
+   "name": "Autonomous Attack Orchestration",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0126": {
+   "name": "Automated Collection",
+   "maturity": "Realized",
+   "attack": "T1119",
+   "parent": ""
+  },
+  "AML.T0128": {
+   "name": "Compromise Infrastructure",
+   "maturity": "Realized",
+   "attack": "T1584",
+   "parent": ""
+  },
+  "AML.T0131": {
+   "name": "Crafted AI Assistant Links",
+   "maturity": "Realized",
+   "attack": "",
+   "parent": ""
+  },
+  "AML.T0132": {
+   "name": "Misconfigured or Publicly Exposed AI Services",
+   "maturity": "Demonstrated",
+   "attack": "",
+   "parent": ""
+  }
+ },
+ "case_studies": {
+  "AML.CS0000": {
+   "name": "Evasion of Deep Learning Detector for Malware C&C Traffic",
+   "type": "Exercise",
+   "date": "2020-01-01"
+  },
+  "AML.CS0001": {
+   "name": "Botnet Domain Generation Algorithm (DGA) Detection Evasion",
+   "type": "Exercise",
+   "date": "2020-01-01"
+  },
+  "AML.CS0002": {
+   "name": "VirusTotal Poisoning",
+   "type": "Incident",
+   "date": "2020-01-01"
+  },
+  "AML.CS0003": {
+   "name": "Bypassing Cylance's AI Malware Detection",
+   "type": "Exercise",
+   "date": "2019-09-07"
+  },
+  "AML.CS0004": {
+   "name": "Camera Hijack Attack on Facial Recognition System",
+   "type": "Incident",
+   "date": "2020-01-01"
+  },
+  "AML.CS0005": {
+   "name": "Attack on Machine Translation Services",
+   "type": "Exercise",
+   "date": "2020-04-30"
+  },
+  "AML.CS0006": {
+   "name": "ClearviewAI Misconfiguration",
+   "type": "Incident",
+   "date": "2020-04-16"
+  },
+  "AML.CS0007": {
+   "name": "GPT-2 Model Replication",
+   "type": "Exercise",
+   "date": "2019-08-22"
+  },
+  "AML.CS0008": {
+   "name": "ProofPoint Evasion",
+   "type": "Exercise",
+   "date": "2019-09-09"
+  },
+  "AML.CS0009": {
+   "name": "Tay Poisoning",
+   "type": "Incident",
+   "date": "2016-03-23"
+  },
+  "AML.CS0010": {
+   "name": "Microsoft Azure Service Disruption",
+   "type": "Exercise",
+   "date": "2020-01-01"
+  },
+  "AML.CS0011": {
+   "name": "Microsoft Edge AI Evasion",
+   "type": "Exercise",
+   "date": "2020-02-01"
+  },
+  "AML.CS0012": {
+   "name": "Face Identification System Evasion via Physical Countermeasures",
+   "type": "Exercise",
+   "date": "2020-01-01"
+  },
+  "AML.CS0013": {
+   "name": "Backdoor Attack on Deep Learning Models in Mobile Apps",
+   "type": "Exercise",
+   "date": "2021-01-18"
+  },
+  "AML.CS0014": {
+   "name": "Confusing Antimalware Neural Networks",
+   "type": "Exercise",
+   "date": "2021-06-23"
+  },
+  "AML.CS0015": {
+   "name": "Compromised PyTorch Dependency Chain",
+   "type": "Incident",
+   "date": "2022-12-25"
+  },
+  "AML.CS0016": {
+   "name": "Achieving Code Execution in MathGPT via Prompt Injection",
+   "type": "Exercise",
+   "date": "2023-01-28"
+  },
+  "AML.CS0017": {
+   "name": "Bypassing ID.me Identity Verification",
+   "type": "Incident",
+   "date": "2020-10-01"
+  },
+  "AML.CS0018": {
+   "name": "Arbitrary Code Execution with Google Colab",
+   "type": "Exercise",
+   "date": "2022-07-01"
+  },
+  "AML.CS0019": {
+   "name": "PoisonGPT",
+   "type": "Exercise",
+   "date": "2023-07-01"
+  },
+  "AML.CS0020": {
+   "name": "Indirect Prompt Injection Threats: Bing Chat Data Pirate",
+   "type": "Exercise",
+   "date": "2023-01-01"
+  },
+  "AML.CS0021": {
+   "name": "ChatGPT Conversation Exfiltration",
+   "type": "Exercise",
+   "date": "2023-05-01"
+  },
+  "AML.CS0022": {
+   "name": "ChatGPT Package Hallucination",
+   "type": "Exercise",
+   "date": "2024-06-01"
+  },
+  "AML.CS0023": {
+   "name": "ShadowRay: Hijacking Exposed Ray Clusters",
+   "type": "Incident",
+   "date": "2023-09-05"
+  },
+  "AML.CS0024": {
+   "name": "Morris II Worm: RAG-Based Attack",
+   "type": "Exercise",
+   "date": "2024-03-05"
+  },
+  "AML.CS0025": {
+   "name": "Web-Scale Data Poisoning: Split-View Attack",
+   "type": "Exercise",
+   "date": "2024-06-06"
+  },
+  "AML.CS0026": {
+   "name": "Financial Transaction Hijacking with M365 Copilot as an Insider",
+   "type": "Exercise",
+   "date": "2024-08-08"
+  },
+  "AML.CS0027": {
+   "name": "Organization Confusion on Hugging Face",
+   "type": "Exercise",
+   "date": "2023-08-23"
+  },
+  "AML.CS0028": {
+   "name": "AI Model Tampering via Supply Chain Attack",
+   "type": "Exercise",
+   "date": "2023-09-26"
+  },
+  "AML.CS0029": {
+   "name": "Google Bard Conversation Exfiltration",
+   "type": "Exercise",
+   "date": "2023-11-23"
+  },
+  "AML.CS0030": {
+   "name": "LLM Jacking",
+   "type": "Incident",
+   "date": "2024-05-06"
+  },
+  "AML.CS0031": {
+   "name": "Malicious Models on Hugging Face",
+   "type": "Incident",
+   "date": "2025-02-25"
+  },
+  "AML.CS0032": {
+   "name": "Attempted Evasion of ML Phishing Webpage Detection System",
+   "type": "Incident",
+   "date": "2022-12-01"
+  },
+  "AML.CS0033": {
+   "name": "Live Deepfake Image Injection to Evade Mobile KYC Verification",
+   "type": "Exercise",
+   "date": "2024-10-01"
+  },
+  "AML.CS0034": {
+   "name": "ProKYC: Deepfake Tool for Account Fraud Attacks",
+   "type": "Incident",
+   "date": "2024-10-09"
+  },
+  "AML.CS0035": {
+   "name": "Data Exfiltration from Slack AI via Indirect Prompt Injection",
+   "type": "Exercise",
+   "date": "2024-08-20"
+  },
+  "AML.CS0036": {
+   "name": "AIKatz: Attacking LLM Desktop Applications",
+   "type": "Exercise",
+   "date": "2025-01-01"
+  },
+  "AML.CS0037": {
+   "name": "Data Exfiltration via Agent Tools in Copilot Studio",
+   "type": "Exercise",
+   "date": "2025-06-01"
+  },
+  "AML.CS0038": {
+   "name": "Planting Instructions for Delayed Automatic AI Agent Tool Invocation",
+   "type": "Exercise",
+   "date": "2024-02-01"
+  },
+  "AML.CS0039": {
+   "name": "Living Off AI: Prompt Injection via Jira Service Management",
+   "type": "Exercise",
+   "date": "2025-06-19"
+  },
+  "AML.CS0040": {
+   "name": "Hacking ChatGPT's Memories with Prompt Injection",
+   "type": "Exercise",
+   "date": "2024-02-01"
+  },
+  "AML.CS0041": {
+   "name": "Rules File Backdoor: Supply Chain Attack on AI Coding Assistants",
+   "type": "Exercise",
+   "date": "2025-03-18"
+  },
+  "AML.CS0042": {
+   "name": "SesameOp: Novel backdoor uses OpenAI Assistants API for command and control",
+   "type": "Incident",
+   "date": "2025-07-01"
+  },
+  "AML.CS0043": {
+   "name": "Malware Prototype with Embedded Prompt Injection",
+   "type": "Incident",
+   "date": "2025-06-25"
+  },
+  "AML.CS0044": {
+   "name": "LAMEHUG: Malware Leveraging Dynamic AI-Generated Commands",
+   "type": "Incident",
+   "date": "2025-06-03"
+  },
+  "AML.CS0045": {
+   "name": "Data Exfiltration via an MCP Server used by Cursor",
+   "type": "Exercise",
+   "date": "2025-06-24"
+  },
+  "AML.CS0046": {
+   "name": "Data Destruction via Indirect Prompt Injection Targeting Claude Computer-Use",
+   "type": "Exercise",
+   "date": "2024-10-24"
+  },
+  "AML.CS0047": {
+   "name": "Code to Deploy Destructive AI Agent Discovered in Amazon Q VS Code Extension",
+   "type": "Incident",
+   "date": "2025-07-13"
+  },
+  "AML.CS0048": {
+   "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+   "type": "Exercise",
+   "date": "2026-01-25"
+  },
+  "AML.CS0049": {
+   "name": "Supply Chain Compromise via Poisoned ClawdBot Skill",
+   "type": "Exercise",
+   "date": "2026-01-26"
+  },
+  "AML.CS0050": {
+   "name": "OpenClaw 1-Click Remote Code Execution",
+   "type": "Exercise",
+   "date": "2026-02-01"
+  },
+  "AML.CS0051": {
+   "name": "OpenClaw Command & Control via Prompt Injection",
+   "type": "Exercise",
+   "date": "2026-02-03"
+  },
+  "AML.CS0052": {
+   "name": "LLMSmith: RCE Vulnerabilities in LLM-Integrated Applications",
+   "type": "Exercise",
+   "date": "2025-02-27"
+  },
+  "AML.CS0053": {
+   "name": "Poisoned Postmark MCP Server Email Exfiltration",
+   "type": "Incident",
+   "date": "2025-09-01"
+  },
+  "AML.CS0054": {
+   "name": "Data Exfiltration via Remote Poisoned MCP Tool",
+   "type": "Exercise",
+   "date": "2025-04-01"
+  },
+  "AML.CS0055": {
+   "name": "AI ClickFix: Hijacking Computer-Use Agents Using ClickFix",
+   "type": "Exercise",
+   "date": "2025-05-24"
+  },
+  "AML.CS0056": {
+   "name": "Model Distillation Campaigns Targeting Anthropic Claude",
+   "type": "Incident",
+   "date": "2026-02-23"
+  },
+  "AML.CS0057": {
+   "name": "Storm-2139 Azure OpenAI Guardrail Bypass",
+   "type": "Incident",
+   "date": "2024-12-01"
+  },
+  "AML.CS0058": {
+   "name": "Google Photos AI Model Extraction",
+   "type": "Exercise",
+   "date": "2025-03-01"
+  },
+  "AML.CS0059": {
+   "name": "EchoLeak: Zero-Click Prompt Injection Targeting M365 Copilot for Data Exfiltration",
+   "type": "Exercise",
+   "date": "2025-05-25"
+  },
+  "AML.CS0060": {
+   "name": "Cross-Site Scripting via Prompt Manipulation in Lenovo AI Chatbot",
+   "type": "Exercise",
+   "date": "2025-08-18"
+  },
+  "AML.CS0061": {
+   "name": "AI in the Middle: Web-Based AI Services as C2 Relays",
+   "type": "Exercise",
+   "date": "2026-02-17"
+  },
+  "AML.CS0062": {
+   "name": "RCE Vulnerability in Semantic Kernel Search Plugin",
+   "type": "Exercise",
+   "date": "2026-05-07"
+  },
+  "AML.CS0063": {
+   "name": "Prompt-Based Attacks Against Gemini via Calendar Invitations",
+   "type": "Exercise",
+   "date": "2025-08-06"
+  },
+  "AML.CS0064": {
+   "name": "Poisoned GGUF Templates: Inference-Time Supply Chain Attack",
+   "type": "Exercise",
+   "date": "2025-06-01"
+  },
+  "AML.CS0065": {
+   "name": "Model Namespace Reuse Supply Chain Attack",
+   "type": "Exercise",
+   "date": "2025-09-03"
+  },
+  "AML.CS0066": {
+   "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
+   "type": "Exercise",
+   "date": "2025-09-25"
+  },
+  "AML.CS0067": {
+   "name": "Claude Code GitHub Action Secret Exposure",
+   "type": "Exercise",
+   "date": "2026-06-05"
+  },
+  "AML.CS0068": {
+   "name": "Autonomous OpenAI Evaluation Agents Compromise Hugging Face Infrastructure",
+   "type": "Incident",
+   "date": "2026-07-08"
+  },
+  "AML.CS0069": {
+   "name": "GTG-1002 Claude Code Espionage Campaign",
+   "type": "Incident",
+   "date": "2025-09-01"
+  },
+  "AML.CS0070": {
+   "name": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+   "type": "Incident",
+   "date": "2026-05-07"
+  },
+  "AML.CS0071": {
+   "name": "Multi-Agent Framework Compromises Taiwanese Government Systems",
+   "type": "Incident",
+   "date": "2026-07-01"
+  },
+  "AML.CS0072": {
+   "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+   "type": "Incident",
+   "date": "2026-02-10"
+  }
+ },
+ "index": {
+  "AML.T0000": "Search Open Technical Databases",
+  "AML.T0000.000": "Journals and Conference Proceedings",
+  "AML.T0000.001": "Pre-Print Repositories",
+  "AML.T0000.002": "Technical Blogs",
+  "AML.T0000.003": "Scan Databases",
+  "AML.T0001": "Search Open AI Vulnerability Analysis",
+  "AML.T0002": "Acquire Public AI Artifacts",
+  "AML.T0002.000": "Datasets",
+  "AML.T0002.001": "Models",
+  "AML.T0002.002": "AI Agent Configuration",
+  "AML.T0003": "Search Victim-Owned Websites",
+  "AML.T0004": "Search Application Repositories",
+  "AML.T0005": "Create Proxy AI Model",
+  "AML.T0005.000": "Train Proxy via Gathered AI Artifacts",
+  "AML.T0005.001": "Train Proxy via Replication",
+  "AML.T0005.002": "Use Pre-Trained Model",
+  "AML.T0006": "Active Scanning",
+  "AML.T0006.000": "Enumerate Hosted AI Resources",
+  "AML.T0006.001": "Query Platform Metadata APIs",
+  "AML.T0006.002": "Scan for Exposed AI Infrastructure",
+  "AML.T0006.003": "Probe AI Agent Trigger Channels",
+  "AML.T0007": "Discover AI Artifacts",
+  "AML.T0008": "Acquire Infrastructure",
+  "AML.T0008.000": "AI Development Workspaces",
+  "AML.T0008.001": "Consumer Hardware",
+  "AML.T0008.002": "Domains",
+  "AML.T0008.003": "Physical Countermeasures",
+  "AML.T0008.004": "Serverless",
+  "AML.T0008.005": "AI Service Proxies",
+  "AML.T0010": "AI Supply Chain Compromise",
+  "AML.T0010.000": "Hardware",
+  "AML.T0010.001": "AI Software",
+  "AML.T0010.002": "Data",
+  "AML.T0010.003": "Model",
+  "AML.T0010.004": "Container Registry",
+  "AML.T0010.005": "AI Agent Tool",
+  "AML.T0011": "User Execution",
+  "AML.T0011.000": "Unsafe AI Artifacts",
+  "AML.T0011.001": "Malicious Package",
+  "AML.T0011.002": "Poisoned AI Agent Tool",
+  "AML.T0011.003": "Malicious Link",
+  "AML.T0012": "Valid Accounts",
+  "AML.T0013": "Discover AI Model Ontology",
+  "AML.T0014": "Discover AI Model Family",
+  "AML.T0015": "Evade AI Model",
+  "AML.T0016": "Obtain Capabilities",
+  "AML.T0016.000": "Adversarial AI Attack Implementations",
+  "AML.T0016.001": "Software Tools",
+  "AML.T0016.002": "Generative AI",
+  "AML.T0016.003": "Exploits",
+  "AML.T0016.004": "AI Agent Tools",
+  "AML.T0017": "Develop Capabilities",
+  "AML.T0017.000": "Adversarial AI Attacks",
+  "AML.T0017.001": "Autonomous Exploit Development",
+  "AML.T0017.002": "AI Agent Tools",
+  "AML.T0018": "Manipulate AI Model",
+  "AML.T0018.000": "Poison AI Model",
+  "AML.T0018.001": "Modify AI Model Architecture",
+  "AML.T0018.002": "Embed Malware",
+  "AML.T0018.003": "Modify Prompt Construction Logic",
+  "AML.T0020": "Training Data Poisoning",
+  "AML.T0021": "Establish Accounts",
+  "AML.T0024": "Exfiltration via AI Inference API",
+  "AML.T0024.000": "Infer Training Data Membership",
+  "AML.T0024.001": "Invert AI Model",
+  "AML.T0024.002": "Extract AI Model",
+  "AML.T0025": "Exfiltration via Cyber Means",
+  "AML.T0029": "Denial of AI Service",
+  "AML.T0031": "Erode AI Model Integrity",
+  "AML.T0034": "Cost Harvesting",
+  "AML.T0034.000": "Excessive Queries",
+  "AML.T0034.001": "Resource-Intensive Queries",
+  "AML.T0034.002": "Agentic Resource Consumption",
+  "AML.T0035": "AI Artifact Collection",
+  "AML.T0036": "Data from Information Repositories",
+  "AML.T0037": "Data from Local System",
+  "AML.T0040": "AI Model Inference API Access",
+  "AML.T0041": "Physical Environment Access",
+  "AML.T0042": "Verify Attack",
+  "AML.T0043": "Craft Adversarial Data",
+  "AML.T0043.000": "White-Box Optimization",
+  "AML.T0043.001": "Black-Box Optimization",
+  "AML.T0043.002": "Black-Box Transfer",
+  "AML.T0043.003": "Manual Modification",
+  "AML.T0043.004": "Insert Backdoor Trigger",
+  "AML.T0044": "Full AI Model Access",
+  "AML.T0046": "Spamming AI System with Chaff Data",
+  "AML.T0047": "AI-Enabled Product or Service",
+  "AML.T0048": "External Harms",
+  "AML.T0048.000": "Financial Harm",
+  "AML.T0048.001": "Reputational Harm",
+  "AML.T0048.002": "Societal Harm",
+  "AML.T0048.003": "User Harm",
+  "AML.T0048.004": "AI Intellectual Property Theft",
+  "AML.T0049": "Exploit Public-Facing Application",
+  "AML.T0050": "Command and Scripting Interpreter",
+  "AML.T0051": "LLM Prompt Injection",
+  "AML.T0051.000": "Direct",
+  "AML.T0051.001": "Indirect",
+  "AML.T0051.002": "Triggered",
+  "AML.T0052": "Phishing",
+  "AML.T0052.000": "Spearphishing via Social Engineering LLM",
+  "AML.T0052.001": "Deepfake-Assisted Phishing",
+  "AML.T0053": "AI Agent Tool Invocation",
+  "AML.T0054": "LLM Jailbreak",
+  "AML.T0055": "Unsecured Credentials",
+  "AML.T0056": "Extract LLM System Prompt",
+  "AML.T0057": "LLM Data Leakage",
+  "AML.T0059": "Erode Dataset Integrity",
+  "AML.T0060": "Publish Hallucinated Entities",
+  "AML.T0061": "LLM Prompt Self-Replication",
+  "AML.T0062": "Discover LLM Hallucinations",
+  "AML.T0063": "Discover AI Model Outputs",
+  "AML.T0064": "Gather RAG-Indexed Targets",
+  "AML.T0065": "LLM Prompt Crafting",
+  "AML.T0066": "Retrieval Content Crafting",
+  "AML.T0067": "LLM Trusted Output Components Manipulation",
+  "AML.T0067.000": "Citations",
+  "AML.T0068": "LLM Prompt Obfuscation",
+  "AML.T0069": "Discover LLM System Information",
+  "AML.T0069.000": "Special Character Sets",
+  "AML.T0069.001": "System Instruction Keywords",
+  "AML.T0069.002": "System Prompt",
+  "AML.T0070": "RAG Poisoning",
+  "AML.T0071": "False RAG Entry Injection",
+  "AML.T0072": "Cyber Communication Channel",
+  "AML.T0073": "Impersonation",
+  "AML.T0074": "Masquerading",
+  "AML.T0075": "Enterprise Resource Discovery",
+  "AML.T0076": "Corrupt AI Model",
+  "AML.T0077": "LLM Response Rendering",
+  "AML.T0078": "Drive-by Compromise",
+  "AML.T0079": "Stage Capabilities",
+  "AML.T0080": "AI Agent Context Poisoning",
+  "AML.T0080.000": "Memory",
+  "AML.T0080.001": "Thread",
+  "AML.T0081": "Modify AI Agent Configuration",
+  "AML.T0082": "RAG Credential Harvesting",
+  "AML.T0083": "Credentials from AI Agent Configuration",
+  "AML.T0084": "Discover AI Agent Configuration",
+  "AML.T0084.000": "Embedded Knowledge",
+  "AML.T0084.001": "Tool Definitions",
+  "AML.T0084.002": "Activation Triggers",
+  "AML.T0084.003": "Call Chains",
+  "AML.T0085": "Data from AI Services",
+  "AML.T0085.000": "RAG Databases",
+  "AML.T0085.001": "AI Agent Tools",
+  "AML.T0086": "Exfiltration via AI Agent Tool Invocation",
+  "AML.T0087": "Gather Victim Identity Information",
+  "AML.T0088": "Generate Deepfakes",
+  "AML.T0089": "Enterprise Environment Discovery",
+  "AML.T0090": "OS Credential Dumping",
+  "AML.T0091": "Use Alternate Authentication Material",
+  "AML.T0091.000": "Application Access Token",
+  "AML.T0091.001": "Web Session Cookie",
+  "AML.T0092": "Manipulate User LLM Chat History",
+  "AML.T0093": "Prompt Infiltration via Public-Facing Application",
+  "AML.T0094": "Delay Execution of LLM Instructions",
+  "AML.T0095": "Search Open Websites/Domains",
+  "AML.T0095.000": "Code Repositories",
+  "AML.T0096": "AI Service API",
+  "AML.T0097": "Virtualization/Sandbox Evasion",
+  "AML.T0098": "AI Agent Tool Credential Harvesting",
+  "AML.T0099": "AI Agent Tool Data Poisoning",
+  "AML.T0100": "AI Agent Clickbait",
+  "AML.T0101": "Data Destruction via AI Agent Tool Invocation",
+  "AML.T0102": "Generate Malicious Commands",
+  "AML.T0103": "Deploy AI Agent",
+  "AML.T0105": "Escape to Host",
+  "AML.T0106": "Exploitation for Credential Access",
+  "AML.T0107": "Exploitation for Defense Evasion",
+  "AML.T0108": "AI Agent",
+  "AML.T0109": "AI Supply Chain Rug Pull",
+  "AML.T0110": "AI Agent Tool Poisoning",
+  "AML.T0110.000": "Definition and Instructions",
+  "AML.T0110.001": "Implementation",
+  "AML.T0110.002": "Runtime Response",
+  "AML.T0111": "AI Supply Chain Reputation Inflation",
+  "AML.T0112": "Machine Compromise",
+  "AML.T0112.000": "Local AI Agent",
+  "AML.T0112.001": "AI Artifacts",
+  "AML.T0113": "Steal Web Session Cookie",
+  "AML.T0114": "AI Service Web Interface",
+  "AML.T0115": "Publish Poisoned AI Artifacts",
+  "AML.T0115.000": "Datasets",
+  "AML.T0115.001": "Models",
+  "AML.T0115.002": "AI Agent Tools",
+  "AML.T0116": "Autonomous Reconnaissance",
+  "AML.T0117": "Autonomous Attack-Path Adaptation",
+  "AML.T0118": "Autonomous AI Agent Communication",
+  "AML.T0118.000": "Communication via Shared Artifacts",
+  "AML.T0118.001": "Direct Agent Communication",
+  "AML.T0119": "Exploit Automated Artifact Processing Pipeline",
+  "AML.T0120": "AI Artifact Repository",
+  "AML.T0121": "AI Agent Environment Reconstruction",
+  "AML.T0122": "Exploitation of Remote Services",
+  "AML.T0123": "Obfuscated Files or Information",
+  "AML.T0124": "Autonomous Attack Orchestration",
+  "AML.T0125": "Create Account",
+  "AML.T0126": "Automated Collection",
+  "AML.T0127": "Data Staged",
+  "AML.T0128": "Compromise Infrastructure",
+  "AML.T0129": "Triggers in Multimodal Inputs",
+  "AML.T0130": "AI Agent Response Biasing",
+  "AML.T0131": "Crafted AI Assistant Links",
+  "AML.T0132": "Misconfigured or Publicly Exposed AI Services",
+  "AML.T0133": "Discover AI Agent Runtime Capabilities",
+  "AML.T0134": "AI Targeted Cloaking",
+  "AML.CS0000": "Evasion of Deep Learning Detector for Malware C&C Traffic",
+  "AML.CS0001": "Botnet Domain Generation Algorithm (DGA) Detection Evasion",
+  "AML.CS0002": "VirusTotal Poisoning",
+  "AML.CS0003": "Bypassing Cylance's AI Malware Detection",
+  "AML.CS0004": "Camera Hijack Attack on Facial Recognition System",
+  "AML.CS0005": "Attack on Machine Translation Services",
+  "AML.CS0006": "ClearviewAI Misconfiguration",
+  "AML.CS0007": "GPT-2 Model Replication",
+  "AML.CS0008": "ProofPoint Evasion",
+  "AML.CS0009": "Tay Poisoning",
+  "AML.CS0010": "Microsoft Azure Service Disruption",
+  "AML.CS0011": "Microsoft Edge AI Evasion",
+  "AML.CS0012": "Face Identification System Evasion via Physical Countermeasures",
+  "AML.CS0013": "Backdoor Attack on Deep Learning Models in Mobile Apps",
+  "AML.CS0014": "Confusing Antimalware Neural Networks",
+  "AML.CS0015": "Compromised PyTorch Dependency Chain",
+  "AML.CS0016": "Achieving Code Execution in MathGPT via Prompt Injection",
+  "AML.CS0017": "Bypassing ID.me Identity Verification",
+  "AML.CS0018": "Arbitrary Code Execution with Google Colab",
+  "AML.CS0019": "PoisonGPT",
+  "AML.CS0020": "Indirect Prompt Injection Threats: Bing Chat Data Pirate",
+  "AML.CS0021": "ChatGPT Conversation Exfiltration",
+  "AML.CS0022": "ChatGPT Package Hallucination",
+  "AML.CS0023": "ShadowRay: Hijacking Exposed Ray Clusters",
+  "AML.CS0024": "Morris II Worm: RAG-Based Attack",
+  "AML.CS0025": "Web-Scale Data Poisoning: Split-View Attack",
+  "AML.CS0026": "Financial Transaction Hijacking with M365 Copilot as an Insider",
+  "AML.CS0027": "Organization Confusion on Hugging Face",
+  "AML.CS0028": "AI Model Tampering via Supply Chain Attack",
+  "AML.CS0029": "Google Bard Conversation Exfiltration",
+  "AML.CS0030": "LLM Jacking",
+  "AML.CS0031": "Malicious Models on Hugging Face",
+  "AML.CS0032": "Attempted Evasion of ML Phishing Webpage Detection System",
+  "AML.CS0033": "Live Deepfake Image Injection to Evade Mobile KYC Verification",
+  "AML.CS0034": "ProKYC: Deepfake Tool for Account Fraud Attacks",
+  "AML.CS0035": "Data Exfiltration from Slack AI via Indirect Prompt Injection",
+  "AML.CS0036": "AIKatz: Attacking LLM Desktop Applications",
+  "AML.CS0037": "Data Exfiltration via Agent Tools in Copilot Studio",
+  "AML.CS0038": "Planting Instructions for Delayed Automatic AI Agent Tool Invocation",
+  "AML.CS0039": "Living Off AI: Prompt Injection via Jira Service Management",
+  "AML.CS0040": "Hacking ChatGPT's Memories with Prompt Injection",
+  "AML.CS0041": "Rules File Backdoor: Supply Chain Attack on AI Coding Assistants",
+  "AML.CS0042": "SesameOp: Novel backdoor uses OpenAI Assistants API for command and control",
+  "AML.CS0043": "Malware Prototype with Embedded Prompt Injection",
+  "AML.CS0044": "LAMEHUG: Malware Leveraging Dynamic AI-Generated Commands",
+  "AML.CS0045": "Data Exfiltration via an MCP Server used by Cursor",
+  "AML.CS0046": "Data Destruction via Indirect Prompt Injection Targeting Claude Computer-Use",
+  "AML.CS0047": "Code to Deploy Destructive AI Agent Discovered in Amazon Q VS Code Extension",
+  "AML.CS0048": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+  "AML.CS0049": "Supply Chain Compromise via Poisoned ClawdBot Skill",
+  "AML.CS0050": "OpenClaw 1-Click Remote Code Execution",
+  "AML.CS0051": "OpenClaw Command & Control via Prompt Injection",
+  "AML.CS0052": "LLMSmith: RCE Vulnerabilities in LLM-Integrated Applications",
+  "AML.CS0053": "Poisoned Postmark MCP Server Email Exfiltration",
+  "AML.CS0054": "Data Exfiltration via Remote Poisoned MCP Tool",
+  "AML.CS0055": "AI ClickFix: Hijacking Computer-Use Agents Using ClickFix",
+  "AML.CS0056": "Model Distillation Campaigns Targeting Anthropic Claude",
+  "AML.CS0057": "Storm-2139 Azure OpenAI Guardrail Bypass",
+  "AML.CS0058": "Google Photos AI Model Extraction",
+  "AML.CS0059": "EchoLeak: Zero-Click Prompt Injection Targeting M365 Copilot for Data Exfiltration",
+  "AML.CS0060": "Cross-Site Scripting via Prompt Manipulation in Lenovo AI Chatbot",
+  "AML.CS0061": "AI in the Middle: Web-Based AI Services as C2 Relays",
+  "AML.CS0062": "RCE Vulnerability in Semantic Kernel Search Plugin",
+  "AML.CS0063": "Prompt-Based Attacks Against Gemini via Calendar Invitations",
+  "AML.CS0064": "Poisoned GGUF Templates: Inference-Time Supply Chain Attack",
+  "AML.CS0065": "Model Namespace Reuse Supply Chain Attack",
+  "AML.CS0066": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
+  "AML.CS0067": "Claude Code GitHub Action Secret Exposure",
+  "AML.CS0068": "Autonomous OpenAI Evaluation Agents Compromise Hugging Face Infrastructure",
+  "AML.CS0069": "GTG-1002 Claude Code Espionage Campaign",
+  "AML.CS0070": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+  "AML.CS0071": "Multi-Agent Framework Compromises Taiwanese Government Systems",
+  "AML.CS0072": "AI Recommendation Poisoning via Crafted AI Assistant Links"
+ }
+}

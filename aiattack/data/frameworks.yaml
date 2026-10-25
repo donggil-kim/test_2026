@@ -1,0 +1,317 @@
+# 교차 매핑·대응 기준·참고 문헌 카탈로그 — ID·명칭만 수록(원문 미수록)
+#
+# 역할(작업방향 6장)
+#   ② 교차 매핑  : MITRE ATLAS 2026.09(공격자 AI 관점) · MITRE ATT&CK v19.2(AI가 가속하는 기존 기법) ·
+#                  OWASP LLM Top 10(2025)·Agentic 위협(악용되는 제3자 AI 측) · 다른 매트릭스 통합 v4.1 요약 ID
+#   ③ 대응 기준  : NIST SP 800-53 Rev.5 통제(탐지·대응) — reference/nist/ 추출본
+#   ⑤ 참고 문헌  : 벤더·정부·연구 위협 인텔(사고·역량 근거) — ID 열 없이 refs와 문구의 '참고:' 인용으로만 사용
+# 거버넌스 맥락(NIST AI RMF·GenAI 프로파일, OWASP)은 연계·명칭만. ATLAS 전술·기법은 reference/atlas/ 추출본에서 읽는다.
+
+meta:
+  atlas:
+    name: MITRE ATLAS (Adversarial Threat Landscape for AI Systems)
+    version: 2026.09 (format 6.0.0)
+    source: https://github.com/mitre-atlas/atlas-data dist/v6/ATLAS-latest.yaml → reference/atlas/ 추출본(scripts/prepare_atlas.py)
+    license: © The MITRE Corporation — ID·명칭만 인용, 공개 배포본 보관(reference/atlas/ATLAS-2026.09.yaml)
+    note: 기법 성숙도(Realized·Demonstrated·Feasible)를 발생가능성의 'AI 역량 성숙도' 신호로 참고(D4)
+  attack:
+    name: MITRE ATT&CK Enterprise
+    version: v19.2
+    source: 저장소 루트 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본(scripts/prepare_attack.py)
+    license: © The MITRE Corporation — https://attack.mitre.org/resources/legal-and-branding/terms-of-use/ — ID·명칭만 인용
+    note: AI가 가속·자동화하는 '기존 기법'만 연계(정찰·익스플로잇 확보·피싱·실행·반출 등). 순수 AI 고유 기법은 ATLAS로만 연계
+  owasp:
+    name: OWASP Top 10 for LLM Applications(2025) · OWASP Agentic AI — Threats and Mitigations
+    version: "2025"
+    source: https://genai.owasp.org
+    license: © OWASP Foundation — CC BY-SA, ID·명칭만 인용
+    note: 이 매트릭스는 '공격자가 AI를 쓰는' 관점이라, 공격에 악용되는 제3자 AI 서비스·에이전트가 있을 때만 피해 AI 측으로 연계(대부분 [])
+  nist80053:
+    name: NIST SP 800-53 Rev.5 통제명
+    version: OSCAL 5.2.0 (2026-05-11)
+    source: https://github.com/usnistgov/oscal-content → reference/nist/ 명칭 추출본(identity/ 추출본 재사용)
+    license: 미국 정부 저작물(공공 영역)
+  airmf:
+    name: NIST AI Risk Management Framework · Generative AI Profile(NIST AI 600-1)
+    version: "1.0 / 2024"
+    source: https://www.nist.gov/itl/ai-risk-management-framework
+    license: 미국 정부 저작물(공공 영역) — 거버넌스 맥락 연계·명칭만(행 매핑에는 쓰지 않음)
+
+# 킬체인 단계(행 stage·시나리오 단계 어휘) — 작업방향 3.3(공격자 킬체인)
+stages:
+  정찰: AI로 공개정보·노출 자산·취약점 정보를 대규모로 수집·분석해 표적과 진입점을 고름
+  역량확보: 공세용 AI 역량(다크·탈옥 LLM·AI 생성 도구·공세 에이전트)과 인프라를 갖춤
+  취약점발굴: AI로 취약점을 자율 발굴하고 익스플로잇·악성코드를 자동 생성
+  초기침투: AI 생성 콘텐츠·딥페이크로 사람을 속여 초기 접근을 얻음
+  자율실행: AI 에이전트가 침투 후 실행·탐색·확산을 사람 감독 최소화로 수행
+  은닉C2: AI 서비스를 C2·동적 명령원으로 쓰거나 AI로 탐지를 회피
+  영향: AI로 최종 피해(금전·데이터·자원)를 실현하고 공격을 대규모화
+
+# AI 역할·자율성 수준(행 ai_role) — 작업방향 3.3 고유 축. '사람 속도로 대응 가능한가'를 가름
+ai_roles:
+  보조: 초안·콘텐츠 생성 등 공격자를 거드는 수준(사람이 전 과정을 운전)
+  증강: 정찰·분석·탐색을 가속(사람이 판단, AI가 속도·규모를 더함)
+  반자율: 사람 감독 아래 일부 단계를 자율 실행(승인·개입 지점이 남음)
+  완전자율: 목표만 주면 정찰부터 실행까지 자율 반복(사람 개입 최소)
+
+# AI 고유성(행 novelty) — '진짜 새로운 것'과 '빨라진 것'을 구분(작업방향 3.3)
+novelty:
+  신규: AI로 새로 생긴 위협(자율 에이전트 침투·자율 취약점 발굴·AI 서비스 C2 등)
+  증폭: 기존 위협의 AI 증폭(피싱·악성코드·정찰·데이터 탈취가 AI로 빨라지고 커짐)
+
+# AI 역량 성숙도(행 maturity) — 발생가능성 보조 신호(D4). ATLAS maturity와 정합
+maturity:
+  실사용: 실제 공격·사고에서 쓰인 역량(ATLAS Realized 포함)
+  실증: 실증·PoC·레드팀 시연으로 동작이 확인된 역량(ATLAS Demonstrated 포함)
+  연구시연: 연구·개념 증명 수준으로 제시된 역량(ATLAS Feasible 포함)
+
+# 위협 주체 유형(행 actors·사고 DB actor_type) — 행위자는 사고 DB actor로만 귀속(작업방향 2장)
+actor_types:
+  국가배후: 국가 지원·연계 그룹(첩보·파괴·영향 공작)
+  사이버범죄: 금전 목적 범죄 조직·개인
+  핵티비스트: 정치·사회 목적 행위자
+  연구·레드팀: 보안 연구자·레드팀(실증·시연 — 방어 연구 맥락)
+
+# 공격 대상 자산(행 targets) — '무엇을 치는가'(렌즈 매트릭스라 자산은 무관하게 묶음)
+targets:
+  AI 시스템: 제3자·피해 조직의 AI 서비스·에이전트·인프라
+  클라우드·인프라: 클라우드 계정·워크로드·서버·CI/CD
+  신원·계정: 사용자·계정·생체·본인확인 체계
+  엔드포인트: 사용자 단말·서버 호스트
+  소프트웨어 공급망: 저장소·패키지·빌드·개발 도구
+  사람·조직: 임직원·경영진·조직 프로세스
+  범용: 대상 자산을 가리지 않음
+
+# OWASP — 공격에 악용되는 제3자 AI 측 연계(ID·명칭만)
+owasp:
+  LLM01: [Prompt Injection, 프롬프트 인젝션]
+  LLM06: [Excessive Agency, 과도한 에이전시]
+  LLM10: [Unbounded Consumption, 무제한 자원 소모]
+  ASI-T01: [Agent Authorization and Control Hijacking, 에이전트 인가·제어 탈취]
+
+# -------------------------------------------------------------------------
+# 참고 문헌 카탈로그 — refs 키. [영문 공식 명칭 / 서지]. 원문 미수록, 서지·URL·확인일·이용 조건만.
+#   use: 분류 근거 · 위협 내용 · 대응 문구 / domains: 주 도메인 코드 / verify: 확인 경로 / checked: 확인일
+#   벤더·2차 수치는 참고치로만 인용하고 사고 DB에는 1차 확인 사례만 편입(작업방향 7장)
+# -------------------------------------------------------------------------
+references:
+  GOOG-BIGSLEEP:
+    title: "Google says 'Big Sleep' AI tool found bug hackers planned to use"
+    short: The Record 〈Big Sleep〉
+    publisher: The Record (Recorded Future News)
+    year: 2025
+    urls: [https://therecord.media/google-big-sleep-ai-tool-found-bug]
+    use: [위협 내용]
+    domains: [VE]
+    terms: 공개 보도 — 서지·URL만 인용
+    verify: 작업방향 §7.3 리서치 — fetch_page로 제목·게시일(2025-07-15) 확인. Google Project Zero·DeepMind Big Sleep의 실악용 사전 차단 보도
+    checked: "2026-10-25"
+  XBOW-2026:
+    title: "AI Pentesting Agents 2026: The Rise of 39+ Tools Tested"
+    short: AppSecSanta 〈AI Pentesting Agents 2026〉
+    publisher: AppSecSanta Research
+    year: 2026
+    urls: [https://appsecsanta.com/research/ai-pentesting-agents-2026]
+    use: [위협 내용]
+    domains: [VE]
+    terms: 공개 연구 블로그(2차) — 서지·URL만 인용
+    verify: 작업방향 §7.3 리서치 — fetch_page로 확인(XBOW가 HackerOne 글로벌 리더보드 1위, 자율 펜테스트 에이전트). 2차 집계이므로 참고치
+    checked: "2026-10-25"
+  GTIG-AIEXPLOIT:
+    title: "Google Confirms First AI-Generated Zero-Day Exploit Found in the Wild"
+    short: securityonline 〈GTIG AI 0-day〉
+    publisher: securityonline.info (GTIG 보고 인용)
+    year: 2026
+    urls: [https://securityonline.info/google-threat-intel-ai-generated-zero-day-exploit-big-sleep/]
+    use: [위협 내용]
+    domains: [VE]
+    terms: 공개 보도(GTIG 보고서 2차 인용) — 서지·URL만
+    verify: 작업방향 §7.3 리서치 — fetch_page로 게시일(2026-05-12)·GTIG 인용문 확인. 1차는 GTIG 보고서
+    checked: "2026-10-25"
+  CS-AGENTIC:
+    title: "CrowdStrike Uncovers New Agentic AI Campaigns"
+    short: CrowdStrike 〈Agentic AI Campaigns〉
+    publisher: CrowdStrike
+    year: 2026
+    urls: [https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/]
+    use: [위협 내용]
+    domains: [RD, AO, IM]
+    terms: 벤더 위협 인텔 — 서지·URL만, 수치는 참고치
+    verify: 작업방향 §7.3 리서치 — fetch_page로 게시일(2026-10-21) 확인. AI 에이전트 무기화 캠페인 분석
+    checked: "2026-10-25"
+  HL-AITHREAT:
+    title: "2026 AI Threat Landscape Report: The Rise of Agentic AI"
+    short: HiddenLayer 〈2026 AI Threat Landscape〉
+    publisher: HiddenLayer
+    year: 2026
+    urls: [https://www.hiddenlayer.com/news/hiddenlayer-releases-the-2026-ai-threat-landscape-report-spotlighting-the-rise-of-agentic-ai-and-the-expanding-attack-surface-of-autonomous-systems]
+    use: [분류 근거, 위협 내용]
+    domains: [RT, RD, IA, AO, CC, IM]
+    terms: 벤더 위협 보고서 — 서지·URL만, 수치는 참고치
+    verify: 작업방향 §7.3 리서치 — fetch_page로 게시일(2026-03-18) 확인. 에이전트형 AI 침해 급증·공격면 확대 보고
+    checked: "2026-10-25"
+  ANT-GTG1002:
+    title: "Disrupting the first reported AI-orchestrated cyber espionage campaign (GTG-1002)"
+    short: Anthropic 〈GTG-1002〉
+    publisher: Anthropic
+    year: 2025
+    urls: [https://www.anthropic.com/news/disrupting-AI-espionage]
+    use: [위협 내용]
+    domains: [RD, AO]
+    terms: 벤더 공개 분석 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0069)에서 1차 확인(2025-11-13, AI 80~90% 수행·~30개 조직)
+    checked: "2026-10-25"
+  U42-HERMES:
+    title: "Autonomous AI Cyberattack Campaign: DeepSeek-Powered Hermes Agent"
+    short: Unit 42 〈Hermes Agent〉
+    publisher: Palo Alto Networks Unit 42
+    year: 2026
+    urls: [https://unit42.paloaltonetworks.com/autonomous-ai-cyber-attack-campaign/]
+    use: [위협 내용]
+    domains: [RT, RD, AO]
+    terms: 벤더 위협 인텔 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0070)에서 1차 확인(공개 2026-07-30, FOFA·GitHub PoC 검색)
+    checked: "2026-10-25"
+  DREAM-TAIWAN:
+    title: "Inside a Multi-Agent AI Framework Used to Compromise Government Entities in Asia"
+    short: Dream Research 〈Multi-Agent Framework〉
+    publisher: Dream Research Labs
+    year: 2026
+    urls: [https://www.dreamgroup.com/blog/inside-a-multi-agent-ai-framework-used-to-compromise-government-entities-in-asia]
+    use: [위협 내용]
+    domains: [AO, IM]
+    terms: 벤더 분석 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0071)에서 확인(2026-07~08, 12개 웨이브·2,564건 이상). 대만 MODA 보도자료 교차
+    checked: "2026-10-25"
+  WIZ-S1NGULARITY:
+    title: "s1ngularity — supply chain attack leaks secrets on GitHub"
+    short: Wiz 〈s1ngularity〉
+    publisher: Wiz
+    year: 2025
+    urls: [https://www.wiz.io/blog/s1ngularity-supply-chain-attack]
+    use: [위협 내용]
+    domains: [AO]
+    terms: 벤더 분석 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(SCI-143·CL/INC-0552)에서 1차 확인(AI CLI 위험 옵션 실행·비공개 저장소 5,500+ 공개 전환)
+    checked: "2026-10-25"
+  CAI-BUDDYBOSS:
+    title: "BuddyBoss supply chain attack (Part 2)"
+    short: Ctrl-Alt-Intel 〈BuddyBoss〉
+    publisher: Ctrl-Alt-Intel
+    year: 2026
+    urls: [https://ctrlaltintel.com/research/BuddyBoss-2/]
+    use: [위협 내용]
+    domains: [AO]
+    terms: 벤더 분석 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(CL/INC-0606)에서 확인(복구된 Claude Code 세션 기록으로 AI 수행 확인)
+    checked: "2026-10-25"
+  SS-HACKERBOT:
+    title: "hackerbot-claw — GitHub Actions exploitation"
+    short: StepSecurity 〈hackerbot-claw〉
+    publisher: StepSecurity
+    year: 2026
+    urls: [https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation]
+    use: [위협 내용]
+    domains: [AO]
+    terms: 벤더 분석 — 서지·URL만, 자율 봇 주장은 미검증 표기
+    verify: 통합 v4.1 사고사례 검증 원장(SCI-152)에서 확인(2026-02, 7개 표적 중 최소 4곳 RCE·토큰 탈취). 자율 봇 여부는 계정 자기소개 기반(Snyk 등은 미검증으로 표기)
+    checked: "2026-10-25"
+  SYG-AIATTACK:
+    title: "Inside an AI-Assisted Cloud Attack"
+    short: Sygnia 〈AI-Assisted Cloud Attack〉
+    publisher: Sygnia
+    year: 2026
+    urls: [https://www.sygnia.co/blog/inside-an-ai-assisted-cloud-attack/]
+    use: [위협 내용]
+    domains: [AO, IM]
+    terms: 벤더 익명 사례연구 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(CL/INC-0637)에서 확인(산출물 기반 AI 보조 규정, 72시간 내 확산). 익명 사례연구
+    checked: "2026-10-25"
+  CPR-AIMIDDLE:
+    title: "AI in the Middle: Turning Web-Based AI Services into C2 Proxies"
+    short: Check Point 〈AI in the Middle〉
+    publisher: Check Point Research
+    year: 2026
+    urls: [https://research.checkpoint.com/2026/ai-in-the-middle-turning-web-based-ai-services-into-c2-proxies-the-future-of-ai-driven-attacks/]
+    use: [위협 내용]
+    domains: [CC]
+    terms: 벤더 PoC — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0061)에서 확인(2026-02-17, Grok·Copilot 대상 양방향 C2 실증)
+    checked: "2026-10-25"
+  THN-LAMEHUG:
+    title: "CERT-UA Discovers LAMEHUG Malware Using LLM for Commands"
+    short: The Hacker News 〈LAMEHUG〉
+    publisher: The Hacker News (CERT-UA 보고 인용)
+    year: 2025
+    urls: [https://thehackernews.com/2025/07/cert-ua-discovers-lamehug-malware.html]
+    use: [위협 내용]
+    domains: [CC, VE]
+    terms: 공개 보도(CERT-UA 2차 인용) — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0044)에서 확인(공개 2025-07-17, APT28, Qwen2.5-Coder via Hugging Face로 명령 생성)
+    checked: "2026-10-25"
+  PIL-RULESFILE:
+    title: "New Vulnerability in GitHub Copilot and Cursor: Rules File Backdoor"
+    short: Pillar Security 〈Rules File Backdoor〉
+    publisher: Pillar Security
+    year: 2025
+    urls: [https://www.pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents]
+    use: [위협 내용]
+    domains: [CC]
+    terms: 벤더 연구·시연 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(SCI-134)에서 1차 확인(2025-03-18, 숨은 유니코드 지시로 생성 코드 백도어)
+    checked: "2026-10-25"
+  OLIGO-SHADOWRAY:
+    title: "ShadowRay 2.0: Attackers Turn AI Against Itself"
+    short: Oligo 〈ShadowRay 2.0〉
+    publisher: Oligo Security
+    year: 2025
+    urls: [https://www.oligo.security/blog/shadowray-2-0-attackers-turn-ai-against-itself-in-global-campaign-that-hijacks-ai-into-self-propagating-botnet]
+    use: [위협 내용]
+    domains: [IM]
+    terms: 벤더 분석 — 서지·URL만, 'LLM 생성 페이로드'는 벤더 추정 표기
+    verify: 통합 v4.1 사고사례 검증 원장(CL/INC-0579)에서 확인(공개 2025-11-18, 인증 없는 Ray Jobs API·LLM 생성 페이로드 분석)
+    checked: "2026-10-25"
+  HKP-DEEPFAKE:
+    title: "Deepfake video-call and face-swap financial fraud (Hong Kong)"
+    short: CNN·The Standard 〈홍콩 딥페이크 금융사기〉
+    publisher: CNN / The Standard (홍콩 경찰 브리핑 인용)
+    year: 2024
+    urls: [https://edition.cnn.com/2024/02/04/asia/deepfake-cfo-scam-hong-kong-intl-hnk, https://www.thestandard.com.hk/news/article/207493/Six-arrested-for-defrauding-HK200000-using-deepfake-face-swap-program]
+    use: [위협 내용]
+    domains: [IA, IM]
+    terms: 공개 보도(경찰 발표 인용) — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(IDI-013 Arup·IDI-061 홍콩 얼굴 바꾸기)에서 확인
+    checked: "2026-10-25"
+  GIB-GOLDPICKAXE:
+    title: "GoldPickaxe: first iOS trojan harvesting facial recognition data"
+    short: Group-IB 〈GoldPickaxe〉
+    publisher: Group-IB
+    year: 2024
+    urls: [https://www.group-ib.com/blog/goldfactory-ios-trojan/]
+    use: [위협 내용]
+    domains: [IA]
+    terms: 벤더 분석 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(IDI-060)에서 확인(2024-02-15, AI 얼굴 바꾸기로 은행 생체 본인확인 우회)
+    checked: "2026-10-25"
+  ETR-CLICKFIX:
+    title: "AI ClickFix: Hijacking Computer-Use Agents Using ClickFix"
+    short: Embrace The Red 〈AI ClickFix〉
+    publisher: Embrace The Red
+    year: 2025
+    urls: [https://embracethered.com/blog/posts/2025/ai-clickfix-ttp-claude/]
+    use: [위협 내용]
+    domains: [IA]
+    terms: 연구·시연 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(AML.CS0055)에서 확인(2025-05-24, 컴퓨터 사용 에이전트 대상 ClickFix 실증)
+    checked: "2026-10-25"
+  CERTPL-ENERGY:
+    title: "CERT Polska Energy Sector Incident Report 2025"
+    short: CERT Polska 〈Energy Report 2025〉
+    publisher: CERT Polska
+    year: 2026
+    urls: [https://cert.pl/uploads/docs/CERT_Polska_Energy_Sector_Incident_Report_2025.pdf]
+    use: [위협 내용]
+    domains: [VE]
+    terms: 정부 CERT 보고서 — 서지·URL만
+    verify: 통합 v4.1 사고사례 검증 원장(OT/INC-008)에서 1차 확인(LazyWiper는 LLM 생성 추정, 2025-12)
+    checked: "2026-10-25"

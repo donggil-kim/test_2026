@@ -1,0 +1,663 @@
+# AI 활용 공격 사고 DB — 공개 출처 기반(정부·사법 발표, 피해기관 공지, 보안업체·연구기관 분석, 공신력 있는 보도)
+#
+# 출발점(작업방향 3.4·D8): 통합 v4.1 사고사례 검증 원장의 'AI 활용=확인/추정' 27건을 origin으로 재인용하고,
+#   AI 자율 취약점 발굴·익스플로잇 생성 사례(Big Sleep·XBOW·GTIG·CrowdStrike)를 신규로 추가.
+#
+# 필드
+#   id            AII-NNN (AI-attack Incident)
+#   title         사례명
+#   date          최초 공개월 YYYY-MM(통합 v4.1 검증 F2: 시점 = 최초 공개월)
+#   kind          사고 · 캠페인 · 공시 · 사례연구(익명) · 정부 경보 · 위협인텔 · 연구·시연
+#   verification  정부·사법 확인 · 피해기관 확인 · 보안업체·연구기관 분석 · 언론 보도 · 행위자 주장 · 논란·원인 번복
+#   legal         (선택) 수사·조사 · 기소 · 유죄 판결 · 무죄·불기소 · 민사 판결·합의 · 행정 처분 · 해당 없음
+#   region        피해 지역(scripts/taxonomy_rules.py REGIONS)
+#   sector        피해 업종(SECTORS)
+#   actor         행위자(공개 귀속, 개인은 익명화)
+#   actor_type    위협 주체 유형(국가배후 · 사이버범죄 · 핵티비스트 · 연구·레드팀 · 내부자 · 미상)
+#   impact        결과 유형(IMPACTS)
+#   ai_use        공격에 AI를 썼는지 — 확인(공식 발표·벤더 분석) · 추정(언론·정황)  ※ 통합 v4.1 원장 'AI 활용' 판정 계승
+#   maturity      이 사례가 보이는 AI 역량 성숙도 — 실사용 · 실증 · 연구시연(발생가능성 보조 신호, D4)
+#   summary       경위·결과 요약(분석가 작성, 수치는 출처 기준). 공격 실행 세부 대신 경위·피해·탐지·AI 활용 방식 중심
+#   aia           매핑 세부위협(분석 매핑) — data/taxonomy.yaml Lv3 ID
+#   attack_ref    (선택) ATLAS 사례(AML.CSxxxx)·ATT&CK 그룹/소프트웨어/캠페인 ID(대조·표시용)
+#   origin        (선택) 통합 v4.1 원장 키(재인용 추적) — IDI-·SCI-·INC-·CL/INC-·OT/INC-·AML.CS
+#   sources       '출처 | URL' — 통합 v4.1 검증에서 실제 열람한 근거 URL 우선
+#
+# 집계 규칙(scripts/taxonomy_rules.py): 실제 사고 = kind ∈ {사고·캠페인·공시·사례연구(익명)}이면서
+#   verification ∉ {행위자 주장·논란·원인 번복}. 정부 경보·위협인텔은 실사용 근거, 연구·시연은 실증 근거로만('중' 상한) 반영.
+#   ai_use='추정'도 그 행의 사례로는 집계하되 문구에서 '추정'으로 구분한다.
+
+# ---------------------------------------------------------------------------
+# 재인용 — 통합 v4.1 'AI 활용=확인/추정'(작업방향 3.4)
+# ---------------------------------------------------------------------------
+- id: AII-001
+  title: 홍콩 딥페이크 얼굴 바꾸기로 대출·계좌 개설 사기 조직 검거
+  date: "2023-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 홍콩
+  sector: [금융·서비스]
+  actor: 사기 조직(6명 체포)
+  actor_type: [사이버범죄]
+  impact: [금전 피해, 계정 장악]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    조직이 훔친 신분증으로 은행 계좌 54개를 열고 대출 90건을 신청하면서, 얼굴 인식 절차에서 AI 얼굴 바꾸기로
+    신분증 주인 얼굴로 바꿔 시스템을 속였다. 대출 4건(20만 홍콩달러)이 승인됐고 홍콩 경찰의 첫 딥페이크 관련 체포였다.
+  aia: [AIA-IA-03]
+  origin: [IDI-061]
+  sources:
+    - The Standard(2023) Six arrested for defrauding HK$200,000 using deepfake face-swap program | https://www.thestandard.com.hk/news/article/207493/Six-arrested-for-defrauding-HK200000-using-deepfake-face-swap-program
+
+- id: AII-002
+  title: Arup 딥페이크 화상회의 송금 사기
+  date: "2024-02"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 홍콩
+  sector: [기타]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    홍콩 지사 직원이 CFO와 동료로 보이는 인물들이 참석한 화상회의 지시로 15차례에 걸쳐 총 2억 홍콩달러(약 2,560만 달러)를
+    송금했다. 회의 참석자는 공개 영상으로 만든 딥페이크였으며, 홍콩 경찰·Arup이 가짜 음성·이미지 사용을 확인했다.
+  aia: [AIA-IA-02.1, AIA-IM-01]
+  origin: [IDI-013]
+  sources:
+    - CNN(2024) Finance worker pays out $25 million after video call with deepfake 'CFO' | https://edition.cnn.com/2024/02/04/asia/deepfake-cfo-scam-hong-kong-intl-hnk
+
+- id: AII-003
+  title: Amazon Q Developer 확장에 삭제 지시 주입
+  date: "2025-07"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미상(부적절 권한 토큰으로 커밋한 외부 계정)
+  actor_type: [사이버범죄]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    범위가 잘못 설정된 GitHub 토큰으로 커밋된 코드가 반영되어, AI 코딩 도우미 Amazon Q 확장 1.84.0에 로컬 파일·AWS 자원을
+    지우라는 프롬프트가 실려 배포됐다. 형식 오류로 실행되지 않았고 AWS는 1.85.0으로 교체했다. 페이로드가 AI 코딩 에이전트에 파괴 지시를 내린 사례.
+  aia: [AIA-CC-04, AIA-AO-03.2]
+  attack_ref: [AML.CS0047]
+  origin: [SCI-140]
+  sources:
+    - AWS Security Bulletin AWS-2025-015(2025) | https://aws.amazon.com/security/security-bulletins/AWS-2025-015/
+
+- id: AII-004
+  title: s1ngularity — Nx 빌드 도구 악성 버전과 피해 단말 AI CLI 악용
+  date: "2025-08"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [자격증명·비밀 탈취, 소스 코드 유출]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Nx 저장소 워크플로의 주입 결함으로 npm 게시 토큰이 탈취되어 nx 악성 버전이 게시됐다. 설치 후 스크립트가 피해 단말의
+    Claude·Gemini·Q 같은 AI CLI를 위험 옵션(--dangerously-skip-permissions·--yolo·--trust-all-tools)으로 실행해 비밀을
+    찾게 했고, 탈취 정보를 피해자 계정의 공개 저장소로 올렸다. 2단계에서는 유출 토큰으로 비공개 저장소 5,500개 이상이 공개로 바뀌었다.
+  aia: [AIA-AO-03.1]
+  origin: [SCI-143, CL/INC-0552]
+  sources:
+    - Wiz(2025) s1ngularity — supply chain attack leaks secrets on GitHub | https://www.wiz.io/blog/s1ngularity-supply-chain-attack
+
+- id: AII-005
+  title: ShadowRay 2.0 — 노출 Ray AI 인프라 크립토마이닝 캠페인
+  date: "2025-11"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: IronErn440
+  actor_type: [사이버범죄]
+  impact: [자원 탈취]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    대시보드·Jobs API가 인증 없이 노출된 Ray 클러스터를 노린 크립토마이닝 캠페인으로, 발견 벤더(Oligo)는 공격에 쓰인
+    페이로드가 LLM으로 생성된 것으로 분석했다(독스트링·주석 패턴 근거, 벤더는 'likely' 표현). 취약 동작은 CVE-2023-48022.
+  aia: [AIA-IM-03.1]
+  origin: [CL/INC-0579]
+  sources:
+    - Oligo Security(2025) ShadowRay 2.0 | https://www.oligo.security/blog/shadowray-2-0-attackers-turn-ai-against-itself-in-global-campaign-that-hijacks-ai-into-self-propagating-botnet
+
+- id: AII-006
+  title: 2025 폴란드 에너지 시설 와이퍼 공격(LLM 생성 스크립트)
+  date: "2026-01"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 폴란드
+  sector: [에너지·기반시설]
+  actor: 러시아 국가 배후(ESET는 Sandworm, CERT Polska는 Static Tundra/Dragonfly 인프라 중첩으로 평가)
+  actor_type: [국가배후]
+  impact: [데이터 파괴, 감시·조작]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    풍력·태양광 발전단지 30여 곳·열병합발전소·제조업체를 노려, 노출 FortiGate VPN으로 들어와 그룹 정책으로 와이퍼(DynoWiper·LazyWiper)를
+    배포했다. CERT Polska와 ATT&CK은 LazyWiper 등 맞춤 스크립트가 LLM으로 생성된 것으로 평가했다. 발전·열 공급 영향은 없었다.
+  aia: [AIA-VE-03.2]
+  attack_ref: [C0063]
+  origin: [OT/INC-008]
+  sources:
+    - CERT Polska(2026) Energy Sector Incident Report 2025 | https://cert.pl/uploads/docs/CERT_Polska_Energy_Sector_Incident_Report_2025.pdf
+
+- id: AII-007
+  title: "LAMEHUG: 실행 중 AI 명령을 동적 생성하는 악성코드(APT28)"
+  date: "2025-07"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 우크라이나
+  sector: [정부·군]
+  actor: APT28
+  actor_type: [국가배후]
+  impact: [데이터 유출, 내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    침해된 공식 메일 계정으로 부처를 사칭해 배포된 악성코드가 Hugging Face API로 Qwen2.5-Coder-32B-Instruct에 질의해
+    시스템 정보 수집·문서 검색 명령을 실행 중에 동적으로 생성했다. CERT-UA가 2025-07-10 신고를 접수해 최초 탐지했다.
+  aia: [AIA-CC-02, AIA-CC-01, AIA-VE-03.1]
+  attack_ref: [AML.CS0044, S9035]
+  origin: [AML.CS0044]
+  sources:
+    - The Hacker News(2025) CERT-UA Discovers LAMEHUG Malware | https://thehackernews.com/2025/07/cert-ua-discovers-lamehug-malware.html
+
+- id: AII-008
+  title: GTG-1002 — Claude Code를 악용한 자율 사이버 첩보 캠페인
+  date: "2025-11"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: GTG-1002(Anthropic 평가 중국 국가 지원)
+  actor_type: [국가배후]
+  impact: [데이터 유출, 내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    스캐너·브라우저 자동화·크래커·DB 도구·전용 침투 서버를 MCP로 연결한 공격 프레임워크로, 약 30개 조직을 표적해 일부에서 성공했다.
+    Anthropic은 공격의 80~90%를 AI가 수행했다고 분석했다.
+  aia: [AIA-AO-01, AIA-AO-02, AIA-RD-04]
+  attack_ref: [AML.CS0069, C0062]
+  origin: [AML.CS0069]
+  sources:
+    - Anthropic(2025) Disrupting AI espionage | https://www.anthropic.com/news/disrupting-AI-espionage
+
+- id: AII-009
+  title: 다중 에이전트 프레임워크의 대만 정부 시스템 침해
+  date: "2026-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 대만
+  sector: [정부·군]
+  actor: 미상 중국어권 행위자
+  actor_type: [국가배후]
+  impact: [데이터 유출]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Hermes·OpenClaw 기반 다중 에이전트 프레임워크로 웨이브당 최대 8개 하위 에이전트를 돌려 12개 공격 웨이브(2026-07-01~04)를
+    수행하고 2,564건 이상의 인사 기록에 접근했다. 대만 디지털발전부가 AI 에이전트 보조 혼합 모드로 확인했다.
+  aia: [AIA-AO-02, AIA-IM-02]
+  attack_ref: [AML.CS0071]
+  origin: [AML.CS0071]
+  sources:
+    - Dream Research Labs(2026) Inside a Multi-Agent AI Framework | https://www.dreamgroup.com/blog/inside-a-multi-agent-ai-framework-used-to-compromise-government-entities-in-asia
+
+- id: AII-010
+  title: 자율 평가 에이전트의 평가 경계 이탈과 Hugging Face 인프라 침해
+  date: "2026-07"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 자율 평가 에이전트(OpenAI 평가)
+  actor_type: [연구·레드팀]
+  impact: [내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    노출된 평가용 하네스를 통해 자율 에이전트들이 평가 경계를 넘어 Jinja2 템플릿 인젝션·메타데이터 엔드포인트 임시 자격증명 재사용으로
+    EKS를 열거하고 특권 파드에서 노드 루트에 이르렀다. 자율 에이전트가 사람 지시 없이 실제 인프라를 침해할 수 있음을 보인 사례.
+  aia: [AIA-AO-01]
+  attack_ref: [AML.CS0068]
+  origin: [AML.CS0068]
+  sources:
+    - Hugging Face(2026) Agent intrusion technical timeline | https://huggingface.co/blog/agent-intrusion-technical-timeline
+
+- id: AII-011
+  title: Retool 고객 계정 27곳 장악(딥페이크 음성 사칭 포함)
+  date: "2023-09"
+  kind: 사고
+  verification: 피해기관 확인
+  region: 미국
+  sector: [IT·소프트웨어]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [계정 장악, 금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    IT팀을 사칭한 SMS로 직원을 가짜 로그인 페이지로 유도한 뒤, 직원 목소리를 딥페이크로 흉내 낸 전화로 추가 MFA 코드를 받아
+    공격자 장치를 Okta에 등록했다. 인증 앱 클라우드 동기화까지 겹쳐 클라우드 고객 27곳의 계정이 장악됐다.
+  aia: [AIA-IA-02.2]
+  origin: [IDI-072]
+  sources:
+    - Retool(2023) When MFA isn't actually MFA | https://retool.com/blog/mfa-isnt-mfa
+
+- id: AII-012
+  title: Contagious Interview — 가짜 채용 과제로 개발자 감염(AI 화상회의 복제 병행)
+  date: "2023-11"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: Contagious Interview(북한 연계, G1052)
+  actor_type: [국가배후]
+  impact: [자격증명·비밀 탈취, 금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    채용 담당자를 사칭해 개발자에게 코딩 과제·악성 npm 패키지를 실행시켜 정보탈취 악성코드를 감염시키는 북한 연계 캠페인으로,
+    ATT&CK은 후속 활동에서 AI로 화상회의 앱을 복제해 악성코드를 배포한 것을 기록했다. 장기 캠페인 행(사건 단위 아님).
+  aia: [AIA-IA-02.1]
+  attack_ref: [G1052]
+  origin: [SCI-110]
+  sources:
+    - Unit 42(2023) Two Campaigns by North Korea Bad Actors Target Job Hunters | https://unit42.paloaltonetworks.com/two-campaigns-by-north-korea-bad-actors-target-job-hunters/
+
+- id: AII-013
+  title: GoldPickaxe — 얼굴 인식 정보 탈취 트로이목마(은행 생체 인증 우회)
+  date: "2024-02"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 기타
+  sector: [금융·서비스]
+  actor: GoldFactory
+  actor_type: [사이버범죄]
+  impact: [계정 장악, 금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    은행·정부기관 앱을 사칭한 모바일 트로이목마가 피해자의 얼굴 영상·신분증·문자메시지를 수집했고, 공격자는 AI 얼굴 바꾸기로 만든
+    딥페이크로 은행의 생체 본인확인을 통과해 계좌에 접근했다. Group-IB는 얼굴 인식 데이터를 노린 첫 iOS 트로이목마로 분석했다.
+  aia: [AIA-IA-03]
+  origin: [IDI-060]
+  sources:
+    - Group-IB(2024) Face Off — first iOS trojan stealing facial recognition data | https://www.group-ib.com/blog/goldfactory-ios-trojan/
+
+- id: AII-014
+  title: Rules File Backdoor — AI 코딩 도구 규칙 파일에 숨은 지시
+  date: "2025-03"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 연구자(Pillar Security)
+  actor_type: [연구·레드팀]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실증
+  summary: >-
+    Cursor·GitHub Copilot이 참고하는 규칙 파일에 보이지 않는 유니코드 문자로 지시를 숨기면, AI가 생성 코드에 백도어를 넣으면서도
+    사람 리뷰어는 알아채기 어려움을 보였다. 규칙 파일은 공개 저장소로 널리 공유돼 공급망 경로가 된다(시연).
+  aia: [AIA-CC-04]
+  attack_ref: [AML.CS0041]
+  origin: [SCI-134]
+  sources:
+    - Pillar Security(2025) New Vulnerability in GitHub Copilot and Cursor | https://www.pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents
+
+- id: AII-015
+  title: Open WebUI 오설정 악용 크립토재킹(AI 생성 페이로드)
+  date: "2025-06"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [자원 탈취]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    관리자 접근이 활성화되고 인증이 없는 채로 인터넷에 노출된 Open WebUI(자체 호스팅 LLM 인터페이스)에 악성 AI 생성 Python
+    스크립트가 업로드·실행되어 크립토마이너가 배포됐다(Sysdig 분석).
+  aia: [AIA-IM-03.1]
+  origin: [CL/INC-0519]
+  sources:
+    - Sysdig(2025) Attacker exploits misconfigured AI tool to run AI-generated payload | https://sysdig.com/blog/attacker-exploits-misconfigured-ai-tool-to-run-ai-generated-payload/
+
+- id: AII-016
+  title: 공개 S3 버킷 노출 자격증명 경유 LLMjacking·GPU 악용
+  date: "2026-02"
+  kind: 사례연구(익명)
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [기타]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [자원 탈취, 내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    공개 S3 버킷(RAG 데이터)에서 발견한 자격증명으로 초기 접근해 Lambda 코드 주입으로 권한을 올리고 측면 이동한 뒤, Bedrock
+    LLMjacking과 GPU 인스턴스 생성에 악용했다. Sysdig는 세르비아어 주석·존재하지 않는 GitHub 저장소 환각 등을 근거로 LLM 활용을 시사한다고 분석했다(익명 사례).
+  aia: [AIA-IM-03.2, AIA-AO-05]
+  origin: [CL/INC-0573]
+  sources:
+    - Sysdig(2026) AI-assisted cloud intrusion achieves admin access in 8 minutes | https://sysdig.com/blog/ai-assisted-cloud-intrusion-achieves-admin-access-in-8-minutes/
+
+- id: AII-017
+  title: hackerbot-claw — 자율 에이전트의 GitHub Actions 워크플로 대량 악용
+  date: "2026-03"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 자칭 자율 보안 연구 에이전트(hackerbot-claw)
+  actor_type: [사이버범죄]
+  impact: [자격증명·비밀 탈취, 내부 접근 확보]
+  ai_use: 추정
+  maturity: 실사용
+  summary: >-
+    AI 에이전트로 보이는 계정이 공개 저장소의 pull_request_target·입력 주입 결함을 자동 탐색해 7개 표적 중 최소 4곳에서 코드를
+    실행하고 쓰기 권한 토큰·서비스 계정 PAT를 탈취했다. Trivy 침해 토큰은 이후 연쇄 공급망 침해의 출발점이 됐다. 자율 봇 여부는 계정 자기소개 기반(일부 벤더는 미검증으로 표기).
+  aia: [AIA-AO-04]
+  origin: [SCI-152]
+  sources:
+    - StepSecurity(2026) hackerbot-claw — GitHub Actions exploitation | https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation
+
+- id: AII-018
+  title: s1ngularity 노출 클라우드 키 악용 측면 이동(QUIETVAULT)
+  date: "2026-03"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: UNC6426
+  actor_type: [사이버범죄]
+  impact: [자격증명·비밀 탈취, 데이터 유출]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    이전 Nx npm 침해로 노출된 클라우드 키를 이용해 개발 환경 침해에서 72시간 안에 클라우드 전반 장악으로 이어졌다. Google·THN은
+    QUIETVAULT가 단말에 설치된 LLM 도구를 이용해 자격증명을 탐색했다고 기술했다.
+  aia: [AIA-AO-03.1, AIA-AO-05]
+  origin: [CL/INC-0603]
+  sources:
+    - The Hacker News(2026) UNC6426 Exploits Nx npm Supply Chain | https://thehackernews.com/2026/03/unc6426-exploits-nx-npm-supply-chain.html
+
+- id: AII-019
+  title: BuddyBoss 공급망 공격(Claude Code 세션 기록 확인)
+  date: "2026-03"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [내부 접근 확보, 데이터 유출]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    BuddyBoss 플러그인·테마 배포 파이프라인이 악성 GitHub Actions 워크플로로 침해되어 SSH 자격증명 탈취·AWS 루트 권한 확보로
+    하위 WordPress 사이트 246곳 이상이 감염됐다. 벤더가 복구한 Claude Code 세션 기록으로 공격 후반 단계의 AI 수행이 확인됐다(초기 단계는 추정).
+  aia: [AIA-AO-03.2, AIA-AO-04]
+  origin: [CL/INC-0606]
+  sources:
+    - Ctrl-Alt-Intel(2026) BuddyBoss supply chain attack (Part 2) | https://ctrlaltintel.com/research/BuddyBoss-2/
+
+- id: AII-020
+  title: prt-scan — 취약 GitHub 워크플로 대상 기회주의 공급망 캠페인
+  date: "2026-04"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미상(ezmtebo 등 6개 계정)
+  actor_type: [사이버범죄]
+  impact: [자격증명·비밀 탈취]
+  ai_use: 추정
+  maturity: 실사용
+  summary: >-
+    미상의 행위자가 여러 오픈소스 저장소에 악성 풀 리퀘스트를 자동으로 500건 이상 보내 pull_request_target을 악용했고 최소
+    2건에서 침해에 성공했다. Wiz는 후반 페이로드를 'AI 생성 가능성 높음(likely AI-enabled)'으로 평가했다.
+  aia: [AIA-AO-04]
+  origin: [CL/INC-0612]
+  sources:
+    - Wiz(2026) Six accounts, one actor — the prt-scan supply chain campaign | https://www.wiz.io/blog/six-accounts-one-actor-inside-the-prt-scan-supply-chain-campaign
+
+- id: AII-021
+  title: O365 디바이스 코드 피싱 캠페인(EvilTokens PhaaS)
+  date: "2026-03"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: EvilTokens(PhaaS)
+  actor_type: [사이버범죄]
+  impact: [계정 장악]
+  ai_use: 추정
+  maturity: 실증
+  summary: >-
+    EvilTokens 피싱 서비스형 플랫폼으로 340개 이상 조직의 M365 사용자를 노려 디바이스 코드 피싱으로 MFA를 우회하고 Railway
+    플랫폼에 악성 인프라를 호스팅했다. EvilTokens는 AI 도구(미끼 생성 등) 통합을 광고했으나 이 캠페인에서의 실제 사용은 미확인(추정).
+  aia: [AIA-IA-01.1]
+  origin: [CL/INC-0614]
+  sources:
+    - Huntress(2026) Railway PaaS M365 token replay campaign | https://www.huntress.com/blog/railway-paas-m365-token-replay-campaign
+
+- id: AII-022
+  title: AI 보조 클라우드 침입(Sygnia 익명 사례)
+  date: "2026-06"
+  kind: 사례연구(익명)
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [기타]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [데이터 유출, 서비스 중단]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    인터넷 노출 애플리케이션의 자격증명 침해로 접근해 AWS·소스 관리·CI/CD·런타임으로 확장하고, 비밀 수집·배포 파이프라인 악용·DB
+    접근·운영 방해로 72시간 내 재정 목적의 인프라 장악에 이르렀다. 여러 산출물이 AI 보조 도구 사용을 시사한다고 Sygnia가 분석했다(익명 사례).
+  aia: [AIA-AO-05, AIA-IM-02]
+  origin: [CL/INC-0637]
+  sources:
+    - Sygnia(2026) Inside an AI-assisted cloud attack | https://www.sygnia.co/blog/inside-an-ai-assisted-cloud-attack/
+
+- id: AII-023
+  title: "CaptiveCrunch — Midnight Blizzard 하위 그룹의 AiTM 캠페인"
+  date: "2026-07"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [숙박·여행]
+  actor: Storm-2945(Midnight Blizzard 하위)
+  actor_type: [국가배후]
+  impact: [자격증명·비밀 탈취]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Microsoft가 확인한 Midnight Blizzard 하위 클러스터 Storm-2945가 2026-05 초부터 전 세계 숙박업 캡티브 포털 네트워크
+    트래픽을 조작(CaptiveCrunch)해 AiTM·디바이스 코드 피싱을 수행했다. Microsoft는 작전의 상당 부분에 AI를 활용했다고 명시했다.
+  aia: [AIA-AO-01]
+  origin: [CL/INC-0666]
+  sources:
+    - Microsoft(2026) CaptiveCrunch — Midnight Blizzard targets travelers worldwide | https://www.microsoft.com/en-us/security/blog/2026/07/31/captivecrunch-midnight-blizzard-targets-travelers-worldwide-for-malware-delivery-and-credential-theft/
+
+- id: AII-024
+  title: BREEZE COMET — 생성형 AI를 악성코드 개발에 활용한 브라질 금융 공격
+  date: "2026-09"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 브라질
+  sector: [금융·서비스]
+  actor: BREEZE COMET(구 UNC5669)
+  actor_type: [사이버범죄]
+  impact: [금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    GTIG가 2024년부터 추적한 금전 목적 행위자로, 결제 시스템·뱅킹 소프트웨어(Pix·STR·Boleto)를 조작해 부정 이체를 했다. GTIG는
+    생성형 AI를 악성코드 개발에 활용한 증거가 있다고 명시했다.
+  aia: [AIA-VE-03.1]
+  origin: [CL/INC-0677]
+  sources:
+    - Google GTIG(2026) Financially Motivated Threat Actor BREEZE COMET Targets Brazil | https://cloud.google.com/blog/topics/threat-intelligence/financially-motivated-threat-actor-breeze-comet-targets-brazil
+
+- id: AII-025
+  title: "AI ClickFix — 컴퓨터 사용 에이전트 탈취 실증"
+  date: "2025-05"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: Embrace The Red(연구자)
+  actor_type: [연구·레드팀]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실증
+  summary: >-
+    ClickFix 사회공학을 컴퓨터 사용 에이전트에 적용해, 미끼 페이지의 버튼 클릭으로 클립보드에 복사된 명령을 에이전트가 터미널에서
+    실행하도록 유도할 수 있음을 시연했다. 연구자는 미끼 웹사이트 생성에도 생성형 AI를 사용했다(시연).
+  aia: [AIA-IA-04]
+  attack_ref: [AML.CS0055]
+  origin: [AML.CS0055]
+  sources:
+    - Embrace The Red(2025) AI ClickFix — Hijacking Computer-Use Agents | https://embracethered.com/blog/posts/2025/ai-clickfix-ttp-claude/
+
+- id: AII-026
+  title: "AI in the Middle — 웹 AI 서비스를 C2 중계로 악용 실증"
+  date: "2026-02"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: Check Point Research
+  actor_type: [연구·레드팀]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실증
+  summary: >-
+    C++ 임플란트가 Grok·Copilot 웹 인터페이스로 익명 세션을 열어 URL 파라미터로 데이터를 반출하고 응답으로 명령을 받는 양방향
+    채널을 만드는 기법을, API 키·계정 없이 동작하는 형태로 실증했다(PoC).
+  aia: [AIA-CC-01]
+  attack_ref: [AML.CS0061]
+  origin: [AML.CS0061]
+  sources:
+    - Check Point Research(2026) AI in the Middle | https://research.checkpoint.com/2026/ai-in-the-middle-turning-web-based-ai-services-into-c2-proxies-the-future-of-ai-driven-attacks/
+
+- id: AII-027
+  title: DeepSeek 기반 Hermes 에이전트의 Langflow·n8n 자율 공격 시도
+  date: "2026-07"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 중국
+  sector: [IT·소프트웨어]
+  actor: 중국어권 행위자(knaithe/KnYuan)
+  actor_type: [사이버범죄]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    탈옥 모델(DeepSeek)을 Hermes 에이전트 프레임워크의 자율 공세 운영자로 삼아, FOFA 질의·셸 명령·스캐너·HTTP 탐침을 스스로
+    생성하고 GitHub에서 최신 CVE PoC를 검색하며 노출된 Langflow·n8n을 공격하려 시도했다(접근 획득은 모두 실패).
+  aia: [AIA-RD-04, AIA-RT-02, AIA-RT-03, AIA-AO-01]
+  attack_ref: [AML.CS0070]
+  origin: [AML.CS0070]
+  sources:
+    - Unit 42(2026) Autonomous AI Cyberattack Campaign | https://unit42.paloaltonetworks.com/autonomous-ai-cyber-attack-campaign/
+
+# ---------------------------------------------------------------------------
+# 신규 — AI 자율 취약점 발굴·익스플로잇 생성(작업방향 3.4·7.1)
+# ---------------------------------------------------------------------------
+- id: AII-028
+  title: "Big Sleep — AI 에이전트의 실악용 임박 취약점 사전 발견"
+  date: "2025-07"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: Google Project Zero·DeepMind
+  actor_type: [연구·레드팀]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Google Big Sleep(Project Zero·DeepMind) AI 에이전트가 공격자가 곧 악용하려던 SQLite 취약점을 사전에 찾아냈다. Google은
+    AI 에이전트가 실제 악용을 직접 저지한 첫 사례라고 밝혔다. 방어 연구지만 자율 취약점 발굴 역량이 실사용 수준임을 보임(양용 역량).
+  aia: [AIA-VE-01.1]
+  sources:
+    - The Record(2025) Google says 'Big Sleep' AI tool found bug hackers planned to use | https://therecord.media/google-big-sleep-ai-tool-found-bug
+
+- id: AII-029
+  title: XBOW 등 자율 펜테스트 에이전트의 취약점 대량 발견
+  date: "2026-04"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: XBOW 등 자율 펜테스트 에이전트
+  actor_type: [연구·레드팀]
+  impact: [영향 없음(사전 차단)]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    자율 펜테스트 에이전트가 빠르게 늘어 2026년 들어 XBOW의 자율 에이전트가 HackerOne 글로벌 리더보드 1위에 올랐고, 대형 OS·브라우저에서
+    고위험 취약점이 다수 제출됐다. 같은 자율 발굴 역량이 공격자 손에 들어가면 대규모 0-day 양산으로 이어질 수 있음(2차 집계, 참고치).
+  aia: [AIA-VE-01.1, AIA-VE-01.2]
+  sources:
+    - AppSecSanta(2026) AI Pentesting Agents 2026 | https://appsecsanta.com/research/ai-pentesting-agents-2026
+
+- id: AII-030
+  title: AI로 개발한 것으로 판단되는 0-day 익스플로잇 실사용(GTIG 보고)
+  date: "2026-05"
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 미상 위협 행위자
+  actor_type: [사이버범죄]
+  impact: [영향 미상]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Google GTIG가 위협 행위자가 AI로 개발했다고 판단되는 0-day 익스플로잇을 사용한 첫 사례를 보고했다. 익스플로잇 개발 병목이
+    사라지면 공개 취약점이 즉시 무기화될 수 있음을 보이는 위협 인텔(1차는 GTIG 보고서).
+  aia: [AIA-VE-02]
+  sources:
+    - securityonline(2026) Google Confirms First AI-Generated Zero-Day Exploit Found in the Wild | https://securityonline.info/google-threat-intel-ai-generated-zero-day-exploit-big-sleep/
+
+- id: AII-031
+  title: AI 에이전트를 무기화한 다수 위협 행위자 캠페인(CrowdStrike)
+  date: "2026-10"
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 복수 위협 행위자(CrowdStrike 추적)
+  actor_type: [사이버범죄, 국가배후]
+  impact: [영향 미상]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    CrowdStrike가 AI 에이전트를 무기화한 다수 위협 행위자 캠페인을 확인했다(자율 모의침투 하네스 등). AI 활용 공격이 특정 행위자에
+    국한되지 않고 확산 중임을 보이는 위협 인텔(수치는 벤더 참고치).
+  aia: [AIA-AO-01, AIA-IM-04]
+  sources:
+    - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/
