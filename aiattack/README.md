@@ -4,12 +4,12 @@
 가속·자동화·대규모화하는 위협을 **공격자 킬체인**으로 정리한 렌즈 매트릭스입니다. 기존 AI 매트릭스(v3.2)가
 "우리 AI를 지키는" 관점이라면, 이 매트릭스는 **"공격자의 AI가 (AI든 비-AI든) 대상을 치는" 관점**입니다.
 
-> **현재 상태: ② v1 빌드 완료 — 2026-10-25** (①분류·참조·사고 DB 포함)
-> 세부위협 35개(도메인 7·위협분류 27), 사고 DB 31건(재인용 27 + 신규 4), 검증 오류·경고 0(`--strict`).
-> **v1 빌드**: 15시트 워크북·CSV(`output/통합_AI활용공격_보안위협_매트릭스_v1.xlsx`) — 위험도 매우 높음 11·높음 7·보통 16·낮음 1.
+> **현재 상태: ③ v2(관점 문구·공격 체인 시나리오) 완료 — 2026-10-25** (①분류·참조·사고 DB·② v1 빌드 포함)
+> 세부위협 35개(도메인 7·위협분류 27), 사고 DB 31건(재인용 27 + 신규 4), 관점 문구 35/35, 공격 체인 시나리오 8개, 검증 오류·경고 0(`--strict`).
+> **v2 빌드**: 15시트 워크북·CSV(`output/통합_AI활용공격_보안위협_매트릭스_v2.xlsx`, 문구·시나리오 포함) — 위험도 매우 높음 11·높음 7·보통 16·낮음 1. v1(데이터 빌드)도 함께 둠.
 > 방법론·설계 원칙은 [`docs/methodology.md`](docs/methodology.md), 진행·결정 기록은 [`docs/작업방향.md`](docs/작업방향.md)·[`../emerging/작업방향.md`](../emerging/작업방향.md),
 > 참조 자료 출처·라이선스는 [`reference/README.md`](reference/README.md)를 보세요.
-> 다음 단계는 ③ 관점 문구(가드레일)·공격 체인 시나리오 → ④ 통합본 뷰 Lv0 편입입니다.
+> 다음 단계는 ④ 통합본(v5) 뷰 Lv0 편입입니다.
 
 ## 분류 체계 — 공격자 킬체인 7단계
 
@@ -37,24 +37,24 @@
 ```
 aiattack/
   README.md · docs/methodology.md
-  data/   taxonomy.yaml · incidents.yaml · frameworks.yaml · changelog.yaml  (text/·scenarios.yaml은 ②③단계)
+  data/   taxonomy.yaml · incidents.yaml · frameworks.yaml · changelog.yaml · text/*.yaml(관점 문구 35) · scenarios.yaml(시나리오 8)
   scripts/ prepare_atlas.py · prepare_attack.py · prepare_refs.py · validate.py · taxonomy_rules.py · build_aiattack_threat_matrix.py
   reference/ atlas/ · attack/ · nist/ · links/ (reference/README.md)
-  output/  통합_AI활용공격_보안위협_매트릭스_v1.xlsx · .csv (15시트)
+  output/  통합_AI활용공격_보안위협_매트릭스_v2.xlsx · .csv (문구·시나리오) · v1.xlsx · .csv (데이터 빌드), 각 15시트
 ```
 
 ## 재현
 
 ```bash
 python3 scripts/prepare_atlas.py && python3 scripts/prepare_attack.py && python3 scripts/prepare_refs.py
-python3 scripts/validate.py --strict               # 데이터 검증(오류·경고 0)
-python3 scripts/build_aiattack_threat_matrix.py    # 15시트 워크북·CSV 생성(빌드 전 검증 자동 실행)
+python3 scripts/validate.py --strict               # 데이터·문구·시나리오 검증(오류·경고 0)
+python3 scripts/build_aiattack_threat_matrix.py --version v2   # 15시트 워크북·CSV(문구·시나리오 포함, 빌드 전 검증 자동 실행)
 ```
 
 ## v1 워크북 시트(15)
 
 개요 · 보고서용 간략 매트릭스 · 매트릭스 뷰 · 통합 매트릭스 · 통합매트릭스_LITE · 도메인 요약 ·
-**AI 역할·자율성 요약**(고유 축) · 공격 체인 시나리오(③단계 양식) · 역매핑_사고사례 · 교차 매핑 연계 ·
+**AI 역할·자율성 요약**(고유 축) · 공격 체인 시나리오(8개) · 역매핑_사고사례 · 교차 매핑 연계 ·
 대응 기준 연계 · 참고 문헌 · 다른 매트릭스 연계 · 평가 기준 · 변경이력.
 
 ## 경계·연계

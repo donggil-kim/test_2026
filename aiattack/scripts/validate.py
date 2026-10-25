@@ -12,6 +12,7 @@ AI 활용 공격 보안위협 매트릭스 — 데이터·문구 검증기
        오류가 있으면 종료 코드 1(--strict는 경고도 실패로 처리)
 """
 import argparse
+import collections
 import json
 import re
 import sys
@@ -89,10 +90,45 @@ for d in TAX["domains"]:
 AIA_IDS = set(ROWS) | LV2
 
 XM_FIELD = {"AI-": "ai", "CL-": "cl", "OT-": "ot", "SC-": "sc", "ID-": "idn", "PH-": "ph"}
+ALLOW_MISSING_TEXT = False
 
 
 def xm_field(k):
     return next((f for p, f in XM_FIELD.items() if k.startswith(p)), None)
+
+
+# 문구·시나리오 검사용 정규식·어휘
+RE_AIA = re.compile(r"AIA-[A-Z]{2}-\d{2}(?:\.\d)?")
+RE_AII = re.compile(r"AII-\d{3}")
+RE_ATLAS_TECH = re.compile(r"AML\.T\d{4}(?:\.\d{3})?")
+RE_ATLAS_CASE = re.compile(r"AML\.CS\d{4}")
+RE_ATK = re.compile(r"(?<![A-Za-z0-9.])(T\d{4}(?:\.\d{3})?|[GSC]\d{4})(?![A-Za-z0-9])")
+RE_XM = re.compile(r"(?<![A-Za-z0-9-])(AI-\d{2}-\d{2}|CL-[A-Z]{2}-\d{2}|OT-[A-Z0-9]{2}-\d{2}|SC-[A-Z]{2}-\d{2}|"
+                   r"ID-[A-Z]{2}-\d{2}|PH-[A-Z]{2}-\d{2})(?![A-Za-z0-9])")
+RE_NIST = re.compile(r"NIST (?:SP 800-53 )?((?:[A-Z]{2}-\d+(?:\(\d+\))?)(?:·[A-Z]{2}-\d+(?:\(\d+\))?)*)")
+RE_OWASP = re.compile(r"(?<![A-Za-z0-9-])(LLM\d{2}|ASI-T\d{2})(?![A-Za-z0-9])")
+RE_DATE = re.compile(r"\((\d{4}-\d{2})\)")
+RE_NUM = re.compile(r"\d+(?:[.,]\d+)*")
+RE_REFNOTE = re.compile(r"참고: (.+)$")
+RE_REFSHORT = re.compile(r"[^·〈〉]+?〈[^〉]+〉")
+
+CASE_LABELS = {"[실제 사고]": "실제 사고", "[위협인텔]": "위협인텔", "[실증]": "실증·연구", "[시나리오]": None}
+BANNED = {"인증정보": "자격증명", "인증 정보": "자격증명", "크리덴셜": "자격증명", "자격 증명": "자격증명"}
+# 가드레일(D11) — 공세 제작법·악용 절차 표현 차단(방어 자료)
+BANNED_GUARD = ["탈옥 프롬프트는", "우회 프롬프트는", "다음과 같이 우회", "예시 페이로드", "페이로드 예시",
+                "악성코드 예시", "공격 코드는 다음", "제작 방법은", "만드는 방법은"]
+REF_SHORT = {v["short"]: k for k, v in REFS.items() if v.get("short")}
+
+
+def sections(text):
+    out, cur = collections.OrderedDict(), None
+    for ln in (text or "").splitlines():
+        if ln.startswith("■ "):
+            cur = ln[2:].strip()
+            out[cur] = []
+        elif cur is not None:
+            out[cur].append(ln)
+    return out
 
 
 # ===========================================================================
@@ -279,44 +315,265 @@ def row_evidence():
 
 
 # ===========================================================================
-# 5) 문구·시나리오(②③단계) — 파일이 있을 때만
+# 5) 관점 문구(data/text/*.yaml) — ③단계
 # ===========================================================================
-def check_text_and_scenarios():
-    text_files = sorted((DATA / "text").glob("*.yaml")) if (DATA / "text").exists() else []
-    if text_files:
-        for p in text_files:
-            t = load(p, {}) or {}
-            for rid in t:
-                if rid not in ROWS:
-                    err(f"text/{p.name}", f"없는 세부위협 ID {rid}")
-    if SCENARIOS.get("scenarios"):
-        for sc in SCENARIOS["scenarios"]:
-            where = f"scenarios {sc.get('id')}"
-            for step in sc.get("steps") or []:
-                for k in step.get("aia") or []:
-                    if k not in ROWS:
-                        err(where, f"없는 세부위협 ID {k}")
+def check_refnote(where, rid, ln):
+    """'참고: 출처 〈자료〉 · …' 줄 — 카탈로그 short 이름과 일치, 행 refs에 있는지(경고)"""
+    m = RE_REFNOTE.search(ln)
+    if not m:
+        return
+    names = [s.strip(" ·") for s in RE_REFSHORT.findall(m.group(1))]
+    if not names:
+        err(where, f"'참고:' 뒤에는 '출처 〈자료〉' 형식: {ln[:50]}")
+    for nm in names:
+        if nm not in REF_SHORT:
+            err(where, f"참고 문헌 카탈로그 short에 없는 이름 '{nm}'")
+        elif REF_SHORT[nm] not in (ROWS[rid].get("refs") or []):
+            warn(where, f"참고 문헌 {REF_SHORT[nm]}가 이 행의 refs에 없음")
+
+
+def check_refs(where, rid, text):
+    """문구 전체에 쓰인 참조 ID의 존재·행 매핑 일치"""
+    x = ROWS[rid]
+    for s in RE_AIA.findall(text):
+        if s not in AIA_IDS:
+            err(where, f"없는 세부위협 ID {s}")
+    for a in RE_ATLAS_TECH.findall(text):
+        if a not in ATLAS["techniques"] and a not in ATLAS_INDEX:
+            err(where, f"ATLAS에 없는 기법 {a}")
+        elif a not in (x.get("atlas") or []):
+            warn(where, f"ATLAS 기법 {a}가 이 행의 atlas 매핑에 없음")
+    for a in RE_ATK.findall(text):
+        if a not in ATK_INDEX:
+            err(where, f"ATT&CK v19.2에 없는 ID {a}")
+    links = {k for f in ("ai", "cl", "ot", "sc", "idn", "ph") for k in x.get(f) or []}
+    for m in RE_XM.findall(text):
+        if m not in LINKS:
+            err(where, f"다른 매트릭스에 없는 ID {m}")
+        elif m not in links:
+            err(where, f"다른 매트릭스 ID {m}가 이 행의 연계에 없음")
+    for o in RE_OWASP.findall(text):
+        if o not in OWASP:
+            err(where, f"OWASP 카탈로그에 없는 ID {o}")
+        elif o not in (x.get("owasp") or []):
+            warn(where, f"OWASP {o}가 이 행의 owasp 매핑에 없음")
+    for grp in RE_NIST.findall(text):
+        for k in grp.split("·"):
+            if k not in NIST:
+                err(where, f"NIST SP 800-53에 없는 통제 {k}")
+            elif k not in (x.get("nist") or []):
+                warn(where, f"NIST {k}가 이 행의 대응 기준 매핑에 없음")
+    for bad, good in BANNED.items():
+        if bad in text:
+            err(where, f"용어 '{bad}' → '{good}'")
+    for g in BANNED_GUARD:
+        if g in text:
+            err(where, f"가드레일(D11): 공세 제작법·악용 절차 표현 '{g}' — 방어 관점(탐지·대응)으로 다시 씀")
+
+
+def check_case_line(where, rid, ln, stats):
+    body = ln[2:].strip()
+    if body.startswith("공개 사고 미확인"):
+        stats["note"] += 1
+        if "—" not in body:
+            err(where, "'공개 사고 미확인 — 사유' 형식으로 사유를 적음")
+        return None
+    if body.startswith("참고:"):
+        err(where, "'참고:'는 ■ 실제 사례가 아니라 ■ 관점·■ 대응 끝에 적음")
+        return None
+    m = re.match(r"(\[[^\]]+\])\s*(.+)$", body)
+    if not m or m.group(1) not in CASE_LABELS:
+        err(where, "실제 사례 줄은 [실제 사고]·[위협인텔]·[실증]·[시나리오] 또는 '공개 사고 미확인 — 사유'로 시작: "
+                   f"{body[:40]}")
+        return None
+    label, rest = m.group(1), m.group(2)
+    stats[label] += 1
+    ids = RE_AII.findall(rest)
+    cited = [INC[i] for i in ids if i in INC]
+    for i in ids:
+        if i not in INC:
+            err(where, f"사고 DB에 없는 사례 ID {i}")
+            continue
+        e = INC[i]
+        if rid not in (e.get("aia") or []):
+            err(where, f"{i}는 이 행에 매핑되지 않은 사고(매핑: {', '.join(e.get('aia') or [])})")
+        want = CASE_LABELS[label]
+        if want and e["status"] != want:
+            err(where, f"{i} 라벨 {label}이 집계 상태 '{e['status']}'와 다름")
+    refs = set().union(*[set(e.get("attack_ref") or []) for e in cited]) if cited else set()
+    for a in RE_ATLAS_CASE.findall(rest) + RE_ATK.findall(rest):
+        if cited and a not in refs:
+            err(where, f"{a}가 인용 사고({', '.join(ids)})의 attack_ref에 없음 — 사고 DB와 맞출 것")
+    if label in ("[실제 사고]", "[위협인텔]", "[실증]"):
+        if not ids:
+            err(where, f"{label} 줄에 사고 ID(AII-NNN) 없음: {rest[:40]}")
+        md = RE_DATE.search(rest)
+        if not md:
+            err(where, f"사례명 뒤 '(YYYY-MM)' 시점 표기 없음: {rest[:40]}")
+        else:
+            for e in cited:
+                if e["date"] != md.group(1):
+                    err(where, f"{e['id']} 시점 불일치(문구 {md.group(1)}, 사고 DB {e['date']})")
+        desc = rest.split(":", 1)[1] if ":" in rest else rest
+        desc = re.sub(r"\((?:AII-|AML\.|T\d)[^)]*\)\s*$", "", desc)
+        corpus = " ".join(e["title"] + " " + " ".join(e["summary"].split()) for e in cited)
+        for num in RE_NUM.findall(desc):
+            if len(num.replace(",", "").replace(".", "")) < 2:
+                continue
+            if num not in corpus and num.replace(",", "") not in corpus.replace(",", ""):
+                warn(where, f"수치 '{num}'이 인용 사고({', '.join(ids)})의 제목·요약에 없음 — 출처 확인")
+    return label
+
+
+def check_texts(ev):
+    files = sorted((DATA / "text").glob("*.yaml")) if (DATA / "text").exists() else []
+    seen, onelines = {}, collections.defaultdict(list)
+    stats = collections.Counter()
+    for f in files:
+        d = load(f, {}) or {}
+        for rid, t in d.items():
+            where = f"text/{f.name} {rid}"
+            if rid not in ROWS:
+                err(where, "분류 체계에 없는 세부위협 ID")
+                continue
+            if rid in seen:
+                err(where, f"문구 중복(이미 {seen[rid]}에 있음)")
+            seen[rid] = f.name
+            if not rid.startswith(f"AIA-{f.stem}-"):
+                warn(where, f"도메인 파일({f.name})과 ID 도메인이 다름")
+            t = t or {}
+            for k in ("oneline", "summary", "reference", "detect"):
+                if not t.get(k):
+                    err(where, f"'{k}' 없음")
+            ol = t.get("oneline") or ""
+            if len(ol) > 50:
+                err(where, f"oneline {len(ol)}자(50자 이내)")
+            if ol.endswith((".", "다")):
+                warn(where, "oneline은 명사형으로 끝냄")
+            onelines[ol].append(rid)
+            sm = (t.get("summary") or "").splitlines()
+            if len(sm) != 2 or not all(s.startswith("- ") for s in sm):
+                err(where, "summary는 '- '로 시작하는 2줄")
+            elif not sm[0].rstrip().endswith("수 있음"):
+                warn(where, "summary 1줄은 '공격자는 … 할 수 있음' 형식")
+            for s in sm:
+                if len(s) > 180:
+                    warn(where, f"summary 줄이 김({len(s)}자)")
+            ref = sections(t.get("reference"))
+            if list(ref) != ["관점", "실제 사례"]:
+                err(where, f"reference 구성은 ■ 관점 → ■ 실제 사례(현재: {list(ref)})")
+            for sec, lines in ref.items():
+                for ln in lines:
+                    if ln and not ln.startswith("- "):
+                        err(where, f"reference '{sec}' 줄은 '- '로 시작: {ln[:30]}")
+            labels = collections.Counter()
+            for ln in ref.get("실제 사례", []):
+                if ln.startswith("- "):
+                    labels[check_case_line(where, rid, ln, stats)] += 1
+            if len([ln for ln in ref.get("관점", []) if ln.startswith("- ")]) < 2:
+                warn(where, "■ 관점 항목이 2개 미만")
+            for ln in ref.get("관점", []):
+                check_refnote(where, rid, ln)
+            n_cases = sum(v for k, v in labels.items() if k)
+            if ev[rid]["real"] and not labels["[실제 사고]"]:
+                err(where, f"실제 사고 {len(ev[rid]['real'])}건이 매핑된 행인데 [실제 사고] 사례 인용 없음")
+            if not n_cases and not any(ln[2:].startswith("공개 사고 미확인") for ln in ref.get("실제 사례", [])):
+                err(where, "인용 사례가 없으면 '공개 사고 미확인 — 사유'를 적음")
+            det = sections(t.get("detect"))
+            if list(det) != ["탐지", "대응"]:
+                err(where, f"detect 구성은 ■ 탐지 → ■ 대응(현재: {list(det)})")
+            for sec, lines in det.items():
+                if not [ln for ln in lines if ln.startswith("- ")]:
+                    err(where, f"detect '{sec}' 항목 없음")
+                for ln in lines:
+                    if ln and not ln.startswith("- "):
+                        err(where, f"detect '{sec}' 줄은 '- '로 시작: {ln[:30]}")
+                    if "참고:" in ln and sec != "대응":
+                        err(where, "'참고:'는 ■ 대응 끝에만 적음")
+                    if "참고:" in ln:
+                        check_refnote(where, rid, ln)
+            check_refs(where, rid, "\n".join(str(t.get(k) or "") for k in ("oneline", "summary", "reference", "detect")))
+    missing = [rid for rid in ROWS if rid not in seen]
+    if missing and ALLOW_MISSING_TEXT:
+        print(f"참고 data/text: 문구 미작성 {len(missing)}개 — " + ", ".join(missing))
+    else:
+        for rid in missing:
+            err("data/text", f"{rid} 문구 없음")
+    for ol, rids in onelines.items():
+        if ol and len(rids) > 1:
+            err("data/text", f"oneline 중복 {rids}: {ol}")
+    return len(seen), stats
+
+
+# ===========================================================================
+# 6) 공격 체인 시나리오(data/scenarios.yaml) — ③단계
+# ===========================================================================
+def check_scenarios():
+    n = 0
+    for s in SCENARIOS.get("scenarios") or []:
+        where = f"scenarios.yaml {s.get('id')}"
+        n += 1
+        if not re.fullmatch(r"ASN-\d{2}", str(s.get("id"))):
+            err(where, "ID 형식(ASN-NN) 오류")
+        for f in ("id", "title", "incidents", "summary", "steps", "chokepoints"):
+            if not s.get(f):
+                err(where, f"필수 필드 '{f}' 없음")
+        for i in s.get("incidents") or []:
+            if i not in INC:
+                err(where, f"사고 DB에 없는 사례 ID {i}")
+        rows_in_steps = set()
+        for j, st in enumerate(s.get("steps") or [], 1):
+            for k in st.get("aia") or []:
+                if k not in ROWS:
+                    err(f"{where} 단계 {j}", f"없는 세부위협 ID {k}")
+                rows_in_steps.add(k)
+            for f in ("aia", "단계", "행위", "탐지"):
+                if not st.get(f):
+                    err(f"{where} 단계 {j}", f"필드 '{f}' 없음")
+            if st.get("단계") and st["단계"] not in R.STAGES:
+                err(f"{where} 단계 {j}", f"킬체인 단계 어휘가 아닌 단계 {st['단계']}")
+            joined = " ".join(str(v) for v in st.values())
+            for a in RE_ATK.findall(joined) + RE_ATLAS_CASE.findall(joined):
+                if a not in ATK_INDEX and a not in ATLAS_INDEX:
+                    err(f"{where} 단계 {j}", f"ATLAS/ATT&CK 색인에 없는 ID {a}")
+            for i in RE_AII.findall(joined):
+                if i not in (s.get("incidents") or []):
+                    err(f"{where} 단계 {j}", f"단계에 쓴 사고 ID {i}가 시나리오 근거 사고(incidents)에 없음")
+        for i in s.get("incidents") or []:
+            if i in INC and not (set(INC[i].get("aia") or []) & rows_in_steps):
+                warn(where, f"{i}의 매핑 세부위협이 시나리오 단계에 하나도 없음")
+        for c in s.get("chokepoints") or []:
+            for k in RE_AIA.findall(str(c)):
+                if k not in rows_in_steps:
+                    warn(where, f"초크 포인트의 {k}가 시나리오 단계에 없음")
+    return n
 
 
 def main():
+    global ALLOW_MISSING_TEXT
     ap = argparse.ArgumentParser()
-    ap.add_argument("--strict", action="store_true")
-    ap.add_argument("--data-only", action="store_true")
+    ap.add_argument("--strict", action="store_true", help="경고도 실패로 처리")
+    ap.add_argument("--data-only", action="store_true", help="문구 검사 없이 원천 데이터·시나리오만 점검(v1 단계)")
+    ap.add_argument("--allow-missing-text", action="store_true",
+                    help="문구가 없는 세부위협은 오류 대신 미작성 목록으로만 표시")
     a = ap.parse_args()
+    ALLOW_MISSING_TEXT = a.allow_missing_text
 
     check_frameworks()
     check_taxonomy()
     check_incidents()
-    if not a.data_only:
-        check_text_and_scenarios()
-
     ev = row_evidence()
-    real_rows = sum(1 for k in ROWS if ev[k]["real"])
-    print(f"세부위협 {len(ROWS)}개 · 사고 {len(INCIDENTS)}건 · 실제 사고가 매핑된 행 {real_rows}개")
+    n_text, stats = (0, collections.Counter()) if a.data_only else check_texts(ev)
+    n_scn = check_scenarios()
+
     for m in ERR:
         print(m)
     for m in WARN:
         print(m)
+    real_rows = sum(1 for k in ROWS if ev[k]["real"])
+    cases = sum(v for k, v in stats.items() if k and k != "note")
+    print(f"세부위협 {len(ROWS)}개(문구 {n_text}) · 사고 {len(INCIDENTS)}건 · 시나리오 {n_scn}개 · "
+          f"실제 사고가 매핑된 행 {real_rows}개 · 인용 사례 {cases}건")
     print(f"— 오류 {len(ERR)} · 경고 {len(WARN)}")
     if ERR or (a.strict and WARN):
         sys.exit(1)

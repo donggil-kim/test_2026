@@ -15,8 +15,8 @@ Threats to Cloud Computing 2026, 클라우드 보안사고 사례 DB(680건)를 
 | [`supplychain/`](supplychain/README.md) | 통합 소프트웨어 공급망 보안위협 매트릭스 v2 — 8개 도메인 · 세부위협 60개 |
 | [`identity/`](identity/README.md) | 통합 신원(아이덴티티)·계정 보안위협 매트릭스 v2 — 10개 도메인 · 세부위협 65개 |
 | [`physical/`](physical/README.md) | 물리·인적 보안위협 매트릭스 v2 — 7개 도메인 · 세부위협 45개(드론·물리 침입·인적 포섭·위장취업·내부자) |
-| [`aiattack/`](aiattack/README.md) | AI 활용 공격 보안위협 매트릭스(② v1 빌드) — 공격자 킬체인 7단계 · 세부위협 35개(자율 취약점 발굴·자율 에이전트 침투·딥페이크·AI 연동 악성코드·AI 서비스 C2) |
-| [`emerging/`](emerging/작업방향.md) | 신규 영역 작업 방향 — AI 활용 공격(aiattack, ② v1 빌드 완료) · 고도화 엔터프라이즈 침해(enterprise, 미착수) |
+| [`aiattack/`](aiattack/README.md) | AI 활용 공격 보안위협 매트릭스(③ v2 문구·시나리오) — 공격자 킬체인 7단계 · 세부위협 35개(자율 취약점 발굴·자율 에이전트 침투·딥페이크·AI 연동 악성코드·AI 서비스 C2) |
+| [`emerging/`](emerging/작업방향.md) | 신규 영역 작업 방향 — AI 활용 공격(aiattack, ③ v2 완료) · 고도화 엔터프라이즈 침해(enterprise, 미착수) |
 | `sources/ai_v3.2/` | 통합본에 쓰는 AI 매트릭스 v3.2 원본 반입본 |
 
 ## 통합 보안위협 매트릭스 v4 (`integrated/`)
