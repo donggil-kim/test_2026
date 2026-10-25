@@ -4,11 +4,12 @@
 가속·자동화·대규모화하는 위협을 **공격자 킬체인**으로 정리한 렌즈 매트릭스입니다. 기존 AI 매트릭스(v3.2)가
 "우리 AI를 지키는" 관점이라면, 이 매트릭스는 **"공격자의 AI가 (AI든 비-AI든) 대상을 치는" 관점**입니다.
 
-> **현재 상태: ①단계(분류·참조·사고 DB) 완료 — 2026-10-25**
-> 세부위협 35개(도메인 7·위협분류 27), 사고 DB 31건(재인용 27 + 신규 4), 데이터 검증 오류·경고 0(`--strict`).
-> 방법론·설계 원칙은 [`docs/methodology.md`](docs/methodology.md), 진행·결정 기록은 [`../emerging/작업방향.md`](../emerging/작업방향.md),
+> **현재 상태: ② v1 빌드 완료 — 2026-10-25** (①분류·참조·사고 DB 포함)
+> 세부위협 35개(도메인 7·위협분류 27), 사고 DB 31건(재인용 27 + 신규 4), 검증 오류·경고 0(`--strict`).
+> **v1 빌드**: 15시트 워크북·CSV(`output/통합_AI활용공격_보안위협_매트릭스_v1.xlsx`) — 위험도 매우 높음 11·높음 7·보통 16·낮음 1.
+> 방법론·설계 원칙은 [`docs/methodology.md`](docs/methodology.md), 진행·결정 기록은 [`docs/작업방향.md`](docs/작업방향.md)·[`../emerging/작업방향.md`](../emerging/작업방향.md),
 > 참조 자료 출처·라이선스는 [`reference/README.md`](reference/README.md)를 보세요.
-> 다음 단계는 ② v1 빌드(워크북·위험평가) → ③ 관점 문구·공격 체인 시나리오 → ④ 통합본 뷰 Lv0 편입입니다.
+> 다음 단계는 ③ 관점 문구(가드레일)·공격 체인 시나리오 → ④ 통합본 뷰 Lv0 편입입니다.
 
 ## 분류 체계 — 공격자 킬체인 7단계
 
@@ -37,17 +38,24 @@
 aiattack/
   README.md · docs/methodology.md
   data/   taxonomy.yaml · incidents.yaml · frameworks.yaml · changelog.yaml  (text/·scenarios.yaml은 ②③단계)
-  scripts/ prepare_atlas.py · prepare_attack.py · prepare_refs.py · validate.py · taxonomy_rules.py
+  scripts/ prepare_atlas.py · prepare_attack.py · prepare_refs.py · validate.py · taxonomy_rules.py · build_aiattack_threat_matrix.py
   reference/ atlas/ · attack/ · nist/ · links/ (reference/README.md)
-  output/  (②단계 빌드 산출물 — 워크북·CSV)
+  output/  통합_AI활용공격_보안위협_매트릭스_v1.xlsx · .csv (15시트)
 ```
 
 ## 재현
 
 ```bash
 python3 scripts/prepare_atlas.py && python3 scripts/prepare_attack.py && python3 scripts/prepare_refs.py
-python3 scripts/validate.py --strict
+python3 scripts/validate.py --strict               # 데이터 검증(오류·경고 0)
+python3 scripts/build_aiattack_threat_matrix.py    # 15시트 워크북·CSV 생성(빌드 전 검증 자동 실행)
 ```
+
+## v1 워크북 시트(15)
+
+개요 · 보고서용 간략 매트릭스 · 매트릭스 뷰 · 통합 매트릭스 · 통합매트릭스_LITE · 도메인 요약 ·
+**AI 역할·자율성 요약**(고유 축) · 공격 체인 시나리오(③단계 양식) · 역매핑_사고사례 · 교차 매핑 연계 ·
+대응 기준 연계 · 참고 문헌 · 다른 매트릭스 연계 · 평가 기준 · 변경이력.
 
 ## 경계·연계
 

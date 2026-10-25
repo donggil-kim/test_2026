@@ -50,6 +50,14 @@ def main():
     techniques = d["techniques"]
     cases = d.get("case-studies") or {}
 
+    # 사례(case-study)가 쓰는(employs) 기법 → 기법별 사례 수(발생가능성 'ATLAS 사례' 신호)
+    tech_cases = {}
+    for cid, rel in (d.get("relationships") or {}).items():
+        if not str(cid).startswith("AML.CS"):
+            continue
+        for emp in rel.get("employs") or []:
+            tech_cases.setdefault(emp.get("target"), set()).add(cid)
+
     tax = yaml.safe_load(TAXONOMY.read_text(encoding="utf-8")) if TAXONOMY.exists() else {"domains": []}
     used = sorted({a for dm in tax["domains"] for l2 in dm["lv2"] for x in l2["lv3"] for a in (x.get("atlas") or [])})
     missing = [a for a in used if a not in techniques]
@@ -63,7 +71,8 @@ def main():
 
     tech_out = {t: dict(name=techniques[t]["name"], maturity=techniques[t].get("maturity"),
                         attack=attack_ref(techniques[t]),
-                        parent=(t.rsplit(".", 1)[0] if re.search(r"\.\d{3}$", t) else ""))
+                        parent=(t.rsplit(".", 1)[0] if re.search(r"\.\d{3}$", t) else ""),
+                        cases=sorted(tech_cases.get(t, [])))
                 for t in used}
 
     index = {tid: v["name"] for tid, v in sorted(techniques.items())}

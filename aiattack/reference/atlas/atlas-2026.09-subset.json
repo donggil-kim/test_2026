@@ -25,361 +25,692 @@
    "name": "Search Open Technical Databases",
    "maturity": "Realized",
    "attack": "T1596",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0001",
+    "AML.CS0003",
+    "AML.CS0005",
+    "AML.CS0007",
+    "AML.CS0010",
+    "AML.CS0011",
+    "AML.CS0012",
+    "AML.CS0070"
+   ]
   },
   "AML.T0001": {
    "name": "Search Open AI Vulnerability Analysis",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0014",
+    "AML.CS0016"
+   ]
   },
   "AML.T0003": {
    "name": "Search Victim-Owned Websites",
    "maturity": "Demonstrated",
    "attack": "T1594",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0014",
+    "AML.CS0039"
+   ]
   },
   "AML.T0004": {
    "name": "Search Application Repositories",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0013",
+    "AML.CS0028",
+    "AML.CS0052"
+   ]
   },
   "AML.T0005": {
    "name": "Create Proxy AI Model",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0000",
+    "AML.CS0012",
+    "AML.CS0014"
+   ]
   },
   "AML.T0006": {
    "name": "Active Scanning",
    "maturity": "Realized",
    "attack": "T1595",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0023",
+    "AML.CS0063",
+    "AML.CS0069",
+    "AML.CS0070",
+    "AML.CS0071"
+   ]
   },
   "AML.T0008": {
    "name": "Acquire Infrastructure",
    "maturity": "Realized",
    "attack": "T1583",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0029",
+    "AML.CS0051",
+    "AML.CS0057",
+    "AML.CS0060"
+   ]
   },
   "AML.T0008.005": {
    "name": "AI Service Proxies",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0008"
+   "parent": "AML.T0008",
+   "cases": [
+    "AML.CS0056"
+   ]
   },
   "AML.T0011.002": {
    "name": "Poisoned AI Agent Tool",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0011"
+   "parent": "AML.T0011",
+   "cases": [
+    "AML.CS0049",
+    "AML.CS0053",
+    "AML.CS0054"
+   ]
   },
   "AML.T0011.003": {
    "name": "Malicious Link",
    "maturity": "Demonstrated",
    "attack": "T1204",
-   "parent": "AML.T0011"
+   "parent": "AML.T0011",
+   "cases": [
+    "AML.CS0050"
+   ]
   },
   "AML.T0015": {
    "name": "Evade AI Model",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0000",
+    "AML.CS0001",
+    "AML.CS0003",
+    "AML.CS0004",
+    "AML.CS0005",
+    "AML.CS0008",
+    "AML.CS0010",
+    "AML.CS0011",
+    "AML.CS0012",
+    "AML.CS0013",
+    "AML.CS0014",
+    "AML.CS0017",
+    "AML.CS0028",
+    "AML.CS0032",
+    "AML.CS0033",
+    "AML.CS0034",
+    "AML.CS0043",
+    "AML.CS0058"
+   ]
   },
   "AML.T0016.002": {
    "name": "Generative AI",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0016"
+   "parent": "AML.T0016",
+   "cases": [
+    "AML.CS0033",
+    "AML.CS0034",
+    "AML.CS0055",
+    "AML.CS0070"
+   ]
   },
   "AML.T0016.003": {
    "name": "Exploits",
    "maturity": "Realized",
    "attack": "T1588.005",
-   "parent": "AML.T0016"
+   "parent": "AML.T0016",
+   "cases": [
+    "AML.CS0070"
+   ]
   },
   "AML.T0017": {
    "name": "Develop Capabilities",
    "maturity": "Realized",
    "attack": "T1587",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0018",
+    "AML.CS0020",
+    "AML.CS0029",
+    "AML.CS0043",
+    "AML.CS0049",
+    "AML.CS0050",
+    "AML.CS0052",
+    "AML.CS0053",
+    "AML.CS0055",
+    "AML.CS0057"
+   ]
   },
   "AML.T0017.001": {
    "name": "Autonomous Exploit Development",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0017"
+   "parent": "AML.T0017",
+   "cases": [
+    "AML.CS0068",
+    "AML.CS0069"
+   ]
   },
   "AML.T0017.002": {
    "name": "AI Agent Tools",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0017"
+   "parent": "AML.T0017",
+   "cases": [
+    "AML.CS0070"
+   ]
   },
   "AML.T0024": {
    "name": "Exfiltration via AI Inference API",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": []
   },
   "AML.T0025": {
    "name": "Exfiltration via Cyber Means",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0010",
+    "AML.CS0015",
+    "AML.CS0018",
+    "AML.CS0023",
+    "AML.CS0027",
+    "AML.CS0043",
+    "AML.CS0044",
+    "AML.CS0048",
+    "AML.CS0058",
+    "AML.CS0059",
+    "AML.CS0063",
+    "AML.CS0068",
+    "AML.CS0069",
+    "AML.CS0071"
+   ]
   },
   "AML.T0034": {
    "name": "Cost Harvesting",
    "maturity": "Feasible",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": []
   },
   "AML.T0034.000": {
    "name": "Excessive Queries",
    "maturity": "Feasible",
    "attack": "",
-   "parent": "AML.T0034"
+   "parent": "AML.T0034",
+   "cases": []
   },
   "AML.T0040": {
    "name": "AI Model Inference API Access",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0005",
+    "AML.CS0010",
+    "AML.CS0011",
+    "AML.CS0012",
+    "AML.CS0022",
+    "AML.CS0024",
+    "AML.CS0056",
+    "AML.CS0057",
+    "AML.CS0069",
+    "AML.CS0070"
+   ]
   },
   "AML.T0043": {
    "name": "Craft Adversarial Data",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0002"
+   ]
   },
   "AML.T0048": {
    "name": "External Harms",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0018",
+    "AML.CS0027",
+    "AML.CS0049",
+    "AML.CS0053",
+    "AML.CS0059",
+    "AML.CS0060"
+   ]
   },
   "AML.T0048.000": {
    "name": "Financial Harm",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0048"
+   "parent": "AML.T0048",
+   "cases": [
+    "AML.CS0004",
+    "AML.CS0016",
+    "AML.CS0017",
+    "AML.CS0023",
+    "AML.CS0026",
+    "AML.CS0030",
+    "AML.CS0033",
+    "AML.CS0034",
+    "AML.CS0036",
+    "AML.CS0045",
+    "AML.CS0057"
+   ]
   },
   "AML.T0050": {
    "name": "Command and Scripting Interpreter",
    "maturity": "Realized",
    "attack": "T1059",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0050",
+    "AML.CS0052",
+    "AML.CS0060",
+    "AML.CS0061",
+    "AML.CS0062",
+    "AML.CS0068"
+   ]
   },
   "AML.T0052": {
    "name": "Phishing",
    "maturity": "Realized",
    "attack": "T1566",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0032",
+    "AML.CS0044"
+   ]
   },
   "AML.T0052.000": {
    "name": "Spearphishing via Social Engineering LLM",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": "AML.T0052"
+   "parent": "AML.T0052",
+   "cases": [
+    "AML.CS0020"
+   ]
   },
   "AML.T0053": {
    "name": "AI Agent Tool Invocation",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0016",
+    "AML.CS0021",
+    "AML.CS0024",
+    "AML.CS0026",
+    "AML.CS0038",
+    "AML.CS0039",
+    "AML.CS0045",
+    "AML.CS0046",
+    "AML.CS0048",
+    "AML.CS0049",
+    "AML.CS0051",
+    "AML.CS0052",
+    "AML.CS0054",
+    "AML.CS0055",
+    "AML.CS0062",
+    "AML.CS0063",
+    "AML.CS0064",
+    "AML.CS0066",
+    "AML.CS0067"
+   ]
   },
   "AML.T0054": {
    "name": "LLM Jailbreak",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0041",
+    "AML.CS0046",
+    "AML.CS0051",
+    "AML.CS0052",
+    "AML.CS0057",
+    "AML.CS0063",
+    "AML.CS0066",
+    "AML.CS0067",
+    "AML.CS0069"
+   ]
   },
   "AML.T0055": {
    "name": "Unsecured Credentials",
    "maturity": "Realized",
    "attack": "T1552",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0016",
+    "AML.CS0023",
+    "AML.CS0027",
+    "AML.CS0030",
+    "AML.CS0043",
+    "AML.CS0047",
+    "AML.CS0054",
+    "AML.CS0068",
+    "AML.CS0069"
+   ]
   },
   "AML.T0073": {
    "name": "Impersonation",
    "maturity": "Realized",
    "attack": "T1656",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0027",
+    "AML.CS0033",
+    "AML.CS0034",
+    "AML.CS0044",
+    "AML.CS0053"
+   ]
   },
   "AML.T0075": {
    "name": "Enterprise Resource Discovery",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0030",
+    "AML.CS0068",
+    "AML.CS0069"
+   ]
   },
   "AML.T0081": {
    "name": "Modify AI Agent Configuration",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0041",
+    "AML.CS0050",
+    "AML.CS0051"
+   ]
   },
   "AML.T0087": {
    "name": "Gather Victim Identity Information",
    "maturity": "Realized",
    "attack": "T1589",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0004",
+    "AML.CS0033",
+    "AML.CS0034"
+   ]
   },
   "AML.T0088": {
    "name": "Generate Deepfakes",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0033",
+    "AML.CS0034",
+    "AML.CS0057"
+   ]
   },
   "AML.T0089": {
    "name": "Enterprise Environment Discovery",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0036",
+    "AML.CS0068",
+    "AML.CS0069"
+   ]
   },
   "AML.T0095": {
    "name": "Search Open Websites/Domains",
    "maturity": "Realized",
    "attack": "T1593",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0039",
+    "AML.CS0061",
+    "AML.CS0065"
+   ]
   },
   "AML.T0095.000": {
    "name": "Code Repositories",
    "maturity": "Realized",
    "attack": "T1593.003",
-   "parent": "AML.T0095"
+   "parent": "AML.T0095",
+   "cases": [
+    "AML.CS0051",
+    "AML.CS0067",
+    "AML.CS0070"
+   ]
   },
   "AML.T0096": {
    "name": "AI Service API",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0042"
+   ]
   },
   "AML.T0097": {
    "name": "Virtualization/Sandbox Evasion",
    "maturity": "Realized",
    "attack": "T1497",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0043"
+   ]
   },
   "AML.T0100": {
    "name": "AI Agent Clickbait",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0055"
+   ]
   },
   "AML.T0101": {
    "name": "Data Destruction via AI Agent Tool Invocation",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0046",
+    "AML.CS0047",
+    "AML.CS0063"
+   ]
   },
   "AML.T0102": {
    "name": "Generate Malicious Commands",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0044",
+    "AML.CS0068",
+    "AML.CS0070"
+   ]
   },
   "AML.T0103": {
    "name": "Deploy AI Agent",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0047",
+    "AML.CS0069"
+   ]
   },
   "AML.T0108": {
    "name": "AI Agent",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0051"
+   ]
   },
   "AML.T0110": {
    "name": "AI Agent Tool Poisoning",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": []
   },
   "AML.T0112.000": {
    "name": "Local AI Agent",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": "AML.T0112"
+   "parent": "AML.T0112",
+   "cases": [
+    "AML.CS0051",
+    "AML.CS0052",
+    "AML.CS0055"
+   ]
   },
   "AML.T0114": {
    "name": "AI Service Web Interface",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0061"
+   ]
   },
   "AML.T0116": {
    "name": "Autonomous Reconnaissance",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0068",
+    "AML.CS0069",
+    "AML.CS0070",
+    "AML.CS0071"
+   ]
   },
   "AML.T0117": {
    "name": "Autonomous Attack-Path Adaptation",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0068",
+    "AML.CS0069",
+    "AML.CS0070",
+    "AML.CS0071"
+   ]
   },
   "AML.T0118": {
    "name": "Autonomous AI Agent Communication",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": []
   },
   "AML.T0118.000": {
    "name": "Communication via Shared Artifacts",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0118"
+   "parent": "AML.T0118",
+   "cases": [
+    "AML.CS0068"
+   ]
   },
   "AML.T0118.001": {
    "name": "Direct Agent Communication",
    "maturity": "Realized",
    "attack": "",
-   "parent": "AML.T0118"
+   "parent": "AML.T0118",
+   "cases": [
+    "AML.CS0071"
+   ]
   },
   "AML.T0119": {
    "name": "Exploit Automated Artifact Processing Pipeline",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0068"
+   ]
   },
   "AML.T0123": {
    "name": "Obfuscated Files or Information",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0068"
+   ]
   },
   "AML.T0124": {
    "name": "Autonomous Attack Orchestration",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0071"
+   ]
   },
   "AML.T0126": {
    "name": "Automated Collection",
    "maturity": "Realized",
    "attack": "T1119",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0069",
+    "AML.CS0071"
+   ]
   },
   "AML.T0128": {
    "name": "Compromise Infrastructure",
    "maturity": "Realized",
    "attack": "T1584",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0069"
+   ]
   },
   "AML.T0131": {
    "name": "Crafted AI Assistant Links",
    "maturity": "Realized",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0072"
+   ]
   },
   "AML.T0132": {
    "name": "Misconfigured or Publicly Exposed AI Services",
    "maturity": "Demonstrated",
    "attack": "",
-   "parent": ""
+   "parent": "",
+   "cases": [
+    "AML.CS0048"
+   ]
   }
  },
  "case_studies": {
