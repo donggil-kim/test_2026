@@ -17,7 +17,7 @@ Threats to Cloud Computing 2026, 클라우드 보안사고 사례 DB(680건)를 
 | [`physical/`](physical/README.md) | 물리·인적 보안위협 매트릭스 v2 — 7개 도메인 · 세부위협 45개(드론·물리 침입·인적 포섭·위장취업·내부자) |
 | [`aiattack/`](aiattack/README.md) | AI 활용 공격 보안위협 매트릭스(①~④ 완료) — 공격자 킬체인 7단계 · 세부위협 35개(자율 취약점 발굴·자율 에이전트 침투·딥페이크·AI 연동 악성코드·AI 서비스 C2) |
 | [`enterprise/`](enterprise/README.md) | 고도화·레거시 우회 엔터프라이즈 침해 매트릭스(①~④ 완료) — ATT&CK 전술 12단계 · 세부위협 51개(엣지 0-day·BYOVD EDR 무력화·LotL·사람 운영 랜섬웨어·암호화 C2) |
-| [`emerging/`](emerging/작업방향.md) | 신규 영역 작업 방향 — AI 활용 공격(aiattack)·고도화 엔터프라이즈 침해(enterprise) 모두 ①~④ 완료 |
+| [`emerging/`](emerging/작업방향.md) | 신규 영역 작업 방향 — AI 활용 공격(aiattack)·고도화 엔터프라이즈 침해(enterprise) 모두 ①~④ 완료. 검토 결과·v3 수정 방향은 [`emerging/검토_수정방향.md`](emerging/검토_수정방향.md) |
 | `sources/ai_v3.2/` | 통합본에 쓰는 AI 매트릭스 v3.2 원본 반입본 |
 
 ## 통합 보안위협 매트릭스 v4 (`integrated/`)
