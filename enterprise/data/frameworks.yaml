@@ -1,0 +1,174 @@
+# 교차 매핑·대응 기준·참고 문헌 카탈로그 — ID·명칭만 수록(원문 미수록)
+#
+# 역할(작업방향 4.5)
+#   ② 교차 매핑  : MITRE ATT&CK Enterprise v19.2(1차 분류·근거) · CISA KEV(악용·빠른 익스플로잇) ·
+#                  LOLBAS·LOLDrivers(서명된 정상 도구·취약 드라이버) · 다른 매트릭스 통합 v4.1 요약 ID
+#   ③ 대응 기준  : NIST SP 800-53 Rev.5 통제(탐지·대응) — reference/nist/ 추출본
+#   ⑤ 참고 문헌  : 벤더·정부 위협 보고(고도화·빈발 근거) — refs와 문구 '참고:' 인용으로만 사용
+
+meta:
+  attack:
+    name: MITRE ATT&CK Enterprise
+    version: v19.2
+    source: 저장소 루트 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본(scripts/prepare_attack.py)
+    license: © The MITRE Corporation — https://attack.mitre.org/resources/legal-and-branding/terms-of-use/ — ID·명칭만 인용
+    note: 전술 14개 중 침투~영향 12개를 선정 범위로 둠(정찰·자원 개발은 영역 1·정찰이 다룸, D7). 주체(그룹·소프트웨어·캠페인) 절차 수를 '최근빈발' 신호로 참고
+  kev:
+    name: CISA Known Exploited Vulnerabilities Catalog
+    version: 2026.10.02 (1,733건)
+    source: 저장소 supplychain/reference/advisories/ 사본 → reference/kev/ 추출본(scripts/prepare_kev.py)
+    license: 미국 정부 저작물(공공 영역)
+    note: KEV 악용·빠른 익스플로잇·엣지 0-day의 선정·사고 근거. 연도별 등재·경계/엣지 장비 비중·같은 해 악용 비중 통계 포함
+  lolbas:
+    name: LOLBAS (Living Off The Land Binaries And Scripts) · LOLDrivers
+    version: 2026-10 스냅샷 (LOLBin 245 · 드라이버 706)
+    source: https://lolbas-project.github.io · https://www.loldrivers.io → reference/lolbas/ 추출본(scripts/prepare_lolbas.py)
+    license: © 각 프로젝트 기여자(MIT) — ID·명칭·분류만 인용
+    note: LOLBin(레거시 공백 '서명된 정상 도구 악용')·BYOVD 취약 드라이버(레거시 공백 '커널·펌웨어 하위 계층') 열의 근거
+  nist80053:
+    name: NIST SP 800-53 Rev.5 통제명
+    version: OSCAL 5.2.0 (2026-05-11)
+    source: https://github.com/usnistgov/oscal-content → reference/nist/ 명칭 추출본(identity/ 추출본 재사용)
+    license: 미국 정부 저작물(공공 영역)
+
+# Lv1 전술(도메인) — ATT&CK Enterprise 침투~영향 12개(선정 범위, D7)
+tactics:
+  초기 침투: 경계·엣지 장비·외부 원격 서비스·드라이브바이·이동식 매체·신뢰 관계를 통한 최초 진입
+  실행: 서명된 정상 도구·파일리스로 코드를 실행
+  지속: 재부팅·로그아웃 후에도 접근을 유지
+  권한 상승: 프로세스 인젝션·토큰·UAC·취약점으로 권한을 높임
+  방어 회피: EDR 변조·BYOVD·지표 삭제·위장·난독화·인메모리·루트킷·펌웨어로 탐지를 피함
+  자격증명 접근: LSASS·캐시·Kerberos·입력 캡처로 자격증명을 탈취
+  탐색: 호스트·네트워크·AD를 열거해 경로를 파악
+  측면 이동: 원격 서비스·대체 인증 자료·도구 전송·원격 취약점으로 확산
+  수집: 로컬·공유 데이터를 모으고 스테이징
+  명령·제어: 암호화·정상 채널·웹 서비스·DNS로 통제 트래픽을 숨김
+  반출: C2·웹 서비스·대체 프로토콜로 데이터를 빼냄
+  영향: 암호화·복구 방해·파괴·서비스 중지·갈취
+
+# 레거시 방어 공백 유형(행 legacy_gap) — 이 매트릭스의 차별적 축(D6, 작업방향 4.4)
+legacy_gaps:
+  시그니처 회피: 변종·패킹·난독화로 시그니처 AV를 우회
+  파일리스·인메모리: 디스크 산출물 없이 메모리에서 실행돼 파일 기반 탐지가 못 봄
+  서명된 정상 도구 악용: LOLBin·정상 관리 도구를 써 허용 목록·서명 검증을 통과
+  암호화·정상 채널 은닉: HTTPS·정상 서비스·DNS에 통제·반출을 숨겨 경계 통제가 내용을 못 봄
+  정상 인증 위장: 탈취 계정·해시·티켓으로 정상 로그인처럼 보임
+  경계 밖·비관리 장비: 엣지 어플라이언스·IoT·BYOD 등 EDR이 없는 자산
+  커널·펌웨어 하위 계층: 드라이버·커널·펌웨어·부트 단계라 상위 보안 제품이 못 봄
+  신뢰·공급 관계 경유: MSP·협력사·신뢰 도메인 등 정상 신뢰 경로를 통과
+
+# 요구 방어 수준(행 defense_level) — 최소 필요 수준(D6)
+defense_levels:
+  레거시: 시그니처 AV·경계 방화벽·IDS로 대응 가능
+  EDR·XDR: 엔드포인트 행위 탐지·대응이 필요
+  행위·네트워크·아이덴티티: NDR·ITDR·UEBA 등 행위·네트워크·아이덴티티 기반 탐지가 필요(레거시·단순 EDR로는 부족)
+
+# 위협 주체 유형(행 actors·사고 DB actor_type) — 행위자는 사고 DB actor로만 귀속
+actor_types:
+  국가배후: 국가 지원·연계 그룹(첩보·파괴·영향)
+  랜섬웨어: 사람 운영 랜섬웨어 조직·제휴(RaaS)
+  사이버범죄: 금전 목적 범죄 조직·개인
+  핵티비스트: 정치·사회 목적 행위자
+  접근 브로커: 초기 접근을 탈취해 되파는 중개자(IAB)
+
+# 대상 플랫폼(행 platforms)
+platforms:
+  Windows: 윈도우 호스트·서버·AD
+  Linux: 리눅스 서버·워크로드
+  macOS: 맥 엔드포인트
+  네트워크: 경계·엣지 장비·네트워크 장비
+  펌웨어: 펌웨어·UEFI·부트 단계
+
+# -------------------------------------------------------------------------
+# 참고 문헌 카탈로그 — refs 키. [영문 명칭/서지]. 원문 미수록, 서지·URL·확인일·이용 조건만.
+#   use: 분류 근거 · 위협 내용 · 대응 문구 / domains: 주 전술 코드 / verify: 확인 경로 / checked: 확인일
+# -------------------------------------------------------------------------
+references:
+  ATTACK:
+    title: "MITRE ATT&CK Enterprise v19.2 (techniques·groups·software·campaigns)"
+    short: MITRE 〈ATT&CK Enterprise v19.2〉
+    publisher: The MITRE Corporation
+    year: 2026
+    urls: [https://attack.mitre.org/]
+    use: [분류 근거, 위협 내용]
+    domains: [IA, EX, PE, PV, DE, CA, DI, LM, CO, C2, EF, IM]
+    terms: ATT&CK 이용약관 — ID·명칭만 인용
+    verify: 저장소 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본(기법·주체·절차)
+    checked: "2026-10-26"
+  KEV-CAT:
+    title: "CISA Known Exploited Vulnerabilities Catalog (1,733건)"
+    short: CISA 〈KEV Catalog〉
+    publisher: CISA
+    year: 2026
+    urls: [https://www.cisa.gov/known-exploited-vulnerabilities-catalog]
+    use: [분류 근거, 위협 내용]
+    domains: [IA, PV, LM]
+    terms: 공공 영역 — CVE·벤더·등재일만 인용
+    verify: 저장소 KEV 사본(2026.10.02) → reference/kev/ 추출본. 연도별 등재·엣지 장비 비중 자체 집계
+    checked: "2026-10-26"
+  CISA-EDGE:
+    title: "CISA/파이브아이즈 공동 경보 — 경계·엣지 장비 대량 악용(VPN·방화벽·파일전송)"
+    short: CISA 〈Edge Device Advisory〉
+    publisher: CISA 및 공동 서명 기관
+    year: 2026
+    urls: [https://www.cisa.gov/news-events/cybersecurity-advisories]
+    use: [위협 내용]
+    domains: [IA]
+    terms: 공공 영역 — 요지만 인용
+    verify: 작업방향 §7.2 리서치 — 경계·엣지 장비 KEV 비중(매년 15~21%)과 정합. 개별 경보는 ②③단계에서 1차 확인
+    checked: "2026-10-26"
+  M-TRENDS:
+    title: "연례 침해 대응 동향 보고(초기 침투·측면 이동·체류 시간)"
+    short: Mandiant 〈M-Trends〉
+    publisher: Mandiant (Google Cloud)
+    year: 2026
+    urls: [https://cloud.google.com/security/resources/m-trends]
+    use: [위협 내용]
+    domains: [IA, LM]
+    terms: 벤더 보고서 — 서지·URL만, 수치는 참고치
+    verify: 작업방향 §7.2 리서치 — 외부 원격 서비스·탈취 계정 초기 침투 비중의 참고치. 1차 수치는 ②③단계 확인
+    checked: "2026-10-26"
+  LOLBAS:
+    title: "LOLBAS Project (Living Off The Land Binaries And Scripts)"
+    short: LOLBAS 〈Project〉
+    publisher: LOLBAS Project 기여자
+    year: 2026
+    urls: [https://lolbas-project.github.io/]
+    use: [분류 근거, 위협 내용]
+    domains: [EX, C2]
+    terms: MIT — ID·명칭·분류만 인용
+    verify: reference/lolbas/ 추출본(LOLBin 245개·명령 분류)
+    checked: "2026-10-26"
+  LOLDRIVERS:
+    title: "LOLDrivers (Living Off The Land Drivers)"
+    short: LOLDrivers 〈Project〉
+    publisher: LOLDrivers 기여자
+    year: 2026
+    urls: [https://www.loldrivers.io/]
+    use: [분류 근거, 위협 내용]
+    domains: [PV, DE]
+    terms: MIT — ID·명칭·분류만 인용
+    verify: reference/lolbas/ 추출본(드라이버 706개 — 취약 581·악성 125)
+    checked: "2026-10-26"
+  HIVE-BYOVD:
+    title: "현대 공격 기법 보고 — BYOVD·EDR 킬러·ClickFix·C2(2026)"
+    short: Hive Security 〈Modern Attack Techniques 2026〉
+    publisher: Hive Security
+    year: 2026
+    urls: [https://hivesecurity.gitlab.io/blog/modern-attack-techniques-2026/]
+    use: [위협 내용]
+    domains: [DE]
+    terms: 공개 연구 블로그 — 서지·URL만, 수치는 참고치
+    verify: 작업방향 §7.2 리서치 — EDR 킬러 54종이 서명 드라이버 35종 악용 등. 1차 확인은 ②③단계
+    checked: "2026-10-26"
+  SECURELIST-RANSOM:
+    title: "랜섬웨어 현황 보고(2026) — 사람 운영·EDR 회피·LotL"
+    short: Securelist 〈State of Ransomware 2026〉
+    publisher: Kaspersky Securelist
+    year: 2026
+    urls: [https://securelist.com/state-of-ransomware-in-2026/119761/]
+    use: [위협 내용]
+    domains: [IM]
+    terms: 벤더 보고서 — 서지·URL만, 수치는 참고치
+    verify: 작업방향 §7.2 리서치 — 사람 운영 랜섬웨어·LotL·EDR 회피 비중의 참고치. 1차 수치는 ②③단계 확인
+    checked: "2026-10-26"

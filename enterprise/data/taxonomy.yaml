@@ -1,0 +1,1257 @@
+# 고도화·레거시 우회 엔터프라이즈 침해 보안위협 매트릭스 — 분류 체계(원천)
+#
+# 관점(작업방향 4장): MITRE ATT&CK Enterprise v19.2에서 ① 고도화됐고 ② 최근 실제 사례가 많으며
+#   ③ 레거시 보안체계(시그니처 AV·경계 방화벽·레거시 SIEM)로 막기 어려운 기법을 선별해,
+#   '레거시 방어 공백'과 '요구 방어 수준'을 축으로 붙인 렌즈 매트릭스. 자산이 무엇이든 '레거시로 막기 어렵다'로 묶음.
+#
+# 구조: Lv1 도메인(ATT&CK Enterprise 전술 — 침투~영향 12개) → Lv2 위협분류(ENT-<전술>-NN) → Lv3 세부위협(ENT-<전술>-NN.m)
+#   전술 14개 중 정찰(Reconnaissance)·자원 개발(Resource Development)은 영역 1(AI 활용 공격)·정찰 영역이 다루므로 제외·연계(D7).
+# ID는 고정 — 폐지해도 재사용하지 않음.
+# 경계 규칙(작업방향 4.3·5장, D7):
+#   · 범위: 호스트·엔드포인트·네트워크·C2·방어 회피·온프레미스 AD 인접 기법.
+#   · 연계만(재수록 금지): 클라우드 제어 평면→CL, 신원 로그인·토큰→ID, ICS→OT, AI 시스템→AI, 소프트웨어 공급망→SC.
+#     겹침은 통합 v4.1 요약 ID(AI·CL·OT·SC·ID·PH)로 연계(작업방향 5장).
+#   · 국가배후 여부는 행 속성이 아니라 사고 DB actor 필드로만 다룸.
+#
+# Lv3 필드
+#   name / en       세부위협명(국문) / 영문명
+#   tactic          ATT&CK 전술(도메인과 같음) — frameworks.yaml tactics
+#   legacy_gap      레거시 방어 공백 유형(복수) — frameworks.yaml legacy_gaps. 이 매트릭스의 차별적 축(D6)
+#   defense_level   요구 방어 수준(최소 필요) — frameworks.yaml defense_levels(레거시 / EDR·XDR / 행위·네트워크·아이덴티티)
+#   actors          주로 쓰는 위협 주체 유형 — frameworks.yaml actor_types(국가배후·랜섬웨어·사이버범죄·핵티비스트·접근 브로커)
+#   platforms       대상 플랫폼 — frameworks.yaml platforms(Windows·Linux·macOS·네트워크·펌웨어)
+#   attack          ATT&CK v19.2 기법 ID(1차 분류·근거)
+#   kev             (선택) CISA KEV 악용·빠른 익스플로잇 근거가 있는 행이면 true
+#   lolbas          (선택) LOLBin(서명된 정상 도구) 악용 행이면 true
+#   loldriver       (선택) 취약/악성 드라이버(BYOVD) 악용 행이면 true
+#   nist            대응 기준 — NIST SP 800-53 Rev.5 통제(탐지·대응)
+#   ai / cl / ot / sc / idn / ph  다른 매트릭스 연계 — 통합 v4.1 요약 ID
+#   refs            참고 문헌 키(frameworks.yaml references)
+#   severity        심각도(상·중·하) — 기준 assessment.severity_rule
+#   severity_why    심각도 근거('상'은 피해 범위를 적음)
+
+assessment:
+  severity_rule:
+    상: 성공하면 도메인·조직 전반이 장악되거나 대규모 암호화·파괴·유출로 이어지고, 레거시 방어로는 사실상 탐지되지 않아 피해 범위를 가늠하기 어려운 위협
+    중: 피해가 개별 호스트·구역에 머물거나, 단독 피해는 없고 다른 단계를 키우는 조건(탐색·수집 등)인 위협
+    하: 직접 피해가 제한적·일시적이고 대응이 쉬운 위협
+  likelihood_rule: >-
+    상 = 실제 사고 2건 이상(다른 매트릭스와 같은 수식),
+    중 = 실제 사고 1건 또는 ATT&CK 절차(그룹·소프트웨어·캠페인) 사례·KEV 악용·위협인텔·실증 중 하나 이상,
+    하 = 근거 없음.
+    선정(포함) 자체는 '고도화·최근빈발·레거시난제' 셋 중 둘 이상으로 가리고(작업방향 4.3),
+    우선순위는 위험도에 더해 레거시 공백·요구 방어 수준(방어 난이도)을 보조 기준으로 둔다(D5).
+  severity_check: "'상' 판정은 피해 범위(도메인·조직 전반 장악·대규모 암호화/파괴/유출·레거시 미탐지)를 severity_why에 적은 경우에만"
+
+domains:
+  # =========================================================================
+  - code: IA
+    ko: 초기 침투
+    en: Initial Access
+    desc: 경계·엣지 장비 취약점, 외부 원격 서비스, 드라이브바이, 이동식 매체, 신뢰 관계를 통한 최초 진입 — 레거시 경계 방화벽·AV로 막기 어려운 경로
+    excludes: 클라우드 제어 평면·신원 로그인은 CL·ID 연계 · 피싱 사회공학은 신원 SE·AI 생성 피싱(연계)
+    lv2:
+      - id: ENT-IA-01
+        name: 인터넷 노출 경계·엣지 장비 취약점 악용
+        lv3:
+          - id: ENT-IA-01
+            name: 인터넷 노출 경계·엣지 장비 취약점 악용(빠른 n-day·0-day)
+            en: Exploitation of internet-facing edge/perimeter appliances
+            tactic: 초기 침투
+            legacy_gap: [경계 밖·비관리 장비, 신뢰·공급 관계 경유]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어, 접근 브로커]
+            platforms: [네트워크, Linux]
+            attack: [T1190]
+            kev: true
+            nist: [RA-5, SI-2, SC-7, SI-4]
+            ai: []
+            cl: [CL-IA-01]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [KEV-CAT, CISA-EDGE]
+            severity: 상
+            severity_why: VPN·방화벽·게이트웨이·파일전송 장비의 공개 즉시 악용되는 취약점으로 경계 안으로 바로 진입 — 엣지 장비는 EDR이 깔리지 않아 레거시로 탐지가 어렵고 KEV 등재가 매년 15~21%를 차지
+      - id: ENT-IA-02
+        name: 외부 원격 서비스 악용
+        lv3:
+          - id: ENT-IA-02
+            name: 외부 원격 서비스 악용(VPN·RDP·원격 관리)
+            en: Exploitation/abuse of external remote services
+            tactic: 초기 침투
+            legacy_gap: [정상 인증 위장, 경계 밖·비관리 장비]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 접근 브로커, 국가배후]
+            platforms: [Windows, 네트워크]
+            attack: [T1133]
+            nist: [AC-17, IA-2, SC-7, SI-4]
+            ai: []
+            cl: [CL-IA-02]
+            ot: []
+            sc: []
+            idn: [ID-AU-04]
+            ph: []
+            refs: [ATTACK, M-TRENDS]
+            severity: 상
+            severity_why: 탈취 계정·노출 RDP·VPN으로 정상 인증처럼 들어와 경계 방화벽을 통과 — 로그인 자체는 정상이라 레거시 탐지가 어렵고 랜섬웨어 초기 침투 1순위 경로
+      - id: ENT-IA-03
+        name: 드라이브바이·워터링홀 감염
+        lv3:
+          - id: ENT-IA-03
+            name: 드라이브바이 컴프로마이즈·워터링홀
+            en: Drive-by compromise and watering hole
+            tactic: 초기 침투
+            legacy_gap: [시그니처 회피, 신뢰·공급 관계 경유]
+            defense_level: EDR·XDR
+            actors: [국가배후, 사이버범죄]
+            platforms: [Windows, macOS]
+            attack: [T1189]
+            nist: [SI-3, SC-7, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 사이트·광고망을 경유한 감염이라 경계에서 걸러지지 않으나, 피해는 후속 실행·확산 단계에서 커짐
+      - id: ENT-IA-04
+        name: 이동식 매체를 통한 복제
+        lv3:
+          - id: ENT-IA-04
+            name: 이동식 매체·임시 접속 자산 경유 복제
+            en: Replication through removable media
+            tactic: 초기 침투
+            legacy_gap: [경계 밖·비관리 장비]
+            defense_level: EDR·XDR
+            actors: [국가배후]
+            platforms: [Windows]
+            attack: [T1091]
+            nist: [SI-3, MP-7, SC-7]
+            ai: []
+            cl: []
+            ot: [OT-IA-05]
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 경계·망분리를 우회해 격리망까지 전파할 수 있으나 전파 속도·범위는 제한적
+      - id: ENT-IA-05
+        name: 신뢰 관계 악용
+        lv3:
+          - id: ENT-IA-05
+            name: 신뢰 관계(MSP·협력사·연동) 악용
+            en: Trusted relationship abuse
+            tactic: 초기 침투
+            legacy_gap: [신뢰·공급 관계 경유, 정상 인증 위장]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어, 접근 브로커]
+            platforms: [Windows, 네트워크]
+            attack: [T1199]
+            nist: [AC-20, CA-3, SR-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: [SC-CS-03]
+            idn: []
+            ph: []
+            refs: [ATTACK, M-TRENDS]
+            severity: 상
+            severity_why: MSP·원격 관리·연동 토큰 등 신뢰 경로로 들어와 다수 하위 고객을 한 번에 침해 — 정상 관리 트래픽이라 레거시 탐지가 어렵고 피해가 연쇄됨
+
+  # =========================================================================
+  - code: EX
+    ko: 실행
+    en: Execution
+    desc: PowerShell·WMI·LOLBin·네이티브 API 등 서명된 정상 도구·파일리스 실행 — 시그니처가 아니라 행위 맥락으로만 탐지되는 레거시 공백
+    excludes: 클라우드 제어 평면 명령은 CL(연계)
+    lv2:
+      - id: ENT-EX-01
+        name: 명령·스크립트 인터프리터 악용
+        lv3:
+          - id: ENT-EX-01.1
+            name: PowerShell 악용(파일리스 실행)
+            en: PowerShell abuse (fileless execution)
+            tactic: 실행
+            legacy_gap: [파일리스·인메모리, 서명된 정상 도구 악용]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후, 사이버범죄]
+            platforms: [Windows]
+            attack: [T1059.001]
+            lolbas: true
+            nist: [SI-3, SI-4, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK, LOLBAS]
+            severity: 상
+            severity_why: 디스크에 악성 파일 없이 메모리에서 실행돼 시그니처 AV가 탐지하지 못함 — 사람 운영 랜섬웨어·국가배후 작전 전반의 기본 실행 수단
+          - id: ENT-EX-01.2
+            name: Windows 관리 도구(WMI) 악용
+            en: Windows Management Instrumentation abuse
+            tactic: 실행
+            legacy_gap: [파일리스·인메모리, 서명된 정상 도구 악용]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1047]
+            nist: [SI-4, CM-7, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 관리 기능을 써서 실행·측면 이동·수집에 쓰이나, 단독 피해보다 다른 단계를 잇는 수단
+      - id: ENT-EX-03
+        name: 서명된 정상 바이너리 프록시 실행(LOLBin)
+        lv3:
+          - id: ENT-EX-03
+            name: 서명된 정상 바이너리 프록시 실행(LOLBin)
+            en: Signed binary proxy execution (LOLBins)
+            tactic: 실행
+            legacy_gap: [서명된 정상 도구 악용, 시그니처 회피]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows]
+            attack: [T1218]
+            lolbas: true
+            nist: [CM-7, SI-4, SI-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [LOLBAS, ATTACK]
+            severity: 상
+            severity_why: OS에 서명·내장된 정상 바이너리(rundll32·mshta·regsvr32 등)로 악성 코드를 대리 실행 — 허용 목록·서명 검증을 통과해 레거시 통제가 구분하지 못함
+      - id: ENT-EX-04
+        name: 네이티브 API·시스템 서비스 실행
+        lv3:
+          - id: ENT-EX-04
+            name: 네이티브 API·시스템 서비스 실행
+            en: Native API and system service execution
+            tactic: 실행
+            legacy_gap: [파일리스·인메모리, 서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1106, T1569.002]
+            nist: [SI-4, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: API 직접 호출·서비스 실행으로 중간 도구를 거치지 않아 후킹 기반 탐지를 우회하나, 피해는 후속 단계에서 발생
+
+  # =========================================================================
+  - code: PE
+    ko: 지속
+    en: Persistence
+    desc: 서비스·드라이버·부팅/로그온·예약 작업·계정 조작으로 재부팅·로그아웃 후에도 접근을 유지 — 정상 OS 메커니즘이라 레거시가 악용과 구분하기 어려움
+    excludes: 클라우드 지속성은 CL · 신원 기반 지속성(백도어 계정·MFA 등록)은 ID(연계)
+    lv2:
+      - id: ENT-PE-01
+        name: 서비스 생성·수정
+        lv3:
+          - id: ENT-PE-01
+            name: 윈도우 서비스 생성·수정
+            en: Create or modify Windows service
+            tactic: 지속
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1543.003]
+            nist: [SI-4, CM-7, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 서비스 등록 메커니즘을 써서 지속·권한 상승에 쓰이나 단독 피해는 제한적
+      - id: ENT-PE-02
+        name: 부팅·로그온 자동 실행
+        lv3:
+          - id: ENT-PE-02
+            name: 부팅·로그온 자동 실행(레지스트리·시작 폴더)
+            en: Boot or logon autostart execution
+            tactic: 지속
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [국가배후, 사이버범죄]
+            platforms: [Windows]
+            attack: [T1547]
+            nist: [SI-4, SI-7, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 재부팅·로그온 시 자동 실행으로 접근을 유지하나 피해는 후속 단계에서 발생
+      - id: ENT-PE-03
+        name: 예약 작업·잡
+        lv3:
+          - id: ENT-PE-03
+            name: 예약 작업(스케줄드 태스크)
+            en: Scheduled task
+            tactic: 지속
+            legacy_gap: [서명된 정상 도구 악용, 파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1053.005]
+            nist: [SI-4, CM-7, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 스케줄러로 지속·주기 실행을 확보하나 단독 피해는 제한적
+      - id: ENT-PE-04
+        name: 계정 조작·숨은 계정
+        lv3:
+          - id: ENT-PE-04
+            name: 계정 조작·숨은 로컬 계정
+            en: Account manipulation / hidden accounts
+            tactic: 지속
+            legacy_gap: [정상 인증 위장]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1098]
+            nist: [AC-2, IA-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-PE-02]
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 계정·권한을 추가·변경해 지속 접근을 확보 — 신원 매트릭스의 신원 기반 지속성과 연계되며 로그만으로는 악용 구분이 어려움
+
+  # =========================================================================
+  - code: PV
+    ko: 권한 상승
+    en: Privilege Escalation
+    desc: 프로세스 인젝션·토큰 조작·UAC 우회·취약점 악용으로 권한을 높임 — 인메모리·정상 메커니즘이라 레거시가 탐지하기 어려움
+    excludes: 클라우드 역할 상승은 CL(연계)
+    lv2:
+      - id: ENT-PV-01
+        name: 프로세스·토큰 조작
+        lv3:
+          - id: ENT-PV-01.1
+            name: 프로세스 인젝션(인메모리 코드 주입)
+            en: Process injection
+            tactic: 권한 상승
+            legacy_gap: [파일리스·인메모리, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows, Linux]
+            attack: [T1055]
+            nist: [SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 정상 프로세스 메모리에 코드를 주입해 실행·은닉·권한 상승 — 디스크 산출물이 없어 시그니처가 탐지하지 못하고 거의 모든 고급 악성코드가 사용
+          - id: ENT-PV-01.2
+            name: 접근 토큰 조작
+            en: Access token manipulation
+            tactic: 권한 상승
+            legacy_gap: [정상 인증 위장, 파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1134]
+            nist: [AC-6, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 토큰 복제·가장으로 다른 사용자 권한을 사용하나 피해는 후속 단계에서 커짐
+      - id: ENT-PV-03
+        name: UAC 우회
+        lv3:
+          - id: ENT-PV-03
+            name: 사용자 계정 컨트롤(UAC) 우회
+            en: Bypass User Account Control
+            tactic: 권한 상승
+            legacy_gap: [서명된 정상 도구 악용, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [사이버범죄, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1548.002]
+            nist: [AC-6, SI-4, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 자동 상승 바이너리를 악용해 UAC를 우회하나 단독 피해는 제한적
+      - id: ENT-PV-04
+        name: 권한 상승 취약점 악용
+        lv3:
+          - id: ENT-PV-04
+            name: 권한 상승 취약점 악용(로컬·커널)
+            en: Exploitation for privilege escalation
+            tactic: 권한 상승
+            legacy_gap: [커널·펌웨어 하위 계층, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows, Linux]
+            attack: [T1068]
+            kev: true
+            loldriver: true
+            nist: [RA-5, SI-2, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [KEV-CAT, LOLDRIVERS]
+            severity: 상
+            severity_why: 로컬·커널 취약점(또는 BYOVD 취약 드라이버)으로 SYSTEM·커널 권한을 획득 — 하위 계층이라 상위 보안 도구가 무력화되고 KEV 등재 다수
+
+  # =========================================================================
+  - code: DE
+    ko: 방어 회피
+    en: Defense Evasion
+    desc: EDR 변조·BYOVD·지표 삭제·위장·난독화·인메모리·루트킷·펌웨어 — 레거시가 체계적으로 공백인 영역(ATT&CK 미커버 148개 중 다수)
+    excludes: 클라우드 로그 무력화는 CL · AI 기반 적대적 회피는 AI(연계)
+    lv2:
+      - id: ENT-DE-01
+        name: 보안 도구 무력화·드라이버 로드
+        lv3:
+          - id: ENT-DE-01.1
+            name: 보안 도구 무력화(EDR 변조·BYOVD EDR 킬러)
+            en: Impair/disable security tools (EDR tampering, BYOVD killers)
+            tactic: 방어 회피
+            legacy_gap: [커널·펌웨어 하위 계층, 서명된 정상 도구 악용]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1685, T1547.006]
+            loldriver: true
+            nist: [SI-4, SI-7, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [LOLDRIVERS, HIVE-BYOVD]
+            severity: 상
+            severity_why: 서명된 취약 드라이버를 올려 EDR·백신을 커널에서 무력화 — 보안 도구 자체가 꺼지므로 이후 단계가 전부 가려짐. 랜섬웨어·국가배후가 공유하는 EDR 킬러 다수
+          - id: ENT-DE-01.2
+            name: 취약·악성 드라이버 로드(커널)
+            en: Load vulnerable/malicious kernel driver
+            tactic: 방어 회피
+            legacy_gap: [커널·펌웨어 하위 계층]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1547.006]
+            loldriver: true
+            nist: [SI-7, CM-7, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [LOLDRIVERS]
+            severity: 상
+            severity_why: 커널 계층에 드라이버를 올려 은닉·무력화의 토대를 만듦 — 상위 보안 제품이 보지 못하는 하위 계층
+      - id: ENT-DE-03
+        name: 지표 삭제
+        lv3:
+          - id: ENT-DE-03
+            name: 지표 삭제(이벤트 로그·파일 삭제)
+            en: Indicator removal (clear event logs, file deletion)
+            tactic: 방어 회피
+            legacy_gap: [시그니처 회피]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows, Linux]
+            attack: [T1070, T1070.004, T1685.005]
+            nist: [AU-9, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 이벤트 로그·파일을 지워 레거시 SIEM 탐지·사후 분석을 무력화 — 원격·불변 로그가 없으면 흔적이 사라짐
+      - id: ENT-DE-04
+        name: 위장(정상 이름·서명)
+        lv3:
+          - id: ENT-DE-04
+            name: 위장(정상 이름·경로·서명 가장)
+            en: Masquerading
+            tactic: 방어 회피
+            legacy_gap: [서명된 정상 도구 악용, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1036]
+            nist: [SI-4, SI-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 프로세스·경로·서명으로 위장해 눈과 규칙 기반 탐지를 피하나 단독 피해는 제한적
+      - id: ENT-DE-05
+        name: 파일·정보 난독화
+        lv3:
+          - id: ENT-DE-05
+            name: 파일·정보 난독화·암호화
+            en: Obfuscated files or information
+            tactic: 방어 회피
+            legacy_gap: [시그니처 회피, 파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [사이버범죄, 랜섬웨어, 국가배후]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1027]
+            nist: [SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 패킹·인코딩·암호화로 시그니처·정적 분석을 회피 — 변종 양산으로 레거시 AV를 지속 우회
+      - id: ENT-DE-06
+        name: 인메모리·반사 로딩
+        lv3:
+          - id: ENT-DE-06
+            name: 인메모리·반사 코드 로딩
+            en: In-memory / reflective code loading
+            tactic: 방어 회피
+            legacy_gap: [파일리스·인메모리, 시그니처 회피]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1620]
+            nist: [SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 디스크를 거치지 않고 메모리에서 페이로드를 로드·실행 — 파일 기반 AV·시그니처가 원천적으로 보지 못함
+      - id: ENT-DE-07
+        name: 루트킷
+        lv3:
+          - id: ENT-DE-07
+            name: 루트킷(사용자·커널 은폐)
+            en: Rootkit
+            tactic: 방어 회피
+            legacy_gap: [커널·펌웨어 하위 계층, 파일리스·인메모리]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1014]
+            nist: [SI-7, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 프로세스·파일·연결을 하위 계층에서 숨겨 탐지·분석을 근본적으로 방해 — 레거시로는 존재 자체를 알기 어려움
+      - id: ENT-DE-08
+        name: 펌웨어·부트 수준 은닉
+        lv3:
+          - id: ENT-DE-08
+            name: 펌웨어·부트킷(UEFI) 지속·은닉
+            en: Pre-OS boot / firmware implant (bootkit)
+            tactic: 방어 회피
+            legacy_gap: [커널·펌웨어 하위 계층]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후]
+            platforms: [펌웨어, Windows]
+            attack: [T1542]
+            nist: [SI-7, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: OS 아래 펌웨어·부트 단계에 심어져 재설치·디스크 교체에도 살아남고 OS 보안 제품이 보지 못함 — 사실상 레거시·EDR 모두 공백
+
+  # =========================================================================
+  - code: CA
+    ko: 자격증명 접근
+    en: Credential Access
+    desc: LSASS 덤프·캐시 자격증명·Kerberoasting·입력 캡처로 호스트·도메인 자격증명을 탈취 — 이후 정상 인증으로 확산하는 발판
+    excludes: 저장·노출된 비밀·토큰 재사용은 ID(연계)
+    lv2:
+      - id: ENT-CA-01
+        name: OS 자격증명 덤프
+        lv3:
+          - id: ENT-CA-01.1
+            name: OS 자격증명 덤프(LSASS 메모리)
+            en: OS credential dumping (LSASS memory)
+            tactic: 자격증명 접근
+            legacy_gap: [파일리스·인메모리, 서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후, 사이버범죄]
+            platforms: [Windows]
+            attack: [T1003.001]
+            nist: [SI-4, AC-6, IA-5]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: LSASS 메모리에서 평문·해시 자격증명을 추출해 도메인 확산의 발판을 마련 — 정상 프로세스 접근이라 레거시가 구분하지 못함
+          - id: ENT-CA-01.2
+            name: 캐시된 도메인 자격증명 추출
+            en: Cached domain credentials
+            tactic: 자격증명 접근
+            legacy_gap: [파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1003.005]
+            nist: [SI-4, AC-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 오프라인으로 캐시 자격증명을 깨 추가 계정을 확보하나 피해는 확산 단계에서 커짐
+      - id: ENT-CA-03
+        name: Kerberos 자격증명 공격
+        lv3:
+          - id: ENT-CA-03
+            name: Kerberoasting·AS-REP 로스팅
+            en: Kerberoasting / AS-REP roasting
+            tactic: 자격증명 접근
+            legacy_gap: [정상 인증 위장]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1558.003]
+            nist: [SI-4, AC-6, IA-5]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-TS-02]
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 정상 Kerberos 요청으로 서비스 계정 해시를 받아 오프라인에서 크랙 — 정상 인증 트래픽이라 레거시가 탐지하지 못하고 도메인 권한 계정으로 직결
+      - id: ENT-CA-04
+        name: 입력 캡처·키로깅
+        lv3:
+          - id: ENT-CA-04
+            name: 입력 캡처·키로깅
+            en: Input capture / keylogging
+            tactic: 자격증명 접근
+            legacy_gap: [파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [국가배후, 사이버범죄]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1056.001]
+            nist: [SI-4, AC-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 키 입력·자격증명을 가로채나 수집 속도·범위가 제한적
+
+  # =========================================================================
+  - code: DI
+    ko: 탐색
+    en: Discovery
+    desc: 호스트·네트워크·AD 열거로 표적·경로를 파악 — 정상 질의라 레거시가 공백(미커버 49개 중 38개)
+    excludes: 클라우드 자원 탐색은 CL(연계)
+    lv2:
+      - id: ENT-DI-01
+        name: 호스트·시스템 정보 탐색
+        lv3:
+          - id: ENT-DI-01
+            name: 호스트·시스템·네트워크 구성 탐색
+            en: System/host and network configuration discovery
+            tactic: 탐색
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1082, T1016, T1033]
+            nist: [SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 명령으로 환경을 파악해 확산·영향 계획의 토대가 되나 단독 피해는 없음
+      - id: ENT-DI-02
+        name: 도메인·AD 열거
+        lv3:
+          - id: ENT-DI-02
+            name: 도메인·AD 열거(계정·신뢰·공유)
+            en: Domain/Active Directory enumeration
+            tactic: 탐색
+            legacy_gap: [정상 인증 위장, 서명된 정상 도구 악용]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1087.002, T1018, T1482]
+            nist: [SI-4, AC-6, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 LDAP·AD 질의로 공격 경로(관리자·신뢰·공유)를 지도화 — 정상 트래픽이라 탐지가 어렵고 사람 운영 랜섬웨어의 핵심 정찰
+      - id: ENT-DI-03
+        name: 보안 소프트웨어 탐색
+        lv3:
+          - id: ENT-DI-03
+            name: 보안 소프트웨어·방어 환경 탐색
+            en: Security software discovery
+            tactic: 탐색
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1518.001]
+            nist: [SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 하
+            severity_why: 설치된 보안 제품을 확인해 회피·무력화를 준비하는 사전 단계로 직접 피해는 없음
+
+  # =========================================================================
+  - code: LM
+    ko: 측면 이동
+    en: Lateral Movement
+    desc: 원격 서비스·대체 인증 자료·도구 전송·원격 취약점으로 내부 확산 — 정상 프로토콜·인증을 써 레거시가 구분하기 어려움
+    excludes: 토큰·티켓 위조 등 신원 전용은 ID(연계)
+    lv2:
+      - id: ENT-LM-01
+        name: 원격 서비스 악용(RDP·SMB·WinRM)
+        lv3:
+          - id: ENT-LM-01
+            name: 원격 서비스 악용(RDP·SMB·WinRM)
+            en: Remote services (RDP/SMB/WinRM)
+            tactic: 측면 이동
+            legacy_gap: [정상 인증 위장, 암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1021.001, T1021.002, T1021.006]
+            nist: [AC-17, SI-4, SC-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK, M-TRENDS]
+            severity: 상
+            severity_why: 정상 원격 관리 프로토콜로 자격증명을 써 호스트 간 확산 — 정상 인증·세션이라 레거시가 악용과 구분하지 못하고 랜섬웨어 전개의 주 경로
+      - id: ENT-LM-02
+        name: 대체 인증 자료 사용(PtH·PtT)
+        lv3:
+          - id: ENT-LM-02
+            name: 대체 인증 자료 사용(Pass-the-Hash·Pass-the-Ticket)
+            en: Use alternate authentication material (PtH/PtT)
+            tactic: 측면 이동
+            legacy_gap: [정상 인증 위장]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1550.002, T1550.003]
+            nist: [IA-2, AC-6, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: [ID-TS-02]
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 평문 암호 없이 해시·티켓으로 인증해 확산 — 정상 인증으로 보여 레거시가 탐지하지 못하고 도메인 장악으로 직결
+      - id: ENT-LM-03
+        name: 측면 도구 전송
+        lv3:
+          - id: ENT-LM-03
+            name: 측면 도구 전송
+            en: Lateral tool transfer
+            tactic: 측면 이동
+            legacy_gap: [암호화·정상 채널 은닉, 서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows]
+            attack: [T1570]
+            nist: [SI-4, SC-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 내부 공유·세션으로 도구를 퍼뜨리나 피해는 실행·영향 단계에서 발생
+      - id: ENT-LM-04
+        name: 원격 서비스 취약점 악용(웜)
+        lv3:
+          - id: ENT-LM-04
+            name: 원격 서비스 취약점 악용(웜 확산)
+            en: Exploitation of remote services (worm)
+            tactic: 측면 이동
+            legacy_gap: [시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows, 네트워크]
+            attack: [T1210]
+            kev: true
+            nist: [RA-5, SI-2, SC-7]
+            ai: []
+            cl: []
+            ot: [OT-LM-06]
+            sc: []
+            idn: []
+            ph: []
+            refs: [KEV-CAT, ATTACK]
+            severity: 상
+            severity_why: 인증 없이 원격 서비스 취약점으로 자동 확산(웜) — 패치 전 대규모 전파로 조직 전반이 빠르게 침해됨
+
+  # =========================================================================
+  - code: CO
+    ko: 수집
+    en: Collection
+    desc: 로컬·공유 데이터 수집과 스테이징 — 반출 전 단계
+    excludes: 클라우드 스토리지·메일 수집은 CL(연계)
+    lv2:
+      - id: ENT-CO-01
+        name: 로컬·네트워크 공유 데이터 수집
+        lv3:
+          - id: ENT-CO-01
+            name: 로컬·네트워크 공유 데이터 수집
+            en: Data from local system and network shares
+            tactic: 수집
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1005, T1039]
+            nist: [SI-4, AC-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 반출 대상 데이터를 모으나 피해는 반출·영향 단계에서 실현
+      - id: ENT-CO-02
+        name: 데이터 스테이징·압축·암호화
+        lv3:
+          - id: ENT-CO-02
+            name: 수집 데이터 압축·암호화 스테이징
+            en: Archive/stage collected data
+            tactic: 수집
+            legacy_gap: [암호화·정상 채널 은닉, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1560, T1074]
+            nist: [SI-4, SC-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 반출 전 압축·암호화로 내용 검사를 피하나 단독 피해는 제한적
+
+  # =========================================================================
+  - code: C2
+    ko: 명령·제어
+    en: Command and Control
+    desc: 암호화 채널·정상 포트·웹 서비스·도메인 프런팅·프록시·DNS로 통제 트래픽을 숨김 — 레거시가 거의 공백(미커버 45개 중 43개)
+    excludes: 클라우드 서비스 경유 C2는 CL · AI 서비스 경유 C2는 AI(연계)
+    lv2:
+      - id: ENT-C2-01
+        name: 암호화 채널·정상 프로토콜 위장
+        lv3:
+          - id: ENT-C2-01.1
+            name: 암호화 채널·비표준/정상 포트 위장 C2
+            en: Encrypted channel / non-standard or common port C2
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows, Linux, 네트워크]
+            attack: [T1573, T1571]
+            nist: [SC-7, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: TLS 등으로 암호화해 정상 트래픽에 섞임 — 레거시 IDS·방화벽이 내용을 보지 못해 C2 식별이 사실상 불가
+          - id: ENT-C2-01.2
+            name: 응용 계층 프로토콜(HTTPS) C2
+            en: Application layer protocol (HTTPS) C2
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows, Linux, 네트워크]
+            attack: [T1071.001]
+            nist: [SC-7, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 정상 웹 트래픽처럼 보이는 HTTPS로 통제돼 포트·프로토콜 기반 통제를 통과 — 행위·네트워크 분석 없이는 구분 불가
+      - id: ENT-C2-03
+        name: 웹 서비스·정상 플랫폼 경유 C2
+        lv3:
+          - id: ENT-C2-03
+            name: 정상 웹 서비스·클라우드 플랫폼 경유 C2
+            en: Web service / legitimate platform C2
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉, 신뢰·공급 관계 경유]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 사이버범죄]
+            platforms: [Windows, 네트워크]
+            attack: [T1102]
+            nist: [SC-7, SI-4]
+            ai: [AI-01-09]
+            cl: [CL-C2-01]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: GitHub·클라우드·협업 SaaS 등 신뢰 도메인을 C2 중계로 악용 — 차단하면 업무가 끊겨 레거시 차단·탐지가 어려움
+      - id: ENT-C2-04
+        name: 도메인 프런팅·프록시
+        lv3:
+          - id: ENT-C2-04
+            name: 도메인 프런팅·다단계 프록시
+            en: Domain fronting / multi-hop proxy
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후]
+            platforms: [네트워크, Windows]
+            attack: [T1090.004, T1090]
+            nist: [SC-7, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 신뢰 CDN·프록시 뒤로 실제 C2를 숨겨 도메인·IP 기반 차단을 우회하나 탐지·차단 수단이 일부 존재
+      - id: ENT-C2-05
+        name: 인그레스 도구 전송
+        lv3:
+          - id: ENT-C2-05
+            name: 인그레스 도구 전송(페이로드 반입)
+            en: Ingress tool transfer
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉, 서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 국가배후, 사이버범죄]
+            platforms: [Windows, Linux]
+            attack: [T1105]
+            lolbas: true
+            nist: [SC-7, SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK, LOLBAS]
+            severity: 중
+            severity_why: 정상 도구(certutil·curl 등)로 추가 페이로드를 내려받아 반입하나 피해는 후속 단계에서 발생
+      - id: ENT-C2-06
+        name: DNS 터널링
+        lv3:
+          - id: ENT-C2-06
+            name: DNS 경유 C2·터널링
+            en: DNS C2 / tunneling
+            tactic: 명령·제어
+            legacy_gap: [암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 사이버범죄]
+            platforms: [Windows, Linux, 네트워크]
+            attack: [T1071.004]
+            nist: [SC-7, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 거의 항상 허용되는 DNS에 통제·데이터를 실어 방화벽을 우회하나 질의 이상 탐지로 일부 포착 가능
+
+  # =========================================================================
+  - code: EF
+    ko: 반출
+    en: Exfiltration
+    desc: C2 채널·웹 서비스·대체 프로토콜로 데이터를 빼냄 — 정상 암호화 트래픽에 섞여 레거시 DLP·IDS가 놓침
+    excludes: 클라우드 계정 간 전송·미러링 반출은 CL(연계)
+    lv2:
+      - id: ENT-EF-01
+        name: C2 채널 경유 반출
+        lv3:
+          - id: ENT-EF-01
+            name: C2 채널 경유 반출
+            en: Exfiltration over C2 channel
+            tactic: 반출
+            legacy_gap: [암호화·정상 채널 은닉]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1041]
+            nist: [SC-7, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 기존 암호화 C2에 데이터를 실어 반출 — 별도 채널이 없어 레거시 DLP가 탐지하기 어렵고 이중협박 랜섬웨어의 유출 단계
+      - id: ENT-EF-02
+        name: 웹 서비스·대체 프로토콜 경유 반출
+        lv3:
+          - id: ENT-EF-02
+            name: 정상 웹 서비스·대체 프로토콜 경유 반출
+            en: Exfiltration over web service / alternative protocol
+            tactic: 반출
+            legacy_gap: [암호화·정상 채널 은닉, 신뢰·공급 관계 경유]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 국가배후, 사이버범죄]
+            platforms: [Windows, Linux]
+            attack: [T1567, T1048]
+            nist: [SC-7, SI-4]
+            ai: []
+            cl: [CL-EF-02]
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 클라우드 스토리지·정상 SaaS로 대량 반출 — 신뢰 도메인이라 차단·탐지가 어렵고 유출 규모가 큼
+
+  # =========================================================================
+  - code: IM
+    ko: 영향
+    en: Impact
+    desc: 암호화(랜섬웨어)·복구 방해·파괴·서비스 중지·갈취 — 레거시가 막지 못한 침해의 최종 피해
+    excludes: 클라우드·OT 영향은 CL·OT(연계)
+    lv2:
+      - id: ENT-IM-01
+        name: 데이터 암호화(랜섬웨어)
+        lv3:
+          - id: ENT-IM-01
+            name: 데이터 암호화(사람 운영 랜섬웨어)
+            en: Data encrypted for impact (human-operated ransomware)
+            tactic: 영향
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 접근 브로커]
+            platforms: [Windows, Linux]
+            attack: [T1486]
+            nist: [SI-4, CP-9, CP-10]
+            ai: []
+            cl: [CL-IM-01]
+            ot: [OT-IM-02]
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK, SECURELIST-RANSOM]
+            severity: 상
+            severity_why: 사람 운영 랜섬웨어가 도메인 장악 후 전사 암호화 — 앞 단계가 레거시로 탐지되지 않아 암호화 시점에야 드러나 피해가 전면적
+      - id: ENT-IM-02
+        name: 복구 방해
+        lv3:
+          - id: ENT-IM-02
+            name: 복구 방해(섀도 카피·백업 삭제)
+            en: Inhibit system recovery
+            tactic: 영향
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어]
+            platforms: [Windows]
+            attack: [T1490]
+            nist: [CP-9, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 정상 도구로 섀도 카피·백업을 지워 복구를 막음 — 랜섬웨어 피해를 돌이킬 수 없게 만드는 결정적 단계
+      - id: ENT-IM-03
+        name: 데이터 파괴·와이퍼
+        lv3:
+          - id: ENT-IM-03
+            name: 데이터 파괴·와이퍼
+            en: Data destruction / wiper
+            tactic: 영향
+            legacy_gap: [서명된 정상 도구 악용, 커널·펌웨어 하위 계층]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 핵티비스트]
+            platforms: [Windows, Linux]
+            attack: [T1485, T1561]
+            nist: [SI-7, CP-9, SI-4]
+            ai: []
+            cl: []
+            ot: [OT-IR-01]
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 디스크·데이터를 파괴해 운영을 중단시킴 — 국가배후·핵티비스트의 파괴 작전으로 복구가 어렵고 피해가 전면적
+      - id: ENT-IM-04
+        name: 서비스 중지·시스템 종료
+        lv3:
+          - id: ENT-IM-04
+            name: 서비스 중지·시스템 종료/재시작
+            en: Service stop / system shutdown
+            tactic: 영향
+            legacy_gap: [서명된 정상 도구 악용]
+            defense_level: EDR·XDR
+            actors: [랜섬웨어, 핵티비스트]
+            platforms: [Windows, Linux]
+            attack: [T1489, T1529]
+            nist: [SI-4, CP-10]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 보안·백업·DB 서비스를 멈춰 암호화·파괴를 돕거나 가용성을 해치나 단독 피해는 복구 가능
+      - id: ENT-IM-05
+        name: 금전 탈취·갈취
+        lv3:
+          - id: ENT-IM-05
+            name: 금전 탈취·이중 협박 갈취
+            en: Financial theft / double-extortion
+            tactic: 영향
+            legacy_gap: [정상 인증 위장]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [랜섬웨어, 사이버범죄]
+            platforms: [Windows]
+            attack: [T1657]
+            nist: [SI-4, IR-4]
+            ai: []
+            cl: [CL-IM-05]
+            ot: []
+            sc: []
+            idn: [ID-IM-01]
+            ph: []
+            refs: [ATTACK]
+            severity: 상
+            severity_why: 반출 데이터 공개 협박·부정 이체로 금전 피해를 실현 — 이중 협박은 백업 복구로도 막지 못하고 대규모 금전·평판 피해로 직결

@@ -1,0 +1,600 @@
+# 고도화 엔터프라이즈 침해 사고 DB — 공개 출처 기반(정부·사법 발표, 피해기관 공지, 보안업체·연구기관 분석, 공신력 있는 보도)
+#
+# 범위(작업방향 4·D7): 호스트·엔드포인트·네트워크·C2·방어 회피·온프레미스 AD 인접 침해. 레거시로 막기 어려운 고도화·최근빈발 사례.
+# 필드
+#   id            ENI-NNN
+#   title/date/kind/verification/legal(선택)/region/sector/actor/actor_type/impact/summary
+#   ent           매핑 세부위협(data/taxonomy.yaml ENT-ID)
+#   attack_ref    (선택) ATT&CK 그룹·소프트웨어·캠페인 ID
+#   cve           (선택) 악용 CVE — reference/kev/ 목록과 대조(KEV 외면 비고)
+#   origin        (선택) 통합 v4.1 원장 키(재인용 추적)
+#   sources       '출처 | URL'
+# 집계 규칙(taxonomy_rules.py): 실제 사고 = kind ∈ {사고·캠페인·공시·사례연구(익명)} & verification ∉ {행위자 주장·논란·원인 번복}.
+#   정부 경보·위협인텔은 실사용 근거, 연구·시연은 실증 근거로만('중' 상한).
+
+# --- 국가배후 LotL·네트워크 침투 ---
+- id: ENI-001
+  title: Volt Typhoon의 LotL 기반 핵심 기반시설 장기 침투
+  date: "2024-02"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [에너지·기반시설, 통신·미디어]
+  actor: Volt Typhoon(중국 연계)
+  actor_type: [국가배후]
+  impact: [내부 접근 확보, 첩보·감시, 측면 이동·확산]
+  summary: >-
+    국가 연계 행위자가 노출된 경계 장비로 들어와 악성코드를 거의 쓰지 않고 내장 도구(LotL)만으로 정찰·자격증명 탈취·측면 이동을
+    수행하며 핵심 기반시설 네트워크에 장기 잠복했다. CISA 등은 EDR 없는 엣지 장비와 정상 도구 사용으로 레거시 탐지가 어려웠다고 밝혔다.
+  ent: [ENT-IA-01, ENT-EX-01.1, ENT-EX-03, ENT-DI-01, ENT-DI-02, ENT-CA-01.1, ENT-LM-01, ENT-DE-03]
+  attack_ref: [G1017]
+  sources:
+    - CISA(2024) PRC State-Sponsored Actors Compromise and Maintain Persistent Access (AA24-038A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a
+
+- id: ENI-002
+  title: APT28 인접 네트워크(Nearest Neighbor) 무선 경유 침투
+  date: "2024-11"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 미국
+  sector: [정부·군]
+  actor: APT28(러시아 GRU 연계)
+  actor_type: [국가배후]
+  impact: [내부 접근 확보, 첩보·감시]
+  summary: >-
+    국가 연계 행위자가 인접 조직을 거쳐 표적의 무선·네트워크 경로로 들어와 정상 자격증명과 원격 서비스를 이용해 이동했다.
+    경계 밖·비관리 경로와 정상 인증을 섞어 레거시 경계 통제가 탐지하지 못한 사례다.
+  ent: [ENT-IA-02, ENT-LM-01, ENT-LM-02, ENT-CA-03]
+  attack_ref: [C0051, G0007]
+  sources:
+    - Volexity(2024) The Nearest Neighbor Attack | https://www.volexity.com/blog/2024/11/22/the-nearest-neighbor-attack-how-a-russian-apt-weaponized-nearby-wi-fi-networks/
+
+# --- 경계·엣지 장비 취약점 대량 악용 ---
+- id: ENI-003
+  title: Citrix Bleed NetScaler 세션 토큰 탈취 대량 악용
+  date: "2023-10"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [다부문]
+  actor: LockBit 제휴·다수 행위자
+  actor_type: [랜섬웨어, 접근 브로커]
+  impact: [내부 접근 확보, 랜섬·암호화]
+  summary: >-
+    인터넷 노출 Citrix NetScaler 장비의 취약점으로 세션 정보를 탈취해 MFA를 우회하고 내부로 진입했다. 엣지 장비라 EDR이 없어
+    공개 직후 대량 악용으로 이어졌고 다수 랜섬웨어 침해의 초기 접근이 됐다.
+  ent: [ENT-IA-01]
+  cve: [CVE-2023-4966]
+  sources:
+    - CISA(2023) Threat Actors Exploiting Citrix CVE-2023-4966 (AA23-325A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-325a
+
+- id: ENI-004
+  title: Cl0p의 MOVEit Transfer 0-day 대량 데이터 탈취
+  date: "2023-06"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: Cl0p(FIN11 연계)
+  actor_type: [랜섬웨어, 사이버범죄]
+  impact: [데이터 유출, 금전 피해]
+  summary: >-
+    파일전송 장비 MOVEit Transfer의 공개 전 취약점으로 수백 개 조직에서 데이터를 대량 반출하고 유출 협박으로 갈취했다.
+    경계 밖 파일전송 어플라이언스를 노려 레거시 통제를 우회한 대표적 엣지 0-day 캠페인이다.
+  ent: [ENT-IA-01, ENT-EF-02, ENT-IM-05]
+  cve: [CVE-2023-34362]
+  sources:
+    - CISA(2023) CL0P Ransomware Gang Exploits MOVEit Vulnerability (AA23-158A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a
+
+- id: ENI-005
+  title: Fortinet FortiOS SSL-VPN 취약점 악용
+  date: "2024-02"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(국가배후·랜섬웨어)
+  actor_type: [국가배후, 랜섬웨어, 접근 브로커]
+  impact: [내부 접근 확보]
+  summary: >-
+    인터넷 노출 FortiOS SSL-VPN의 취약점으로 인증 없이 경계 안으로 진입했다. 엣지 VPN 장비는 EDR이 깔리지 않아 공개 즉시 악용되는
+    빠른 n-day·0-day의 단골 표적이다.
+  ent: [ENT-IA-01]
+  cve: [CVE-2024-21762, CVE-2022-42475, CVE-2023-27997]
+  sources:
+    - CISA(2024) KEV — Fortinet FortiOS Out-of-bound Write (CVE-2024-21762) | https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+
+- id: ENI-006
+  title: Ivanti Connect Secure VPN 연쇄 0-day 악용
+  date: "2024-01"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [정부·군, 다부문]
+  actor: 국가배후·다수 행위자
+  actor_type: [국가배후, 접근 브로커]
+  impact: [내부 접근 확보, 첩보·감시]
+  summary: >-
+    Ivanti Connect Secure VPN의 인증 우회·명령 주입 취약점을 엮어 경계 장비를 장악하고 내부로 진입했다. 2025년에도 추가 0-day가
+    대량 악용돼 엣지 장비 공백이 반복 확인됐다.
+  ent: [ENT-IA-01]
+  cve: [CVE-2023-46805, CVE-2024-21887, CVE-2025-0282]
+  sources:
+    - CISA(2024) Ivanti Connect Secure and Policy Secure Exploitation (AA24-016A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-016a
+
+- id: ENI-007
+  title: Cisco IOS XE 웹 UI 취약점 대량 임플란트 설치
+  date: "2023-10"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 미상
+  actor_type: [국가배후, 접근 브로커]
+  impact: [내부 접근 확보]
+  summary: >-
+    인터넷 노출 Cisco IOS XE 장비의 웹 UI 취약점으로 수만 대에 임플란트가 설치됐다. 네트워크 장비 자체가 표적이 돼 레거시·EDR 모두
+    탐지하지 못한 대규모 엣지 침해다.
+  ent: [ENT-IA-01]
+  cve: [CVE-2023-20198]
+  sources:
+    - Cisco Talos(2023) Active exploitation of Cisco IOS XE Web UI | https://blog.talosintelligence.com/active-exploitation-of-cisco-ios-xe-software-web-management-user-interface/
+
+- id: ENI-008
+  title: Palo Alto PAN-OS GlobalProtect 0-day 악용
+  date: "2024-04"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 미상(국가배후 추정)
+  actor_type: [국가배후, 접근 브로커]
+  impact: [내부 접근 확보]
+  summary: >-
+    인터넷 노출 PAN-OS GlobalProtect의 명령 주입 0-day로 방화벽을 장악하고 내부로 진입했다(Operation MidnightEclipse).
+    경계 방화벽 자체가 침투 경로가 된 사례다.
+  ent: [ENT-IA-01]
+  cve: [CVE-2024-3400]
+  sources:
+    - Unit 42(2024) Operation MidnightEclipse — PAN-OS CVE-2024-3400 | https://unit42.paloaltonetworks.com/cve-2024-3400/
+
+- id: ENI-009
+  title: ConnectWise ScreenConnect 취약점 경유 랜섬웨어
+  date: "2024-02"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수 랜섬웨어·브로커
+  actor_type: [랜섬웨어, 접근 브로커]
+  impact: [내부 접근 확보, 랜섬·암호화]
+  summary: >-
+    원격 관리 도구 ScreenConnect의 인증 우회 취약점으로 다운스트림 고객 환경에 대량 접근해 랜섬웨어를 배포했다. 신뢰된 원격 관리
+    경로를 경유해 레거시 통제를 우회했다.
+  ent: [ENT-IA-02, ENT-IA-05, ENT-IM-01]
+  cve: [CVE-2024-1709]
+  sources:
+    - CISA(2024) KEV — ConnectWise ScreenConnect Authentication Bypass | https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+
+- id: ENI-010
+  title: Cl0p의 Cleo 파일전송 취약점 대량 악용
+  date: "2024-12"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: Cl0p
+  actor_type: [랜섬웨어, 사이버범죄]
+  impact: [데이터 유출, 금전 피해]
+  summary: >-
+    파일전송 소프트웨어 Cleo의 취약점으로 여러 조직에서 데이터를 반출하고 갈취했다. MOVEit에 이어 파일전송 솔루션을 노린 반복 패턴이다.
+  ent: [ENT-IA-01, ENT-EF-02, ENT-IM-05]
+  cve: [CVE-2024-55956]
+  sources:
+    - Huntress(2024) Cleo mass exploitation | https://www.huntress.com/blog/threat-advisory-oh-no-cleo-cleo-software-actively-being-exploited-in-the-wild
+
+# --- 신뢰 관계·MSP ---
+- id: ENI-011
+  title: Kaseya VSA 공급·관리 도구 경유 대규모 랜섬웨어
+  date: "2021-07"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: REvil
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 내부 접근 확보]
+  summary: >-
+    원격 관리 플랫폼 Kaseya VSA의 취약점을 악용해 MSP를 경유한 신뢰 관계로 수백~수천 하위 고객에 랜섬웨어를 일괄 배포했다.
+    정상 관리 트래픽을 경유해 레거시 통제가 구분하지 못한 신뢰 관계 악용의 대표 사례다.
+  ent: [ENT-IA-05, ENT-IM-01]
+  cve: [CVE-2021-30116]
+  sources:
+    - CISA(2021) Kaseya VSA Supply-Chain Ransomware Attack | https://www.cisa.gov/news-events/alerts/2021/07/04/kaseya-vsa-supply-chain-ransomware-attack
+
+# --- 사람 운영 랜섬웨어 ---
+- id: ENI-012
+  title: Black Basta 사람 운영 랜섬웨어(LotL·BYOVD·AD 확산)
+  date: "2024-05"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [다부문, 의료·바이오]
+  actor: Black Basta
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 데이터 유출, 자격증명·비밀 탈취]
+  summary: >-
+    사람 운영 랜섬웨어가 초기 침투 후 PowerShell·정상 도구로 실행하고 LSASS 덤프·AD 열거로 도메인을 장악한 뒤 EDR을 무력화하고
+    전사 암호화했다. 앞 단계가 레거시로 탐지되지 않아 암호화 시점에야 드러났다.
+  ent: [ENT-EX-01.1, ENT-CA-01.1, ENT-DI-02, ENT-LM-01, ENT-DE-01.1, ENT-IM-01, ENT-IM-02]
+  attack_ref: [S1070]
+  sources:
+    - CISA(2024) StopRansomware — Black Basta (AA24-131A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-131a
+
+- id: ENI-013
+  title: Scattered Spider의 헬프데스크 사칭·EDR 회피 침투
+  date: "2023-11"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  region: 미국
+  sector: [금융·서비스, 통신·미디어, 숙박·여행]
+  actor: Scattered Spider
+  actor_type: [사이버범죄, 랜섬웨어, 접근 브로커]
+  impact: [내부 접근 확보, 랜섬·암호화, 데이터 유출]
+  summary: >-
+    사회공학으로 초기 접근을 얻은 뒤 정상 원격 관리 도구와 BYOVD로 EDR을 무력화하며 이동해 랜섬웨어·갈취로 이어졌다.
+    정상 도구·인증을 섞어 레거시·단순 EDR이 탐지하기 어려웠다.
+  ent: [ENT-IA-02, ENT-DE-01.1, ENT-LM-01, ENT-LM-03, ENT-IM-01]
+  attack_ref: [G1015]
+  sources:
+    - CISA(2023) Scattered Spider (AA23-320A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a
+
+- id: ENI-014
+  title: Akira 랜섬웨어의 MFA 미적용 VPN 경유 침투
+  date: "2024-04"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: Akira
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 데이터 유출]
+  summary: >-
+    MFA가 적용되지 않은 VPN 계정으로 정상 로그인해 진입한 뒤 자격증명을 탈취하고 원격 서비스로 확산해 암호화했다. 정상 인증 경로라
+    레거시가 악용과 구분하지 못했다.
+  ent: [ENT-IA-02, ENT-CA-01.1, ENT-LM-01, ENT-IM-01]
+  attack_ref: [G1024]
+  sources:
+    - CISA(2024) StopRansomware — Akira (AA24-109A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-109a
+
+- id: ENI-015
+  title: LockBit RaaS의 복구 방해·EDR 무력화 암호화
+  date: "2024-02"
+  kind: 캠페인
+  verification: 정부·사법 확인
+  legal: 기소
+  region: 글로벌
+  sector: [다부문]
+  actor: LockBit
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 서비스 중단]
+  summary: >-
+    제휴 모델 랜섬웨어가 암호화 직전 섀도 카피·백업을 지우고 보안 서비스를 중지해 복구를 막았다. 국제 공조로 인프라가 단속됐으나 변종이
+    이어졌다.
+  ent: [ENT-IM-01, ENT-IM-02, ENT-IM-04, ENT-DE-01.1]
+  attack_ref: [S1202]
+  sources:
+    - CISA(2024) StopRansomware — LockBit 3.0 update / Operation Cronos | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-325a
+
+- id: ENI-016
+  title: RansomHub 제휴의 EDR 킬러(BYOVD) 사용
+  date: "2024-08"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: RansomHub 제휴(Scattered Spider 등 공유)
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 자격증명·비밀 탈취]
+  summary: >-
+    제휴가 서명된 취약 드라이버를 올려 EDR을 커널에서 무력화하는 전용 도구(EDRKillShifter)를 사용했다. 여러 랜섬웨어가 공유하는
+    BYOVD EDR 킬러가 보안 제품 자체를 꺼 이후 단계를 가렸다.
+  ent: [ENT-DE-01.1, ENT-DE-01.2, ENT-PV-04]
+  attack_ref: [S1212]
+  sources:
+    - Sophos(2024) EDRKillShifter — RansomHub affiliate BYOVD tool | https://news.sophos.com/en-us/2024/08/14/edr-kill-shifter/
+
+- id: ENI-017
+  title: 서명된 취약 드라이버 대량 변종 캠페인(TrueSight 등)
+  date: "2025-01"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(랜섬웨어·국가배후)
+  actor_type: [랜섬웨어, 국가배후]
+  impact: [내부 접근 확보]
+  summary: >-
+    공격자들이 서명된 취약 드라이버의 변종 수천 개를 돌려 가며 EDR·백신을 무력화했다. LOLDrivers 집계상 취약 드라이버가 수백 종에
+    이르러 커널 하위 계층 공백이 지속 악용된다.
+  ent: [ENT-DE-01.2, ENT-DE-01.1]
+  sources:
+    - Check Point(2025) The TrueSight driver BYOVD campaign | https://research.checkpoint.com/2025/large-scale-exploitation-of-legacy-driver/
+
+# --- 실행·LOLBin·파일리스·C2 ---
+- id: ENI-018
+  title: Cobalt Strike 비콘의 암호화 C2·프로세스 인젝션
+  date: "2023-01"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(랜섬웨어·국가배후)
+  actor_type: [랜섬웨어, 국가배후, 사이버범죄]
+  impact: [내부 접근 확보, 측면 이동·확산]
+  summary: >-
+    상용 침투 프레임워크 비콘이 프로세스 인젝션으로 메모리에서 실행되고 HTTPS·도메인 프런팅으로 암호화 C2를 유지했다. 정상 트래픽에
+    섞여 레거시 IDS·방화벽이 식별하지 못하는 대표적 고도화 도구다.
+  ent: [ENT-PV-01.1, ENT-C2-01.1, ENT-C2-01.2, ENT-C2-04, ENT-C2-05]
+  attack_ref: [S0154]
+  sources:
+    - Google Cloud(2022) Making Cobalt Strike harder for threat actors to abuse | https://cloud.google.com/blog/products/identity-security/making-cobalt-strike-harder-for-threat-actors-to-abuse
+
+- id: ENI-019
+  title: 서명된 정상 바이너리(LOLBin) 대리 실행 광범위 사용
+  date: "2023-03"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수
+  actor_type: [랜섬웨어, 국가배후, 사이버범죄]
+  impact: [내부 접근 확보]
+  summary: >-
+    공격자들이 OS에 서명·내장된 정상 바이너리(rundll32·mshta·regsvr32·certutil 등)로 악성 코드를 대리 실행하고 페이로드를
+    내려받았다. 허용 목록·서명 검증을 통과해 레거시 통제가 구분하지 못한다(LOLBAS 245개 수록).
+  ent: [ENT-EX-03, ENT-C2-05]
+  sources:
+    - LOLBAS Project(2026) Living Off The Land Binaries And Scripts | https://lolbas-project.github.io/
+
+- id: ENI-020
+  title: WMI·PowerShell 파일리스 실행·지속
+  date: "2023-05"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수
+  actor_type: [국가배후, 랜섬웨어]
+  impact: [내부 접근 확보]
+  summary: >-
+    공격자들이 PowerShell·WMI로 디스크에 파일을 남기지 않고 메모리에서 실행하며 예약 작업·레지스트리로 지속성을 확보했다. 시그니처
+    AV가 보지 못해 행위 맥락으로만 탐지된다.
+  ent: [ENT-EX-01.1, ENT-EX-01.2, ENT-PE-03, ENT-PE-02, ENT-DE-06]
+  sources:
+    - MITRE ATT&CK(2026) Command and Scripting Interpreter — PowerShell (T1059.001) | https://attack.mitre.org/techniques/T1059/001/
+
+# --- 웜·측면 이동·자격증명 ---
+- id: ENI-021
+  title: NotPetya의 자격증명 탈취·원격 취약점 웜 확산·파괴
+  date: "2017-06"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 유럽
+  sector: [다부문, 에너지·기반시설]
+  actor: Sandworm(러시아 GRU)
+  actor_type: [국가배후]
+  impact: [데이터 파괴, 서비스 중단, 측면 이동·확산]
+  summary: >-
+    공급망 침해로 시작해 자격증명 탈취와 원격 서비스 취약점(EternalBlue)으로 자동 확산한 뒤 디스크를 파괴했다. 정상 인증 재사용과
+    웜 확산으로 전 세계 기업에 수십억 달러 피해를 냈다.
+  ent: [ENT-CA-01.1, ENT-LM-02, ENT-LM-04, ENT-IM-03]
+  attack_ref: [S0368, G0034]
+  sources:
+    - CISA(2018) Russian Military 'NotPetya' Attribution | https://www.cisa.gov/news-events/alerts
+
+- id: ENI-022
+  title: WannaCry의 원격 취약점 웜 확산 랜섬웨어
+  date: "2017-05"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [의료·바이오, 다부문]
+  actor: Lazarus(북한 연계)
+  actor_type: [국가배후]
+  impact: [랜섬·암호화, 서비스 중단, 측면 이동·확산]
+  summary: >-
+    원격 서비스 취약점(EternalBlue)으로 패치되지 않은 호스트에 자동 확산하며 전 세계에서 암호화했다. 공개 직후 미패치 구간을 노린
+    웜 확산의 대표 사례다.
+  ent: [ENT-LM-04, ENT-IM-01]
+  attack_ref: [S0366]
+  cve: [CVE-2017-0144]
+  sources:
+    - CISA(2017) Indicators Associated With WannaCry Ransomware (TA17-132A) | https://www.cisa.gov/news-events/alerts/2017/05/12/indicators-associated-wannacry-ransomware
+
+- id: ENI-023
+  title: Kerberoasting을 통한 도메인 권한 계정 탈취
+  date: "2023-07"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(랜섬웨어·국가배후)
+  actor_type: [랜섬웨어, 국가배후]
+  impact: [자격증명·비밀 탈취, 측면 이동·확산]
+  summary: >-
+    공격자들이 정상 Kerberos 요청으로 서비스 계정 티켓을 받아 오프라인에서 크랙해 도메인 권한 계정을 확보했다. 정상 인증 트래픽이라
+    레거시가 탐지하지 못하고 사람 운영 랜섬웨어의 핵심 확산 발판이 됐다.
+  ent: [ENT-CA-03, ENT-DI-02]
+  sources:
+    - Microsoft(2023) Detecting and mitigating Kerberoasting | https://www.microsoft.com/en-us/security/blog/
+
+# --- 하위 계층·은닉 ---
+- id: ENI-024
+  title: BlackLotus UEFI 부트킷(보안 부팅 우회)
+  date: "2023-03"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 미상(지하 판매)
+  actor_type: [사이버범죄, 국가배후]
+  impact: [내부 접근 확보]
+  summary: >-
+    보안 부팅을 우회하는 UEFI 부트킷이 지하에서 판매·분석됐다. OS 아래 펌웨어·부트 단계에 심어져 재설치에도 살아남고 OS 보안 제품이
+    보지 못하는 하위 계층 공백을 보였다.
+  ent: [ENT-DE-08]
+  sources:
+    - ESET(2023) BlackLotus UEFI bootkit | https://www.welivesecurity.com/2023/03/01/blacklotus-uefi-bootkit-myth-confirmed/
+
+- id: ENI-025
+  title: 커널 루트킷을 통한 장기 은닉(국가배후)
+  date: "2022-01"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [정부·군, 통신·미디어]
+  actor: 미상(국가배후)
+  actor_type: [국가배후]
+  impact: [첩보·감시, 내부 접근 확보]
+  summary: >-
+    국가 연계 행위자가 커널 루트킷으로 프로세스·연결을 숨기며 장기 잠복했다. 하위 계층 은닉이라 레거시·일반 EDR이 존재 자체를 알기
+    어려운 사례다.
+  ent: [ENT-DE-07]
+  sources:
+    - Mandiant(2022) Rootkit persistence in espionage intrusions | https://cloud.google.com/security/resources/m-trends
+
+- id: ENI-026
+  title: 펌웨어 임플란트(LoJax/MoonBounce 계열)
+  date: "2022-01"
+  kind: 연구·시연
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [정부·군]
+  actor: 국가배후
+  actor_type: [국가배후]
+  impact: [내부 접근 확보]
+  summary: >-
+    UEFI 펌웨어에 임플란트를 심어 OS 재설치·디스크 교체에도 지속되는 기법이 분석됐다. 펌웨어 단계라 OS 보안 제품의 가시성 밖에 있다.
+  ent: [ENT-DE-08]
+  sources:
+    - Kaspersky(2022) MoonBounce UEFI firmware implant | https://securelist.com/moonbounce-the-dark-side-of-uefi-firmware/105468/
+
+# --- C2·반출·DNS·이동식 매체 ---
+- id: ENI-027
+  title: DNS 터널링 기반 은닉 C2·반출
+  date: "2023-09"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(국가배후·사이버범죄)
+  actor_type: [국가배후, 사이버범죄]
+  impact: [데이터 유출, 내부 접근 확보]
+  summary: >-
+    공격자들이 거의 항상 허용되는 DNS 질의에 통제·데이터를 실어 방화벽을 우회했다. 레거시 통제가 DNS 내용을 보지 않아 은닉 C2·반출에
+    쓰였다.
+  ent: [ENT-C2-06, ENT-EF-01]
+  sources:
+    - Unit 42(2023) DNS tunneling in the wild | https://unit42.paloaltonetworks.com/dns-tunneling-abuse/
+
+- id: ENI-028
+  title: 정상 웹 서비스(클라우드·협업) 경유 C2
+  date: "2024-03"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(국가배후)
+  actor_type: [국가배후, 사이버범죄]
+  impact: [내부 접근 확보, 데이터 유출]
+  summary: >-
+    공격자들이 GitHub·클라우드 스토리지·협업 SaaS 등 신뢰 도메인을 C2 중계·반출 경로로 악용했다. 차단하면 업무가 끊겨 레거시
+    차단·탐지가 어렵다.
+  ent: [ENT-C2-03, ENT-EF-02]
+  sources:
+    - Recorded Future(2024) Abuse of legitimate internet services for C2 | https://www.recordedfuture.com/
+
+- id: ENI-029
+  title: 이동식 매체(USB) 경유 격리망 침투·전파
+  date: "2023-06"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 유럽
+  sector: [정부·군, 에너지·기반시설]
+  actor: Gamaredon 등(러시아 연계)
+  actor_type: [국가배후]
+  impact: [내부 접근 확보, 측면 이동·확산]
+  summary: >-
+    국가 연계 행위자가 USB 등 이동식 매체로 망분리·격리망에 침투·전파했다. 경계 통제를 물리적으로 우회하는 경로다.
+  ent: [ENT-IA-04]
+  sources:
+    - ESET(2023) Gamaredon's USB-spreading tooling | https://www.welivesecurity.com/
+
+- id: ENI-030
+  title: 정부 경보 — 사람 운영 랜섬웨어의 레거시 우회 공통 TTP
+  date: "2025-03"
+  kind: 정부 경보
+  verification: 정부·사법 확인
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수 랜섬웨어
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화, 데이터 유출]
+  summary: >-
+    정부 기관이 사람 운영 랜섬웨어 공통 TTP를 경보했다 — 노출 서비스·VPN 초기 침투, LotL 실행, 자격증명 탈취·AD 열거, EDR 무력화,
+    복구 방해, 이중 협박 갈취. 레거시로 막기 어려운 단계가 반복됨을 공식 확인했다.
+  ent: [ENT-IA-02, ENT-EX-03, ENT-CA-01.1, ENT-DI-02, ENT-DE-01.1, ENT-IM-02, ENT-IM-05]
+  sources:
+    - CISA(2025) StopRansomware guidance update | https://www.cisa.gov/stopransomware
+
+- id: ENI-031
+  title: 데이터 스테이징·압축 후 C2 채널 반출(이중 협박)
+  date: "2024-06"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수 랜섬웨어
+  actor_type: [랜섬웨어]
+  impact: [데이터 유출, 금전 피해]
+  summary: >-
+    랜섬웨어 조직이 암호화 전에 로컬·공유에서 데이터를 모아 압축·암호화한 뒤 기존 C2 채널로 반출해 유출 협박에 썼다. 별도 채널이 없어
+    레거시 DLP가 탐지하기 어려웠다.
+  ent: [ENT-CO-01, ENT-CO-02, ENT-EF-01, ENT-IM-05]
+  sources:
+    - Securelist(2026) State of Ransomware 2026 — double extortion | https://securelist.com/state-of-ransomware-in-2026/119761/
+
+- id: ENI-032
+  title: UAC 우회·토큰 조작을 통한 로컬 권한 상승
+  date: "2023-08"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수
+  actor_type: [사이버범죄, 랜섬웨어]
+  impact: [내부 접근 확보]
+  summary: >-
+    공격자들이 정상 자동 상승 바이너리로 UAC를 우회하고 접근 토큰을 복제·가장해 권한을 높였다. 정상 메커니즘이라 레거시가 악용과
+    구분하지 못한다.
+  ent: [ENT-PV-03, ENT-PV-01.2, ENT-PE-01]
+  sources:
+    - MITRE ATT&CK(2026) Abuse Elevation Control Mechanism — Bypass UAC (T1548.002) | https://attack.mitre.org/techniques/T1548/002/
+
+- id: ENI-033
+  title: 지표 삭제·위장·난독화를 통한 사후 분석 방해
+  date: "2024-01"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 다수(국가배후·랜섬웨어)
+  actor_type: [국가배후, 랜섬웨어]
+  impact: [내부 접근 확보]
+  summary: >-
+    공격자들이 이벤트 로그를 지우고 정상 이름·경로로 위장하며 페이로드를 난독화해 레거시 SIEM 탐지와 사후 분석을 무력화했다. 원격·불변
+    로그가 없으면 흔적이 사라진다.
+  ent: [ENT-DE-03, ENT-DE-04, ENT-DE-05, ENT-CA-04]
+  sources:
+    - MITRE ATT&CK(2026) Indicator Removal (T1070) | https://attack.mitre.org/techniques/T1070/

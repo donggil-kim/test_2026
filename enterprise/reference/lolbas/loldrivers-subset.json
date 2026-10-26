@@ -1,0 +1,22 @@
+{
+"notice": "LOLBAS·LOLDrivers (© 각 프로젝트 기여자, MIT) — ID·명칭·분류·ATT&CK 매핑만 인용",
+"source": "LOLDrivers (loldrivers.io)",
+"count": 706,
+"category_counts": {
+"malicious": 125,
+"vulnerable driver": 581
+},
+"mitre_counts": {
+"T1068": 647,
+"T1562.001": 30,
+"T1014": 19,
+"T1562": 3,
+"T1542": 2,
+"T1542, T1068": 1,
+"T1547.006": 1,
+"T1685": 1,
+"T1056.001": 1,
+"T1134": 1
+},
+"note": "Category: vulnerable driver(취약 드라이버 BYOVD) / malicious(악성 드라이버). MitreID는 ATT&CK 기법"
+}

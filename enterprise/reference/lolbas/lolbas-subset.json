@@ -1,0 +1,1579 @@
+{
+"notice": "LOLBAS·LOLDrivers (© 각 프로젝트 기여자, MIT) — ID·명칭·분류·ATT&CK 매핑만 인용",
+"source": "LOLBAS (lolbas-project.github.io)",
+"count": 245,
+"category_counts": {
+"Execute": 159,
+"Download": 57,
+"AWL Bypass": 35,
+"ADS": 26,
+"Dump": 12,
+"Copy": 11,
+"UAC Bypass": 7,
+"Upload": 5,
+"Tamper": 4,
+"Credentials": 4,
+"Compile": 4,
+"Reconnaissance": 3,
+"Decode": 1,
+"Encode": 1,
+"Conceal": 1
+},
+"entries": {
+"AccCheckConsole.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/AccCheckConsole/"
+},
+"AddinUtil.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Addinutil/"
+},
+"Advpack.dll": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Advpack/"
+},
+"AgentExecutor.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Agentexecutor/"
+},
+"AppCert.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Appcert/"
+},
+"AppInstaller.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/AppInstaller/"
+},
+"AppLauncher.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/AppLauncher/"
+},
+"Applaunch.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Applaunch/"
+},
+"Appvlp.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Appvlp/"
+},
+"Aspnet_Compiler.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Aspnet_Compiler/"
+},
+"At.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/At/"
+},
+"Atbroker.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Atbroker/"
+},
+"Bash.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Bash/"
+},
+"Bcp.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Bcp/"
+},
+"Bginfo.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Bginfo/"
+},
+"Bitsadmin.exe": {
+"categories": [
+"ADS",
+"Copy",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Bitsadmin/"
+},
+"CL_Invocation.ps1": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Cl_invocation/"
+},
+"CL_LoadAssembly.ps1": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/CL_LoadAssembly/"
+},
+"CL_Mutexverifiers.ps1": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/CL_mutexverifiers/"
+},
+"Cdb.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Cdb/"
+},
+"CertOC.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Certoc/"
+},
+"CertReq.exe": {
+"categories": [
+"Download",
+"Upload"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Certreq/"
+},
+"Certutil.exe": {
+"categories": [
+"ADS",
+"Decode",
+"Download",
+"Encode"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Certutil/"
+},
+"Change.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Change/"
+},
+"Cipher.exe": {
+"categories": [
+"Tamper"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cipher/"
+},
+"Cmd.exe": {
+"categories": [
+"ADS",
+"Download",
+"Upload"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cmd/"
+},
+"Cmdkey.exe": {
+"categories": [
+"Credentials"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cmdkey/"
+},
+"Cmstp.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cmstp/"
+},
+"Colorcpl.exe": {
+"categories": [
+"Copy"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Colorcpl/"
+},
+"ComputerDefaults.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/ComputerDefaults/"
+},
+"Comsvcs.dll": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/comsvcs/"
+},
+"ConfigSecurityPolicy.exe": {
+"categories": [
+"Download",
+"Upload"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/ConfigSecurityPolicy/"
+},
+"Conhost.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Conhost/"
+},
+"Control.exe": {
+"categories": [
+"ADS",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Control/"
+},
+"Createdump.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Createdump/"
+},
+"Csc.exe": {
+"categories": [
+"Compile"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Csc/"
+},
+"Cscript.exe": {
+"categories": [
+"ADS"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cscript/"
+},
+"CustomShellHost.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/CustomShellHost/"
+},
+"DataSvcUtil.exe": {
+"categories": [
+"Upload"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/DataSvcUtil/"
+},
+"DbgSrv.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dbgsrv/"
+},
+"DefaultPack.EXE": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/DefaultPack/"
+},
+"Desk.cpl": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Desk/"
+},
+"Desktopimgdownldr.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Desktopimgdownldr/"
+},
+"DeviceCredentialDeployment.exe": {
+"categories": [
+"Conceal"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/DeviceCredentialDeployment/"
+},
+"Devinit.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Devinit/"
+},
+"Devtoolslauncher.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Devtoolslauncher/"
+},
+"Dfshim.dll": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Dfshim/"
+},
+"Dfsvc.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Dfsvc/"
+},
+"Diantz.exe": {
+"categories": [
+"ADS",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Diantz/"
+},
+"Diskshadow.exe": {
+"categories": [
+"Dump",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Diskshadow/"
+},
+"Dnscmd.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Dnscmd/"
+},
+"Dotnet.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dotnet/"
+},
+"Dump64.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dump64/"
+},
+"DumpMinitool.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/DumpMinitool/"
+},
+"Dxcap.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dxcap/"
+},
+"ECMangen.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/ECMangen/"
+},
+"Esentutl.exe": {
+"categories": [
+"ADS",
+"Copy",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Esentutl/"
+},
+"Eudcedit.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Eudcedit/"
+},
+"Eventvwr.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Eventvwr/"
+},
+"Excel.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Excel/"
+},
+"Expand.exe": {
+"categories": [
+"ADS",
+"Copy",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Expand/"
+},
+"Explorer.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Explorer/"
+},
+"Extexport.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Extexport/"
+},
+"Extrac32.exe": {
+"categories": [
+"ADS",
+"Copy",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Extrac32/"
+},
+"Findstr.exe": {
+"categories": [
+"ADS",
+"Credentials",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Findstr/"
+},
+"Finger.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Finger/"
+},
+"Forfiles.exe": {
+"categories": [
+"ADS",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Forfiles/"
+},
+"Fsi.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Fsi/"
+},
+"FsiAnyCpu.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/FsiAnyCpu/"
+},
+"Fsutil.exe": {
+"categories": [
+"Execute",
+"Tamper"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Fsutil/"
+},
+"Ftp.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ftp/"
+},
+"Gpscript.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Gpscript/"
+},
+"Hh.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Hh/"
+},
+"IMEWDBLD.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/IMEWDBLD/"
+},
+"Ie4uinit.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ie4uinit/"
+},
+"Ieadvpack.dll": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Ieadvpack/"
+},
+"Ieexec.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ieexec/"
+},
+"Ieframe.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Ieframe/"
+},
+"Ilasm.exe": {
+"categories": [
+"Compile"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ilasm/"
+},
+"Infdefaultinstall.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Infdefaultinstall/"
+},
+"Installutil.exe": {
+"categories": [
+"AWL Bypass",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Installutil/"
+},
+"IntelliTrace.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/IntelliTrace/"
+},
+"Jsc.exe": {
+"categories": [
+"Compile"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Jsc/"
+},
+"Launch-VsDevShell.ps1": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Launch-VsDevShell/"
+},
+"Ldifde.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ldifde/"
+},
+"Logger.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Logger/"
+},
+"MSAccess.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Msaccess/"
+},
+"Makecab.exe": {
+"categories": [
+"ADS",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Makecab/"
+},
+"Manage-bde.wsf": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Manage-bde/"
+},
+"Mavinject.exe": {
+"categories": [
+"ADS",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Mavinject/"
+},
+"Mftrace.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Mftrace/"
+},
+"Microsoft.NodejsTools.PressAnyKey.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Microsoft.NodejsTools.PressAnyKey/"
+},
+"Microsoft.Workflow.Compiler.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Microsoft.Workflow.Compiler/"
+},
+"Mmc.exe": {
+"categories": [
+"Download",
+"Execute",
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Mmc/"
+},
+"Mofcomp.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Mofcomp/"
+},
+"MpCmdRun.exe": {
+"categories": [
+"ADS",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/MpCmdRun/"
+},
+"Mpiexec.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Mpiexec/"
+},
+"Msbuild.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msbuild/"
+},
+"Msconfig.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msconfig/"
+},
+"Mscopilot.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Mscopilot/"
+},
+"Mscopilot_proxy.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Mscopilot_proxy/"
+},
+"Msdeploy.exe": {
+"categories": [
+"AWL Bypass",
+"Copy",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Msdeploy/"
+},
+"Msdt.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msdt/"
+},
+"Msedge.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msedge/"
+},
+"Mshta.exe": {
+"categories": [
+"ADS",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Mshta/"
+},
+"Mshtml.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Mshtml/"
+},
+"Msiexec.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msiexec/"
+},
+"MsoHtmEd.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/MsoHtmEd/"
+},
+"Mspub.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Mspub/"
+},
+"Netsh.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Netsh/"
+},
+"Ngen.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ngen/"
+},
+"Nmcap.exe": {
+"categories": [
+"Reconnaissance"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Nmcap/"
+},
+"Ntsd.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Ntsd/"
+},
+"Odbcconf.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/"
+},
+"OfflineScannerShell.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/OfflineScannerShell/"
+},
+"OneDriveStandaloneUpdater.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/OneDriveStandaloneUpdater/"
+},
+"OpenConsole.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/OpenConsole/"
+},
+"Outlook.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Outlook/"
+},
+"Pcalua.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Pcalua/"
+},
+"Pcwrun.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Pcwrun/"
+},
+"Pcwutl.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Pcwutl/"
+},
+"Pester.bat": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/pester/"
+},
+"PhotoViewer.dll": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/PhotoViewer/"
+},
+"Pixtool.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Pixtool/"
+},
+"Pktmon.exe": {
+"categories": [
+"Reconnaissance"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Pktmon/"
+},
+"Pnputil.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Pnputil/"
+},
+"Powerpnt.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Powerpnt/"
+},
+"Presentationhost.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Presentationhost/"
+},
+"Print.exe": {
+"categories": [
+"ADS",
+"Copy"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Print/"
+},
+"PrintBrm.exe": {
+"categories": [
+"ADS",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/PrintBrm/"
+},
+"Procdump.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Procdump/"
+},
+"ProtocolHandler.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/ProtocolHandler/"
+},
+"Provlaunch.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Provlaunch/"
+},
+"Psr.exe": {
+"categories": [
+"Reconnaissance"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Psr/"
+},
+"Pubprn.vbs": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Pubprn/"
+},
+"Query.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Query/"
+},
+"Rasautou.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Rasautou/"
+},
+"Reg.exe": {
+"categories": [
+"ADS",
+"Credentials"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Reg/"
+},
+"Regasm.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Regasm/"
+},
+"Regedit.exe": {
+"categories": [
+"ADS"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Regedit/"
+},
+"Regini.exe": {
+"categories": [
+"ADS"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Regini/"
+},
+"Register-cimprovider.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Register-cimprovider/"
+},
+"Regsvcs.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Regsvcs/"
+},
+"Regsvr32.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Regsvr32/"
+},
+"Remote.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Remote/"
+},
+"Replace.exe": {
+"categories": [
+"Copy",
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Replace/"
+},
+"Reset.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Reset/"
+},
+"Rpcping.exe": {
+"categories": [
+"Credentials"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Rpcping/"
+},
+"Rundll32.exe": {
+"categories": [
+"ADS",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Rundll32/"
+},
+"Runexehelper.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Runexehelper/"
+},
+"Runonce.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Runonce/"
+},
+"Runscripthelper.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Runscripthelper/"
+},
+"SQLToolsPS.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Sqltoolsps/"
+},
+"Sc.exe": {
+"categories": [
+"ADS"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Sc/"
+},
+"Schtasks.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Schtasks/"
+},
+"Scriptrunner.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Scriptrunner/"
+},
+"Scrobj.dll": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Scrobj/"
+},
+"Setres.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Setres/"
+},
+"SettingSyncHost.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/SettingSyncHost/"
+},
+"Setupapi.dll": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Setupapi/"
+},
+"Sftp.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Sftp/"
+},
+"Shdocvw.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Shdocvw/"
+},
+"Shell32.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Shell32/"
+},
+"Shimgvw.dll": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Shimgvw/"
+},
+"Sigverif.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Sigverif/"
+},
+"Sqldumper.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Sqldumper/"
+},
+"Sqlps.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Sqlps/"
+},
+"Squirrel.exe": {
+"categories": [
+"AWL Bypass",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Squirrel/"
+},
+"Stordiag.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Stordiag/"
+},
+"SyncAppvPublishingServer.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Syncappvpublishingserver/"
+},
+"Syncappvpublishingserver.vbs": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Syncappvpublishingserver/"
+},
+"Syssetup.dll": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Syssetup/"
+},
+"Tar.exe": {
+"categories": [
+"ADS",
+"Copy"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Tar/"
+},
+"Teams.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Teams/"
+},
+"TestWindowRemoteAgent.exe": {
+"categories": [
+"Upload"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Testwindowremoteagent/"
+},
+"Tracker.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Tracker/"
+},
+"Ttdinject.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ttdinject/"
+},
+"Tttracer.exe": {
+"categories": [
+"Dump",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Tttracer/"
+},
+"Unregmp2.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Unregmp2/"
+},
+"Update.exe": {
+"categories": [
+"AWL Bypass",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Update/"
+},
+"Url.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Url/"
+},
+"UtilityFunctions.ps1": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/UtilityFunctions/"
+},
+"VSDiagnostics.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/VSDiagnostics/"
+},
+"VSIISExeLauncher.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/VSIISExeLauncher/"
+},
+"VSLaunchBrowser.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/VsLaunchBrowser/"
+},
+"Verclsid.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Verclsid/"
+},
+"Visio.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Visio/"
+},
+"VisualUiaVerifyNative.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/VisualUiaVerifyNative/"
+},
+"Vshadow.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Vshadow/"
+},
+"Vssadmin.exe": {
+"categories": [
+"Tamper"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Vssadmin/"
+},
+"WFMFormat.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/WFMFormat/"
+},
+"Wab.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wab/"
+},
+"Wfc.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Wfc/"
+},
+"WinDbg.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/WinDbg/"
+},
+"WinProj.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Winproj/"
+},
+"Winword.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Winword/"
+},
+"Wlrmdr.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wlrmdr/"
+},
+"Wmic.exe": {
+"categories": [
+"ADS",
+"Copy",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wmic/"
+},
+"WorkFolders.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/WorkFolders/"
+},
+"Wscript.exe": {
+"categories": [
+"ADS"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wscript/"
+},
+"Wsl.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Wsl/"
+},
+"Wsreset.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wsreset/"
+},
+"XBootMgr.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/XBootMgr/"
+},
+"XBootMgrSleep.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/XBootMgrSleep/"
+},
+"Xwizard.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Xwizard/"
+},
+"Zipfldr.dll": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Libraries/Zipfldr/"
+},
+"adplus.exe": {
+"categories": [
+"Dump",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Adplus/"
+},
+"cmdl32.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Cmdl32/"
+},
+"coregen.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Coregen/"
+},
+"csi.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Csi/"
+},
+"devtunnel.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/devtunnels/"
+},
+"dnx.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dnx/"
+},
+"dotnet-counters.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/dotnet-counters/"
+},
+"dotnet-trace.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/dotnet-trace/"
+},
+"dsdbutil.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dsdbutil/"
+},
+"dtutil.exe": {
+"categories": [
+"Copy"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dtutil/"
+},
+"fltMC.exe": {
+"categories": [
+"Tamper"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/FltMC/"
+},
+"iediagcmd.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Iediagcmd/"
+},
+"iscsicpl.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Iscsicpl/"
+},
+"msedge_proxy.exe": {
+"categories": [
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/msedge_proxy/"
+},
+"msedgewebview2.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/msedgewebview2/"
+},
+"msoxmled.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Msoxmled/"
+},
+"msxsl.exe": {
+"categories": [
+"ADS",
+"AWL Bypass",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Msxsl/"
+},
+"ntdsutil.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Ntdsutil/"
+},
+"odbcad32.exe": {
+"categories": [
+"UAC Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/odbcad32/"
+},
+"rcsi.exe": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Rcsi/"
+},
+"rdrleakdiag.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Rdrleakdiag/"
+},
+"scp.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Scp/"
+},
+"setupugc.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/setupugc/"
+},
+"ssh.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Ssh/"
+},
+"te.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Te/"
+},
+"vbc.exe": {
+"categories": [
+"Compile"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Vbc/"
+},
+"vsjitdebugger.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Vsjitdebugger/"
+},
+"vsls-agent.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/vsls-agent/"
+},
+"vstest.console.exe": {
+"categories": [
+"AWL Bypass"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/vstest.console/"
+},
+"wbadmin.exe": {
+"categories": [
+"Dump"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wbadmin/"
+},
+"wbemtest.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wbemtest/"
+},
+"winfile.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/winfile/"
+},
+"winget.exe": {
+"categories": [
+"AWL Bypass",
+"Download",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Winget/"
+},
+"winrm.vbs": {
+"categories": [
+"AWL Bypass",
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Scripts/Winrm/"
+},
+"write.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/write/"
+},
+"wsb.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Wsb/"
+},
+"wt.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/wt/"
+},
+"wuauclt.exe": {
+"categories": [
+"Execute"
+],
+"url": "https://lolbas-project.github.io/lolbas/Binaries/Wuauclt/"
+},
+"xsd.exe": {
+"categories": [
+"Download"
+],
+"url": "https://lolbas-project.github.io/lolbas/OtherMSBinaries/xsd/"
+}
+}
+}
