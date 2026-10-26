@@ -114,14 +114,27 @@ for o in ROWS:
 
 
 # ===========================================================================
-# 위험 평가 (D4 — AI 역량 성숙도 보조 신호)
+# 위험 평가 (v3 P3 — 검토 6.1 렌즈 매트릭스 보조 규칙)
+#   · '상' = 실제 사고 가중 ≥2 그리고 서로 다른 행위자·캠페인 2개 이상(같은 캠페인 중복 집계 방지)
+#     - ai_use '확인' 실제 사고 1건, '추정' 0.5건으로 가중
+#   · '하' = 공격자 사용 1차 근거(실제 사고·위협인텔) 없음 + 성숙도 연구시연
+#   · ATLAS 사례는 대부분 'AI가 피해 대상'이라 발생가능성 독립 신호에서 제외(참고 열로만)
 # ===========================================================================
+def real_weight(x):
+    return len(x["confirmed"] & x["real"]) + 0.5 * len(x["presumed"] & x["real"])
+
+
+def distinct_sources(x):
+    # 실제 사고의 서로 다른 행위자·캠페인 수(같은 캠페인 중복 방지)
+    return len({(INC[i].get("actor") or INC[i]["id"]) for i in x["real"]})
+
+
 def likelihood(o, x):
-    if len(x["real"]) >= R.LIKELY_HIGH_REAL:
+    if real_weight(x) >= R.LIKELY_HIGH_REAL and distinct_sources(x) >= 2:
         return "상"
-    if x["real"] or x["intel"] or x["research"] or x["atlas_cases"] or o["maturity"] in ("실사용", "실증"):
+    if x["real"] or x["intel"] or o["maturity"] in ("실사용", "실증"):
         return "중"
-    return "하"
+    return "하"   # 공격자 사용 1차 근거 없음 + 성숙도 연구시연
 
 
 def evidence_level(o, x):
@@ -129,9 +142,20 @@ def evidence_level(o, x):
         return "실제 사고 확인"
     if o["maturity"] == "실사용" or x["intel"]:
         return "실사용 역량(성숙도)"
-    if o["maturity"] == "실증" or x["research"] or x["atlas_cases"]:
+    if o["maturity"] == "실증" or x["research"]:
         return "실증·공개 PoC"
     return "이론·연구 시연"
+
+
+def _likelihood_from(o, reals):
+    """주어진 실제 사고 집합으로 발생가능성 재계산(경계 플래그용)"""
+    w = len({i for i in reals if i in EV[o["id"]]["confirmed"]}) + 0.5 * len({i for i in reals if i in EV[o["id"]]["presumed"]})
+    src = len({(INC[i].get("actor") or INC[i]["id"]) for i in reals})
+    if w >= R.LIKELY_HIGH_REAL and src >= 2:
+        return "상"
+    if reals or EV[o["id"]]["intel"] or o["maturity"] in ("실사용", "실증"):
+        return "중"
+    return "하"
 
 
 for o in ROWS:
@@ -142,8 +166,22 @@ for o in ROWS:
     o["n_real"], o["n_recent"] = len(x["real"]), len(x["recent"])
     o["n_conf"], o["n_pres"] = len(x["confirmed"]), len(x["presumed"])
     o["n_intel"], o["n_research"], o["n_atlas"] = len(x["intel"]), len(x["research"]), len(x["atlas_cases"])
-    o["lk_why"] = (f"실제 사고 {o['n_real']}건(최근 {o['n_recent']}) · AI 활용 확인 {o['n_conf']}·추정 {o['n_pres']} · "
-                   f"위협인텔 {o['n_intel']} · 실증·연구 {o['n_research']} · ATLAS 사례 {o['n_atlas']} · 역량 성숙도 {o['maturity']}")
+    o["n_sources"] = distinct_sources(x)
+    o["rw"] = real_weight(x)
+    # 경계 플래그: 실제 사고 1건을 빼면 발생가능성 등급이 내려가는 행(단일·경계 근거에 기댄 등급)
+    o["boundary"] = ""
+    for drop in sorted(x["real"]):
+        if _likelihood_from(o, x["real"] - {drop}) != o["likelihood"]:
+            o["boundary"] = "경계"
+            break
+    # 성숙도 자동 산출(공격자 사용 근거 기준) — 수기 값과 다르면 표시
+    att = [INC[i] for i in (x["real"] | x["intel"]) if not INC[i].get("capability_indicator")]
+    o["maturity_auto"] = max((e.get("maturity") for e in att), key=lambda m: R.MATURITY_RANK.get(m, 0), default="")
+    o["maturity_flag"] = "≠수기" if o["maturity_auto"] and o["maturity_auto"] != o["maturity"] else ""
+    o["lk_why"] = (f"실제 사고 {o['n_real']}건(확인 {o['n_conf']}·추정 {o['n_pres']}, 가중 {o['rw']:g}, 서로 다른 행위자·캠페인 {o['n_sources']}) · "
+                   f"위협인텔 {o['n_intel']} · 실증·연구 {o['n_research']} · 역량 성숙도 {o['maturity']}"
+                   + (f"(자동 {o['maturity_auto']})" if o["maturity_flag"] else "")
+                   + (f" · ATLAS 사례 {o['n_atlas']}(참고)" if o["n_atlas"] else ""))
     txt = TEXT.get(o["id"]) or {}
     o["oneline"], o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in
                                                               ("oneline", "summary", "reference", "detect"))
@@ -392,25 +430,25 @@ def build(version):
 
     # ---------------- 보고서용 간략 매트릭스 ----------------
     ws = wb.create_sheet("보고서용 간략 매트릭스")
-    bcols = ["순위", "단계(Lv1)", "AIA-ID", "세부위협(Lv3)", "핵심 요약", "위험도", "발생가능성", "심각도", "AI 역할", "고유성",
+    bcols = ["순위", "단계(Lv1)", "AIA-ID", "세부위협(Lv3)", "핵심 요약", "위험도", "경계", "발생가능성", "심각도", "AI 역할", "고유성",
              "성숙도", "실제 사고 수", "대표 사례", "핵심 대응"]
     ws.cell(1, 1, f"보고서용 간략 매트릭스 {version} — 본문 삽입용(상세는 '통합 매트릭스')").font = Font(size=13, bold=True, color=NAVY)
     ws.cell(2, 1, f"순위 = 위험도 → 실제 사고 수 → ATLAS 사례 → 성숙도 → AIA-ID | {today}").font = Font(size=9, color="595959")
     _hdr(ws, 4, bcols)
     for r, o in enumerate(sorted(ROWS, key=lambda o: o["priority"]), 5):
         _row(ws, r, [o["priority"], o["domain"], o["id"], o["name"], o["oneline"] or summary_cell(o), o["risk"],
-                     o["likelihood"], o["severity"], o["ai_role"], o["novelty"], o["maturity"], o["n_real"],
+                     o["boundary"], o["likelihood"], o["severity"], o["ai_role"], o["novelty"], o["maturity"], o["n_real"],
                      first_case(o), first_control(o)])
         ws.cell(r, 3).font = Font(bold=True)
         ws.cell(r, 4).font = Font(bold=True)
         if not o["oneline"]:
             ws.cell(r, 5).font = Font(color=GRAY)
         _risk(ws.cell(r, 6), o["risk"])
-        for j in (1, 7, 8, 9, 10, 11, 12):
+        for j in (1, 7, 8, 9, 10, 11, 12, 13):
             ws.cell(r, j).alignment = CENTER
     ws.freeze_panes = "E5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(bcols))}{len(ROWS) + 4}"
-    _w(ws, [6, 18, 13, 30, 46, 9, 7, 7, 8, 7, 8, 8, 46, 50])
+    _w(ws, [6, 18, 13, 30, 46, 9, 6, 7, 7, 8, 7, 8, 8, 46, 50])
     ws.print_title_rows = "4:4"
 
     # ---------------- 매트릭스 뷰 ----------------
@@ -438,7 +476,7 @@ def build(version):
     g_axis = ["AI 역할·자율성", "AI 고유성", "AI 역량 성숙도", "공격 대상", "위협 주체"]
     g_cross = ["ATLAS ID", "ATLAS 기법명(성숙도)", "ATT&CK ID", "ATT&CK 기법명", "OWASP",
                "AI 연계", "클라우드 연계", "OT 연계", "공급망 연계", "신원 연계", "물리 연계"]
-    g_risk = ["발생가능성", "심각도", "위험도", "우선순위", "발생가능성 근거(자동 산정)", "심각도 근거"]
+    g_risk = ["발생가능성", "심각도", "위험도", "경계", "우선순위", "발생가능성 근거(자동 산정)", "심각도 근거"]
     g_ev = ["실제 사고 수", "최근(2025~)", "AI 활용 확인", "AI 활용 추정", "위협인텔", "실증·연구", "ATLAS 사례 수", "근거 수준",
             "관련 사례 ID", "주요 영향(실제 사고)"]
     g_ctl = ["NIST SP 800-53", "탐지·대응 포인트", "참고 문헌"]
@@ -473,7 +511,7 @@ def build(version):
                      "\n".join(link_label(k) for k in o["ai"]), "\n".join(link_label(k) for k in o["cl"]),
                      "\n".join(link_label(k) for k in o["ot"]), "\n".join(link_label(k) for k in o["sc"]),
                      "\n".join(link_label(k) for k in o["idn"]), "\n".join(link_label(k) for k in o["ph"]),
-                     o["likelihood"], o["severity"], o["risk"], o["priority"], o["lk_why"], o["severity_why"],
+                     o["likelihood"], o["severity"], o["risk"], o["boundary"], o["priority"], o["lk_why"], o["severity_why"],
                      o["n_real"], o["n_recent"], o["n_conf"], o["n_pres"], o["n_intel"], o["n_research"], o["n_atlas"],
                      o["level"],
                      ", ".join(sorted(x["real"]))
@@ -715,7 +753,7 @@ def build(version):
 def write_csv(path):
     cols = ["단계(Lv1)", "AIA-ID", "위협분류(Lv2)", "세부위협(Lv3)", "영문명", "킬체인 단계", "AI 역할·자율성", "AI 고유성",
             "AI 역량 성숙도", "공격 대상", "위협 주체", "ATLAS", "ATT&CK", "OWASP", "AI 연계", "클라우드 연계", "OT 연계",
-            "공급망 연계", "신원 연계", "물리 연계", "발생가능성", "심각도", "위험도", "우선순위", "근거 수준", "실제 사고 수",
+            "공급망 연계", "신원 연계", "물리 연계", "발생가능성", "심각도", "위험도", "경계", "우선순위", "근거 수준", "실제 사고 수",
             "최근(2025~)", "AI 활용 확인", "AI 활용 추정", "위협인텔", "실증·연구", "ATLAS 사례 수", "발생가능성 근거",
             "심각도 근거", "관련 사례 ID", "NIST SP 800-53", "참고 문헌"]
     with open(path, "w", encoding="utf-8-sig", newline="") as f:
@@ -727,7 +765,7 @@ def write_csv(path):
                         o["novelty"], o["maturity"], " · ".join(o["targets"]), " · ".join(o["actors"]),
                         ", ".join(o["atlas"]), ", ".join(o["attack"]), ", ".join(o["owasp"]),
                         ", ".join(o["ai"]), ", ".join(o["cl"]), ", ".join(o["ot"]), ", ".join(o["sc"]),
-                        ", ".join(o["idn"]), ", ".join(o["ph"]), o["likelihood"], o["severity"], o["risk"],
+                        ", ".join(o["idn"]), ", ".join(o["ph"]), o["likelihood"], o["severity"], o["risk"], o["boundary"],
                         o["priority"], o["level"], o["n_real"], o["n_recent"], o["n_conf"], o["n_pres"], o["n_intel"],
                         o["n_research"], o["n_atlas"], o["lk_why"], o["severity_why"], ", ".join(sorted(x["real"])),
                         " · ".join(o["nist"]), " · ".join(o["refs"])])

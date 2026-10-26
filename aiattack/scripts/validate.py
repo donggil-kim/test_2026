@@ -237,6 +237,11 @@ def check_taxonomy():
             warn(where, f"stage에 도메인 단계 '{stage_of_code.get(x['code'])}'가 없음")
         if x.get("severity") == "상" and len(x.get("severity_why") or "") < 30:
             warn(where, "심각도 '상'은 피해 범위를 severity_why에 적음")
+        # 심각도는 영향만으로 판정(검토 6.1) — 속도·규모·탐지 난이도를 '상' 근거로 쓰지 않음
+        if x.get("severity") == "상":
+            for bad in ("속도", "사람이 대응", "사람 대응", "탐지가 어렵", "탐지하지 못", "레거시"):
+                if bad in (x.get("severity_why") or ""):
+                    warn(where, f"심각도 '상' 근거에 영향 외 요소('{bad}') — 속도·탐지는 고유 축·우선순위로")
     for k in REFS:
         if not any(k in (x.get("refs") or []) for x in ROWS.values()):
             warn("frameworks.yaml references", f"{k}를 인용한 세부위협이 없음")

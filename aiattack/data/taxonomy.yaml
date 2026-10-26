@@ -32,7 +32,7 @@
 
 assessment:
   severity_rule:
-    상: 성공하면 조직 전반이 장악되거나 대규모 금전·데이터 피해로 이어지고, AI가 공격을 사람이 대응하기 어려운 속도·규모로 밀어붙여 피해 범위를 가늠하기 어려운 위협
+    상: 성공하면 조직 전반이 장악되거나 대규모 금전·데이터 피해·가용성/안전 피해로 이어지는 위협(영향만으로 판정 — 속도·규모·탐지 난이도는 고유 축·우선순위에서 다룸, 검토 6.1)
     중: 피해가 개별 자산·단일 조직에 머물거나, 단독 피해는 없고 다른 단계를 키우는 조건(정찰·역량 확보 등)인 위협
     하: 직접 피해가 제한적·일시적이고 대응이 쉬운 위협
   likelihood_rule: >-
@@ -41,7 +41,7 @@ assessment:
     하 = 근거 없음.
     단 영역 1은 사고가 적어도 급증·빠른 변화가 특징이라(작업방향 2장) 발생가능성에 'AI 역량 성숙도'(maturity)를 보조 신호로 더해
     실증된 위험 역량이 사고 건수만으로 과소평가되지 않게 한다(D4).
-  severity_check: "'상' 판정은 피해 범위(조직 전반 장악·대규모 금전/데이터·사람이 못 따라가는 속도·규모)를 severity_why에 적은 경우에만"
+  severity_check: "'상' 판정은 피해 범위(조직 전반 장악·대규모 금전/데이터·가용성/안전)를 severity_why에 적은 경우에만. 속도·규모·탐지 난이도는 심각도 근거로 쓰지 않음(고유 축·우선순위)"
 
 domains:
   # =========================================================================
@@ -276,8 +276,8 @@ domains:
             idn: []
             ph: []
             refs: [ANT-GTG1002, CS-AGENTIC]
-            severity: 상
-            severity_why: 스캐너·브라우저 자동화·침투 도구를 MCP로 엮은 공격 프레임워크(GTG-1002)·탈옥 모델 기반 자율 하네스(Hermes)는 한 번 만들면 사람 감독을 최소화한 반복 공격의 토대가 됨
+            severity: 중
+            severity_why: 공세 AI 에이전트·하네스는 공격 수행 역량을 갖추는 단계로 단독 피해는 없음 — 역량 확보 조건(중)
 
   # =========================================================================
   - code: VE
@@ -309,8 +309,8 @@ domains:
             idn: []
             ph: []
             refs: [GOOG-BIGSLEEP, XBOW-2026]
-            severity: 상
-            severity_why: 자율 에이전트가 사람 개입 없이 미공개 취약점을 찾아내므로(Big Sleep SQLite 0-day·XBOW RCE) 방어자가 패치 전 선제 발견·악용 양쪽에 노출됨 — 공격자가 쓰면 대규모 표적에서 0-day를 양산할 수 있음
+            severity: 중
+            severity_why: 자율 취약점 발굴은 피해를 직접 일으키지 않고 후속 침투·악용의 조건이 됨 — 발굴 단계(중). 영향은 IA·AO·IM에서 실현
           - id: AIA-VE-01.2
             name: AI 보조 코드 감사·퍼징
             en: AI-assisted code audit and fuzzing
@@ -356,8 +356,8 @@ domains:
             idn: []
             ph: []
             refs: [GTIG-AIEXPLOIT]
-            severity: 상
-            severity_why: 위협 행위자가 AI로 개발한 것으로 판단되는 0-day 익스플로잇이 실제 사용된 첫 사례(GTIG)가 보고됨 — 익스플로잇 개발 병목이 사라지면 공개 취약점이 즉시 무기화됨
+            severity: 중
+            severity_why: 익스플로잇 자동 생성은 무기를 만드는 단계로 직접 피해는 없음 — 익스플로잇 생성 조건(중)
       - id: AIA-VE-03
         name: AI 연동 악성코드·파괴 스크립트 생성
         lv3:
@@ -381,8 +381,8 @@ domains:
             idn: []
             ph: []
             refs: [GTIG-AIEXPLOIT]
-            severity: 상
-            severity_why: 금전 목적 행위자가 생성형 AI로 악성코드를 개발한 증거(BREEZE COMET)가 확인됨 — AI가 변종을 양산하면 시그니처 기반 탐지를 빠르게 무력화
+            severity: 중
+            severity_why: AI 생성 악성코드는 공격 도구를 만드는 단계로 단독 피해는 없음 — 악성코드 생성 조건(중). 실제 피해는 배포·실행에서 발생
           - id: AIA-VE-03.2
             name: AI 생성 와이퍼·파괴 스크립트
             en: AI-generated wiper and destructive scripts
@@ -403,8 +403,8 @@ domains:
             idn: []
             ph: []
             refs: [CERTPL-ENERGY]
-            severity: 상
-            severity_why: 국가배후 와이퍼 공격에서 파괴 스크립트가 LLM으로 생성된 것으로 평가됨(폴란드 에너지) — 파괴형 페이로드를 빠르게 맞춤 생성·변형해 복구를 어렵게 함
+            severity: 중
+            severity_why: AI 생성 와이퍼·파괴 스크립트는 파괴 도구를 만드는 단계 — 생성 단계(중). 파괴 피해는 OT·엔드포인트 배포 시 실현(연계)
 
   # =========================================================================
   - code: IA
@@ -589,7 +589,7 @@ domains:
             ph: []
             refs: [ANT-GTG1002, U42-HERMES, CS-AGENTIC]
             severity: 상
-            severity_why: 탈옥 모델·공격 프레임워크로 자율 에이전트가 정찰부터 실행까지 대부분을 수행(GTG-1002는 AI가 80~90% 수행, ~30개 조직 표적) — 사람이 대응하기 어려운 속도·규모로 다수 조직을 동시에 침해
+            severity_why: 단일 자율 에이전트가 다수 조직을 침해해 데이터 유출·내부 장악에 이름(GTG-1002 ~30개 조직·CrowdStrike 4개 행위자) — 성공 시 조직 전반 장악·대규모 유출
       - id: AIA-AO-02
         name: 다중 에이전트 공격 조율
         lv3:
@@ -614,7 +614,7 @@ domains:
             ph: []
             refs: [DREAM-TAIWAN, ANT-GTG1002]
             severity: 상
-            severity_why: 상위 오케스트레이터가 다수 하위 에이전트를 조율해 공격 웨이브를 병렬 수행(대만 정부 대상 12개 웨이브·에이전트당 최대 8개) — 공격 규모가 사람 조직의 한계를 벗어남
+            severity_why: 다중 에이전트 조율로 넓은 표적을 침해해 대규모 데이터에 접근(대만 정부 인사 기록 2,564건 이상) — 성공 시 대규모 데이터 유출
       - id: AIA-AO-03
         name: AI 코딩·개발 도구 공세 악용
         lv3:
@@ -711,7 +711,7 @@ domains:
             ph: []
             refs: [HL-AITHREAT, SYG-AIATTACK]
             severity: 상
-            severity_why: AI 보조 침입이 개발 환경 침해에서 클라우드 전반 장악까지 72시간 안에 이르고(Sygnia·UNC6426) 수 시간 내 다량의 자격증명을 탈취한 사례가 보고됨 — 확산 속도가 사람 대응 주기를 앞지름
+            severity_why: 개발 환경 침해에서 클라우드 전반 장악과 다량 자격증명 탈취에 이름(Sygnia·UNC6426) — 성공 시 조직 전반 장악
       - id: AIA-AO-06
         name: 통제 이탈 자율 에이전트 공격
         lv3:
@@ -768,8 +768,8 @@ domains:
             idn: []
             ph: []
             refs: [CPR-AIMIDDLE]
-            severity: 상
-            severity_why: 정상 AI 서비스(Grok·Copilot 등)의 트래픽에 C2를 숨겨 양방향 채널을 만드는 기법(AI-in-the-Middle 실증)과 AI API 은닉 통신(LAMEHUG) — 정상 서비스라 경계·egress 통제가 걸러내기 어려움
+            severity: 중
+            severity_why: AI 서비스 경유 은닉 C2는 통신·은닉 수단으로 단독 피해는 없음 — 은닉·명령제어 조건(중)
       - id: AIA-CC-02
         name: 실행 중 AI 명령 동적 생성
         lv3:
@@ -793,8 +793,8 @@ domains:
             idn: []
             ph: []
             refs: [THN-LAMEHUG]
-            severity: 상
-            severity_why: 악성코드가 실행 중 LLM API에 질의해 명령을 매번 새로 생성(LAMEHUG, APT28) — 고정 페이로드·시그니처가 없어 정적 분석·시그니처 탐지가 무력화됨
+            severity: 중
+            severity_why: 실행 중 동적 명령 생성은 탐지 회피 수단으로 단독 피해는 없음 — 은닉·명령제어 조건(중)
       - id: AIA-CC-03
         name: AI 기반 방어 회피·난독화
         lv3:
