@@ -691,3 +691,105 @@
   aia: [AIA-AO-01, AIA-IM-02]
   sources:
     - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/
+
+# ---------------------------------------------------------------------------
+# v3 P2 — 1차 위협 인텔 보강(검토 4.4) · 국내 사례
+# ---------------------------------------------------------------------------
+- id: AII-035
+  title: 김수키의 생성형 AI 위조 군 신분증 스피어피싱(국내)
+  date: "2025-07"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 한국
+  sector: [정부·군]
+  actor: Kimsuky(북한 연계)
+  actor_type: [국가배후]
+  impact: [내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    북한 연계 Kimsuky가 2025-07 국내 국방 관련 기관·연구자를 노린 스피어피싱에서 생성형 AI(ChatGPT 이미지 도구)로 만든
+    위조 군 신분증 이미지를 미끼로 썼다. Genians는 메타데이터로 AI 생성을 확인(딥페이크 분석 98%)했다고 2025-09 공개했다.
+  aia: [AIA-IA-01.2]
+  sources:
+    - Genians(2025) ChatGPT Exploited in North Korean Cyber Espionage Campaign | https://genians.com/news/chatgpt-exploited-in-north-korean-cyber-espionage-campaign-genians-reveals/
+
+- id: AII-036
+  title: 실행 중 LLM을 호출해 스스로 코드를 고치는 악성코드(GTIG PROMPTFLUX 등)
+  date: "2025-11"
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: 미상 복수 행위자(GTIG 추적)
+  actor_type: [미상]
+  impact: [영향 미상]
+  ai_use: 확인
+  maturity: 실증
+  summary: >-
+    Google GTIG가 실행 중 LLM을 호출해 코드를 생성·변형하는 '적시(just-in-time)' 악성코드 계열(PROMPTFLUX는 Gemini로 주기적
+    자기 재작성, PROMPTSTEAL=LAMEHUG, QUIETVAULT는 단말 AI CLI로 비밀 탐색)을 보고했다. GTIG는 아직 초기 단계지만 자율·적응형
+    악성코드로 가는 의미 있는 진전으로 평가하고 관련 자산을 차단했다.
+  aia: [AIA-CC-03]
+  sources:
+    - Google GTIG(2025) GTIG AI Threat Tracker — Advances in Threat Actor Usage of AI Tools | https://cloud.google.com/blog/topics/threat-intelligence/threat-actor-usage-of-ai-tools
+
+- id: AII-037
+  title: 국가배후 행위자의 공격 전 단계 상용 AI 활용(GTIG 2026-02 트래커)
+  date: "2026-02"
+  kind: 위협인텔
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: APT31·UNC2814·APT42 등(GTIG 추적)
+  actor_type: [국가배후]
+  impact: [영향 미상]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Google GTIG는 중·북·이란·러 국가배후 행위자가 상용 AI(Gemini 등)를 정찰·사회공학·취약점 연구·악성코드 실험 등 공격 전
+    단계에 쓰는 정황을 보고했다(APT31 자동 침투 테스트 프레임워크 설계, UNC2814 전문가 페르소나로 취약점 연구, APT42 사칭 이메일).
+    아직 역량의 근본적 도약은 없다고 평가했다.
+  aia: [AIA-RT-01.1, AIA-RD-02]
+  sources:
+    - Google GTIG(2026) GTIG AI Threat Tracker — Distillation, Experimentation, and (Continued) Integration of AI for Adversarial Use | https://cloud.google.com/blog/topics/threat-intelligence/distillation-experimentation-integration-ai-adversarial-use
+
+- id: AII-038
+  title: "GTG-2002 — AI 코딩 에이전트로 정찰·침투 판단·데이터 갈취('vibe hacking')"
+  date: "2025-08"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: GTG-2002(Anthropic 추적)
+  actor_type: [사이버범죄]
+  impact: [데이터 유출, 금전 피해]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    Anthropic이 2025-08 공개한 사이버범죄 작전으로, 공격자가 AI 코딩 에이전트에 정찰·침투 판단·탈취 대상 선별·갈취 문안 작성을
+    맡겨 피해 조직 네트워크에서 직접 공격을 수행했다('vibe hacking'). 보도상 17개 이상 조직이 표적이 됐고 갈취 요구가 50만 달러를
+    넘은 사례도 보고됐다.
+  aia: [AIA-AO-01, AIA-IM-02, AIA-RD-02]
+  sources:
+    - Anthropic(2025) Threat intelligence report — disrupting a data-extortion operation (GTG-2002) | https://www.anthropic.com/news/detecting-countering-misuse-aug-2025
+
+- id: AII-039
+  title: 국내 AI 음성 복제 가족 사칭 보이스피싱
+  date: "2025-04"
+  kind: 캠페인
+  verification: 언론 보도
+  region: 한국
+  sector: [기타]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [금전 피해]
+  ai_use: 추정
+  maturity: 실사용
+  summary: >-
+    국내에서 가족의 짧은 음성 샘플로 만든 AI 복제 음성으로 자녀 등을 사칭해 송금을 요구하는 보이스피싱이 보도됐다(서울신문 2025-04,
+    한 피해자는 자녀 목소리로 5,000만원 송금을 지시받았다가 재확인으로 차단). 개별 사건의 AI 사용은 수법 기반 추정이며, 국내 통신사가
+    딥보이스 탐지 서비스를 상용화하는 등 대응이 이뤄지고 있다.
+  aia: [AIA-IA-02.2, AIA-IM-01]
+  sources:
+    - 서울신문(2025) "아빠, 도와줘" 울먹이던 딸의 목소리…AI가 만든 가짜였다 | https://m.seoul.co.kr/news/2025/04/09/20250409500212
