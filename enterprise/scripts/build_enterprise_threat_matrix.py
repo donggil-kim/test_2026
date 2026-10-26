@@ -101,8 +101,13 @@ for o in ROWS:
     o["n_edge_cve"] = 0               # 참고: KEV 플래그는 kev 필드
 
 
+def distinct_sources(x):
+    # 실제 사고의 서로 다른 행위자·캠페인 수(같은 캠페인 중복 집계 방지, 검토 6.1)
+    return len({(INC[i].get("actor") or INC[i]["id"]) for i in x["real"]})
+
+
 def likelihood(o, x):
-    if len(x["real"]) >= R.LIKELY_HIGH_REAL:
+    if len(x["real"]) >= R.LIKELY_HIGH_REAL and distinct_sources(x) >= 2:
         return "상"
     if x["real"] or x["advisory"] or x["intel"] or x["research"] or o.get("kev") or o["n_attack"] >= 1:
         return "중"
@@ -119,6 +124,17 @@ def evidence_level(o, x):
     return "이론·연구"
 
 
+def _likelihood_from(o, reals):
+    """주어진 실제 사고 집합으로 발생가능성 재계산(경계 플래그용)"""
+    xx = EV[o["id"]]
+    src = len({(INC[i].get("actor") or INC[i]["id"]) for i in reals})
+    if len(reals) >= R.LIKELY_HIGH_REAL and src >= 2:
+        return "상"
+    if reals or xx["advisory"] or xx["intel"] or xx["research"] or o.get("kev") or o["n_attack"] >= 1:
+        return "중"
+    return "하"
+
+
 for o in ROWS:
     x = EV[o["id"]]
     o["likelihood"] = likelihood(o, x)
@@ -126,7 +142,14 @@ for o in ROWS:
     o["level"] = evidence_level(o, x)
     o["n_real"], o["n_recent"] = len(x["real"]), len(x["recent"])
     o["n_adv"], o["n_intel"], o["n_research"] = len(x["advisory"]), len(x["intel"]), len(x["research"])
-    o["lk_why"] = (f"실제 사고 {o['n_real']}건(최근 {o['n_recent']}) · ATT&CK 주체 {o['n_attack']} · "
+    o["n_sources"] = distinct_sources(x)
+    # 경계 플래그: 실제 사고 1건을 빼면 발생가능성 등급이 내려가는 행(검토 6.1)
+    o["boundary"] = ""
+    for drop in sorted(x["real"]):
+        if _likelihood_from(o, x["real"] - {drop}) != o["likelihood"]:
+            o["boundary"] = "경계"
+            break
+    o["lk_why"] = (f"실제 사고 {o['n_real']}건(최근 {o['n_recent']}, 서로 다른 행위자·캠페인 {o['n_sources']}) · ATT&CK 주체 {o['n_attack']} · "
                    f"KEV {'O' if o.get('kev') else '-'} · 정부 경보 {o['n_adv']} · 위협인텔 {o['n_intel']} · 실증 {o['n_research']}")
     txt = TEXT.get(o["id"]) or {}
     o["oneline"], o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in
@@ -343,13 +366,13 @@ def build(version):
 
     # 보고서용 간략 매트릭스
     ws = wb.create_sheet("보고서용 간략 매트릭스")
-    cols = ["순위", "전술(Lv1)", "ENT-ID", "세부위협(Lv3)", "핵심 요약", "위험도", "발생가능성", "심각도", "요구 방어 수준",
+    cols = ["순위", "전술(Lv1)", "ENT-ID", "세부위협(Lv3)", "핵심 요약", "위험도", "경계", "발생가능성", "심각도", "요구 방어 수준",
             "레거시 공백", "실제 사고", "대표 사례", "핵심 대응"]
     ws.cell(1, 1, f"보고서용 간략 매트릭스 {version}").font = Font(size=13, bold=True, color=NAVY)
     ws.cell(2, 1, f"순위 = 위험도 → 실제 사고 → 방어 난이도 → ATT&CK 주체 수 | {today}").font = Font(size=9, color="595959")
     _hdr(ws, 4, cols)
     for r, o in enumerate(sorted(ROWS, key=lambda o: o["priority"]), 5):
-        _row(ws, r, [o["priority"], o["domain"], o["id"], o["name"], o["oneline"] or summ(o), o["risk"], o["likelihood"],
+        _row(ws, r, [o["priority"], o["domain"], o["id"], o["name"], o["oneline"] or summ(o), o["risk"], o["boundary"], o["likelihood"],
                      o["severity"], o["defense_level"], " · ".join(o["legacy_gap"]), o["n_real"], first_case(o),
                      first_control(o)])
         ws.cell(r, 3).font = Font(bold=True)
@@ -387,7 +410,7 @@ def build(version):
     g2 = ["레거시 공백 유형", "요구 방어 수준", "위협 주체", "플랫폼"]
     g3 = ["ATT&CK ID", "ATT&CK 기법명", "ATT&CK 주체 수", "KEV", "LOLBin", "BYOVD 드라이버",
           "AI 연계", "클라우드 연계", "OT 연계", "공급망 연계", "신원 연계", "물리 연계"]
-    g4 = ["발생가능성", "심각도", "위험도", "우선순위", "발생가능성 근거(자동)", "심각도 근거"]
+    g4 = ["발생가능성", "심각도", "위험도", "경계", "우선순위", "발생가능성 근거(자동)", "심각도 근거"]
     g5 = ["실제 사고 수", "최근(2025~)", "정부 경보", "위협인텔", "근거 수준", "관련 사례 ID", "주요 영향(실제 사고)"]
     g6 = ["NIST SP 800-53", "탐지·대응 포인트", "참고 문헌"]
     groups = [("분류 체계", len(g1), "2E5496"), ("고유 축", len(g2), "117A65"), ("교차 매핑", len(g3), "1F7A8C"),
@@ -416,7 +439,7 @@ def build(version):
                      "\n".join(link_label(k) for k in o["ai"]), "\n".join(link_label(k) for k in o["cl"]),
                      "\n".join(link_label(k) for k in o["ot"]), "\n".join(link_label(k) for k in o["sc"]),
                      "\n".join(link_label(k) for k in o["idn"]), "\n".join(link_label(k) for k in o["ph"]),
-                     o["likelihood"], o["severity"], o["risk"], o["priority"], o["lk_why"], o["severity_why"],
+                     o["likelihood"], o["severity"], o["risk"], o["boundary"], o["priority"], o["lk_why"], o["severity_why"],
                      o["n_real"], o["n_recent"], o["n_adv"], o["n_intel"], o["level"],
                      ", ".join(sorted(x["real"]))
                      + (("\n정부 경보: " + ", ".join(sorted(x["advisory"]))) if x["advisory"] else "")
@@ -632,7 +655,7 @@ def build(version):
 def write_csv(path):
     cols = ["전술(Lv1)", "ENT-ID", "위협분류(Lv2)", "세부위협(Lv3)", "영문명", "레거시 공백 유형", "요구 방어 수준", "위협 주체",
             "플랫폼", "ATT&CK", "ATT&CK 주체 수", "KEV", "LOLBin", "BYOVD 드라이버", "AI 연계", "클라우드 연계", "OT 연계",
-            "공급망 연계", "신원 연계", "물리 연계", "발생가능성", "심각도", "위험도", "우선순위", "근거 수준", "실제 사고 수",
+            "공급망 연계", "신원 연계", "물리 연계", "발생가능성", "심각도", "위험도", "경계", "우선순위", "근거 수준", "실제 사고 수",
             "최근(2025~)", "발생가능성 근거", "심각도 근거", "관련 사례 ID", "NIST SP 800-53", "참고 문헌"]
     with open(path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
@@ -643,7 +666,7 @@ def write_csv(path):
                         " · ".join(o["actors"]), " · ".join(o["platforms"]), ", ".join(o["attack"]), o["n_attack"],
                         "O" if o.get("kev") else "", "O" if o.get("lolbas") else "", "O" if o.get("loldriver") else "",
                         ", ".join(o["ai"]), ", ".join(o["cl"]), ", ".join(o["ot"]), ", ".join(o["sc"]), ", ".join(o["idn"]),
-                        ", ".join(o["ph"]), o["likelihood"], o["severity"], o["risk"], o["priority"], o["level"],
+                        ", ".join(o["ph"]), o["likelihood"], o["severity"], o["risk"], o["boundary"], o["priority"], o["level"],
                         o["n_real"], o["n_recent"], o["lk_why"], o["severity_why"], ", ".join(sorted(x["real"])),
                         " · ".join(o["nist"]), " · ".join(o["refs"])])
 
