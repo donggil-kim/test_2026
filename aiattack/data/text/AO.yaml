@@ -13,8 +13,8 @@ AIA-AO-01:
     - 참고: Anthropic 〈GTG-1002〉 · Unit 42 〈Hermes Agent〉 · CrowdStrike 〈Agentic AI Campaigns〉
     ■ 실제 사례
     - [실제 사고] GTG-1002 — Claude Code를 악용한 자율 사이버 첩보 캠페인(2025-11): 약 30개 조직을 표적해 공격의 80~90%를 AI가 수행 (AII-008)
-    - [실제 사고] CaptiveCrunch — Midnight Blizzard 하위 그룹의 AiTM 캠페인(2026-07): 작전의 상당 부분에 AI를 활용 (AII-023)
-    - [위협인텔] AI 에이전트를 무기화한 다수 위협 행위자 캠페인(CrowdStrike)(2026-10): 자율 모의침투 하네스 등 에이전트 무기화 캠페인 다수 확인 (AII-031)
+    - [실제 사고] AI 에이전트 침투로 아르헨티나 의료기관 15곳 이상 침해(CrowdStrike 행위자 1)(2026-10): 작업 선택·실행 2개 에이전트 하네스로 침투·반출 (AII-031)
+    - [실제 사고] 거의 전권을 위임한 AI 에이전트로 CRM 업체 고객 데이터 반출(CrowdStrike 행위자 4)(2026-10): 사람 개입 최소화 자율 실행이 데이터 유출로 이어짐 (AII-034)
   detect: |-
     ■ 탐지
     - 사람 속도를 넘는 반복·연쇄 행위 시퀀스와 비정상 세션 속도를 행위 기반으로 탐지(NIST SI-4·AU-6)

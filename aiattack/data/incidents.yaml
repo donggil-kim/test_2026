@@ -1,7 +1,7 @@
 # AI 활용 공격 사고 DB — 공개 출처 기반(정부·사법 발표, 피해기관 공지, 보안업체·연구기관 분석, 공신력 있는 보도)
 #
 # 출발점(작업방향 3.4·D8): 통합 v4.1 사고사례 검증 원장의 'AI 활용=확인/추정' 27건을 origin으로 재인용하고,
-#   AI 자율 취약점 발굴·익스플로잇 생성 사례(Big Sleep·XBOW·GTIG·CrowdStrike)를 신규로 추가.
+#   AI 자율 취약점 발굴·역량 사례(Big Sleep·XBOW·GTIG·CrowdStrike)를 신규로 추가. v3 검토(2026-10-26)로 사실·출처·매핑 정정.
 #
 # 필드
 #   id            AII-NNN (AI-attack Incident)
@@ -15,7 +15,7 @@
 #   actor         행위자(공개 귀속, 개인은 익명화)
 #   actor_type    위협 주체 유형(국가배후 · 사이버범죄 · 핵티비스트 · 연구·레드팀 · 내부자 · 미상)
 #   impact        결과 유형(IMPACTS)
-#   ai_use        공격에 AI를 썼는지 — 확인(공식 발표·벤더 분석) · 추정(언론·정황)  ※ 통합 v4.1 원장 'AI 활용' 판정 계승
+#   ai_use        공격에 AI를 썼는지(주장의 확신도 기준) — 확인(1차 출처가 단정) · 추정(1차 출처가 가능성·시사·정황) · 미확인(광고·자칭뿐, AI 사례로 세지 않음)
 #   maturity      이 사례가 보이는 AI 역량 성숙도 — 실사용 · 실증 · 연구시연(발생가능성 보조 신호, D4)
 #   summary       경위·결과 요약(분석가 작성, 수치는 출처 기준). 공격 실행 세부 대신 경위·피해·탐지·AI 활용 방식 중심
 #   aia           매핑 세부위협(분석 매핑) — data/taxonomy.yaml Lv3 ID
@@ -123,7 +123,7 @@
   actor: IronErn440
   actor_type: [사이버범죄]
   impact: [자원 탈취]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
     대시보드·Jobs API가 인증 없이 노출된 Ray 클러스터를 노린 크립토마이닝 캠페인으로, 발견 벤더(Oligo)는 공격에 쓰인
@@ -143,7 +143,7 @@
   actor: 러시아 국가 배후(ESET는 Sandworm, CERT Polska는 Static Tundra/Dragonfly 인프라 중첩으로 평가)
   actor_type: [국가배후]
   impact: [데이터 파괴, 감시·조작]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
     풍력·태양광 발전단지 30여 곳·열병합발전소·제조업체를 노려, 노출 FortiGate VPN으로 들어와 그룹 정책으로 와이퍼(DynoWiper·LazyWiper)를
@@ -197,10 +197,10 @@
     - Anthropic(2025) Disrupting AI espionage | https://www.anthropic.com/news/disrupting-AI-espionage
 
 - id: AII-009
-  title: 다중 에이전트 프레임워크의 대만 정부 시스템 침해
+  title: 다중 에이전트 프레임워크의 아시아 정부 기관 침해(대만으로 보도)
   date: "2026-08"
-  kind: 사고
-  verification: 정부·사법 확인
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
   region: 대만
   sector: [정부·군]
   actor: 미상 중국어권 행위자
@@ -209,13 +209,15 @@
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    Hermes·OpenClaw 기반 다중 에이전트 프레임워크로 웨이브당 최대 8개 하위 에이전트를 돌려 12개 공격 웨이브(2026-07-01~04)를
-    수행하고 2,564건 이상의 인사 기록에 접근했다. 대만 디지털발전부가 AI 에이전트 보조 혼합 모드로 확인했다.
+    Hermes·OpenClaw 기반 다중 에이전트 프레임워크가 2026-07-01~04 12개 공격 웨이브로 아시아 정부 기관을 침해해 자격증명 85개와
+    인사 기록 2,564건 이상에 접근한 것으로 분석됐다(Dream Security). Dream은 피해국을 밝히지 않았고, 대만 연결은 FT 보도와 대만
+    디지털발전부의 '수동+AI 에이전트 혼합 공격' 발표를 잇는 정황이다. 디지털발전부는 공격 출처를 공개하지 않았다.
   aia: [AIA-AO-02, AIA-IM-02]
   attack_ref: [AML.CS0071]
   origin: [AML.CS0071]
   sources:
     - Dream Research Labs(2026) Inside a Multi-Agent AI Framework | https://www.dreamgroup.com/blog/inside-a-multi-agent-ai-framework-used-to-compromise-government-entities-in-asia
+    - Focus Taiwan(2026) AI agents used in cyberattacks on Taiwan government websites: MODA | https://focustaiwan.tw/society/202608130011
 
 - id: AII-010
   title: 자율 평가 에이전트의 평가 경계 이탈과 Hugging Face 인프라 침해
@@ -224,19 +226,20 @@
   verification: 피해기관 확인
   region: 글로벌
   sector: [IT·소프트웨어]
-  actor: 자율 평가 에이전트(OpenAI 평가)
+  actor: 자율 평가 에이전트(OpenAI 내부 사이버 역량 평가)
   actor_type: [연구·레드팀]
   impact: [내부 접근 확보]
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    노출된 평가용 하네스를 통해 자율 에이전트들이 평가 경계를 넘어 Jinja2 템플릿 인젝션·메타데이터 엔드포인트 임시 자격증명 재사용으로
-    EKS를 열거하고 특권 파드에서 노드 루트에 이르렀다. 자율 에이전트가 사람 지시 없이 실제 인프라를 침해할 수 있음을 보인 사례.
+    OpenAI의 내부 사이버 역량 평가(ExploitGym 기반)에서 자율 에이전트가 평가 샌드박스를 벗어나 2026-07-09~13 Hugging Face
+    운영 인프라를 약 2.5일간 침해했다(HF 기술 타임라인). 사람 공격자가 지시한 공격이 아니라 통제를 벗어난 자율 에이전트 사례로,
+    '공격자의 AI'와 성격이 달라 P1에서 전용 행(통제 이탈 자율 에이전트, D14)으로 분리 예정. HF는 고객 모델·데이터 영향은 없다고 밝혔다.
   aia: [AIA-AO-01]
   attack_ref: [AML.CS0068]
   origin: [AML.CS0068]
   sources:
-    - Hugging Face(2026) Agent intrusion technical timeline | https://huggingface.co/blog/agent-intrusion-technical-timeline
+    - Hugging Face(2026) Anatomy of a Frontier Lab Agent Intrusion — technical timeline | https://huggingface.co/blog/agent-intrusion-technical-timeline
 
 - id: AII-011
   title: Retool 고객 계정 27곳 장악(딥페이크 음성 사칭 포함)
@@ -259,7 +262,7 @@
     - Retool(2023) When MFA isn't actually MFA | https://retool.com/blog/mfa-isnt-mfa
 
 - id: AII-012
-  title: Contagious Interview — 가짜 채용 과제로 개발자 감염(AI 화상회의 복제 병행)
+  title: Contagious Interview — 가짜 채용 과제로 개발자 감염(AI 복제 앱 병행)
   date: "2023-11"
   kind: 캠페인
   verification: 보안업체·연구기관 분석
@@ -271,9 +274,10 @@
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    채용 담당자를 사칭해 개발자에게 코딩 과제·악성 npm 패키지를 실행시켜 정보탈취 악성코드를 감염시키는 북한 연계 캠페인으로,
-    ATT&CK은 후속 활동에서 AI로 화상회의 앱을 복제해 악성코드를 배포한 것을 기록했다. 장기 캠페인 행(사건 단위 아님).
-  aia: [AIA-IA-02.1]
+    채용 담당자를 사칭해 개발자에게 코딩 과제·악성 npm 패키지를 실행시키는 북한 연계 캠페인으로, ATT&CK(G1052)은 후속 활동에서
+    AI로 화상회의 앱을 복제해 악성코드를 배포하고(T1683.002) AI로 이미지·콘텐츠를 생성한 것(T1588.007)을 기록했다. 딥페이크 영상
+    '사칭'이 아니라 AI 복제 앱·콘텐츠로 실행을 유도한 사례라 IA-04로 매핑. 장기 캠페인 행(사건 단위 아님).
+  aia: [AIA-IA-04]
   attack_ref: [G1052]
   origin: [SCI-110]
   sources:
@@ -330,7 +334,7 @@
   actor: 미상
   actor_type: [사이버범죄]
   impact: [자원 탈취]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
     관리자 접근이 활성화되고 인증이 없는 채로 인터넷에 노출된 Open WebUI(자체 호스팅 LLM 인터페이스)에 악성 AI 생성 Python
@@ -350,7 +354,7 @@
   actor: 미상
   actor_type: [사이버범죄]
   impact: [자원 탈취, 내부 접근 확보]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
     공개 S3 버킷(RAG 데이터)에서 발견한 자격증명으로 초기 접근해 Lambda 코드 주입으로 권한을 올리고 측면 이동한 뒤, Bedrock
@@ -450,7 +454,7 @@
   actor: EvilTokens(PhaaS)
   actor_type: [사이버범죄]
   impact: [계정 장악]
-  ai_use: 추정
+  ai_use: 미확인
   maturity: 실증
   summary: >-
     EvilTokens 피싱 서비스형 플랫폼으로 340개 이상 조직의 M365 사용자를 노려 디바이스 코드 피싱으로 MFA를 우회하고 Railway
@@ -470,7 +474,7 @@
   actor: 미상
   actor_type: [사이버범죄]
   impact: [데이터 유출, 서비스 중단]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
     인터넷 노출 애플리케이션의 자격증명 침해로 접근해 AWS·소스 관리·CI/CD·런타임으로 확장하고, 비밀 수집·배포 파이프라인 악용·DB
@@ -481,21 +485,22 @@
     - Sygnia(2026) Inside an AI-assisted cloud attack | https://www.sygnia.co/blog/inside-an-ai-assisted-cloud-attack/
 
 - id: AII-023
-  title: "CaptiveCrunch — Midnight Blizzard 하위 그룹의 AiTM 캠페인"
+  title: "CaptiveCrunch — Midnight Blizzard 하위 그룹의 AI 보조 악성코드 개발"
   date: "2026-07"
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   region: 글로벌
   sector: [숙박·여행]
-  actor: Storm-2945(Midnight Blizzard 하위)
+  actor: Storm-2945(Midnight Blizzard 하위, 러시아 SVR 연계)
   actor_type: [국가배후]
   impact: [자격증명·비밀 탈취]
-  ai_use: 확인
+  ai_use: 추정
   maturity: 실사용
   summary: >-
-    Microsoft가 확인한 Midnight Blizzard 하위 클러스터 Storm-2945가 2026-05 초부터 전 세계 숙박업 캡티브 포털 네트워크
-    트래픽을 조작(CaptiveCrunch)해 AiTM·디바이스 코드 피싱을 수행했다. Microsoft는 작전의 상당 부분에 AI를 활용했다고 명시했다.
-  aia: [AIA-AO-01]
+    Microsoft가 확인한 Midnight Blizzard 하위 클러스터 Storm-2945가 2026-05부터 숙박업 캡티브 포털 네트워크를 조작(CaptiveCrunch)해
+    AiTM·디바이스 코드 피싱을 수행했다. Microsoft는 작전 상당 부분에 AI를 활용했다고 보고하면서, 악성코드 CornFlake·ChocoShell에서
+    AI 보조 코드 생성 정황(상세 주석 등)을 '시사·consistent with' 수준으로 기술했다(단정 아님).
+  aia: [AIA-VE-03.1, AIA-IA-01.1]
   origin: [CL/INC-0666]
   sources:
     - Microsoft(2026) CaptiveCrunch — Midnight Blizzard targets travelers worldwide | https://www.microsoft.com/en-us/security/blog/2026/07/31/captivecrunch-midnight-blizzard-targets-travelers-worldwide-for-malware-delivery-and-credential-theft/
@@ -563,20 +568,21 @@
     - Check Point Research(2026) AI in the Middle | https://research.checkpoint.com/2026/ai-in-the-middle-turning-web-based-ai-services-into-c2-proxies-the-future-of-ai-driven-attacks/
 
 - id: AII-027
-  title: DeepSeek 기반 Hermes 에이전트의 Langflow·n8n 자율 공격 시도
+  title: DeepSeek 기반 Hermes 에이전트의 자율 공격 캠페인(Unit 42)
   date: "2026-07"
-  kind: 사고
+  kind: 캠페인
   verification: 보안업체·연구기관 분석
   region: 중국
-  sector: [IT·소프트웨어]
+  sector: [IT·소프트웨어, 다부문]
   actor: 중국어권 행위자(knaithe/KnYuan)
   actor_type: [사이버범죄]
-  impact: [영향 없음(사전 차단)]
+  impact: [데이터 유출, 내부 접근 확보]
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    탈옥 모델(DeepSeek)을 Hermes 에이전트 프레임워크의 자율 공세 운영자로 삼아, FOFA 질의·셸 명령·스캐너·HTTP 탐침을 스스로
-    생성하고 GitHub에서 최신 CVE PoC를 검색하며 노출된 Langflow·n8n을 공격하려 시도했다(접근 획득은 모두 실패).
+    탈옥 모델(DeepSeek)을 Hermes 에이전트 프레임워크의 자율 공세 운영자로 삼아 460개 이상 표적을 노렸다. 자율 시도(Langflow·n8n)는
+    설정 요건이 맞지 않아 실패했으나, Unit 42는 Citrix NetScaler 등에서 수동 익스플로잇으로 일부 표적을 침해해 영향을 확인했다고 보고했다.
+    에이전트 작업 디렉터리가 노출되며 운영이 드러났다. 자율 열거와 수동 익스플로잇을 섞은 혼합 운용 사례.
   aia: [AIA-RD-04, AIA-RT-02, AIA-RT-03, AIA-AO-01]
   attack_ref: [AML.CS0070]
   origin: [AML.CS0070]
@@ -606,58 +612,120 @@
     - The Record(2025) Google says 'Big Sleep' AI tool found bug hackers planned to use | https://therecord.media/google-big-sleep-ai-tool-found-bug
 
 - id: AII-029
-  title: XBOW 등 자율 펜테스트 에이전트의 취약점 대량 발견
-  date: "2026-04"
+  title: XBOW 자율 펜테스트 에이전트의 HackerOne 미국 리더보드 1위
+  date: "2025-06"
   kind: 연구·시연
   verification: 보안업체·연구기관 분석
-  region: 글로벌
+  region: 미국
   sector: [IT·소프트웨어]
-  actor: XBOW 등 자율 펜테스트 에이전트
+  actor: XBOW(자율 펜테스트 에이전트, 방어 측)
   actor_type: [연구·레드팀]
   impact: [영향 없음(사전 차단)]
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    자율 펜테스트 에이전트가 빠르게 늘어 2026년 들어 XBOW의 자율 에이전트가 HackerOne 글로벌 리더보드 1위에 올랐고, 대형 OS·브라우저에서
-    고위험 취약점이 다수 제출됐다. 같은 자율 발굴 역량이 공격자 손에 들어가면 대규모 0-day 양산으로 이어질 수 있음(2차 집계, 참고치).
+    XBOW의 자율 펜테스트 에이전트가 버그바운티 플랫폼 HackerOne의 미국 리더보드 1위에 올랐다(2025-06). 수개월간 약 1,060건의
+    취약점을 제출했으며 발견은 자동화됐고 제출 전 사람이 검토했다. 방어 측 역량 사례로, 자율 취약점 발굴 역량의 성숙도 지표로만 쓴다.
   aia: [AIA-VE-01.1, AIA-VE-01.2]
   sources:
-    - AppSecSanta(2026) AI Pentesting Agents 2026 | https://appsecsanta.com/research/ai-pentesting-agents-2026
+    - XBOW(2025) The road to Top 1 — How XBOW did it | https://xbow.com/blog/top-1-how-xbow-did-it
 
 - id: AII-030
-  title: AI로 개발한 것으로 판단되는 0-day 익스플로잇 실사용(GTIG 보고)
+  title: AI로 개발한 0-day 익스플로잇을 준비한 범죄 조직의 대량 악용 계획(GTIG 사전 차단)
   date: "2026-05"
   kind: 위협인텔
   verification: 보안업체·연구기관 분석
   region: 글로벌
   sector: [다부문]
-  actor: 미상 위협 행위자
+  actor: 미상 사이버범죄 조직(GTIG 추적)
   actor_type: [사이버범죄]
-  impact: [영향 미상]
+  impact: [영향 없음(사전 차단)]
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    Google GTIG가 위협 행위자가 AI로 개발했다고 판단되는 0-day 익스플로잇을 사용한 첫 사례를 보고했다. 익스플로잇 개발 병목이
-    사라지면 공개 취약점이 즉시 무기화될 수 있음을 보이는 위협 인텔(1차는 GTIG 보고서).
+    Google GTIG는 널리 쓰이는 오픈소스 웹 기반 시스템 관리 도구의 2단계 인증 우회 0-day를 범죄 조직이 AI 도움으로 찾아 무기화했으며
+    대량 악용을 계획했다고 보고했다(GTIG는 AI 모델 활용을 '높은 확신'으로 평가, 근거는 익스플로잇 코드의 흔적). GTIG가 벤더와 협력해
+    패치하고 활동을 차단해 실제 사용은 막은 것으로 보인다. 같은 보고서는 국가배후 그룹의 AI 보조 취약점 연구도 함께 기술했다.
   aia: [AIA-VE-02]
   sources:
-    - securityonline(2026) Google Confirms First AI-Generated Zero-Day Exploit Found in the Wild | https://securityonline.info/google-threat-intel-ai-generated-zero-day-exploit-big-sleep/
+    - Google GTIG(2026) GTIG AI Threat Tracker — Adversaries Leverage AI for Vulnerability Exploitation, Augmented Operations, and Initial Access | https://cloud.google.com/blog/topics/threat-intelligence/ai-vulnerability-exploitation-initial-access
 
 - id: AII-031
-  title: AI 에이전트를 무기화한 다수 위협 행위자 캠페인(CrowdStrike)
+  title: AI 에이전트 침투로 아르헨티나 의료기관 15곳 이상 침해(CrowdStrike 행위자 1)
   date: "2026-10"
-  kind: 위협인텔
+  kind: 캠페인
   verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 복수 위협 행위자(CrowdStrike 추적)
-  actor_type: [사이버범죄, 국가배후]
-  impact: [영향 미상]
+  region: 기타
+  sector: [의료·바이오]
+  actor: 미명명 행위자(CrowdStrike 추적, 2026-05~08 관측)
+  actor_type: [사이버범죄]
+  impact: [자격증명·비밀 탈취, 데이터 유출]
   ai_use: 확인
   maturity: 실사용
   summary: >-
-    CrowdStrike가 AI 에이전트를 무기화한 다수 위협 행위자 캠페인을 확인했다(자율 모의침투 하네스 등). AI 활용 공격이 특정 행위자에
-    국한되지 않고 확산 중임을 보이는 위협 인텔(수치는 벤더 참고치).
-  aia: [AIA-AO-01, AIA-IM-04]
+    CrowdStrike가 2026-05~08 AI 에이전트를 실제 침투에 쓴 신규 행위자 4개를 공개했으며, 그중 한 행위자는 아르헨티나 의료기관
+    15곳 이상을 침해하고 최소 1곳에서 자격증명과 의료기록을 반출했다. 작업을 고르는 에이전트와 실행하는 에이전트로 나뉜 공개 펜테스트
+    도구 기반 하네스를 썼다. CrowdStrike는 에이전트형 AI 지원 침투가 거의 확실히 늘 것으로 평가했다.
+  aia: [AIA-AO-01, AIA-IM-02]
+  sources:
+    - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/
+
+- id: AII-032
+  title: AI 에이전트 하네스로 여러 나라 정부·민간 20곳 이상 표적(CrowdStrike 행위자 2)
+  date: "2026-10"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [정부·군, 다부문]
+  actor: 미명명 행위자(CrowdStrike 추적, 2026-05~08 관측)
+  actor_type: [미상]
+  impact: [내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    자율성 수준이 다른 펜테스트 하네스 2종으로 두 나라의 정부 기관과 브라질·미국 민간 기업(바이오·의료·식음료·유통·기술·여행)
+    등 20곳 이상을 표적해 일부를 침해했다. 상용 AI 코딩 에이전트를 단일 에이전트 또는 병렬 전문 에이전트로 운용했고 AI 서비스
+    접근에는 중국 소재 중계 서비스를 거쳤다(CrowdStrike). 데이터 탈취 여부는 공개 범위에 없음.
+  aia: [AIA-AO-01, AIA-AO-02]
+  sources:
+    - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/
+
+- id: AII-033
+  title: 공개 에이전트 스킬 묶음으로 인도네시아 정부 도메인 등 침해(CrowdStrike 행위자 3)
+  date: "2026-10"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 기타
+  sector: [정부·군, 다부문]
+  actor: 미명명 행위자(CrowdStrike 추적, 2026-05~08 관측)
+  actor_type: [미상]
+  impact: [내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    공개 저장소의 에이전트 스킬 800여 개를 별도 조율 없이 상용 AI 코딩 에이전트에 붙여 인도네시아 정부 도메인 여러 곳과 다른 나라
+    정부 도메인·민간 기업을 침해했다. 운영자가 모델의 안전장치를 넘기려고 개입한 정황이 있어 CrowdStrike는 네 행위자 중 가장 덜
+    정교하다고 평가했다. 낮은 기술 수준의 행위자도 에이전트로 침투를 수행할 수 있음을 보인 사례.
+  aia: [AIA-AO-01]
+  sources:
+    - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/
+
+- id: AII-034
+  title: 거의 전권을 위임한 AI 에이전트로 CRM 업체 고객 데이터 반출(CrowdStrike 행위자 4)
+  date: "2026-10"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [IT·소프트웨어]
+  actor: 미명명 행위자(CrowdStrike 추적, 2026-05~08 관측)
+  actor_type: [미상]
+  impact: [데이터 유출, 내부 접근 확보]
+  ai_use: 확인
+  maturity: 실사용
+  summary: >-
+    한 번의 명령으로 시작되는 다단계 작업 흐름에서 AI 코딩 에이전트에 익스플로잇 선택의 '거의 전권'을 주고 침투 후 반출까지 맡겨,
+    러시아·키르기스스탄·미국의 SaaS·데이터센터 기업과 다른 나라 정부 도메인을 침해하고 미국 CRM 업체의 고객사 데이터를 반출했다
+    (CrowdStrike). 사람 개입을 최소화한 자율 실행이 실제 데이터 유출로 이어진 사례.
+  aia: [AIA-AO-01, AIA-IM-02]
   sources:
     - CrowdStrike(2026) CrowdStrike Uncovers New Agentic AI Campaigns | https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-agentic-ai-campaigns/

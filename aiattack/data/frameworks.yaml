@@ -21,7 +21,7 @@ meta:
     license: © The MITRE Corporation — https://attack.mitre.org/resources/legal-and-branding/terms-of-use/ — ID·명칭만 인용
     note: AI가 가속·자동화하는 '기존 기법'만 연계(정찰·익스플로잇 확보·피싱·실행·반출 등). 순수 AI 고유 기법은 ATLAS로만 연계
   owasp:
-    name: OWASP Top 10 for LLM Applications(2025) · OWASP Agentic AI — Threats and Mitigations
+    name: OWASP Top 10 for LLM Applications(2025) · OWASP Top 10 for Agentic Applications(2025-12)
     version: "2025"
     source: https://genai.owasp.org
     license: © OWASP Foundation — CC BY-SA, ID·명칭만 인용
@@ -87,7 +87,13 @@ owasp:
   LLM01: [Prompt Injection, 프롬프트 인젝션]
   LLM06: [Excessive Agency, 과도한 에이전시]
   LLM10: [Unbounded Consumption, 무제한 자원 소모]
-  ASI-T01: [Agent Authorization and Control Hijacking, 에이전트 인가·제어 탈취]
+  # OWASP Top 10 for Agentic Applications(2025-12-09, ASI = Agentic Security Initiative). 구 ASI-T01 표기는 폐기
+  ASI01: [Agent Goal Hijack, 에이전트 목표 탈취]
+  ASI02: [Tool Misuse, 도구 오용]
+  ASI03: [Identity and Privilege Abuse, 신원·권한 남용]
+  ASI04: [Agentic Supply Chain, 에이전트 공급망]
+  ASI05: [Unexpected Code Execution, 예기치 않은 코드 실행]
+  ASI10: [Rogue Agents, 통제 이탈 에이전트]
 
 # -------------------------------------------------------------------------
 # 참고 문헌 카탈로그 — refs 키. [영문 공식 명칭 / 서지]. 원문 미수록, 서지·URL·확인일·이용 조건만.

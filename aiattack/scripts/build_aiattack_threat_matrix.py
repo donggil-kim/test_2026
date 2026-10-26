@@ -99,7 +99,11 @@ for e in INCIDENTS:
             x["research"].add(e["id"])
         else:
             x["excluded"].add(e["id"])
-        (x["confirmed"] if e["ai_use"] == "확인" else x["presumed"]).add(e["id"])
+        if e["ai_use"] == "확인":
+            x["confirmed"].add(e["id"])
+        elif e["ai_use"] == "추정":
+            x["presumed"].add(e["id"])
+        # '미확인'(광고·자칭뿐)은 AI 활용 사례로 세지 않음
 
 for o in ROWS:
     for t in o["atlas"]:

@@ -106,7 +106,7 @@ RE_ATK = re.compile(r"(?<![A-Za-z0-9.])(T\d{4}(?:\.\d{3})?|[GSC]\d{4})(?![A-Za-z
 RE_XM = re.compile(r"(?<![A-Za-z0-9-])(AI-\d{2}-\d{2}|CL-[A-Z]{2}-\d{2}|OT-[A-Z0-9]{2}-\d{2}|SC-[A-Z]{2}-\d{2}|"
                    r"ID-[A-Z]{2}-\d{2}|PH-[A-Z]{2}-\d{2})(?![A-Za-z0-9])")
 RE_NIST = re.compile(r"NIST (?:SP 800-53 )?((?:[A-Z]{2}-\d+(?:\(\d+\))?)(?:·[A-Z]{2}-\d+(?:\(\d+\))?)*)")
-RE_OWASP = re.compile(r"(?<![A-Za-z0-9-])(LLM\d{2}|ASI-T\d{2})(?![A-Za-z0-9])")
+RE_OWASP = re.compile(r"(?<![A-Za-z0-9-])(LLM\d{2}|ASI\d{2})(?![A-Za-z0-9])")
 RE_DATE = re.compile(r"\((\d{4}-\d{2})\)")
 RE_NUM = re.compile(r"\d+(?:[.,]\d+)*")
 RE_REFNOTE = re.compile(r"참고: (.+)$")
@@ -273,8 +273,8 @@ def check_incidents():
             err(where, f"법적 처리 '{e['legal']}'가 정의된 어휘에 없음")
         if e.get("region") and e["region"] not in R.REGIONS:
             err(where, f"지역 '{e['region']}'이 정의된 어휘에 없음")
-        if e.get("ai_use") not in ("확인", "추정"):
-            err(where, f"ai_use 값(확인·추정) 오류: {e.get('ai_use')}")
+        if e.get("ai_use") not in R.AI_USE:
+            err(where, f"ai_use 값(확인·추정·미확인) 오류: {e.get('ai_use')}")
         if e.get("maturity") not in R.MATURITY:
             err(where, f"maturity 값 오류: {e.get('maturity')}")
         for fld, vocab, name in (("sector", R.SECTORS, "업종"), ("actor_type", R.ACTOR_TYPES, "주체 유형"),
