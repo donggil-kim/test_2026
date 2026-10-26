@@ -105,22 +105,23 @@
     - CISA(2024) KEV — Fortinet FortiOS Out-of-bound Write (CVE-2024-21762) | https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 
 - id: ENI-006
-  title: Ivanti Connect Secure VPN 연쇄 0-day 악용
+  title: Ivanti Connect Secure VPN 연쇄 0-day 악용(2024)
   date: "2024-01"
   kind: 캠페인
   verification: 정부·사법 확인
   region: 글로벌
-  sector: [정부·군, 다부문]
+  sector: [다부문]
   actor: 국가배후·다수 행위자
   actor_type: [국가배후, 접근 브로커]
-  impact: [내부 접근 확보, 첩보·감시]
+  impact: [내부 접근 확보, 측면 이동·확산]
   summary: >-
-    Ivanti Connect Secure VPN의 인증 우회·명령 주입 취약점을 엮어 경계 장비를 장악하고 내부로 진입했다. 2025년에도 추가 0-day가
-    대량 악용돼 엣지 장비 공백이 반복 확인됐다.
+    국가 연계·다수 행위자가 Ivanti Connect Secure VPN의 인증 우회·명령 주입 취약점(CVE-2023-46805·CVE-2024-21887)을
+    연쇄 악용해 경계 VPN을 장악했다. CISA·파이브아이즈는 벤더 무결성 점검 도구가 침해를 놓칠 수 있고 초기화 후에도 지속될 수
+    있다고 경고했다(AA24-060B). 2025-01 추가 0-day(CVE-2025-0282)는 별도 캠페인으로, 엣지 지속성 사례에서 다룬다.
   ent: [ENT-IA-01]
-  cve: [CVE-2023-46805, CVE-2024-21887, CVE-2025-0282]
+  cve: [CVE-2023-46805, CVE-2024-21887]
   sources:
-    - CISA(2024) Ivanti Connect Secure and Policy Secure Exploitation (AA24-016A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-016a
+    - CISA(2024) Threat Actors Exploit Multiple Vulnerabilities in Ivanti Connect Secure and Policy Secure (AA24-060B) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-060b
 
 - id: ENI-007
   title: Cisco IOS XE 웹 UI 취약점 대량 임플란트 설치
@@ -268,23 +269,23 @@
     - CISA(2024) StopRansomware — Akira (AA24-109A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-109a
 
 - id: ENI-015
-  title: LockBit RaaS의 복구 방해·EDR 무력화 암호화
-  date: "2024-02"
+  title: LockBit 제휴의 복구 방해·EDR 무력화 암호화(CISA 권고)
+  date: "2023-06"
   kind: 캠페인
   verification: 정부·사법 확인
-  legal: 기소
   region: 글로벌
   sector: [다부문]
-  actor: LockBit
+  actor: LockBit(RaaS)
   actor_type: [랜섬웨어]
   impact: [랜섬·암호화, 서비스 중단]
   summary: >-
-    제휴 모델 랜섬웨어가 암호화 직전 섀도 카피·백업을 지우고 보안 서비스를 중지해 복구를 막았다. 국제 공조로 인프라가 단속됐으나 변종이
-    이어졌다.
+    CISA·FBI·국제 파트너가 2022~2023년 가장 많이 배포된 랜섬웨어로 LockBit을 지목하고, 제휴 모델 특성상 TTP가 다양하나
+    암호화 직전 섀도 카피·백업 삭제와 보안 서비스 중지로 복구를 막는 공통 수법을 정리했다(AA23-165A). 2024-02 국제 공조
+    (Operation Cronos)로 인프라가 단속됐으나 변종이 이어졌다.
   ent: [ENT-IM-01, ENT-IM-02, ENT-IM-04, ENT-DE-01.1]
-  attack_ref: [S1202]
   sources:
-    - CISA(2024) StopRansomware — LockBit 3.0 update / Operation Cronos | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-325a
+    - CISA(2023) Understanding Ransomware Threat Actors: LockBit (AA23-165A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-165a
+    - NCA(2024) Operation Cronos — international disruption of LockBit | https://www.nationalcrimeagency.gov.uk/news/nca-leads-international-investigation-targeting-lockbit
 
 - id: ENI-016
   title: RansomHub 제휴의 EDR 킬러(BYOVD) 사용
@@ -391,7 +392,7 @@
   ent: [ENT-CA-01.1, ENT-LM-02, ENT-LM-04, ENT-IM-03]
   attack_ref: [S0368, G0034]
   sources:
-    - CISA(2018) Russian Military 'NotPetya' Attribution | https://www.cisa.gov/news-events/alerts
+    - US-CERT(2017) Petya Ransomware (TA17-181A; 2018-02 미·영 정부의 러시아군 귀속 반영) | https://www.cisa.gov/news-events/alerts/2017/07/01/petya-ransomware
 
 - id: ENI-022
   title: WannaCry의 원격 취약점 웜 확산 랜섬웨어

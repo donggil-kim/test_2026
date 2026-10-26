@@ -160,8 +160,14 @@ def inc_label(i):
     return f"{i} {e['title']}({e['date']})"
 
 
+def _case_rank(i):
+    e = INC[i]
+    concrete = 1 if [x for x in e.get("impact") or [] if x not in ("영향 없음(사전 차단)", "영향 미상")] else 0
+    return (concrete, e["date"], i)   # 영향 우선, 같으면 최신(검토 3.7)
+
+
 def first_case(o):
-    real = sorted(EV[o["id"]]["real"], key=lambda i: (INC[i]["date"], i), reverse=True)
+    real = sorted(EV[o["id"]]["real"], key=_case_rank, reverse=True)
     if real:
         e = INC[real[0]]
         return f"[실제 사고] {e['title']}({e['date']}) ({real[0]})"
@@ -177,9 +183,16 @@ def first_case(o):
 
 
 def first_control(o):
-    b = [ln for ln in (o["detect"] or "").splitlines() if ln.startswith("- ")]
-    if b:
-        return b[0][2:].strip()
+    # '핵심 대응' = ■ 대응 섹션의 첫 불릿('참고:' 줄 제외). ■ 탐지가 아님(검토 3.7)
+    cur, resp = None, []
+    for ln in (o["detect"] or "").splitlines():
+        t = ln.strip()
+        if t.startswith("■ "):
+            cur = t[2:].strip()
+        elif cur == "대응" and t.startswith("- ") and not t[2:].lstrip().startswith("참고:"):
+            resp.append(t[2:].strip())
+    if resp:
+        return resp[0]
     return "대응 기준: NIST " + "·".join(o["nist"]) if o["nist"] else ""
 
 
