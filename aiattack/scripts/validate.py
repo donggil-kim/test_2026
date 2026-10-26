@@ -275,6 +275,8 @@ def check_incidents():
             err(where, f"지역 '{e['region']}'이 정의된 어휘에 없음")
         if e.get("ai_use") not in R.AI_USE:
             err(where, f"ai_use 값(확인·추정·미확인) 오류: {e.get('ai_use')}")
+        if "capability_indicator" in e and not isinstance(e.get("capability_indicator"), bool):
+            err(where, "capability_indicator는 true/false")
         if e.get("maturity") not in R.MATURITY:
             err(where, f"maturity 값 오류: {e.get('maturity')}")
         for fld, vocab, name in (("sector", R.SECTORS, "업종"), ("actor_type", R.ACTOR_TYPES, "주체 유형"),

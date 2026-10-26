@@ -82,7 +82,10 @@ EV = {o["id"]: dict(real=set(), recent=set(), confirmed=set(), presumed=set(), i
                     excluded=set(), atlas_cases=set(), impact=collections.Counter(), actor=collections.Counter())
       for o in ROWS}
 
+CAP_INDICATORS = [e for e in INCIDENTS if e.get("capability_indicator")]
 for e in INCIDENTS:
+    if e.get("capability_indicator"):   # 방어·연구 측 역량 실증 — 공격자 사고로 세지 않음(D13)
+        continue
     for k in e.get("aia") or []:
         if k not in EV:
             continue

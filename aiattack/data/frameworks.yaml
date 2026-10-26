@@ -266,17 +266,6 @@ references:
     terms: 벤더 연구·시연 — 서지·URL만
     verify: 통합 v4.1 사고사례 검증 원장(SCI-134)에서 1차 확인(2025-03-18, 숨은 유니코드 지시로 생성 코드 백도어)
     checked: "2026-10-25"
-  OLIGO-SHADOWRAY:
-    title: "ShadowRay 2.0: Attackers Turn AI Against Itself"
-    short: Oligo 〈ShadowRay 2.0〉
-    publisher: Oligo Security
-    year: 2025
-    urls: [https://www.oligo.security/blog/shadowray-2-0-attackers-turn-ai-against-itself-in-global-campaign-that-hijacks-ai-into-self-propagating-botnet]
-    use: [위협 내용]
-    domains: [IM]
-    terms: 벤더 분석 — 서지·URL만, 'LLM 생성 페이로드'는 벤더 추정 표기
-    verify: 통합 v4.1 사고사례 검증 원장(CL/INC-0579)에서 확인(공개 2025-11-18, 인증 없는 Ray Jobs API·LLM 생성 페이로드 분석)
-    checked: "2026-10-25"
   HKP-DEEPFAKE:
     title: "Deepfake video-call and face-swap financial fraud (Hong Kong)"
     short: CNN 〈홍콩 딥페이크 금융사기〉

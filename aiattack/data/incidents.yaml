@@ -113,26 +113,6 @@
   sources:
     - Wiz(2025) s1ngularity — supply chain attack leaks secrets on GitHub | https://www.wiz.io/blog/s1ngularity-supply-chain-attack
 
-- id: AII-005
-  title: ShadowRay 2.0 — 노출 Ray AI 인프라 크립토마이닝 캠페인
-  date: "2025-11"
-  kind: 사고
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [IT·소프트웨어]
-  actor: IronErn440
-  actor_type: [사이버범죄]
-  impact: [자원 탈취]
-  ai_use: 추정
-  maturity: 실사용
-  summary: >-
-    대시보드·Jobs API가 인증 없이 노출된 Ray 클러스터를 노린 크립토마이닝 캠페인으로, 발견 벤더(Oligo)는 공격에 쓰인
-    페이로드가 LLM으로 생성된 것으로 분석했다(독스트링·주석 패턴 근거, 벤더는 'likely' 표현). 취약 동작은 CVE-2023-48022.
-  aia: [AIA-IM-03.1]
-  origin: [CL/INC-0579]
-  sources:
-    - Oligo Security(2025) ShadowRay 2.0 | https://www.oligo.security/blog/shadowray-2-0-attackers-turn-ai-against-itself-in-global-campaign-that-hijacks-ai-into-self-propagating-botnet
-
 - id: AII-006
   title: 2025 폴란드 에너지 시설 와이퍼 공격(LLM 생성 스크립트)
   date: "2026-01"
@@ -235,7 +215,7 @@
     OpenAI의 내부 사이버 역량 평가(ExploitGym 기반)에서 자율 에이전트가 평가 샌드박스를 벗어나 2026-07-09~13 Hugging Face
     운영 인프라를 약 2.5일간 침해했다(HF 기술 타임라인). 사람 공격자가 지시한 공격이 아니라 통제를 벗어난 자율 에이전트 사례로,
     '공격자의 AI'와 성격이 달라 P1에서 전용 행(통제 이탈 자율 에이전트, D14)으로 분리 예정. HF는 고객 모델·데이터 영향은 없다고 밝혔다.
-  aia: [AIA-AO-01]
+  aia: [AIA-AO-06]
   attack_ref: [AML.CS0068]
   origin: [AML.CS0068]
   sources:
@@ -324,26 +304,6 @@
   sources:
     - Pillar Security(2025) New Vulnerability in GitHub Copilot and Cursor | https://www.pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents
 
-- id: AII-015
-  title: Open WebUI 오설정 악용 크립토재킹(AI 생성 페이로드)
-  date: "2025-06"
-  kind: 사고
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [IT·소프트웨어]
-  actor: 미상
-  actor_type: [사이버범죄]
-  impact: [자원 탈취]
-  ai_use: 추정
-  maturity: 실사용
-  summary: >-
-    관리자 접근이 활성화되고 인증이 없는 채로 인터넷에 노출된 Open WebUI(자체 호스팅 LLM 인터페이스)에 악성 AI 생성 Python
-    스크립트가 업로드·실행되어 크립토마이너가 배포됐다(Sysdig 분석).
-  aia: [AIA-IM-03.1]
-  origin: [CL/INC-0519]
-  sources:
-    - Sysdig(2025) Attacker exploits misconfigured AI tool to run AI-generated payload | https://sysdig.com/blog/attacker-exploits-misconfigured-ai-tool-to-run-ai-generated-payload/
-
 - id: AII-016
   title: 공개 S3 버킷 노출 자격증명 경유 LLMjacking·GPU 악용
   date: "2026-02"
@@ -359,7 +319,7 @@
   summary: >-
     공개 S3 버킷(RAG 데이터)에서 발견한 자격증명으로 초기 접근해 Lambda 코드 주입으로 권한을 올리고 측면 이동한 뒤, Bedrock
     LLMjacking과 GPU 인스턴스 생성에 악용했다. Sysdig는 세르비아어 주석·존재하지 않는 GitHub 저장소 환각 등을 근거로 LLM 활용을 시사한다고 분석했다(익명 사례).
-  aia: [AIA-IM-03.2, AIA-AO-05]
+  aia: [AIA-AO-05]
   origin: [CL/INC-0573]
   sources:
     - Sysdig(2026) AI-assisted cloud intrusion achieves admin access in 8 minutes | https://sysdig.com/blog/ai-assisted-cloud-intrusion-achieves-admin-access-in-8-minutes/
@@ -604,6 +564,7 @@
   impact: [영향 없음(사전 차단)]
   ai_use: 확인
   maturity: 실사용
+  capability_indicator: true   # 방어·연구 측 역량 실증 — 공격자 사고로 세지 않음(D13)
   summary: >-
     Google Big Sleep(Project Zero·DeepMind) AI 에이전트가 공격자가 곧 악용하려던 SQLite 취약점을 사전에 찾아냈다. Google은
     AI 에이전트가 실제 악용을 직접 저지한 첫 사례라고 밝혔다. 방어 연구지만 자율 취약점 발굴 역량이 실사용 수준임을 보임(양용 역량).
@@ -623,6 +584,7 @@
   impact: [영향 없음(사전 차단)]
   ai_use: 확인
   maturity: 실사용
+  capability_indicator: true   # 방어·연구 측 역량 실증 — 공격자 사고로 세지 않음(D13)
   summary: >-
     XBOW의 자율 펜테스트 에이전트가 버그바운티 플랫폼 HackerOne의 미국 리더보드 1위에 올랐다(2025-06). 수개월간 약 1,060건의
     취약점을 제출했으며 발견은 자동화됐고 제출 전 사람이 검토했다. 방어 측 역량 사례로, 자율 취약점 발굴 역량의 성숙도 지표로만 쓴다.
