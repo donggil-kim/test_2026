@@ -358,7 +358,7 @@ def check_case_line(where, rid, ln, stats):
         want = CASE_LABELS[label]
         if want and e["status"] != want:
             err(where, f"{i} 라벨 {label}이 집계 상태 '{e['status']}'와 다름")
-    refs = set().union(*[set(e.get("attack_ref") or []) + list(e.get("cve") or []) for e in cited]) if cited else set()
+    refs = set().union(*[set(e.get("attack_ref") or []) | set(e.get("cve") or []) for e in cited]) if cited else set()
     for a in RE_ATK.findall(rest) + RE_CVE.findall(rest):
         if cited and a not in refs:
             err(where, f"{a}가 인용 사고({', '.join(ids)})의 attack_ref·cve에 없음")
@@ -373,7 +373,9 @@ def check_case_line(where, rid, ln, stats):
                 if e["date"] != md.group(1):
                     err(where, f"{e['id']} 시점 불일치(문구 {md.group(1)}, DB {e['date']})")
         desc = rest.split(":", 1)[1] if ":" in rest else rest
-        desc = re.sub(r"\((?:ENI-|CVE-|T\d|[GSC]\d)[^)]*\)\s*$", "", desc)
+        desc = RE_CVE.sub("", desc)              # CVE 번호는 인용 사고 cve 필드로 이미 검증 — 수치 대조에서 제외
+        desc = RE_ATK.sub("", desc)
+        desc = re.sub(r"\((?:ENI-)[^)]*\)\s*$", "", desc)
         corpus = " ".join(e["title"] + " " + " ".join(e["summary"].split()) for e in cited)
         for num in RE_NUM.findall(desc):
             if len(num.replace(",", "").replace(".", "")) < 2:

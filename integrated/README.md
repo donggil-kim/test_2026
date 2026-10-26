@@ -38,6 +38,7 @@ v4는 v3(6개 Lv0, 258개)의 **Lv0 간 중복을 통합**하고 **통합 사고
 | 경로 | 설명 |
 |---|---|
 | `output/통합_보안위협_매트릭스_v5_AI활용공격뷰.xlsx` | **v5 — AI 활용 공격 뷰(view) Lv0** (`aiattack/`): 렌즈 매트릭스라 기존 6개와 겹치므로 재수록 대신 연계만 하고 고유 위협 수에는 더하지 않음(D9). 세부위협 35개가 기존 237개 중 29개를 연계. 빌더 `aiattack/scripts/build_integrated_view.py`, 요약 `output/통합_AI활용공격뷰_v5.md`·교차 `output/통합_AI활용공격뷰_교차_v5.csv`. **v4.1 산출물을 바꾸지 않는 별도 레이어** |
+| `output/통합_보안위협_매트릭스_v5_엔터프라이즈뷰.xlsx` | **v5 — 고도화 엔터프라이즈 침해 뷰(view) Lv0** (`enterprise/`): 레거시 공백 축 렌즈 매트릭스. 세부위협 51개가 기존 237개 중 16개를 연계(D9). 빌더 `enterprise/scripts/build_integrated_view.py`, 요약 `output/통합_엔터프라이즈뷰_v5.md`·교차 `output/통합_엔터프라이즈뷰_교차_v5.csv`. **v4.1 산출물을 바꾸지 않는 별도 레이어** |
 | `output/통합_보안위협_매트릭스_v4.xlsx` | **최종 워크북 — 내부본** (시트 구성은 아래) |
 | `output/통합_보안위협_매트릭스_v4_배포본.xlsx` | **고객 배포본** — 클라우드 상세 시트의 CSA Top Threats 열, 신원 상세 시트의 CSA CCM·CIS Controls 열을 ID만 남김. 다른 Lv0는 추가 축약 없음 |
 | `output/통합_요약매트릭스_v4.csv` | 통합 요약 매트릭스 237행 (검토·diff용, UTF-8 BOM) |
