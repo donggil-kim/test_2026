@@ -450,3 +450,73 @@
   ent: [ENT-IA-02, ENT-EX-03, ENT-CA-01.1, ENT-DI-02, ENT-DE-01.1, ENT-IM-02, ENT-IM-05]
   sources:
     - CISA·FBI·MS-ISAC(2023) StopRansomware Guide(2023 개정) | https://www.cisa.gov/resources-tools/resources/stopransomware-guide
+
+# --- v3 P2: 최근(2025~)·국내 사례 보강 ---
+- id: ENI-034
+  title: SK텔레콤 핵심 서버 침해(BPFDoor·장기 잠복, 국내)
+  date: "2025-04"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 한국
+  sector: [통신·미디어]
+  actor: 미상(국가배후 의심)
+  actor_type: [국가배후]
+  impact: [데이터 유출, 내부 접근 확보]
+  summary: >-
+    민관합동조사 결과 2022-06 노출 서버에 웹셸이 설치된 뒤 리눅스 수동형 백도어(BPFDoor 계열) 등 악성코드 25종이 서버 23대에서
+    확인됐고, 가입자 USIM 관련 정보가 유출됐다. 방화벽 로그가 2024-12 이후만 남아 그 이전 유출 여부는 확인되지 않았다. EDR이 없는
+    리눅스 서버에서 포트를 열지 않는 수동형 백도어로 장기 잠복한 점이 레거시·엔드포인트 탐지의 공백을 보여준다.
+  ent: [ENT-IA-01, ENT-DE-03]
+  cve: []
+  sources:
+    - 과학기술정보통신부(2025) SKT 침해사고 민관합동조사단 조사결과 | https://www.msit.go.kr/bbs/view.do?sCode=user&mId=113&mPid=112&bbsSeqNo=94&nttSeqNo=3185685
+- id: ENI-035
+  title: 롯데카드 결제 서버 웹셸 침해·고객정보 유출(국내)
+  date: "2025-08"
+  kind: 사고
+  verification: 정부·사법 확인
+  region: 한국
+  sector: [금융·서비스]
+  actor: 미상
+  actor_type: [사이버범죄]
+  impact: [데이터 유출, 자격증명·비밀 탈취]
+  summary: >-
+    온라인 결제 웹 애플리케이션 서버의 오래된 공개 취약점이 장기 미조치된 상태에서 웹셸이 설치돼 고객정보가 유출됐다. 금융당국은
+    웹셸 탐지·차단용 백신 미설치, 거래기록 장시간 평문 유지 등을 지적했다. 노출 웹 서버·미조치 n-day가 경계 침투의 전형적 공백.
+  ent: [ENT-IA-01]
+  cve: []
+  sources:
+    - 금융감독원(2025) 롯데카드 등 금융회사 제재 공시 | https://www.fss.or.kr/fss/bbs/B0000188/list.do?menuNo=200218
+- id: ENI-036
+  title: Reynolds 랜섬웨어의 취약 드라이버 번들(BYOVD)
+  date: "2026-02"
+  kind: 캠페인
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: Reynolds(신규 랜섬웨어)
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화]
+  summary: >-
+    Reynolds 랜섬웨어가 서명된 취약 드라이버(NsecKrnl, CVE-2025-68947)를 페이로드에 직접 번들해 암호화 전에 EDR·백신을
+    커널에서 무력화했다(Broadcom/Symantec). 별도 BYOVD 반입 단계를 없애 무력화를 내장한 점이 특징이다.
+  ent: [ENT-DE-01.1, ENT-DE-01.2]
+  sources:
+    - Symantec(2026) Reynolds — defense evasion embedded in ransomware payload | https://www.security.com/threat-intelligence/black-basta-ransomware-byovd
+- id: ENI-037
+  title: Akira 랜섬웨어의 무방비 웹캠 경유 암호화(EDR 우회)
+  date: "2025-03"
+  kind: 사고
+  verification: 보안업체·연구기관 분석
+  region: 글로벌
+  sector: [다부문]
+  actor: Akira
+  actor_type: [랜섬웨어]
+  impact: [랜섬·암호화]
+  summary: >-
+    EDR이 깔린 호스트에서 랜섬웨어 바이너리가 격리되자, 공격자가 같은 네트워크의 모니터링되지 않는 웹캠(비관리 IoT)에서 공유를
+    암호화해 EDR을 우회했다(S-RM). EDR 미지원·비관리 장비가 텔레메트리 사각지대임을 보인 사례.
+  ent: [ENT-IM-01, ENT-DE-01.1]
+  cve: []
+  sources:
+    - S-RM(2025) Camera off — Akira deploys ransomware via webcam | https://www.s-rminform.com/latest-thinking/camera-off-akira-deploys-ransomware-via-webcam
