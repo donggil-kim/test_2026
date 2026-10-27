@@ -209,6 +209,11 @@ def check_taxonomy():
             err(where, f"심각도 값 오류 {x.get('severity')}")
         if x.get("severity") == "상" and len(x.get("severity_why") or "") < 30:
             warn(where, "심각도 '상'은 피해 범위를 severity_why에 적음")
+        # 심각도는 영향만으로 판정(검토 6.1) — 레거시 미탐지·탐지 난이도를 '상' 근거로 쓰지 않음
+        if x.get("severity") == "상":
+            for bad in ("레거시", "탐지가 어렵", "탐지하지 못", "탐지되지 않", "사람이 대응", "속도"):
+                if bad in (x.get("severity_why") or ""):
+                    warn(where, f"심각도 '상' 근거에 영향 외 요소('{bad}') — 탐지 난이도는 고유 축·우선순위로")
     for k in REFS:
         if not any(k in (x.get("refs") or []) for x in ROWS.values()):
             warn("frameworks.yaml references", f"{k}를 인용한 세부위협이 없음")

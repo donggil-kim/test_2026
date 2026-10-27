@@ -122,11 +122,14 @@ def distinct_sources(x):
 
 
 def likelihood(o, x):
-    if len(x["real"]) >= R.LIKELY_HIGH_REAL and distinct_sources(x) >= 2:
+    freq = R.freq_index(o["n_attack"])
+    # 상 = 서로 다른 행위자·캠페인 2개 이상의 실제 사고, 또는 매우 널리 쓰이는 기법(빈발 상)이 KEV로 실제 악용 확인
+    if (len(x["real"]) >= R.LIKELY_HIGH_REAL and distinct_sources(x) >= 2) or (freq == "상" and (o.get("kev") or x["real"])):
         return "상"
-    if x["real"] or x["advisory"] or x["intel"] or x["research"] or o.get("kev") or o["n_attack"] >= 1:
+    # 중 = 실제 사고 1건·정부 경보·위협인텔·실증·KEV, 또는 흔히 쓰이는 기법(빈발 중 이상)
+    if x["real"] or x["advisory"] or x["intel"] or x["research"] or o.get("kev") or freq in ("상", "중"):
         return "중"
-    return "하"
+    return "하"   # 드물게 쓰이고(빈발 하) 공개 근거 없음
 
 
 def evidence_level(o, x):
@@ -143,9 +146,10 @@ def _likelihood_from(o, reals):
     """주어진 실제 사고 집합으로 발생가능성 재계산(경계 플래그용)"""
     xx = EV[o["id"]]
     src = len({(INC[i].get("actor") or INC[i]["id"]) for i in reals})
-    if len(reals) >= R.LIKELY_HIGH_REAL and src >= 2:
+    freq = R.freq_index(o["n_attack"])
+    if (len(reals) >= R.LIKELY_HIGH_REAL and src >= 2) or (freq == "상" and (o.get("kev") or reals)):
         return "상"
-    if reals or xx["advisory"] or xx["intel"] or xx["research"] or o.get("kev") or o["n_attack"] >= 1:
+    if reals or xx["advisory"] or xx["intel"] or xx["research"] or o.get("kev") or freq in ("상", "중"):
         return "중"
     return "하"
 
@@ -164,8 +168,10 @@ for o in ROWS:
         if _likelihood_from(o, x["real"] - {drop}) != o["likelihood"]:
             o["boundary"] = "경계"
             break
-    o["lk_why"] = (f"실제 사고 {o['n_real']}건(최근 {o['n_recent']}, 서로 다른 행위자·캠페인 {o['n_sources']}) · ATT&CK 주체 {o['n_attack']} · "
-                   f"KEV {'O' if o.get('kev') else '-'} · 정부 경보 {o['n_adv']} · 위협인텔 {o['n_intel']} · 실증 {o['n_research']}")
+    o["freq"] = R.freq_index(o["n_attack"])
+    o["lk_why"] = (f"실제 사고 {o['n_real']}건(최근 {o['n_recent']}, 서로 다른 행위자·캠페인 {o['n_sources']}) · "
+                   f"빈발 지수 {o['freq']}(ATT&CK 주체 {o['n_attack']}) · KEV {'O' if o.get('kev') else '-'} · "
+                   f"정부 경보 {o['n_adv']} · 위협인텔 {o['n_intel']} · 실증 {o['n_research']}")
     txt = TEXT.get(o["id"]) or {}
     o["oneline"], o["summary"], o["reference"], o["detect"] = (txt.get(k) or "" for k in
                                                               ("oneline", "summary", "reference", "detect"))

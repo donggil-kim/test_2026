@@ -41,7 +41,7 @@ assessment:
     하 = 근거 없음.
     선정(포함) 자체는 '고도화·최근빈발·레거시난제' 셋 중 둘 이상으로 가리고(작업방향 4.3),
     우선순위는 위험도에 더해 레거시 공백·요구 방어 수준(방어 난이도)을 보조 기준으로 둔다(D5).
-  severity_check: "'상' 판정은 피해 범위(도메인·조직 전반 장악·대규모 암호화/파괴/유출·레거시 미탐지)를 severity_why에 적은 경우에만"
+  severity_check: "'상' 판정은 피해 범위(도메인·조직 전반 장악·대규모 암호화/파괴/유출·가용성/안전)를 severity_why에 적은 경우에만. 레거시 미탐지·탐지 난이도는 고유 축·우선순위"
 
 domains:
   # =========================================================================
@@ -72,8 +72,8 @@ domains:
             idn: []
             ph: []
             refs: [KEV-CAT, CISA-EDGE]
-            severity: 상
-            severity_why: VPN·방화벽·게이트웨이·파일전송 장비의 공개 즉시 악용되는 취약점으로 경계 안으로 바로 진입 — 엣지 장비는 EDR이 깔리지 않아 레거시로 탐지가 어렵고 KEV 등재가 매년 14~21%를 차지(참고치)
+            severity: 중
+            severity_why: 노출 엣지 장비 취약점으로 경계 안 발판을 얻는 초기 침투 — 단독 피해보다 후속 장악·암호화로 이어지는 관문(우선순위는 높음)
       - id: ENT-IA-02
         name: 외부 원격 서비스 악용
         lv3:
@@ -94,8 +94,8 @@ domains:
             idn: [ID-AU-04]
             ph: []
             refs: [ATTACK, M-TRENDS]
-            severity: 상
-            severity_why: 탈취 계정·노출 RDP·VPN으로 정상 인증처럼 들어와 경계 방화벽을 통과 — 로그인 자체는 정상이라 레거시 탐지가 어렵고 랜섬웨어 초기 침투 1순위 경로
+            severity: 중
+            severity_why: 탈취 계정·노출 원격 서비스로 얻는 초기 접근 — 후속 단계에서 피해가 실현되는 관문
       - id: ENT-IA-03
         name: 드라이브바이·워터링홀 감염
         lv3:
@@ -161,7 +161,7 @@ domains:
             ph: []
             refs: [ATTACK, M-TRENDS]
             severity: 상
-            severity_why: MSP·원격 관리·연동 토큰 등 신뢰 경로로 들어와 다수 하위 고객을 한 번에 침해 — 정상 관리 트래픽이라 레거시 탐지가 어렵고 피해가 연쇄됨
+            severity_why: MSP·신뢰 관계로 다수 하위 고객을 한 번에 침해 — 성공 시 다조직 동시 피해
 
   # =========================================================================
   - code: EX
@@ -191,8 +191,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK, LOLBAS]
-            severity: 상
-            severity_why: 디스크에 악성 파일 없이 메모리에서 실행돼 시그니처 AV가 탐지하지 못함 — 사람 운영 랜섬웨어·국가배후 작전 전반의 기본 실행 수단
+            severity: 중
+            severity_why: 파일리스 실행 수단으로 단독 피해는 없음 — 사람 운영 랜섬웨어·국가배후 작전의 기본 실행 단계
           - id: ENT-EX-01.2
             name: Windows 관리 도구(WMI) 악용
             en: Windows Management Instrumentation abuse
@@ -233,8 +233,8 @@ domains:
             idn: []
             ph: []
             refs: [LOLBAS, ATTACK]
-            severity: 상
-            severity_why: OS에 서명·내장된 정상 바이너리(rundll32·mshta·regsvr32 등)로 악성 코드를 대리 실행 — 허용 목록·서명 검증을 통과해 레거시 통제가 구분하지 못함
+            severity: 중
+            severity_why: 서명된 정상 바이너리 대리 실행 수단 — 단독 피해 없는 실행 조건
       - id: ENT-EX-04
         name: 네이티브 API·시스템 서비스 실행
         lv3:
@@ -381,8 +381,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 정상 프로세스 메모리에 코드를 주입해 실행·은닉·권한 상승 — 디스크 산출물이 없어 시그니처가 탐지하지 못하고 거의 모든 고급 악성코드가 사용
+            severity: 중
+            severity_why: 프로세스 인젝션으로 실행·권한 상승을 돕는 수단 — 단독 피해는 없음
           - id: ENT-PV-01.2
             name: 접근 토큰 조작
             en: Access token manipulation
@@ -446,8 +446,8 @@ domains:
             idn: []
             ph: []
             refs: [KEV-CAT, LOLDRIVERS]
-            severity: 상
-            severity_why: 로컬·커널 취약점(또는 BYOVD 취약 드라이버)으로 SYSTEM·커널 권한을 획득 — 하위 계층이라 상위 보안 도구가 무력화되고 KEV 등재 다수
+            severity: 중
+            severity_why: 로컬·커널 취약점·BYOVD로 SYSTEM·커널 권한을 얻는 상승 단계 — 후속 무력화·확산의 조건
 
   # =========================================================================
   - code: DE
@@ -477,8 +477,8 @@ domains:
             idn: []
             ph: []
             refs: [LOLDRIVERS, HIVE-BYOVD]
-            severity: 상
-            severity_why: 서명된 취약 드라이버를 올려 EDR·백신을 커널에서 무력화 — 보안 도구 자체가 꺼지므로 이후 단계가 전부 가려짐. 랜섬웨어·국가배후가 공유하는 EDR 킬러 다수
+            severity: 중
+            severity_why: EDR·백신을 무력화해 이후 단계를 가리는 방어 무력화 수단 — 단독 피해보다 공격 성공률을 높이는 조건
           - id: ENT-DE-01.2
             name: 취약·악성 드라이버 로드(커널)
             en: Load vulnerable/malicious kernel driver
@@ -497,8 +497,8 @@ domains:
             idn: []
             ph: []
             refs: [LOLDRIVERS]
-            severity: 상
-            severity_why: 커널 계층에 드라이버를 올려 은닉·무력화의 토대를 만듦 — 상위 보안 제품이 보지 못하는 하위 계층
+            severity: 중
+            severity_why: 커널에 취약 드라이버를 올려 무력화·은닉의 토대를 만드는 단계 — 단독 피해는 없음
       - id: ENT-DE-03
         name: 지표 삭제
         lv3:
@@ -585,8 +585,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 디스크를 거치지 않고 메모리에서 페이로드를 로드·실행 — 파일 기반 AV·시그니처가 원천적으로 보지 못함
+            severity: 중
+            severity_why: 메모리 로딩으로 탐지를 회피하는 은닉 수단 — 단독 피해 없음
       - id: ENT-DE-07
         name: 루트킷
         lv3:
@@ -607,8 +607,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 프로세스·파일·연결을 하위 계층에서 숨겨 탐지·분석을 근본적으로 방해 — 레거시로는 존재 자체를 알기 어려움
+            severity: 중
+            severity_why: 루트킷으로 존재를 은폐해 장기 잠복하는 은닉 수단 — 직접 피해보다 지속·은닉 조건
       - id: ENT-DE-08
         name: 펌웨어·부트 수준 은닉
         lv3:
@@ -629,8 +629,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: OS 아래 펌웨어·부트 단계에 심어져 재설치·디스크 교체에도 살아남고 OS 보안 제품이 보지 못함 — 사실상 레거시·EDR 모두 공백
+            severity: 중
+            severity_why: 펌웨어·부트킷으로 재설치에도 지속하는 하위 계층 지속성 — 직접 피해보다 장기 지속 조건
 
   # =========================================================================
   - code: CA
@@ -659,8 +659,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: LSASS 메모리에서 평문·해시 자격증명을 추출해 도메인 확산의 발판을 마련 — 정상 프로세스 접근이라 레거시가 구분하지 못함
+            severity: 중
+            severity_why: LSASS 덤프로 자격증명을 얻는 확산 발판 — 단독 피해보다 도메인 확산 조건
           - id: ENT-CA-01.2
             name: 캐시된 도메인 자격증명 추출
             en: Cached domain credentials
@@ -700,8 +700,8 @@ domains:
             idn: [ID-TS-02]
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 정상 Kerberos 요청으로 서비스 계정 해시를 받아 오프라인에서 크랙 — 정상 인증 트래픽이라 레거시가 탐지하지 못하고 도메인 권한 계정으로 직결
+            severity: 중
+            severity_why: Kerberoasting으로 도메인 권한 계정을 얻는 확산 발판 — 단독 피해보다 확산 조건
       - id: ENT-CA-04
         name: 입력 캡처·키로깅
         lv3:
@@ -826,8 +826,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK, M-TRENDS]
-            severity: 상
-            severity_why: 정상 원격 관리 프로토콜로 자격증명을 써 호스트 간 확산 — 정상 인증·세션이라 레거시가 악용과 구분하지 못하고 랜섬웨어 전개의 주 경로
+            severity: 중
+            severity_why: 정상 원격 프로토콜로 호스트 간 확산하는 측면 이동 수단 — 피해는 영향 단계에서 실현
       - id: ENT-LM-02
         name: 대체 인증 자료 사용(PtH·PtT)
         lv3:
@@ -848,8 +848,8 @@ domains:
             idn: [ID-TS-02]
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 평문 암호 없이 해시·티켓으로 인증해 확산 — 정상 인증으로 보여 레거시가 탐지하지 못하고 도메인 장악으로 직결
+            severity: 중
+            severity_why: 해시·티켓 재사용으로 확산하는 측면 이동 수단 — 도메인 장악의 조건
       - id: ENT-LM-03
         name: 측면 도구 전송
         lv3:
@@ -894,7 +894,7 @@ domains:
             ph: []
             refs: [KEV-CAT, ATTACK]
             severity: 상
-            severity_why: 인증 없이 원격 서비스 취약점으로 자동 확산(웜) — 패치 전 대규모 전파로 조직 전반이 빠르게 침해됨
+            severity_why: 인증 없이 원격 취약점으로 자동 확산(웜) — 성공 시 조직 전반이 한꺼번에 침해·파괴(NotPetya·WannaCry급)
 
   # =========================================================================
   - code: CO
@@ -975,8 +975,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: TLS 등으로 암호화해 정상 트래픽에 섞임 — 레거시 IDS·방화벽이 내용을 보지 못해 C2 식별이 사실상 불가
+            severity: 중
+            severity_why: 암호화 C2 통제 채널 수단 — 단독 피해 없음
           - id: ENT-C2-01.2
             name: 응용 계층 프로토콜(HTTPS) C2
             en: Application layer protocol (HTTPS) C2
@@ -994,8 +994,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: 정상 웹 트래픽처럼 보이는 HTTPS로 통제돼 포트·프로토콜 기반 통제를 통과 — 행위·네트워크 분석 없이는 구분 불가
+            severity: 중
+            severity_why: HTTPS C2 통제 채널 수단 — 단독 피해 없음
       - id: ENT-C2-03
         name: 웹 서비스·정상 플랫폼 경유 C2
         lv3:
@@ -1016,8 +1016,8 @@ domains:
             idn: []
             ph: []
             refs: [ATTACK]
-            severity: 상
-            severity_why: GitHub·클라우드·협업 SaaS 등 신뢰 도메인을 C2 중계로 악용 — 차단하면 업무가 끊겨 레거시 차단·탐지가 어려움
+            severity: 중
+            severity_why: 신뢰 SaaS 경유 C2 통제 채널 수단 — 단독 피해 없음
       - id: ENT-C2-04
         name: 도메인 프런팅·프록시
         lv3:
@@ -1114,7 +1114,7 @@ domains:
             ph: []
             refs: [ATTACK]
             severity: 상
-            severity_why: 기존 암호화 C2에 데이터를 실어 반출 — 별도 채널이 없어 레거시 DLP가 탐지하기 어렵고 이중협박 랜섬웨어의 유출 단계
+            severity_why: C2 채널로 민감 데이터를 대량 반출 — 성공 시 대규모 데이터 유출(이중 협박의 유출 단계)
       - id: ENT-EF-02
         name: 웹 서비스·대체 프로토콜 경유 반출
         lv3:
@@ -1136,7 +1136,7 @@ domains:
             ph: []
             refs: [ATTACK]
             severity: 상
-            severity_why: 클라우드 스토리지·정상 SaaS로 대량 반출 — 신뢰 도메인이라 차단·탐지가 어렵고 유출 규모가 큼
+            severity_why: 정상 SaaS·대체 프로토콜로 대량 데이터 반출 — 성공 시 대규모 데이터 유출
 
   # =========================================================================
   - code: IM
@@ -1166,7 +1166,7 @@ domains:
             ph: []
             refs: [ATTACK, SECURELIST-RANSOM]
             severity: 상
-            severity_why: 사람 운영 랜섬웨어가 도메인 장악 후 전사 암호화 — 앞 단계가 레거시로 탐지되지 않아 암호화 시점에야 드러나 피해가 전면적
+            severity_why: 사람 운영 랜섬웨어가 도메인 장악 후 전사 데이터를 암호화 — 성공 시 조직 전반의 가용성·업무가 마비
       - id: ENT-IM-02
         name: 복구 방해
         lv3:
@@ -1188,7 +1188,7 @@ domains:
             ph: []
             refs: [ATTACK]
             severity: 상
-            severity_why: 정상 도구로 섀도 카피·백업을 지워 복구를 막음 — 랜섬웨어 피해를 돌이킬 수 없게 만드는 결정적 단계
+            severity_why: 섀도 카피·백업을 지워 복구를 불가능하게 만듦 — 랜섬웨어 피해를 돌이킬 수 없게 하는 영향 단계
       - id: ENT-IM-03
         name: 데이터 파괴·와이퍼
         lv3:
@@ -1210,7 +1210,7 @@ domains:
             ph: []
             refs: [ATTACK]
             severity: 상
-            severity_why: 디스크·데이터를 파괴해 운영을 중단시킴 — 국가배후·핵티비스트의 파괴 작전으로 복구가 어렵고 피해가 전면적
+            severity_why: 디스크·데이터를 파괴해 운영을 중단 — 성공 시 복구 불가·전면적 가용성 피해
       - id: ENT-IM-04
         name: 서비스 중지·시스템 종료
         lv3:
@@ -1254,4 +1254,4 @@ domains:
             ph: []
             refs: [ATTACK]
             severity: 상
-            severity_why: 반출 데이터 공개 협박·부정 이체로 금전 피해를 실현 — 이중 협박은 백업 복구로도 막지 못하고 대규모 금전·평판 피해로 직결
+            severity_why: 반출 데이터 공개 협박·부정 이체로 대규모 금전·평판 피해를 실현 — 백업 복구로도 막지 못함

@@ -17,6 +17,20 @@ LEGAL = ["수사·조사", "기소", "유죄 판결", "무죄·불기소", "민�
 RECENT_FROM = "2025-01"
 LIKELY_HIGH_REAL = 2
 
+# 빈발 지수(검토 6.1·D17) — ATT&CK 절차(주체) 수로 '얼마나 흔히 쓰이는 기법인가'를 가늠.
+#   사고가 많아 건수로는 변별이 안 되는 영역이라, 편재 기법은 빈발 지수로 발생가능성을 가린다.
+#   임계값은 51개 행 ATT&CK 주체 수 분포(0~525)의 대략 3분위.
+FREQ_HIGH = 100   # 상 — 매우 널리 쓰임
+FREQ_MID = 30     # 중 — 흔히 쓰임
+
+
+def freq_index(n_attack):
+    if n_attack >= FREQ_HIGH:
+        return "상"
+    if n_attack >= FREQ_MID:
+        return "중"
+    return "하"
+
 
 def incident_status(e):
     if e["kind"] in RESEARCH_KINDS:

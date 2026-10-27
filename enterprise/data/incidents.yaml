@@ -324,56 +324,23 @@
 
 # --- 실행·LOLBin·파일리스·C2 ---
 - id: ENI-018
-  title: Cobalt Strike 비콘의 암호화 C2·프로세스 인젝션
-  date: "2023-01"
+  title: Operation MORPHEUS — 불법 복제 Cobalt Strike 인프라 국제 단속
+  date: "2024-07"
   kind: 캠페인
-  verification: 보안업체·연구기관 분석
+  verification: 정부·사법 확인
   region: 글로벌
   sector: [다부문]
   actor: 다수(랜섬웨어·국가배후)
-  actor_type: [랜섬웨어, 국가배후, 사이버범죄]
+  actor_type: [랜섬웨어, 국가배후]
   impact: [내부 접근 확보, 측면 이동·확산]
   summary: >-
-    상용 침투 프레임워크 비콘이 프로세스 인젝션으로 메모리에서 실행되고 HTTPS·도메인 프런팅으로 암호화 C2를 유지했다. 정상 트래픽에
-    섞여 레거시 IDS·방화벽이 식별하지 못하는 대표적 고도화 도구다.
+    Europol 주도로 Fortra·Microsoft 등이 참여한 Operation MORPHEUS가 2024-07 불법 복제 Cobalt Strike 서버 인프라를
+    대규모 차단했다. 상용 침투 프레임워크 비콘이 프로세스 인젝션으로 메모리에서 실행되고 HTTPS·도메인 프런팅으로 암호화 C2를
+    유지하는 대표 고도화 도구임을 공식 확인한 사건으로, 랜섬웨어·국가배후가 광범위하게 공유해 왔다.
   ent: [ENT-PV-01.1, ENT-C2-01.1, ENT-C2-01.2, ENT-C2-04, ENT-C2-05]
   attack_ref: [S0154]
   sources:
-    - Google Cloud(2022) Making Cobalt Strike harder for threat actors to abuse | https://cloud.google.com/blog/products/identity-security/making-cobalt-strike-harder-for-threat-actors-to-abuse
-
-- id: ENI-019
-  title: 서명된 정상 바이너리(LOLBin) 대리 실행 광범위 사용
-  date: "2023-03"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수
-  actor_type: [랜섬웨어, 국가배후, 사이버범죄]
-  impact: [내부 접근 확보]
-  summary: >-
-    공격자들이 OS에 서명·내장된 정상 바이너리(rundll32·mshta·regsvr32·certutil 등)로 악성 코드를 대리 실행하고 페이로드를
-    내려받았다. 허용 목록·서명 검증을 통과해 레거시 통제가 구분하지 못한다(LOLBAS 245개 수록).
-  ent: [ENT-EX-03, ENT-C2-05]
-  sources:
-    - LOLBAS Project(2026) Living Off The Land Binaries And Scripts | https://lolbas-project.github.io/
-
-- id: ENI-020
-  title: WMI·PowerShell 파일리스 실행·지속
-  date: "2023-05"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수
-  actor_type: [국가배후, 랜섬웨어]
-  impact: [내부 접근 확보]
-  summary: >-
-    공격자들이 PowerShell·WMI로 디스크에 파일을 남기지 않고 메모리에서 실행하며 예약 작업·레지스트리로 지속성을 확보했다. 시그니처
-    AV가 보지 못해 행위 맥락으로만 탐지된다.
-  ent: [ENT-EX-01.1, ENT-EX-01.2, ENT-PE-03, ENT-PE-02, ENT-DE-06]
-  sources:
-    - MITRE ATT&CK(2026) Command and Scripting Interpreter — PowerShell (T1059.001) | https://attack.mitre.org/techniques/T1059/001/
+    - Europol(2024) Global operation targets Cobalt Strike (Operation MORPHEUS) | https://www.europol.europa.eu/media-press/newsroom/news/global-crackdown-tooling-abused-criminals
 
 # --- 웜·측면 이동·자격증명 ---
 - id: ENI-021
@@ -413,23 +380,6 @@
   sources:
     - CISA(2017) Indicators Associated With WannaCry Ransomware (TA17-132A) | https://www.cisa.gov/news-events/alerts/2017/05/12/indicators-associated-wannacry-ransomware
 
-- id: ENI-023
-  title: Kerberoasting을 통한 도메인 권한 계정 탈취
-  date: "2023-07"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수(랜섬웨어·국가배후)
-  actor_type: [랜섬웨어, 국가배후]
-  impact: [자격증명·비밀 탈취, 측면 이동·확산]
-  summary: >-
-    공격자들이 정상 Kerberos 요청으로 서비스 계정 티켓을 받아 오프라인에서 크랙해 도메인 권한 계정을 확보했다. 정상 인증 트래픽이라
-    레거시가 탐지하지 못하고 사람 운영 랜섬웨어의 핵심 확산 발판이 됐다.
-  ent: [ENT-CA-03, ENT-DI-02]
-  sources:
-    - Microsoft(2023) Detecting and mitigating Kerberoasting | https://www.microsoft.com/en-us/security/blog/
-
 # --- 하위 계층·은닉 ---
 - id: ENI-024
   title: BlackLotus UEFI 부트킷(보안 부팅 우회)
@@ -448,74 +398,26 @@
   sources:
     - ESET(2023) BlackLotus UEFI bootkit | https://www.welivesecurity.com/2023/03/01/blacklotus-uefi-bootkit-myth-confirmed/
 
-- id: ENI-025
-  title: 커널 루트킷을 통한 장기 은닉(국가배후)
+- id: ENI-026
+  title: UEFI 펌웨어 임플란트(LoJax·APT28 / MoonBounce·APT41)
   date: "2022-01"
   kind: 캠페인
   verification: 보안업체·연구기관 분석
   region: 글로벌
-  sector: [정부·군, 통신·미디어]
-  actor: 미상(국가배후)
+  sector: [정부·군, 다부문]
+  actor: APT28(LoJax)·APT41(MoonBounce)
   actor_type: [국가배후]
-  impact: [첩보·감시, 내부 접근 확보]
+  impact: [내부 접근 확보, 첩보·감시]
   summary: >-
-    국가 연계 행위자가 커널 루트킷으로 프로세스·연결을 숨기며 장기 잠복했다. 하위 계층 은닉이라 레거시·일반 EDR이 존재 자체를 알기
-    어려운 사례다.
-  ent: [ENT-DE-07]
-  sources:
-    - Mandiant(2022) Rootkit persistence in espionage intrusions | https://cloud.google.com/security/resources/m-trends
-
-- id: ENI-026
-  title: 펌웨어 임플란트(LoJax/MoonBounce 계열)
-  date: "2022-01"
-  kind: 연구·시연
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [정부·군]
-  actor: 국가배후
-  actor_type: [국가배후]
-  impact: [내부 접근 확보]
-  summary: >-
-    UEFI 펌웨어에 임플란트를 심어 OS 재설치·디스크 교체에도 지속되는 기법이 분석됐다. 펌웨어 단계라 OS 보안 제품의 가시성 밖에 있다.
+    국가 연계 행위자가 UEFI 펌웨어에 임플란트를 심어 OS 재설치·디스크 교체에도 지속되는 공격이 실제로 확인됐다 — ESET가 분석한
+    LoJax(APT28, 야생 최초의 UEFI 루트킷)와 Kaspersky가 분석한 MoonBounce(APT41). 펌웨어 단계라 OS 보안 제품의 가시성 밖에 있다.
   ent: [ENT-DE-08]
+  attack_ref: [G0007, G0096]
   sources:
-    - Kaspersky(2022) MoonBounce UEFI firmware implant | https://securelist.com/moonbounce-the-dark-side-of-uefi-firmware/105468/
+    - Kaspersky(2022) MoonBounce — the dark side of UEFI firmware | https://securelist.com/moonbounce-the-dark-side-of-uefi-firmware/105468/
+    - ESET(2018) LoJax — first UEFI rootkit found in the wild | https://www.welivesecurity.com/2018/09/27/lojax-first-uefi-rootkit-found-wild-courtesy-sednit-group/
 
 # --- C2·반출·DNS·이동식 매체 ---
-- id: ENI-027
-  title: DNS 터널링 기반 은닉 C2·반출
-  date: "2023-09"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수(국가배후·사이버범죄)
-  actor_type: [국가배후, 사이버범죄]
-  impact: [데이터 유출, 내부 접근 확보]
-  summary: >-
-    공격자들이 거의 항상 허용되는 DNS 질의에 통제·데이터를 실어 방화벽을 우회했다. 레거시 통제가 DNS 내용을 보지 않아 은닉 C2·반출에
-    쓰였다.
-  ent: [ENT-C2-06, ENT-EF-01]
-  sources:
-    - Unit 42(2023) DNS tunneling in the wild | https://unit42.paloaltonetworks.com/dns-tunneling-abuse/
-
-- id: ENI-028
-  title: 정상 웹 서비스(클라우드·협업) 경유 C2
-  date: "2024-03"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수(국가배후)
-  actor_type: [국가배후, 사이버범죄]
-  impact: [내부 접근 확보, 데이터 유출]
-  summary: >-
-    공격자들이 GitHub·클라우드 스토리지·협업 SaaS 등 신뢰 도메인을 C2 중계·반출 경로로 악용했다. 차단하면 업무가 끊겨 레거시
-    차단·탐지가 어렵다.
-  ent: [ENT-C2-03, ENT-EF-02]
-  sources:
-    - Recorded Future(2024) Abuse of legitimate internet services for C2 | https://www.recordedfuture.com/
-
 - id: ENI-029
   title: 이동식 매체(USB) 경유 격리망 침투·전파
   date: "2023-06"
@@ -530,7 +432,7 @@
     국가 연계 행위자가 USB 등 이동식 매체로 망분리·격리망에 침투·전파했다. 경계 통제를 물리적으로 우회하는 경로다.
   ent: [ENT-IA-04]
   sources:
-    - ESET(2023) Gamaredon's USB-spreading tooling | https://www.welivesecurity.com/
+    - ESET(2023) Gamaredon's USB-spreading malware (GAMMASTEEL) | https://www.welivesecurity.com/en/eset-research/sneaky-gamaredon-usb-spreading/
 
 - id: ENI-030
   title: 정부 경보 — 사람 운영 랜섬웨어의 레거시 우회 공통 TTP
@@ -547,55 +449,4 @@
     복구 방해, 이중 협박 갈취. 레거시로 막기 어려운 단계가 반복됨을 공식 확인했다.
   ent: [ENT-IA-02, ENT-EX-03, ENT-CA-01.1, ENT-DI-02, ENT-DE-01.1, ENT-IM-02, ENT-IM-05]
   sources:
-    - CISA(2025) StopRansomware guidance update | https://www.cisa.gov/stopransomware
-
-- id: ENI-031
-  title: 데이터 스테이징·압축 후 C2 채널 반출(이중 협박)
-  date: "2024-06"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수 랜섬웨어
-  actor_type: [랜섬웨어]
-  impact: [데이터 유출, 금전 피해]
-  summary: >-
-    랜섬웨어 조직이 암호화 전에 로컬·공유에서 데이터를 모아 압축·암호화한 뒤 기존 C2 채널로 반출해 유출 협박에 썼다. 별도 채널이 없어
-    레거시 DLP가 탐지하기 어려웠다.
-  ent: [ENT-CO-01, ENT-CO-02, ENT-EF-01, ENT-IM-05]
-  sources:
-    - Securelist(2026) State of Ransomware 2026 — double extortion | https://securelist.com/state-of-ransomware-in-2026/119761/
-
-- id: ENI-032
-  title: UAC 우회·토큰 조작을 통한 로컬 권한 상승
-  date: "2023-08"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수
-  actor_type: [사이버범죄, 랜섬웨어]
-  impact: [내부 접근 확보]
-  summary: >-
-    공격자들이 정상 자동 상승 바이너리로 UAC를 우회하고 접근 토큰을 복제·가장해 권한을 높였다. 정상 메커니즘이라 레거시가 악용과
-    구분하지 못한다.
-  ent: [ENT-PV-03, ENT-PV-01.2, ENT-PE-01]
-  sources:
-    - MITRE ATT&CK(2026) Abuse Elevation Control Mechanism — Bypass UAC (T1548.002) | https://attack.mitre.org/techniques/T1548/002/
-
-- id: ENI-033
-  title: 지표 삭제·위장·난독화를 통한 사후 분석 방해
-  date: "2024-01"
-  kind: 캠페인
-  verification: 보안업체·연구기관 분석
-  region: 글로벌
-  sector: [다부문]
-  actor: 다수(국가배후·랜섬웨어)
-  actor_type: [국가배후, 랜섬웨어]
-  impact: [내부 접근 확보]
-  summary: >-
-    공격자들이 이벤트 로그를 지우고 정상 이름·경로로 위장하며 페이로드를 난독화해 레거시 SIEM 탐지와 사후 분석을 무력화했다. 원격·불변
-    로그가 없으면 흔적이 사라진다.
-  ent: [ENT-DE-03, ENT-DE-04, ENT-DE-05, ENT-CA-04]
-  sources:
-    - MITRE ATT&CK(2026) Indicator Removal (T1070) | https://attack.mitre.org/techniques/T1070/
+    - CISA·FBI·MS-ISAC(2023) StopRansomware Guide(2023 개정) | https://www.cisa.gov/resources-tools/resources/stopransomware-guide

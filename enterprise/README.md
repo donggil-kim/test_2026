@@ -3,8 +3,8 @@
 MITRE ATT&CK Enterprise에서 **① 고도화됐고 ② 최근 실제 사례가 많으며 ③ 레거시 보안체계(시그니처 AV·경계 방화벽·레거시 SIEM)로 막기 어려운** 기법을 선별해, **레거시 방어 공백**·**요구 방어 수준**을 축으로 붙인 렌즈 매트릭스입니다. 자산이 무엇이든 "레거시로 막기 어렵다"로 묶습니다.
 
 > **현재 상태: 영역 2 ①~④ 완료 — 2026-10-26.** ①분류·참조·사고 DB · ②v1 빌드 · ③v2 관점 문구·시나리오 · ④통합 v5 뷰.
-> 세부위협 51개(전술 12·위협분류), 사고 DB 33건, 관점 문구 51/51, 공격 체인 시나리오 8개, 검증 오류·경고 0(`--strict`).
-> **v2 빌드**: 15시트 워크북·CSV(`output/통합_고도화엔터프라이즈_보안위협_매트릭스_v2.xlsx`) — 위험도 매우 높음 17·높음 12·보통 21·낮음 1.
+> 세부위협 51개(전술 12·위협분류), 사고 DB 24건(v3 — 기법 일반 서술 9건 제거·4건 실제 사례 재구성), 관점 문구 51/51, 공격 체인 시나리오 8개, 검증 오류·경고 0(`--strict`).
+> **v3 빌드**: 15시트 워크북·CSV — 위험도 매우 높음 6·높음 15·보통 25·낮음 5(심각도 영향만 재판정·빈발 지수·실제 사고 정리 반영). 상위는 랜섬웨어·갈취·대량 반출·MSP 신뢰·복구 방해·웜 등 영향 행이고, 엣지 0-day·EDR 무력화는 높음(발생가능성 상 × 심각도 중, 우선순위는 상위).
 > 방법론은 [`docs/methodology.md`](docs/methodology.md), 진행·결정 기록은 [`docs/작업방향.md`](docs/작업방향.md)·[`../emerging/작업방향.md`](../emerging/작업방향.md), 참조 자료는 [`reference/README.md`](reference/README.md).
 
 ## 분류 체계 — ATT&CK Enterprise 전술(침투~영향 12개)
@@ -28,7 +28,7 @@ MITRE ATT&CK Enterprise에서 **① 고도화됐고 ② 최근 실제 사례가 
 
 ## 사고 DB
 
-- 33건 — 경계·엣지 0-day(Citrix Bleed·MOVEit·Fortinet·Ivanti·Cisco IOS XE·PAN-OS·ScreenConnect·Cleo), 국가배후 LotL(Volt Typhoon·APT28), 사람 운영 랜섬웨어(Black Basta·Scattered Spider·Akira·LockBit·RansomHub), BYOVD EDR 킬러, 웜(NotPetya·WannaCry), 커널·펌웨어(BlackLotus·루트킷·펌웨어 임플란트), C2·DNS·이동식 매체. 실제 사고 매핑 45/51. CVE는 KEV 목록과 대조.
+- 24건(v3) — 경계·엣지 0-day(Citrix Bleed·MOVEit·Fortinet·Ivanti·Cisco IOS XE·PAN-OS·ScreenConnect·Cleo), 국가배후 LotL(Volt Typhoon·APT28), 사람 운영 랜섬웨어(Black Basta·Scattered Spider·Akira·LockBit·RansomHub), BYOVD(RansomHub·TrueSight), 웜(NotPetya·WannaCry), 펌웨어(BlackLotus·LoJax·MoonBounce), Cobalt Strike 단속(Operation MORPHEUS), Gamaredon USB. **편재 기법(LOLBin·WMI·Kerberoasting·UAC·지표 삭제 등)은 단독 사건이 아니므로 사고가 아니라 빈발 지수(ATT&CK 절차 수)로 반영**(검토 5.3). 실제 사고 매핑 30/51. CVE는 KEV 목록과 대조.
 
 ## 구성·재현
 
