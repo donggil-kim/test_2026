@@ -93,11 +93,26 @@ for e in INCIDENTS:
         else:
             x["excluded"].add(e["id"])
 
+# 상위 기법 → 하위 기법 목록(절차 롤업용) — 상위 기법 행의 절차 수가 과소 집계되던 버그 수정(검토 5.1)
+_SUBS = collections.defaultdict(set)
+for _tid, _tt in ATK["techniques"].items():
+    _par = _tt.get("parent")
+    if _par:
+        _SUBS[_par].add(_tid)
+
+def _rollup(t):
+    """기법 t의 절차 주체 — t가 상위 기법이면 하위 기법 절차까지 합산"""
+    tids = {t} | (_SUBS.get(t, set()) if "." not in t else set())
+    subj = set()
+    for tt in tids:
+        subj |= {p["subject"] for p in ATK["procedures"].get(tt, [])}
+    return subj
+
 for o in ROWS:
     subj = set()
     for t in o["attack"]:
-        subj |= {p["subject"] for p in ATK["procedures"].get(t, [])}
-    o["n_attack"] = len(subj)         # ATT&CK 주체(그룹·소프트웨어·캠페인) 수 — 빈발 신호
+        subj |= _rollup(t)
+    o["n_attack"] = len(subj)         # ATT&CK 주체(그룹·소프트웨어·캠페인) 수 — 빈발 신호(하위 기법 롤업 포함)
     o["n_edge_cve"] = 0               # 참고: KEV 플래그는 kev 필드
 
 

@@ -467,7 +467,7 @@ domains:
             defense_level: 행위·네트워크·아이덴티티
             actors: [랜섬웨어, 국가배후]
             platforms: [Windows]
-            attack: [T1685, T1547.006]
+            attack: [T1685]
             loldriver: true
             nist: [SI-4, SI-7, CM-7]
             ai: []
@@ -487,7 +487,7 @@ domains:
             defense_level: 행위·네트워크·아이덴티티
             actors: [국가배후, 랜섬웨어]
             platforms: [Windows]
-            attack: [T1547.006]
+            attack: [T1543.003]
             loldriver: true
             nist: [SI-7, CM-7, SI-4]
             ai: []
