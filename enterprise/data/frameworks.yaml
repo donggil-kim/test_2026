@@ -37,7 +37,8 @@ tactics:
   실행: 서명된 정상 도구·파일리스로 코드를 실행
   지속: 재부팅·로그아웃 후에도 접근을 유지
   권한 상승: 프로세스 인젝션·토큰·UAC·취약점으로 권한을 높임
-  방어 회피: EDR 변조·BYOVD·지표 삭제·위장·난독화·인메모리·루트킷·펌웨어로 탐지를 피함
+  은닉: 위장·난독화·암호화·인메모리·반사 로딩·루트킷·펌웨어·지표 삭제로 정상 행위에 섞여 탐지를 피함(v19 TA0005)
+  방어 무력화: EDR 변조·BYOVD·취약 드라이버 로드로 보안 통제를 직접 끄거나 떨어뜨림(v19 신설 TA0112)
   자격증명 접근: LSASS·캐시·Kerberos·입력 캡처로 자격증명을 탈취
   탐색: 호스트·네트워크·AD를 열거해 경로를 파악
   측면 이동: 원격 서비스·대체 인증 자료·도구 전송·원격 취약점으로 확산
@@ -91,7 +92,7 @@ references:
     year: 2026
     urls: [https://attack.mitre.org/]
     use: [분류 근거, 위협 내용]
-    domains: [IA, EX, PE, PV, DE, CA, DI, LM, CO, C2, EF, IM]
+    domains: [IA, EX, PE, PV, ST, DM, CA, DI, LM, CO, C2, EF, IM]
     terms: ATT&CK 이용약관 — ID·명칭만 인용
     verify: 저장소 enterprise-attack-v19.2.xlsx → reference/attack/ 추출본(기법·주체·절차)
     checked: "2026-10-26"
@@ -146,7 +147,7 @@ references:
     year: 2026
     urls: [https://www.loldrivers.io/]
     use: [분류 근거, 위협 내용]
-    domains: [PV, DE]
+    domains: [PV, DM]
     terms: MIT — ID·명칭·분류만 인용
     verify: reference/lolbas/ 추출본(드라이버 706개 — 취약 581·악성 125)
     checked: "2026-10-26"
@@ -157,7 +158,7 @@ references:
     year: 2026
     urls: [https://hivesecurity.gitlab.io/blog/modern-attack-techniques-2026/]
     use: [위협 내용]
-    domains: [DE]
+    domains: [DM]
     terms: 공개 연구 블로그 — 서지·URL만, 수치는 참고치
     verify: 작업방향 §7.2 리서치 — EDR 킬러 54종이 서명 드라이버 35종 악용 등. 1차 확인은 ②③단계
     checked: "2026-10-26"

@@ -1,6 +1,6 @@
 # 고도화 엔터프라이즈 침해 사고 DB — 공개 출처 기반(정부·사법 발표, 피해기관 공지, 보안업체·연구기관 분석, 공신력 있는 보도)
 #
-# 범위(작업방향 4·D7): 호스트·엔드포인트·네트워크·C2·방어 회피·온프레미스 AD 인접 침해. 레거시로 막기 어려운 고도화·최근빈발 사례.
+# 범위(작업방향 4·D7): 호스트·엔드포인트·네트워크·C2·은닉·방어 무력화·온프레미스 AD 인접 침해. 레거시로 막기 어려운 고도화·최근빈발 사례.
 # 필드
 #   id            ENI-NNN
 #   title/date/kind/verification/legal(선택)/region/sector/actor/actor_type/impact/summary
@@ -26,7 +26,7 @@
   summary: >-
     국가 연계 행위자가 노출된 경계 장비로 들어와 악성코드를 거의 쓰지 않고 내장 도구(LotL)만으로 정찰·자격증명 탈취·측면 이동을
     수행하며 핵심 기반시설 네트워크에 장기 잠복했다. CISA 등은 EDR 없는 엣지 장비와 정상 도구 사용으로 레거시 탐지가 어려웠다고 밝혔다.
-  ent: [ENT-IA-01, ENT-EX-01.1, ENT-EX-03, ENT-DI-01, ENT-DI-02, ENT-CA-01.1, ENT-LM-01, ENT-DE-03]
+  ent: [ENT-IA-01, ENT-EX-01.1, ENT-EX-03, ENT-DI-01, ENT-DI-02, ENT-CA-01.1, ENT-LM-01, ENT-ST-01]
   attack_ref: [G1017]
   sources:
     - CISA(2024) PRC State-Sponsored Actors Compromise and Maintain Persistent Access (AA24-038A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a
@@ -227,7 +227,7 @@
   summary: >-
     사람 운영 랜섬웨어가 초기 침투 후 PowerShell·정상 도구로 실행하고 LSASS 덤프·AD 열거로 도메인을 장악한 뒤 EDR을 무력화하고
     전사 암호화했다. 앞 단계가 레거시로 탐지되지 않아 암호화 시점에야 드러났다.
-  ent: [ENT-EX-01.1, ENT-CA-01.1, ENT-DI-02, ENT-LM-01, ENT-DE-01.1, ENT-IM-01, ENT-IM-02]
+  ent: [ENT-EX-01.1, ENT-CA-01.1, ENT-DI-02, ENT-LM-01, ENT-DM-01.1, ENT-IM-01, ENT-IM-02]
   attack_ref: [S1070]
   sources:
     - CISA(2024) StopRansomware — Black Basta (AA24-131A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-131a
@@ -245,7 +245,7 @@
   summary: >-
     사회공학으로 초기 접근을 얻은 뒤 정상 원격 관리 도구와 BYOVD로 EDR을 무력화하며 이동해 랜섬웨어·갈취로 이어졌다.
     정상 도구·인증을 섞어 레거시·단순 EDR이 탐지하기 어려웠다.
-  ent: [ENT-IA-02, ENT-DE-01.1, ENT-LM-01, ENT-LM-03, ENT-IM-01]
+  ent: [ENT-IA-02, ENT-DM-01.1, ENT-LM-01, ENT-LM-03, ENT-IM-01]
   attack_ref: [G1015]
   sources:
     - CISA(2023) Scattered Spider (AA23-320A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a
@@ -282,7 +282,7 @@
     CISA·FBI·국제 파트너가 2022~2023년 가장 많이 배포된 랜섬웨어로 LockBit을 지목하고, 제휴 모델 특성상 TTP가 다양하나
     암호화 직전 섀도 카피·백업 삭제와 보안 서비스 중지로 복구를 막는 공통 수법을 정리했다(AA23-165A). 2024-02 국제 공조
     (Operation Cronos)로 인프라가 단속됐으나 변종이 이어졌다.
-  ent: [ENT-IM-01, ENT-IM-02, ENT-IM-04, ENT-DE-01.1]
+  ent: [ENT-IM-01, ENT-IM-02, ENT-IM-04, ENT-DM-01.1]
   sources:
     - CISA(2023) Understanding Ransomware Threat Actors: LockBit (AA23-165A) | https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-165a
     - NCA(2024) Operation Cronos — international disruption of LockBit | https://www.nationalcrimeagency.gov.uk/news/nca-leads-international-investigation-targeting-lockbit
@@ -300,7 +300,7 @@
   summary: >-
     제휴가 서명된 취약 드라이버를 올려 EDR을 커널에서 무력화하는 전용 도구(EDRKillShifter)를 사용했다. 여러 랜섬웨어가 공유하는
     BYOVD EDR 킬러가 보안 제품 자체를 꺼 이후 단계를 가렸다.
-  ent: [ENT-DE-01.1, ENT-DE-01.2, ENT-PV-04]
+  ent: [ENT-DM-01.1, ENT-DM-01.2, ENT-PV-04]
   attack_ref: [S1212]
   sources:
     - Sophos(2024) EDRKillShifter — RansomHub affiliate BYOVD tool | https://news.sophos.com/en-us/2024/08/14/edr-kill-shifter/
@@ -318,7 +318,7 @@
   summary: >-
     공격자들이 서명된 취약 드라이버의 변종 수천 개를 돌려 가며 EDR·백신을 무력화했다. LOLDrivers 집계상 취약 드라이버가 수백 종에
     이르러 커널 하위 계층 공백이 지속 악용된다.
-  ent: [ENT-DE-01.2, ENT-DE-01.1]
+  ent: [ENT-DM-01.2, ENT-DM-01.1]
   sources:
     - Check Point(2025) The TrueSight driver BYOVD campaign | https://research.checkpoint.com/2025/large-scale-exploitation-of-legacy-driver/
 
@@ -394,7 +394,7 @@
   summary: >-
     보안 부팅을 우회하는 UEFI 부트킷이 지하에서 판매·분석됐다. OS 아래 펌웨어·부트 단계에 심어져 재설치에도 살아남고 OS 보안 제품이
     보지 못하는 하위 계층 공백을 보였다.
-  ent: [ENT-DE-08]
+  ent: [ENT-ST-06]
   sources:
     - ESET(2023) BlackLotus UEFI bootkit | https://www.welivesecurity.com/2023/03/01/blacklotus-uefi-bootkit-myth-confirmed/
 
@@ -411,7 +411,7 @@
   summary: >-
     국가 연계 행위자가 UEFI 펌웨어에 임플란트를 심어 OS 재설치·디스크 교체에도 지속되는 공격이 실제로 확인됐다 — ESET가 분석한
     LoJax(APT28, 야생 최초의 UEFI 루트킷)와 Kaspersky가 분석한 MoonBounce(APT41). 펌웨어 단계라 OS 보안 제품의 가시성 밖에 있다.
-  ent: [ENT-DE-08]
+  ent: [ENT-ST-06]
   attack_ref: [G0007, G0096]
   sources:
     - Kaspersky(2022) MoonBounce — the dark side of UEFI firmware | https://securelist.com/moonbounce-the-dark-side-of-uefi-firmware/105468/
@@ -447,7 +447,7 @@
   summary: >-
     정부 기관이 사람 운영 랜섬웨어 공통 TTP를 경보했다 — 노출 서비스·VPN 초기 침투, LotL 실행, 자격증명 탈취·AD 열거, EDR 무력화,
     복구 방해, 이중 협박 갈취. 레거시로 막기 어려운 단계가 반복됨을 공식 확인했다.
-  ent: [ENT-IA-02, ENT-EX-03, ENT-CA-01.1, ENT-DI-02, ENT-DE-01.1, ENT-IM-02, ENT-IM-05]
+  ent: [ENT-IA-02, ENT-EX-03, ENT-CA-01.1, ENT-DI-02, ENT-DM-01.1, ENT-IM-02, ENT-IM-05]
   sources:
     - CISA·FBI·MS-ISAC(2023) StopRansomware Guide(2023 개정) | https://www.cisa.gov/resources-tools/resources/stopransomware-guide
 
@@ -466,7 +466,7 @@
     민관합동조사 결과 2022-06 노출 서버에 웹셸이 설치된 뒤 리눅스 수동형 백도어(BPFDoor 계열) 등 악성코드 25종이 서버 23대에서
     확인됐고, 가입자 USIM 관련 정보가 유출됐다. 방화벽 로그가 2024-12 이후만 남아 그 이전 유출 여부는 확인되지 않았다. EDR이 없는
     리눅스 서버에서 포트를 열지 않는 수동형 백도어로 장기 잠복한 점이 레거시·엔드포인트 탐지의 공백을 보여준다.
-  ent: [ENT-IA-01, ENT-DE-03]
+  ent: [ENT-IA-01, ENT-ST-01]
   cve: []
   sources:
     - 과학기술정보통신부(2025) SKT 침해사고 민관합동조사단 조사결과 | https://www.msit.go.kr/bbs/view.do?sCode=user&mId=113&mPid=112&bbsSeqNo=94&nttSeqNo=3185685
@@ -500,7 +500,7 @@
   summary: >-
     Reynolds 랜섬웨어가 서명된 취약 드라이버(NsecKrnl, CVE-2025-68947)를 페이로드에 직접 번들해 암호화 전에 EDR·백신을
     커널에서 무력화했다(Broadcom/Symantec). 별도 BYOVD 반입 단계를 없애 무력화를 내장한 점이 특징이다.
-  ent: [ENT-DE-01.1, ENT-DE-01.2]
+  ent: [ENT-DM-01.1, ENT-DM-01.2]
   sources:
     - Symantec(2026) Reynolds — defense evasion embedded in ransomware payload | https://www.security.com/threat-intelligence/black-basta-ransomware-byovd
 - id: ENI-037
@@ -516,7 +516,7 @@
   summary: >-
     EDR이 깔린 호스트에서 랜섬웨어 바이너리가 격리되자, 공격자가 같은 네트워크의 모니터링되지 않는 웹캠(비관리 IoT)에서 공유를
     암호화해 EDR을 우회했다(S-RM). EDR 미지원·비관리 장비가 텔레메트리 사각지대임을 보인 사례.
-  ent: [ENT-IM-01, ENT-DE-01.1]
+  ent: [ENT-IM-01, ENT-DM-01.1]
   cve: []
   sources:
     - S-RM(2025) Camera off — Akira deploys ransomware via webcam | https://www.s-rminform.com/latest-thinking/camera-off-akira-deploys-ransomware-via-webcam

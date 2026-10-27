@@ -8,7 +8,7 @@
 #   전술 14개 중 정찰(Reconnaissance)·자원 개발(Resource Development)은 영역 1(AI 활용 공격)·정찰 영역이 다루므로 제외·연계(D7).
 # ID는 고정 — 폐지해도 재사용하지 않음.
 # 경계 규칙(작업방향 4.3·5장, D7):
-#   · 범위: 호스트·엔드포인트·네트워크·C2·방어 회피·온프레미스 AD 인접 기법.
+#   · 범위: 호스트·엔드포인트·네트워크·C2·은닉·방어 무력화·온프레미스 AD 인접 기법.
 #   · 연계만(재수록 금지): 클라우드 제어 평면→CL, 신원 로그인·토큰→ID, ICS→OT, AI 시스템→AI, 소프트웨어 공급망→SC.
 #     겹침은 통합 v4.1 요약 ID(AI·CL·OT·SC·ID·PH)로 연계(작업방향 5장).
 #   · 국가배후 여부는 행 속성이 아니라 사고 DB actor 필드로만 다룸.
@@ -450,19 +450,159 @@ domains:
             severity_why: 로컬·커널 취약점·BYOVD로 SYSTEM·커널 권한을 얻는 상승 단계 — 후속 무력화·확산의 조건
 
   # =========================================================================
-  - code: DE
-    ko: 방어 회피
-    en: Defense Evasion
-    desc: EDR 변조·BYOVD·지표 삭제·위장·난독화·인메모리·루트킷·펌웨어 — 레거시가 체계적으로 공백인 영역(ATT&CK 미커버 148개 중 다수)
-    excludes: 클라우드 로그 무력화는 CL · AI 기반 적대적 회피는 AI(연계)
+  - code: ST
+    ko: 은닉
+    en: Stealth
+    desc: 위장·난독화·암호화·인메모리·반사 로딩·루트킷·펌웨어·지표 삭제 — 정상 행위에 섞여 탐지를 피하는 영역(ATT&CK v19 구 방어 회피 TA0005 유지)
+    excludes: 클라우드 로그 영역은 CL · AI 기반 적대적 회피는 AI(연계)
     lv2:
-      - id: ENT-DE-01
+      - id: ENT-ST-01
+        name: 지표 삭제
+        lv3:
+          - id: ENT-ST-01
+            name: 지표 삭제(이벤트 로그·파일 삭제)
+            en: Indicator removal (clear event logs, file deletion)
+            tactic: 은닉
+            legacy_gap: [시그니처 회피]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows, Linux]
+            attack: [T1070, T1070.004, T1685.005]
+            nist: [AU-9, SI-4, AU-6]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 이벤트 로그·파일을 지워 레거시 SIEM 탐지·사후 분석을 무력화 — 원격·불변 로그가 없으면 흔적이 사라짐(로그 삭제 T1685.005는 v19 방어 무력화로 재배치됐으나 공격 목적이 흔적 제거라 은닉 행으로 둠)
+      - id: ENT-ST-02
+        name: 위장(정상 이름·서명)
+        lv3:
+          - id: ENT-ST-02
+            name: 위장(정상 이름·경로·서명 가장)
+            en: Masquerading
+            tactic: 은닉
+            legacy_gap: [서명된 정상 도구 악용, 시그니처 회피]
+            defense_level: EDR·XDR
+            actors: [국가배후, 랜섬웨어, 사이버범죄]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1036]
+            nist: [SI-4, SI-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 정상 프로세스·경로·서명으로 위장해 눈과 규칙 기반 탐지를 피하나 단독 피해는 제한적
+      - id: ENT-ST-03
+        name: 파일·정보 난독화
+        lv3:
+          - id: ENT-ST-03
+            name: 파일·정보 난독화·암호화
+            en: Obfuscated files or information
+            tactic: 은닉
+            legacy_gap: [시그니처 회피, 파일리스·인메모리]
+            defense_level: EDR·XDR
+            actors: [사이버범죄, 랜섬웨어, 국가배후]
+            platforms: [Windows, Linux, macOS]
+            attack: [T1027]
+            nist: [SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 패킹·인코딩·암호화로 시그니처·정적 분석을 회피 — 변종 양산으로 레거시 AV를 지속 우회
+      - id: ENT-ST-04
+        name: 인메모리·반사 로딩
+        lv3:
+          - id: ENT-ST-04
+            name: 인메모리·반사 코드 로딩
+            en: In-memory / reflective code loading
+            tactic: 은닉
+            legacy_gap: [파일리스·인메모리, 시그니처 회피]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후, 랜섬웨어]
+            platforms: [Windows]
+            attack: [T1620]
+            nist: [SI-3, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 메모리 로딩으로 탐지를 회피하는 은닉 수단 — 단독 피해 없음
+      - id: ENT-ST-05
+        name: 루트킷
+        lv3:
+          - id: ENT-ST-05
+            name: 루트킷(사용자·커널 은폐)
+            en: Rootkit
+            tactic: 은닉
+            legacy_gap: [커널·펌웨어 하위 계층, 파일리스·인메모리]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후]
+            platforms: [Windows, Linux]
+            attack: [T1014]
+            nist: [SI-7, SI-4]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 루트킷으로 존재를 은폐해 장기 잠복하는 은닉 수단 — 직접 피해보다 지속·은닉 조건
+      - id: ENT-ST-06
+        name: 펌웨어·부트 수준 은닉
+        lv3:
+          - id: ENT-ST-06
+            name: 펌웨어·부트킷(UEFI) 지속·은닉
+            en: Pre-OS boot / firmware implant (bootkit)
+            tactic: 은닉
+            legacy_gap: [커널·펌웨어 하위 계층]
+            defense_level: 행위·네트워크·아이덴티티
+            actors: [국가배후]
+            platforms: [펌웨어, Windows]
+            attack: [T1542]
+            nist: [SI-7, CM-7]
+            ai: []
+            cl: []
+            ot: []
+            sc: []
+            idn: []
+            ph: []
+            refs: [ATTACK]
+            severity: 중
+            severity_why: 펌웨어·부트킷으로 재설치에도 지속하는 하위 계층 지속성 — 직접 피해보다 장기 지속 조건
+
+  # =========================================================================
+  - code: DM
+    ko: 방어 무력화
+    en: Defense Impairment
+    desc: EDR 변조·BYOVD·취약 드라이버 로드 — 보안 통제를 직접 끄거나 떨어뜨리는 영역(ATT&CK v19 신설 TA0112)
+    excludes: 클라우드 로그 무력화는 CL(연계) · AI 기반 적대적 회피는 AI(연계)
+    lv2:
+      - id: ENT-DM-01
         name: 보안 도구 무력화·드라이버 로드
         lv3:
-          - id: ENT-DE-01.1
+          - id: ENT-DM-01.1
             name: 보안 도구 무력화(EDR 변조·BYOVD EDR 킬러)
             en: Impair/disable security tools (EDR tampering, BYOVD killers)
-            tactic: 방어 회피
+            tactic: 방어 무력화
             legacy_gap: [커널·펌웨어 하위 계층, 서명된 정상 도구 악용]
             defense_level: 행위·네트워크·아이덴티티
             actors: [랜섬웨어, 국가배후]
@@ -479,10 +619,10 @@ domains:
             refs: [LOLDRIVERS, HIVE-BYOVD]
             severity: 중
             severity_why: EDR·백신을 무력화해 이후 단계를 가리는 방어 무력화 수단 — 단독 피해보다 공격 성공률을 높이는 조건
-          - id: ENT-DE-01.2
+          - id: ENT-DM-01.2
             name: 취약·악성 드라이버 로드(커널)
             en: Load vulnerable/malicious kernel driver
-            tactic: 방어 회피
+            tactic: 방어 무력화
             legacy_gap: [커널·펌웨어 하위 계층]
             defense_level: 행위·네트워크·아이덴티티
             actors: [국가배후, 랜섬웨어]
@@ -499,138 +639,6 @@ domains:
             refs: [LOLDRIVERS]
             severity: 중
             severity_why: 커널에 취약 드라이버를 올려 무력화·은닉의 토대를 만드는 단계 — 단독 피해는 없음
-      - id: ENT-DE-03
-        name: 지표 삭제
-        lv3:
-          - id: ENT-DE-03
-            name: 지표 삭제(이벤트 로그·파일 삭제)
-            en: Indicator removal (clear event logs, file deletion)
-            tactic: 방어 회피
-            legacy_gap: [시그니처 회피]
-            defense_level: 행위·네트워크·아이덴티티
-            actors: [국가배후, 랜섬웨어]
-            platforms: [Windows, Linux]
-            attack: [T1070, T1070.004, T1685.005]
-            nist: [AU-9, SI-4, AU-6]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 이벤트 로그·파일을 지워 레거시 SIEM 탐지·사후 분석을 무력화 — 원격·불변 로그가 없으면 흔적이 사라짐
-      - id: ENT-DE-04
-        name: 위장(정상 이름·서명)
-        lv3:
-          - id: ENT-DE-04
-            name: 위장(정상 이름·경로·서명 가장)
-            en: Masquerading
-            tactic: 방어 회피
-            legacy_gap: [서명된 정상 도구 악용, 시그니처 회피]
-            defense_level: EDR·XDR
-            actors: [국가배후, 랜섬웨어, 사이버범죄]
-            platforms: [Windows, Linux, macOS]
-            attack: [T1036]
-            nist: [SI-4, SI-7]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 정상 프로세스·경로·서명으로 위장해 눈과 규칙 기반 탐지를 피하나 단독 피해는 제한적
-      - id: ENT-DE-05
-        name: 파일·정보 난독화
-        lv3:
-          - id: ENT-DE-05
-            name: 파일·정보 난독화·암호화
-            en: Obfuscated files or information
-            tactic: 방어 회피
-            legacy_gap: [시그니처 회피, 파일리스·인메모리]
-            defense_level: EDR·XDR
-            actors: [사이버범죄, 랜섬웨어, 국가배후]
-            platforms: [Windows, Linux, macOS]
-            attack: [T1027]
-            nist: [SI-3, SI-4]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 패킹·인코딩·암호화로 시그니처·정적 분석을 회피 — 변종 양산으로 레거시 AV를 지속 우회
-      - id: ENT-DE-06
-        name: 인메모리·반사 로딩
-        lv3:
-          - id: ENT-DE-06
-            name: 인메모리·반사 코드 로딩
-            en: In-memory / reflective code loading
-            tactic: 방어 회피
-            legacy_gap: [파일리스·인메모리, 시그니처 회피]
-            defense_level: 행위·네트워크·아이덴티티
-            actors: [국가배후, 랜섬웨어]
-            platforms: [Windows]
-            attack: [T1620]
-            nist: [SI-3, SI-4]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 메모리 로딩으로 탐지를 회피하는 은닉 수단 — 단독 피해 없음
-      - id: ENT-DE-07
-        name: 루트킷
-        lv3:
-          - id: ENT-DE-07
-            name: 루트킷(사용자·커널 은폐)
-            en: Rootkit
-            tactic: 방어 회피
-            legacy_gap: [커널·펌웨어 하위 계층, 파일리스·인메모리]
-            defense_level: 행위·네트워크·아이덴티티
-            actors: [국가배후]
-            platforms: [Windows, Linux]
-            attack: [T1014]
-            nist: [SI-7, SI-4]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 루트킷으로 존재를 은폐해 장기 잠복하는 은닉 수단 — 직접 피해보다 지속·은닉 조건
-      - id: ENT-DE-08
-        name: 펌웨어·부트 수준 은닉
-        lv3:
-          - id: ENT-DE-08
-            name: 펌웨어·부트킷(UEFI) 지속·은닉
-            en: Pre-OS boot / firmware implant (bootkit)
-            tactic: 방어 회피
-            legacy_gap: [커널·펌웨어 하위 계층]
-            defense_level: 행위·네트워크·아이덴티티
-            actors: [국가배후]
-            platforms: [펌웨어, Windows]
-            attack: [T1542]
-            nist: [SI-7, CM-7]
-            ai: []
-            cl: []
-            ot: []
-            sc: []
-            idn: []
-            ph: []
-            refs: [ATTACK]
-            severity: 중
-            severity_why: 펌웨어·부트킷으로 재설치에도 지속하는 하위 계층 지속성 — 직접 피해보다 장기 지속 조건
 
   # =========================================================================
   - code: CA
